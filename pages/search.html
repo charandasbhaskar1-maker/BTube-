@@ -2,94 +2,403 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Search - BTube</title>
+
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-        body { background:#0f0f0f; color:#fff; }
-        
-        .search-top-nav {
-            height: 52px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 30px;
+        }
+
+        /* 1. TOP SEARCH BAR */
+        .search-nav {
+            height: 54px;
             display: flex;
             align-items: center;
             padding: 0 12px;
-            gap: 12px;
-            border-bottom: 1px solid #222;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid #1f1f1f;
         }
+
         .btn-nav-back {
             background: none;
             border: none;
-            color: #fff;
+            color: #ffffff;
             display: flex;
             align-items: center;
+            padding: 4px;
             text-decoration: none;
+            cursor: pointer;
         }
-        .btn-nav-back svg { width: 22px; height: 22px; fill: #fff; }
-        .search-input-wrap {
+
+        .btn-nav-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .search-pill-box {
             flex: 1;
-            background: #222;
-            border-radius: 20px;
+            background: #222222;
+            border-radius: 24px;
             display: flex;
             align-items: center;
-            padding: 6px 14px;
+            padding: 0 14px;
+            height: 40px;
+            gap: 8px;
         }
-        .search-input-wrap input {
-            width: 100%;
+
+        .search-input-ctrl {
+            flex: 1;
             background: none;
             border: none;
             outline: none;
-            color: #fff;
+            color: #ffffff;
             font-size: 14px;
         }
-        .history-list {
-            padding: 10px 16px;
+
+        .btn-clear-txt {
+            background: none;
+            border: none;
+            color: #888888;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .btn-mic-icon {
+            background: #272727;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .btn-mic-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 2. HISTORY & SUGGESTIONS LIST */
+        .search-suggestions-wrap {
             display: flex;
             flex-direction: column;
+            padding: 6px 0;
         }
-        .history-item {
+
+        .suggest-item-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            color: #fff;
+            padding: 12px 16px;
+            cursor: pointer;
             text-decoration: none;
-            font-size: 14px;
-            border-bottom: 1px solid #1a1a1a;
+            color: #ffffff;
         }
-        .item-left {
+
+        .suggest-item-row:active {
+            background: #1c1c1c;
+        }
+
+        .suggest-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
+            flex: 1;
         }
-        .item-left svg { width: 18px; height: 18px; fill: #888; }
+
+        .suggest-left svg {
+            width: 18px;
+            height: 18px;
+            fill: #888888;
+            flex-shrink: 0;
+        }
+
+        .suggest-text {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .btn-arrow-fill {
+            background: none;
+            border: none;
+            color: #666666;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 16px;
+        }
+
+        /* 3. SEARCH RESULTS LIST */
+        .results-container {
+            display: none;
+            flex-direction: column;
+            gap: 16px;
+            padding: 12px 0;
+        }
+
+        .result-card-video {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .result-thumb-box {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #1c1c1c;
+            position: relative;
+        }
+
+        .result-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .result-time-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0,0,0,0.85);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .result-info-box {
+            display: flex;
+            padding: 10px 16px;
+            gap: 12px;
+        }
+
+        .result-author-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .result-meta-column {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .result-title-text {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .result-sub-meta {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
     </style>
 </head>
 <body>
-    <header class="search-top-nav">
+
+    <!-- 1. TOP BAR -->
+    <header class="search-nav">
         <a href="../frontend/index.html" class="btn-nav-back">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </a>
-        <div class="search-input-wrap">
-            <input type="text" id="searchInput" placeholder="Search BTube..." autofocus>
+
+        <div class="search-pill-box">
+            <input type="text" id="searchInput" class="search-input-ctrl" placeholder="Search BTube..." autofocus oninput="onSearchChange(this.value)" onkeydown="onSearchKeyDown(event)">
+            <button class="btn-clear-txt" id="clearBtn" onclick="clearSearchText()">✕</button>
         </div>
+
+        <button class="btn-mic-icon" onclick="startVoiceSearch()">
+            <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+        </button>
     </header>
 
-    <div class="history-list">
-        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="history-item">
-            <div class="item-left">
+    <!-- 2. SUGGESTIONS / HISTORY TRAY -->
+    <main class="search-suggestions-wrap" id="suggestionsWrap">
+        <!-- Item 1 -->
+        <div class="suggest-item-row" onclick="executeSearch('Chhattisgarhi Panthi Geet')">
+            <div class="suggest-left">
                 <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                <span>Chhattisgarhi Panthi Geet</span>
+                <span class="suggest-text">Chhattisgarhi Panthi Geet</span>
             </div>
-            <span style="color:#666;">↗</span>
-        </a>
-        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="history-item">
-            <div class="item-left">
+            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Chhattisgarhi Panthi Geet');">↖</button>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="suggest-item-row" onclick="executeSearch('Typewriter Banjo Making')">
+            <div class="suggest-left">
                 <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                <span>Typewriter Banjo Making</span>
+                <span class="suggest-text">Typewriter Banjo Making</span>
             </div>
-            <span style="color:#666;">↗</span>
+            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Typewriter Banjo Making');">↖</button>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="suggest-item-row" onclick="executeSearch('Daily Vlog Morning Village')">
+            <div class="suggest-left">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span class="suggest-text">Daily Vlog Morning Village</span>
+            </div>
+            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Daily Vlog Morning Village');">↖</button>
+        </div>
+    </main>
+
+    <!-- 3. SEARCH RESULTS STREAM -->
+    <section class="results-container" id="resultsBox">
+        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="result-card-video" data-keywords="panthi chhattisgarhi song geet charandas">
+            <div class="result-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Thumb">
+                <span class="result-time-badge">05:42</span>
+            </div>
+            <div class="result-info-box">
+                <div class="result-author-avatar" style="background:#e50914;">CB</div>
+                <div class="result-meta-column">
+                    <span class="result-title-text">Chhattisgarhi Panthi Song • Special Cultural Video 2026</span>
+                    <span class="result-sub-meta">Charandas Bhaskar • 210K views • 2 weeks ago</span>
+                </div>
+            </div>
         </a>
-    </div>
+
+        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="result-card-video" data-keywords="typewriter banjo making magnetic pickup dhun">
+            <div class="result-thumb-box">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Thumb">
+                <span class="result-time-badge">14:10</span>
+            </div>
+            <div class="result-info-box">
+                <div class="result-author-avatar" style="background:#3ea6ff;">DH</div>
+                <div class="result-meta-column">
+                    <span class="result-title-text">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
+                    <span class="result-sub-meta">Dhun AI • 45K views • 1 day ago</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="result-card-video" data-keywords="morning commute village lifestyle daily vlog bhaskar">
+            <div class="result-thumb-box">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Thumb">
+                <span class="result-time-badge">06:25</span>
+            </div>
+            <div class="result-info-box">
+                <div class="result-author-avatar" style="background:#2ecc71;">BV</div>
+                <div class="result-meta-column">
+                    <span class="result-title-text">Morning Commute & Village Lifestyle Daily Vlog #42</span>
+                    <span class="result-sub-meta">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
+                </div>
+            </div>
+        </a>
+    </section>
+
+    <!-- INTERACTION LOGIC -->
+    <script>
+        const input = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+        const suggestWrap = document.getElementById('suggestionsWrap');
+        const resultsBox = document.getElementById('resultsBox');
+
+        function onSearchChange(val) {
+            clearBtn.style.display = val.trim().length > 0 ? 'block' : 'none';
+            if (val.trim().length === 0) {
+                suggestWrap.style.display = 'flex';
+                resultsBox.style.display = 'none';
+            }
+        }
+
+        function clearSearchText() {
+            input.value = '';
+            clearBtn.style.display = 'none';
+            suggestWrap.style.display = 'flex';
+            resultsBox.style.display = 'none';
+            input.focus();
+        }
+
+        function fillInput(text) {
+            input.value = text;
+            clearBtn.style.display = 'block';
+            input.focus();
+        }
+
+        function onSearchKeyDown(e) {
+            if (e.key === 'Enter') {
+                executeSearch(input.value);
+            }
+        }
+
+        function executeSearch(query) {
+            if (!query.trim()) return;
+            input.value = query;
+            clearBtn.style.display = 'block';
+            suggestWrap.style.display = 'none';
+            resultsBox.style.display = 'flex';
+
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.result-card-video');
+            let found = false;
+
+            cards.forEach(card => {
+                const text = (card.getAttribute('data-keywords') + ' ' + card.innerText).toLowerCase();
+                if (text.includes(q)) {
+                    card.style.display = 'flex';
+                    found = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (!found) {
+                cards.forEach(c => c.style.display = 'flex');
+            }
+        }
+
+        // Voice Search (Speech Recognition)
+        function startVoiceSearch() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                input.placeholder = 'Mic not supported in this browser';
+                return;
+            }
+            const rec = new SpeechRec();
+            rec.lang = 'hi-IN';
+            input.placeholder = 'Listening... Bolen';
+            rec.onresult = (e) => {
+                const speech = e.results[0][0].transcript;
+                input.value = speech;
+                executeSearch(speech);
+            };
+            rec.onerror = () => {
+                input.placeholder = 'Search BTube...';
+            };
+            rec.start();
+        }
+    </script>
 </body>
 </html>
