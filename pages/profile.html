@@ -23,7 +23,7 @@
             overflow-x: hidden;
         }
 
-        /* 1. TOP HEADER (Solid Sticky with Shadow) */
+        /* 1. TOP HEADER */
         .profile-header {
             height: 52px;
             display: flex;
@@ -60,6 +60,8 @@
             align-items: center;
             padding: 12px 16px 14px;
             gap: 16px;
+            text-decoration: none;
+            color: #ffffff;
         }
 
         .hero-avatar {
@@ -268,21 +270,7 @@
             color: #aaaaaa;
         }
 
-        .btn-card-more {
-            background: none;
-            border: none;
-            color: #888888;
-            cursor: pointer;
-            padding: 2px;
-        }
-
-        .btn-card-more svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* 4. REAL YOUTUBE PLAYLIST CARDS */
+        /* Playlists Cards */
         .playlist-card-box {
             width: 146px;
             display: flex;
@@ -349,7 +337,7 @@
             color: #888888;
         }
 
-        /* 5. YOUTUBE PREMIUM BANNER */
+        /* 4. PREMIUM BANNER PROMO */
         .premium-promo-card {
             margin: 12px 16px;
             padding: 14px 16px;
@@ -391,7 +379,7 @@
             cursor: pointer;
         }
 
-        /* 6. LIST OPTIONS */
+        /* 5. MENU LIST WITH EXCLUSIVE LINKS */
         .menu-options-list {
             display: flex;
             flex-direction: column;
@@ -432,121 +420,7 @@
             color: #888888;
         }
 
-        /* 7. BOTTOM DRAWERS */
-        .drawer-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            z-index: 2500;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-backdrop.open {
-            display: flex;
-        }
-
-        .drawer-sheet {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            box-shadow: 0 -6px 24px rgba(0,0,0,0.8);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .drawer-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #2d2d2d;
-            margin-bottom: 6px;
-        }
-
-        .drawer-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .drawer-close {
-            background: none;
-            border: none;
-            color: #aaaaaa;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .drawer-item-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 6px;
-            color: #ffffff;
-            background: none;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: left;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-
-        .drawer-item-row:active {
-            background: #2a2a2a;
-        }
-
-        .drawer-item-row svg {
-            width: 20px;
-            height: 20px;
-            fill: #ffffff;
-        }
-
-        .account-switch-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-radius: 12px;
-            background: #2a2a2a;
-            margin-bottom: 8px;
-        }
-
-        .acc-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .acc-check-icon {
-            color: #3ea6ff;
-            font-weight: 800;
-            font-size: 16px;
-        }
-
-        /* Toast */
-        .toast-popup {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 3000;
-            display: none;
-        }
-
-        /* 8. BOTTOM NAVIGATION */
+        /* Bottom Nav */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -613,47 +487,47 @@
         <a href="search.html" class="header-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </a>
-        <button class="header-tool-btn" onclick="openSettingsDrawer()">
+        <!-- Naya Settings Page Link -->
+        <a href="settings.html" class="header-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-        </button>
+        </a>
     </header>
 
-    <!-- 2. USER HERO CARD -->
-    <section class="user-hero-card">
+    <!-- 2. USER HERO CARD (Links directly to Channel page) -->
+    <a href="channel.html" class="user-hero-card">
         <div class="hero-avatar">CB</div>
         <div class="hero-meta">
             <h1 class="hero-name">Charandas Bhaskar</h1>
             <span class="hero-handle">@charandasbhaskar • View channel ›</span>
-            <a href="channel.html" class="hero-channel-link">Manage Channel</a>
+            <span class="hero-channel-link">Manage Channel</span>
         </div>
-    </section>
+    </a>
 
     <!-- Quick Account Pills -->
     <div class="account-pills-row">
-        <button class="acc-pill-btn" onclick="openAccountSwitchDrawer()">
+        <a href="login.html" class="acc-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             <span>Switch account</span>
-        </button>
+        </a>
         <a href="login.html" class="acc-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Google Account</span>
         </a>
-        <a href="upload.html" class="acc-pill-btn">
+        <a href="your-videos.html" class="acc-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
             <span>Your uploads</span>
         </a>
     </div>
 
-    <!-- 3. HISTORY SHELF -->
+    <!-- 3. HISTORY SHELF (Links to history.html) -->
     <section class="shelf-container">
         <div class="shelf-head-row">
             <span class="shelf-title">History</span>
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="shelf-action-link">View all</a>
+            <a href="history.html" class="shelf-action-link">View all</a>
         </div>
 
-        <div class="shelf-horizontal-slider" id="historySlider">
-            <!-- Video 1 -->
-            <div class="history-card-item" id="hist-1">
+        <div class="shelf-horizontal-slider">
+            <div class="history-card-item">
                 <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="history-thumb-wrap">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
                     <span class="history-badge-duration">05:42</span>
@@ -664,14 +538,10 @@
                         <span class="history-title">Chhattisgarhi Panthi Song • Cultural 2026</span>
                         <span class="history-channel">Charandas Bhaskar</span>
                     </div>
-                    <button class="btn-card-more" onclick="openCardOptions('hist-1', 'Chhattisgarhi Panthi Song')">
-                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </button>
                 </div>
             </div>
 
-            <!-- Video 2 -->
-            <div class="history-card-item" id="hist-2">
+            <div class="history-card-item">
                 <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="history-thumb-wrap">
                     <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
                     <span class="history-badge-duration">14:10</span>
@@ -682,41 +552,19 @@
                         <span class="history-title">Typewriter Banjo with Pickups Guide</span>
                         <span class="history-channel">Dhun AI</span>
                     </div>
-                    <button class="btn-card-more" onclick="openCardOptions('hist-2', 'Typewriter Banjo Guide')">
-                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Video 3 -->
-            <div class="history-card-item" id="hist-3">
-                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="history-thumb-wrap">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
-                    <span class="history-badge-duration">06:25</span>
-                    <div class="history-progress-line" style="width: 90%;"></div>
-                </a>
-                <div class="history-meta-box">
-                    <div class="history-texts">
-                        <span class="history-title">Morning Commute Village Lifestyle Vlog</span>
-                        <span class="history-channel">The Bhaskar Vlog</span>
-                    </div>
-                    <button class="btn-card-more" onclick="openCardOptions('hist-3', 'Morning Commute Vlog')">
-                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 4. REAL YOUTUBE PLAYLISTS SHELF -->
+    <!-- 4. PLAYLISTS SHELF (Links to playlists.html) -->
     <section class="shelf-container">
         <div class="shelf-head-row">
             <span class="shelf-title">Playlists</span>
-            <a href="watch.html" class="shelf-action-link">View all</a>
+            <a href="playlists.html" class="shelf-action-link">View all</a>
         </div>
 
         <div class="shelf-horizontal-slider">
-            <!-- Liked Videos -->
             <a href="watch.html?title=Liked+Videos" class="playlist-card-box">
                 <div class="playlist-thumb-cover">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Liked">
@@ -732,7 +580,6 @@
                 <span class="playlist-sub-txt">Auto playlist</span>
             </a>
 
-            <!-- Watch Later -->
             <a href="watch.html?title=Watch+Later" class="playlist-card-box">
                 <div class="playlist-thumb-cover">
                     <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Watch Later">
@@ -747,37 +594,13 @@
                 <span class="playlist-title-txt">Watch Later</span>
                 <span class="playlist-sub-txt">Private</span>
             </a>
-
-            <!-- Chhattisgarhi Folk Tracks -->
-            <a href="watch.html?title=Chhattisgarhi+Folk+Tracks" class="playlist-card-box">
-                <div class="playlist-thumb-cover">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Folk">
-                    <div class="playlist-center-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                    </div>
-                    <div class="playlist-badge-overlay">
-                        <span>Playlist</span>
-                        <span>6 videos</span>
-                    </div>
-                </div>
-                <span class="playlist-title-txt">Chhattisgarhi Folk</span>
-                <span class="playlist-sub-txt">Public</span>
-            </a>
         </div>
     </section>
 
-    <!-- 5. YOUTUBE PREMIUM BANNER -->
-    <a href="login.html" class="premium-promo-card">
-        <div class="premium-title-box">
-            <span class="premium-tag">Get BTube Premium</span>
-            <span class="premium-sub">Ad-free music and videos in background</span>
-        </div>
-        <button class="btn-get-premium">Get it</button>
-    </a>
-
-    <!-- 6. MORE OPTIONS & SETTINGS (YOUTUBE EXACT LIST) -->
+    <!-- 5. MENU LIST WITH SEPARATE PAGES -->
     <main class="menu-options-list">
-        <a href="upload.html" class="menu-row-item">
+        <!-- 1. Your Videos Page -->
+        <a href="your-videos.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
                 <span>Your videos</span>
@@ -785,132 +608,42 @@
             <span class="menu-count-badge">8</span>
         </a>
 
-        <div class="menu-row-item" onclick="openDownloadsDrawer()">
+        <!-- 2. Downloads Page -->
+        <a href="downloads.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                 <span>Downloads</span>
             </div>
-            <span class="menu-count-badge">3 recommendations</span>
-        </div>
+            <span class="menu-count-badge">3 offline</span>
+        </a>
 
-        <div class="menu-row-item" onclick="openTimeWatched()">
+        <!-- 3. Time Watched Page -->
+        <a href="time-watched.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
                 <span>Time watched</span>
             </div>
             <span class="menu-count-badge">2h 15m daily</span>
-        </div>
+        </a>
 
-        <div class="menu-row-item" onclick="openSettingsDrawer()">
+        <!-- 4. Settings Page -->
+        <a href="settings.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 <span>Settings</span>
             </div>
-        </div>
+        </a>
 
-        <div class="menu-row-item" onclick="showToast('Help and feedback')">
+        <!-- 5. Help Page -->
+        <a href="help.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
                 <span>Help and feedback</span>
             </div>
-        </div>
+        </a>
     </main>
 
-    <!-- 7. DRAWER 1: SWITCH ACCOUNT SHEET -->
-    <div class="drawer-backdrop" id="accountDrawer" onclick="closeDrawerOnBackdrop(event, 'accountDrawer')">
-        <div class="drawer-sheet">
-            <div class="drawer-head">
-                <span class="drawer-title">Accounts</span>
-                <button class="drawer-close" onclick="closeDrawer('accountDrawer')">✕</button>
-            </div>
-            
-            <div class="account-switch-card">
-                <div class="acc-left">
-                    <div style="width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px;">CB</div>
-                    <div style="display:flex; flex-direction:column; gap:2px;">
-                        <span style="font-size:14px; font-weight:700;">Charandas Bhaskar</span>
-                        <span style="font-size:11px; color:#aaa;">charandasbhaskar@gmail.com</span>
-                    </div>
-                </div>
-                <span class="acc-check-icon">✓</span>
-            </div>
-
-            <a href="login.html" class="drawer-item-row">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                <span>Add account</span>
-            </a>
-            <div class="drawer-item-row" onclick="showToast('Incognito mode coming soon')">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                <span>Turn on Incognito</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 8. DRAWER 2: SETTINGS SHEET -->
-    <div class="drawer-backdrop" id="settingsDrawer" onclick="closeDrawerOnBackdrop(event, 'settingsDrawer')">
-        <div class="drawer-sheet">
-            <div class="drawer-head">
-                <span class="drawer-title">Settings</span>
-                <button class="drawer-close" onclick="closeDrawer('settingsDrawer')">✕</button>
-            </div>
-            <div class="drawer-item-row" onclick="showToast('General settings')">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                <span>General</span>
-            </div>
-            <div class="drawer-item-row" onclick="showToast('Autoplay is turned ON')">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                <span>Autoplay</span>
-            </div>
-            <div class="drawer-item-row" onclick="showToast('Video quality set to Auto (1080p)')">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span>Video quality preferences</span>
-            </div>
-            <div class="drawer-item-row" onclick="showToast('History & privacy preferences')">
-                <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                <span>Manage all history</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 9. DRAWER 3: CARD ACTIONS -->
-    <div class="drawer-backdrop" id="cardDrawer" onclick="closeDrawerOnBackdrop(event, 'cardDrawer')">
-        <div class="drawer-sheet">
-            <div class="drawer-head">
-                <span class="drawer-title" id="cardDrawerTitle">Options</span>
-                <button class="drawer-close" onclick="closeDrawer('cardDrawer')">✕</button>
-            </div>
-            <button class="drawer-item-row" onclick="removeCurrentHistoryItem()">
-                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                <span>Remove from watch history</span>
-            </button>
-            <button class="drawer-item-row" onclick="saveToWatchLater()">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.48 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
-                <span>Save to Watch Later</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- 10. DRAWER 4: DOWNLOADS SHEET -->
-    <div class="drawer-backdrop" id="downloadsDrawer" onclick="closeDrawerOnBackdrop(event, 'downloadsDrawer')">
-        <div class="drawer-sheet">
-            <div class="drawer-head">
-                <span class="drawer-title">Downloads</span>
-                <button class="drawer-close" onclick="closeDrawer('downloadsDrawer')">✕</button>
-            </div>
-            <div class="drawer-item-row" style="opacity: 0.9;">
-                <svg viewBox="0 0 24 24" style="fill:#3ea6ff;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                <div style="display:flex; flex-direction:column; gap:2px;">
-                    <span style="font-weight:600;">Chhattisgarhi Panthi Song Special</span>
-                    <span style="font-size:11px; color:#aaa;">Downloaded • 42 MB</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Bubble -->
-    <div class="toast-popup" id="profileToast"></div>
-
-    <!-- 11. BOTTOM NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -933,60 +666,5 @@
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
-    <script>
-        let activeCardId = null;
-
-        function showToast(text) {
-            const toast = document.getElementById('profileToast');
-            toast.innerText = text;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
-        }
-
-        function openAccountSwitchDrawer() {
-            document.getElementById('accountDrawer').classList.add('open');
-        }
-
-        function openSettingsDrawer() {
-            document.getElementById('settingsDrawer').classList.add('open');
-        }
-
-        function openDownloadsDrawer() {
-            document.getElementById('downloadsDrawer').classList.add('open');
-        }
-
-        function openCardOptions(id, title) {
-            activeCardId = id;
-            document.getElementById('cardDrawerTitle').innerText = title;
-            document.getElementById('cardDrawer').classList.add('open');
-        }
-
-        function closeDrawer(id) {
-            document.getElementById(id).classList.remove('open');
-        }
-
-        function closeDrawerOnBackdrop(e, id) {
-            if (e.target.id === id) closeDrawer(id);
-        }
-
-        function removeCurrentHistoryItem() {
-            if (activeCardId) {
-                const el = document.getElementById(activeCardId);
-                if (el) el.remove();
-                showToast('Removed from watch history');
-            }
-            closeDrawer('cardDrawer');
-        }
-
-        function saveToWatchLater() {
-            showToast('Saved to Watch Later');
-            closeDrawer('cardDrawer');
-        }
-
-        function openTimeWatched() {
-            showToast('Stats: 15h 40m watched this week');
-        }
-    </script>
 </body>
 </html>
