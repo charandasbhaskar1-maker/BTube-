@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Notifications - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 70px;
+        }
+
+        /* 1. TOP HEADER */
+        .notif-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid #1f1f1f;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back-nav {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .btn-back-nav svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-page-title {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .header-right-tools {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-icon-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .tool-icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 2. FILTER PILLS (All, Mentions) */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            position: sticky;
+            top: 52px;
+            background: #0f0f0f;
+            z-index: 900;
+        }
+
+        .pill-btn {
+            background: #272727;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .pill-btn.active {
+            background: #ffffff;
+            color: #0f0f0f;
+            font-weight: 700;
+        }
+
+        /* 3. TIME SECTION HEADERS */
+        .section-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            padding: 12px 16px 6px;
+        }
+
+        /* 4. NOTIFICATION ITEMS */
+        .notif-feed-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notif-row-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 16px;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: background 0.15s;
+            position: relative;
+        }
+
+        .notif-row-card:active {
+            background: #1c1c1c;
+        }
+
+        .notif-row-card.unread {
+            background: rgba(62, 166, 255, 0.05);
+        }
+
+        .unread-indicator-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #3ea6ff;
+            position: absolute;
+            left: 5px;
+            top: 24px;
+        }
+
+        /* Channel Avatar */
+        .notif-avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .notif-avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Message details */
+        .notif-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .notif-text {
+            font-size: 13px;
+            line-height: 1.35;
+            color: #e0e0e0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .notif-text b {
+            color: #ffffff;
+        }
+
+        .notif-timestamp {
+            font-size: 11px;
+            color: #888888;
+        }
+
+        /* Mini Video Thumbnail */
+        .notif-thumb-box {
+            width: 68px;
+            aspect-ratio: 16 / 9;
+            background: #252525;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .notif-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-item-more {
+            background: none;
+            border: none;
+            color: #888888;
+            cursor: pointer;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-item-more svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* 5. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-link svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="notif-header">
+        <div class="header-left">
+            <a href="../frontend/index.html" class="btn-back-nav">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            <span class="header-page-title">Notifications</span>
+        </div>
+
+        <div class="header-right-tools">
+            <button class="tool-icon-btn" onclick="alert('Search notifications')">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
+            <button class="tool-icon-btn" onclick="alert('Notification settings')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. FILTER PILLS -->
+    <nav class="filter-row">
+        <button class="pill-btn active" onclick="setFilter(this)">All</button>
+        <button class="pill-btn" onclick="setFilter(this)">Mentions</button>
+    </nav>
+
+    <!-- 3. LIST -->
+    <main class="notif-feed-list">
+
+        <div class="section-label">Important</div>
+
+        <!-- Notification 1 (Unread) -->
+        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="notif-row-card unread">
+            <div class="unread-indicator-dot"></div>
+            <div class="notif-avatar-circle" style="background:#e50914;">CB</div>
+            <div class="notif-details">
+                <div class="notif-text">
+                    <b>Charandas Bhaskar</b> uploaded: Chhattisgarhi Panthi Song • Special Cultural Video 2026
+                </div>
+                <span class="notif-timestamp">2 hours ago</span>
+            </div>
+            <div class="notif-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
+            </div>
+            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </a>
+
+        <!-- Notification 2 (Unread) -->
+        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="notif-row-card unread">
+            <div class="unread-indicator-dot"></div>
+            <div class="notif-avatar-circle" style="background:#3ea6ff;">DH</div>
+            <div class="notif-details">
+                <div class="notif-text">
+                    <b>Dhun AI</b> uploaded: Typewriter Banjo with Magnetic Pickups Full Making Guide
+                </div>
+                <span class="notif-timestamp">5 hours ago</span>
+            </div>
+            <div class="notif-thumb-box">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Thumb">
+            </div>
+            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </a>
+
+        <div class="section-label">Earlier</div>
+
+        <!-- Notification 3 -->
+        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="notif-row-card">
+            <div class="notif-avatar-circle" style="background:#2ecc71;">BV</div>
+            <div class="notif-details">
+                <div class="notif-text">
+                    <b>The Bhaskar Vlog</b> uploaded: Morning Commute & Village Lifestyle Daily Vlog #42
+                </div>
+                <span class="notif-timestamp">2 days ago</span>
+            </div>
+            <div class="notif-thumb-box">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Thumb">
+            </div>
+            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </a>
+
+        <!-- Notification 4 (Comment Reply) -->
+        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="notif-row-card">
+            <div class="notif-avatar-circle" style="background:#f39c12;">R</div>
+            <div class="notif-details">
+                <div class="notif-text">
+                    <b>@ramesh_kumar</b> commented on your video: "Jay Satnam bhaiya! Bahut sughar geet he..."
+                </div>
+                <span class="notif-timestamp">3 days ago</span>
+            </div>
+            <div class="notif-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
+            </div>
+            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </a>
+
+    </main>
+
+    <!-- 4. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="upload.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="channel.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <script>
+        function setFilter(btn) {
+            document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
