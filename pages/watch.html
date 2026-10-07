@@ -20,9 +20,10 @@
             background-color: #0f0f0f;
             color: #ffffff;
             padding-bottom: 75px;
+            overflow-x: hidden;
         }
 
-        /* 1. STICKY VIDEO PLAYER */
+        /* 1. VIDEO PLAYER */
         .player-container {
             position: sticky;
             top: 0;
@@ -39,7 +40,7 @@
             display: block;
         }
 
-        /* 2. VIDEO INFO SECTION */
+        /* 2. META INFO */
         .video-meta-section {
             padding: 12px 16px;
             display: flex;
@@ -58,12 +59,12 @@
             color: #aaaaaa;
         }
 
-        /* Channel Bar */
+        /* 3. CHANNEL ROW & SUBSCRIBE + BELL */
         .channel-action-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 6px;
+            padding-top: 4px;
         }
 
         .channel-left {
@@ -75,8 +76,8 @@
         }
 
         .channel-avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: #e50914;
             display: flex;
@@ -102,29 +103,61 @@
             color: #aaaaaa;
         }
 
-        .btn-subscribe {
+        /* Subscribe & Bell Container */
+        .sub-wrap-btn {
+            display: flex;
+            align-items: center;
             background: #ffffff;
             color: #0f0f0f;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 18px;
-            font-size: 13px;
+            border-radius: 20px;
+            overflow: hidden;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
+            font-size: 13px;
+            transition: all 0.2s ease;
         }
 
-        .btn-subscribe.subscribed {
+        .sub-wrap-btn.is-subscribed {
             background: #272727;
             color: #ffffff;
         }
 
-        /* Action Buttons Pill Strip */
+        .btn-sub-text {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .btn-sub-bell {
+            background: none;
+            border: none;
+            color: inherit;
+            padding: 8px 12px 8px 4px;
+            display: none;
+            align-items: center;
+            cursor: pointer;
+            border-left: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .btn-sub-bell svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        .sub-wrap-btn.is-subscribed .btn-sub-bell {
+            display: flex;
+        }
+
+        /* 4. ACTIONS BAR (Like, Dislike, Share, Download) */
         .actions-pill-strip {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 0 6px;
+            padding: 10px 0 4px;
             overflow-x: auto;
             scrollbar-width: none;
         }
@@ -133,7 +166,47 @@
             display: none;
         }
 
-        .pill-btn {
+        .like-dislike-group {
+            display: flex;
+            align-items: center;
+            background: #272727;
+            border-radius: 18px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .like-btn, .dislike-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            padding: 7px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dislike-btn {
+            border-left: 1px solid #383838;
+            padding-left: 10px;
+        }
+
+        .like-btn svg, .dislike-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+
+        .like-btn.active svg {
+            fill: #3ea6ff;
+        }
+        .dislike-btn.active svg {
+            fill: #ff4e4e;
+        }
+
+        .pill-action-btn {
             background: #272727;
             border: none;
             color: #ffffff;
@@ -146,27 +219,42 @@
             font-weight: 600;
             white-space: nowrap;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        .pill-btn svg {
+        .pill-action-btn svg {
             width: 18px;
             height: 18px;
             fill: #ffffff;
         }
 
-        /* Description Box */
-        .desc-collapsed-box {
+        /* 5. EXPANDABLE DESCRIPTION */
+        .desc-block {
             background: #212121;
             padding: 10px 12px;
             border-radius: 12px;
             font-size: 12px;
-            line-height: 1.4;
-            color: #dddddd;
+            line-height: 1.45;
+            color: #e0e0e0;
             cursor: pointer;
         }
 
-        /* Comments Box */
-        .comments-teaser {
+        .desc-text.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .desc-more-toggle {
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* 6. COMMENTS PREVIEW */
+        .comments-card-teaser {
             background: #212121;
             padding: 12px;
             border-radius: 12px;
@@ -175,6 +263,10 @@
             flex-direction: column;
             gap: 8px;
             cursor: pointer;
+        }
+
+        .comments-card-teaser:active {
+            background: #2a2a2a;
         }
 
         .comments-head-row {
@@ -193,7 +285,174 @@
             color: #cccccc;
         }
 
-        /* 3. RECOMMENDED VIDEOS FEED */
+        /* 7. SLIDE-UP COMMENTS BOTTOM SHEET */
+        .comments-sheet-modal {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            height: 70vh;
+            background: #181818;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
+            transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .comments-sheet-modal.open {
+            bottom: 0;
+        }
+
+        .sheet-top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid #282828;
+        }
+
+        .sheet-title-text {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .sheet-close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .sheet-comment-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .user-comment-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .user-cmt-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3ea6ff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .user-cmt-body {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 12px;
+        }
+
+        .cmt-author {
+            color: #aaaaaa;
+            font-size: 11px;
+        }
+
+        .cmt-text {
+            color: #ffffff;
+            line-height: 1.35;
+        }
+
+        .sheet-input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-top: 1px solid #282828;
+            background: #181818;
+        }
+
+        .sheet-input-box input {
+            flex: 1;
+            background: #282828;
+            border: none;
+            outline: none;
+            padding: 10px 14px;
+            border-radius: 20px;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        .sheet-input-box button {
+            background: #ff0000;
+            border: none;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* 8. BELL POPUP DIALOG */
+        .bell-dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: flex-end;
+            z-index: 2500;
+        }
+
+        .bell-dialog-overlay.open {
+            display: flex;
+        }
+
+        .bell-options-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bell-opt-row {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .bell-opt-row:active {
+            background: #2b2b2b;
+        }
+
+        .bell-opt-row svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 9. RECOMMENDED FEED */
         .rec-feed {
             display: flex;
             flex-direction: column;
@@ -267,7 +526,7 @@
             color: #aaaaaa;
         }
 
-        /* 4. BOTTOM NAV */
+        /* 10. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -305,57 +564,74 @@
     <div class="player-container">
         <video id="mainVideoPlayer" controls autoplay playsinline poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
             <source src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4">
-            Aapka browser video tag support nahi karta.
         </video>
     </div>
 
-    <!-- 2. DETAILS & ACTIONS -->
+    <!-- 2. VIDEO INFO & ACTIONS -->
     <section class="video-meta-section">
         <h1 class="video-title" id="pageVideoTitle">Chhattisgarhi Panthi Song • Special Cultural Video 2026</h1>
         <div class="video-views-row">210K views • 2 weeks ago • #BTube #Culture</div>
 
-        <!-- Channel Row -->
+        <!-- Channel Row with Subscribe & Bell Icon -->
         <div class="channel-action-row">
             <a href="channel.html" class="channel-left">
                 <div class="channel-avatar" id="pageChannelAvatar">CB</div>
                 <div class="channel-names">
                     <span class="channel-title" id="pageChannelName">Charandas Bhaskar</span>
-                    <span class="sub-count">245 subscribers</span>
+                    <span class="sub-count" id="subCountLabel">245 subscribers</span>
                 </div>
             </a>
-            <button class="btn-subscribe" id="subBtn" onclick="toggleSub()">Subscribe</button>
+
+            <!-- Subscribed + Bell Group -->
+            <div class="sub-wrap-btn" id="subWrapBtn">
+                <button class="btn-sub-text" id="subBtnText" onclick="handleSubscribeClick()">Subscribe</button>
+                <button class="btn-sub-bell" onclick="openBellMenu()">
+                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                </button>
+            </div>
         </div>
 
-        <!-- Action Buttons (Like, Dislike, Share, Download) -->
+        <!-- Action Buttons (Like / Dislike / Share / Download) -->
         <div class="actions-pill-strip">
-            <button class="pill-btn" onclick="toggleLike(this)">
-                <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                <span id="likeCount">12K</span>
-            </button>
-            <button class="pill-btn" onclick="alert('Disliked')">
-                <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-            </button>
-            <button class="pill-btn" onclick="shareVideo()">
+            <!-- Grouped Like & Dislike -->
+            <div class="like-dislike-group">
+                <button class="like-btn" id="likeBtn" onclick="handleLike()">
+                    <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    <span id="likeCount">12K</span>
+                </button>
+                <button class="dislike-btn" id="dislikeBtn" onclick="handleDislike()">
+                    <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                </button>
+            </div>
+
+            <!-- Share Button -->
+            <button class="pill-action-btn" onclick="shareVideo()">
                 <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                 <span>Share</span>
             </button>
-            <button class="pill-btn" onclick="alert('Downloading video...')">
+
+            <!-- Download Button with Progress -->
+            <button class="pill-action-btn" id="downloadBtn" onclick="handleDownload()">
                 <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                <span>Download</span>
+                <span id="downloadText">Download</span>
             </button>
         </div>
 
-        <!-- Description Box -->
-        <div class="desc-collapsed-box" onclick="alert('Full description: Official cultural Panthi song dedicated to Guru Ghasidas Baba ji.')">
-            <b>Description:</b> Official cultural Panthi song performed live with traditional instruments... <span style="color:#aaa;">more</span>
+        <!-- Description Box (Expandable without alert) -->
+        <div class="desc-block" onclick="toggleDesc()">
+            <div class="desc-text collapsed" id="descContent">
+                <b>210K views • Oct 7, 2026</b><br>
+                Official cultural Panthi song performed live with traditional instruments. Dedicated to Guru Ghasidas Baba ji teachings of Satnam and unity. Recorded live in Chhattisgarh.
+            </div>
+            <span class="desc-more-toggle" id="descToggleTxt">...more</span>
         </div>
     </section>
 
-    <!-- Comments Teaser -->
-    <div class="comments-teaser" onclick="alert('Comments opening...')">
+    <!-- Comments Teaser (Opens Drawer) -->
+    <div class="comments-card-teaser" onclick="openCommentsSheet()">
         <div class="comments-head-row">
             <span>Comments</span>
-            <span style="color:#aaa; font-weight:400;">482</span>
+            <span style="color:#aaa; font-weight:400;" id="cmtCount">482</span>
         </div>
         <div class="comments-snippet">
             <div style="width:22px; height:22px; border-radius:50%; background:#3ea6ff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">R</div>
@@ -363,7 +639,7 @@
         </div>
     </div>
 
-    <!-- 3. UP NEXT / RECOMMENDED -->
+    <!-- 3. RECOMMENDED LIST -->
     <div class="rec-feed">
         <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="rec-card">
             <div class="rec-thumb">
@@ -394,14 +670,62 @@
         </a>
     </div>
 
-    <!-- 4. BOTTOM NAV -->
+    <!-- 4. COMMENTS BOTTOM SHEET (असली YouTube जैसा) -->
+    <div class="comments-sheet-modal" id="commentsModal">
+        <div class="sheet-top-header">
+            <span class="sheet-title-text">Comments <span id="sheetCmtTotal">482</span></span>
+            <button class="sheet-close-btn" onclick="closeCommentsSheet()">✕</button>
+        </div>
+
+        <div class="sheet-comment-list" id="commentsContainer">
+            <div class="user-comment-row">
+                <div class="user-cmt-avatar">R</div>
+                <div class="user-cmt-body">
+                    <span class="cmt-author">@ramesh_kumar • 2 hours ago</span>
+                    <span class="cmt-text">Jay Satnam bhaiya! Bahut sughar geet he, aawaz ek number! 🔥</span>
+                </div>
+            </div>
+            <div class="user-comment-row">
+                <div class="user-cmt-avatar" style="background:#e50914;">S</div>
+                <div class="user-cmt-body">
+                    <span class="cmt-author">@suresh_vlogs • 5 hours ago</span>
+                    <span class="cmt-text">Nice music and traditional mandli. Keep uploading!</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sheet-input-box">
+            <input type="text" id="newCommentInput" placeholder="Add a comment on BTube..." onkeypress="handleEnterComment(event)">
+            <button onclick="postComment()">Send</button>
+        </div>
+    </div>
+
+    <!-- 5. BELL MENU MODAL (All / Personalized / None) -->
+    <div class="bell-dialog-overlay" id="bellOverlay" onclick="closeBellMenu(event)">
+        <div class="bell-options-card">
+            <button class="bell-opt-row" onclick="selectBell('All')">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                <span>All notifications</span>
+            </button>
+            <button class="bell-opt-row" onclick="selectBell('Personalized')">
+                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                <span>Personalized</span>
+            </button>
+            <button class="bell-opt-row" onclick="unsubscribeChannel()" style="color:#ff4e4e;">
+                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>
+                <span>Unsubscribe</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
         <a href="upload.html" class="nav-link">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
         <a href="upload.html" class="nav-link">
@@ -418,8 +742,9 @@
         </a>
     </nav>
 
+    <!-- JAVASCRIPT LOGIC (NO BROWSER ALERTS!) -->
     <script>
-        // URL Parameters se title/channel dynamically pick karna
+        // 1. URL Se Title & Channel Load
         const params = new URLSearchParams(window.location.search);
         if (params.get('title')) {
             document.getElementById('pageVideoTitle').innerText = params.get('title');
@@ -429,26 +754,146 @@
             document.getElementById('pageChannelAvatar').innerText = params.get('channel').substring(0, 2).toUpperCase();
         }
 
-        let isSub = false;
-        function toggleSub() {
-            const btn = document.getElementById('subBtn');
-            isSub = !isSub;
-            btn.innerText = isSub ? 'Subscribed ✓' : 'Subscribe';
-            btn.classList.toggle('subscribed', isSub);
+        // 2. Subscribe & Bell Logic
+        let isSubscribed = false;
+        function handleSubscribeClick() {
+            if (!isSubscribed) {
+                isSubscribed = true;
+                document.getElementById('subWrapBtn').classList.add('is-subscribed');
+                document.getElementById('subBtnText').innerText = 'Subscribed';
+                document.getElementById('subCountLabel').innerText = '246 subscribers';
+            } else {
+                openBellMenu();
+            }
         }
 
-        function toggleLike(btn) {
-            const svg = btn.querySelector('svg');
-            const isLiked = svg.style.fill === 'rgb(62, 166, 255)';
-            svg.style.fill = isLiked ? '#ffffff' : '#3ea6ff';
+        function openBellMenu() {
+            document.getElementById('bellOverlay').classList.add('open');
         }
 
+        function closeBellMenu(e) {
+            if (e.target.id === 'bellOverlay') {
+                document.getElementById('bellOverlay').classList.remove('open');
+            }
+        }
+
+        function selectBell(type) {
+            document.getElementById('bellOverlay').classList.remove('open');
+        }
+
+        function unsubscribeChannel() {
+            isSubscribed = false;
+            document.getElementById('subWrapBtn').classList.remove('is-subscribed');
+            document.getElementById('subBtnText').innerText = 'Subscribe';
+            document.getElementById('subCountLabel').innerText = '245 subscribers';
+            document.getElementById('bellOverlay').classList.remove('open');
+        }
+
+        // 3. Like / Dislike Toggle
+        let isLiked = false;
+        let isDisliked = false;
+
+        function handleLike() {
+            const likeBtn = document.getElementById('likeBtn');
+            const dislikeBtn = document.getElementById('dislikeBtn');
+            const likeCount = document.getElementById('likeCount');
+
+            if (!isLiked) {
+                isLiked = true;
+                isDisliked = false;
+                likeBtn.classList.add('active');
+                dislikeBtn.classList.remove('active');
+                likeCount.innerText = '12.1K';
+            } else {
+                isLiked = false;
+                likeBtn.classList.remove('active');
+                likeCount.innerText = '12K';
+            }
+        }
+
+        function handleDislike() {
+            const likeBtn = document.getElementById('likeBtn');
+            const dislikeBtn = document.getElementById('dislikeBtn');
+            const likeCount = document.getElementById('likeCount');
+
+            if (!isDisliked) {
+                isDisliked = true;
+                isLiked = false;
+                dislikeBtn.classList.add('active');
+                likeBtn.classList.remove('active');
+                likeCount.innerText = '12K';
+            } else {
+                isDisliked = false;
+                dislikeBtn.classList.remove('active');
+            }
+        }
+
+        // 4. Download In-Button Animation
+        let isDownloaded = false;
+        function handleDownload() {
+            if (isDownloaded) return;
+            const textSpan = document.getElementById('downloadText');
+            textSpan.innerText = 'Downloading...';
+            setTimeout(() => {
+                textSpan.innerText = 'Downloaded ✓';
+                isDownloaded = true;
+            }, 1200);
+        }
+
+        // 5. Expandable Description
+        let isDescExpanded = false;
+        function toggleDesc() {
+            const desc = document.getElementById('descContent');
+            const toggle = document.getElementById('descToggleTxt');
+            isDescExpanded = !isDescExpanded;
+            desc.classList.toggle('collapsed', !isDescExpanded);
+            toggle.innerText = isDescExpanded ? 'Show less' : '...more';
+        }
+
+        // 6. Comments Slide Sheet
+        function openCommentsSheet() {
+            document.getElementById('commentsModal').classList.add('open');
+        }
+
+        function closeCommentsSheet() {
+            document.getElementById('commentsModal').classList.remove('open');
+        }
+
+        function handleEnterComment(e) {
+            if (e.key === 'Enter') postComment();
+        }
+
+        function postComment() {
+            const input = document.getElementById('newCommentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const container = document.getElementById('commentsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'user-comment-row';
+            newRow.innerHTML = `
+                <div class="user-cmt-avatar" style="background:#e50914;">CB</div>
+                <div class="user-cmt-body">
+                    <span class="cmt-author">@charandas_bhaskar • Just now</span>
+                    <span class="cmt-text">${text}</span>
+                </div>
+            `;
+            container.prepend(newRow);
+            input.value = '';
+
+            // Update comment count
+            const cmtLabel = document.getElementById('cmtCount');
+            const sheetCmtTotal = document.getElementById('sheetCmtTotal');
+            cmtLabel.innerText = '483';
+            sheetCmtTotal.innerText = '483';
+        }
+
+        // 7. Web Share API
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                alert('Link copied to clipboard!');
             }
         }
     </script>
