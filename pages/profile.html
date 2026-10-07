@@ -361,7 +361,7 @@
             cursor: pointer;
         }
 
-        /* 5. SYSTEM SETTINGS & MENU LIST */
+        /* 5. SYSTEM SETTINGS & MENU LIST (SIGN OUT REMOVED) */
         .menu-options-list {
             display: flex;
             flex-direction: column;
@@ -402,7 +402,7 @@
             color: #888888;
         }
 
-        /* 6. BOTTOM DRAWERS (Switch Account, Settings, History Options) */
+        /* 6. BOTTOM DRAWERS */
         .drawer-backdrop {
             position: fixed;
             inset: 0;
@@ -716,7 +716,7 @@
         <button class="btn-get-premium">Get it</button>
     </a>
 
-    <!-- 6. MORE OPTIONS & SETTINGS MENU -->
+    <!-- 6. MORE OPTIONS & SETTINGS (SIGN OUT HATA DIYA GAYA HAI) -->
     <main class="menu-options-list">
         <a href="upload.html" class="menu-row-item">
             <div class="menu-left-box">
@@ -749,12 +749,12 @@
             </div>
         </div>
 
-        <a href="login.html" class="menu-row-item">
+        <div class="menu-row-item" onclick="showToast('Help and feedback')">
             <div class="menu-left-box">
-                <svg viewBox="0 0 24 24" style="fill: #ff4e4e;"><path d="M13 3h-2v10h2V3zm4.83 2.17l-1.42 1.42A6.92 6.92 0 0 1 19 12c0 3.87-3.13 7-7 7s-7-3.13-7-7c0-2.55 1.37-4.78 3.41-6.01L7 4.57A8.963 8.963 0 0 0 3 12c0 4.97 4.02 9 9 9s9-4.03 9-9c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
-                <span style="color: #ff4e4e;">Sign out</span>
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                <span>Help and feedback</span>
             </div>
-        </a>
+        </div>
     </main>
 
     <!-- 7. DRAWER 1: SWITCH ACCOUNT SHEET -->
@@ -813,7 +813,7 @@
         </div>
     </div>
 
-    <!-- 9. DRAWER 3: CARD ACTIONS (History 3-dots) -->
+    <!-- 9. DRAWER 3: CARD ACTIONS -->
     <div class="drawer-backdrop" id="cardDrawer" onclick="closeDrawerOnBackdrop(event, 'cardDrawer')">
         <div class="drawer-sheet">
             <div class="drawer-head">
@@ -857,7 +857,7 @@
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC (NO BROWSER ALERTS!) -->
+    <!-- INTERACTION LOGIC -->
     <script>
         let activeCardId = null;
 
@@ -868,7 +868,6 @@
             setTimeout(() => { toast.style.display = 'none'; }, 2000);
         }
 
-        // Drawers
         function openAccountSwitchDrawer() {
             document.getElementById('accountDrawer').classList.add('open');
         }
