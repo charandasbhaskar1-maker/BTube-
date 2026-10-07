@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Connect to a Device - BTube</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+        body { background:#0f0f0f; color:#fff; }
+        .cast-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            border-bottom: 1px solid #222;
+        }
+        .cast-header a { color: #fff; display: flex; text-decoration: none; }
+        .cast-header a svg { width: 22px; height: 22px; fill: #fff; }
+        .cast-header span { font-size: 18px; font-weight: 700; }
+        .device-list { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .device-card {
+            background: #1e1e1e;
+            padding: 16px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+        }
+        .device-card svg { width: 26px; height: 26px; fill: #3ea6ff; }
+        .device-info { display: flex; flex-direction: column; gap: 3px; }
+        .device-name { font-size: 15px; font-weight: 600; }
+        .device-status { font-size: 12px; color: #888; }
+    </style>
+</head>
+<body>
+    <header class="cast-header">
+        <a href="../frontend/index.html">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span>Connect to a device</span>
+    </header>
+
+    <div class="device-list">
+        <div class="device-card" onclick="this.querySelector('.device-status').innerText = 'Connected ✓'; this.querySelector('.device-status').style.color = '#2ecc71';">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            <div class="device-info">
+                <span class="device-name">Smart TV (Living Room)</span>
+                <span class="device-status">Ready to connect</span>
+            </div>
+        </div>
+        <div class="device-card" onclick="this.querySelector('.device-status').innerText = 'Connected ✓'; this.querySelector('.device-status').style.color = '#2ecc71';">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+            <div class="device-info">
+                <span class="device-name">Android TV (Bedroom)</span>
+                <span class="device-status">Ready to connect</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
