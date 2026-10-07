@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* 1. TOP HEADER */
         .edit-header {
             height: 52px;
             display: flex;
@@ -75,7 +74,6 @@
             cursor: pointer;
         }
 
-        /* 2. BANNER & DP EDIT */
         .banner-edit-frame {
             width: 100%;
             height: 125px;
@@ -94,6 +92,7 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
+            z-index: 1;
             display: none;
         }
 
@@ -106,7 +105,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 2;
+            z-index: 3;
         }
 
         .banner-cam-btn svg {
@@ -150,6 +149,7 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
+            z-index: 1;
             display: none;
         }
 
@@ -160,6 +160,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 3;
         }
 
         .dp-cam-badge svg {
@@ -168,7 +169,6 @@
             fill: #ffffff;
         }
 
-        /* 3. SETTINGS FORM LIST */
         .edit-fields-list {
             display: flex;
             flex-direction: column;
@@ -217,7 +217,6 @@
             fill: #888888;
         }
 
-        /* 4. PRIVACY TOGGLE SECTION */
         .privacy-box {
             padding: 16px;
             display: flex;
@@ -283,7 +282,6 @@
             transform: translateX(20px);
         }
 
-        /* 5. MODAL BOTTOM EDIT INPUT */
         .edit-modal-overlay {
             position: fixed;
             inset: 0;
@@ -382,10 +380,9 @@
 </head>
 <body>
 
-    <input type="file" id="bannerFileInput" accept="image/*" onchange="previewSelectedImage(event, 'banner')">
-    <input type="file" id="dpFileInput" accept="image/*" onchange="previewSelectedImage(event, 'dp')">
+    <input type="file" id="bannerFileInput" accept="image/*" onchange="processAndSaveImage(event, 'banner')">
+    <input type="file" id="dpFileInput" accept="image/*" onchange="processAndSaveImage(event, 'dp')">
 
-    <!-- 1. TOP HEADER -->
     <header class="edit-header">
         <div class="header-left">
             <a href="channel.html" class="btn-back">
@@ -396,7 +393,6 @@
         <button class="btn-save-check" onclick="saveAllChanges()">Save</button>
     </header>
 
-    <!-- 2. BANNER & DP EDIT -->
     <div class="banner-edit-frame" onclick="document.getElementById('bannerFileInput').click()">
         <img id="bannerImg" class="banner-img-preview" alt="Banner">
         <div class="banner-cam-btn">
@@ -414,7 +410,6 @@
         </div>
     </div>
 
-    <!-- 3. CHANNEL FIELDS -->
     <main class="edit-fields-list">
         <div class="field-row-item" onclick="openEditModal('name', 'Name', document.getElementById('nameVal').innerText, 50)">
             <div class="field-info">
@@ -447,7 +442,6 @@
         </div>
     </main>
 
-    <!-- 4. PRIVACY TOGGLE -->
     <section class="privacy-box">
         <span class="privacy-title">Privacy</span>
         <div class="toggle-row">
@@ -466,7 +460,6 @@
         </div>
     </section>
 
-    <!-- 5. EDIT MODAL -->
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-sheet-card">
             <span class="sheet-title" id="modalFieldTitle">Edit</span>
@@ -487,7 +480,6 @@
         let currentTargetField = null;
         let currentMaxLen = 50;
 
-        // Load existing saved data on page load
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
             const savedHandle = localStorage.getItem('btube_channel_handle');
@@ -529,27 +521,57 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function previewSelectedImage(event, target) {
+        // AUTO-COMPRESS IMAGE TO FIT LOCALSTORAGE
+        function processAndSaveImage(event, target) {
             const file = event.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Data = e.target.result;
-                if (target === 'banner') {
-                    const bImg = document.getElementById('bannerImg');
-                    bImg.src = base64Data;
-                    bImg.style.display = 'block';
-                    localStorage.setItem('btube_channel_banner', base64Data);
-                    showToast('Banner updated');
-                } else if (target === 'dp') {
-                    const dpImg = document.getElementById('dpImg');
-                    dpImg.src = base64Data;
-                    dpImg.style.display = 'block';
-                    document.getElementById('avatarTxt').style.display = 'none';
-                    localStorage.setItem('btube_channel_dp', base64Data);
-                    showToast('Profile picture updated');
-                }
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = target === 'banner' ? 900 : 300;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxDim || height > maxDim) {
+                        if (width > height) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        } else {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+
+                    try {
+                        if (target === 'banner') {
+                            const bImg = document.getElementById('bannerImg');
+                            bImg.src = compressedBase64;
+                            bImg.style.display = 'block';
+                            localStorage.setItem('btube_channel_banner', compressedBase64);
+                            showToast('Banner ready');
+                        } else if (target === 'dp') {
+                            const dpImg = document.getElementById('dpImg');
+                            dpImg.src = compressedBase64;
+                            dpImg.style.display = 'block';
+                            document.getElementById('avatarTxt').style.display = 'none';
+                            localStorage.setItem('btube_channel_dp', compressedBase64);
+                            showToast('Profile picture ready');
+                        }
+                    } catch (err) {
+                        showToast('Image too large to store');
+                    }
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -595,7 +617,6 @@
             closeEditModal();
         }
 
-        // SAVE BUTTON: Writes everything to LocalStorage and redirects
         function saveAllChanges() {
             const name = document.getElementById('nameVal').innerText;
             const handle = document.getElementById('handleVal').innerText;
