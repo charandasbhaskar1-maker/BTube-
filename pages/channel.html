@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Charandas Bhaskar - BTube</title>
+    <title>Channel - BTube</title>
 
     <style>
         * {
@@ -95,6 +95,15 @@
             overflow: hidden;
         }
 
+        .channel-banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
+        }
+
         .banner-art-pattern {
             position: absolute;
             inset: 0;
@@ -129,6 +138,17 @@
             color: #ffffff;
             box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
             flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .channel-dp-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
         }
 
         .channel-name-meta {
@@ -529,7 +549,7 @@
             <a href="profile.html" class="btn-back">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </a>
-            <span class="nav-channel-title">Charandas Bhaskar</span>
+            <span class="nav-channel-title" id="topNavName">Charandas Bhaskar</span>
         </div>
 
         <div class="nav-right-tools">
@@ -547,29 +567,32 @@
 
     <!-- 2. CHANNEL BANNER -->
     <div class="channel-banner-box">
+        <img id="channelBannerImg" class="channel-banner-img" alt="Banner">
         <div class="banner-art-pattern"></div>
     </div>
 
     <!-- 3. CHANNEL HERO -->
     <section class="channel-hero-card">
         <div class="hero-top-row">
-            <div class="channel-dp-circle">CB</div>
+            <div class="channel-dp-circle">
+                <span id="channelInitsTxt">CB</span>
+                <img id="channelDpImg" class="channel-dp-img" alt="DP">
+            </div>
             <div class="channel-name-meta">
-                <h1 class="full-channel-name">Charandas Bhaskar</h1>
-                <span class="channel-handle-txt">@charandasbhaskar</span>
+                <h1 class="full-channel-name" id="channelHeroName">Charandas Bhaskar</h1>
+                <span class="channel-handle-txt" id="channelHeroHandle">@charandasbhaskar</span>
                 <span class="channel-stats-txt">245 subscribers • 8 videos</span>
             </div>
         </div>
 
-        <div class="channel-bio-line" onclick="switchTab('about', document.querySelectorAll('.tab-btn-item')[4])">
+        <div class="channel-bio-line" id="channelBioTxt" onclick="switchTab('about', document.querySelectorAll('.tab-btn-item')[4])">
             Official BTube channel for Chhattisgarhi folk music, traditional bhajans, daily life stories and instruments. <span>...more</span>
         </div>
 
-        <!-- Action Buttons (Sabhi Dedicated HTML Pages se Jude Hain) -->
+        <!-- Action Buttons -->
         <div class="channel-action-btns-row">
             <a href="your-videos.html" class="action-main-btn">Manage Videos</a>
             <a href="analytics.html" class="action-main-btn">Analytics</a>
-            <!-- Pencil button seedhe edit-channel.html kholega -->
             <a href="edit-channel.html" class="action-icon-pill" title="Edit channel">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             </a>
@@ -676,7 +699,7 @@
             <div class="about-channel-card">
                 <div>
                     <h3 style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px;">Description</h3>
-                    <p>Welcome to the official BTube channel of Charandas Bhaskar. Here you will find cultural folk performances, traditional instrument tutorials like typewriter banjo, and genuine rural stories from Chhattisgarh.</p>
+                    <p id="aboutDescText">Welcome to the official BTube channel of Charandas Bhaskar. Here you will find cultural folk performances, traditional instrument tutorials like typewriter banjo, and genuine rural stories from Chhattisgarh.</p>
                 </div>
 
                 <div class="about-stats-table">
@@ -698,7 +721,7 @@
 
     </main>
 
-    <!-- 6. SHARE DRAWER (NO BROWSER ALERT) -->
+    <!-- 6. SHARE DRAWER -->
     <div class="sheet-backdrop" id="shareSheet" onclick="closeShareSheetOnBackdrop(event)">
         <div class="sheet-content-box">
             <span style="font-size:15px; font-weight:700; padding:4px 6px;">Share channel</span>
@@ -734,13 +757,56 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
             <span>You</span>
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- LIVE DATA RENDER LOGIC (UPDATES ON PAGE LOAD) -->
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const savedDesc = localStorage.getItem('btube_channel_desc');
+            const savedDp = localStorage.getItem('btube_channel_dp');
+            const savedBanner = localStorage.getItem('btube_channel_banner');
+
+            if (savedName) {
+                document.getElementById('topNavName').innerText = savedName;
+                document.getElementById('channelHeroName').innerText = savedName;
+                
+                // Initials
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('channelInitsTxt').innerText = inits.toUpperCase();
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+
+            if (savedHandle) {
+                document.getElementById('channelHeroHandle').innerText = savedHandle;
+            }
+
+            if (savedDesc) {
+                document.getElementById('channelBioTxt').innerHTML = `${savedDesc} <span>...more</span>`;
+                const aboutText = document.getElementById('aboutDescText');
+                if (aboutText) aboutText.innerText = savedDesc;
+            }
+
+            if (savedDp) {
+                const dpImg = document.getElementById('channelDpImg');
+                dpImg.src = savedDp;
+                dpImg.style.display = 'block';
+                document.getElementById('channelInitsTxt').style.display = 'none';
+            }
+
+            if (savedBanner) {
+                const bImg = document.getElementById('channelBannerImg');
+                bImg.src = savedBanner;
+                bImg.style.display = 'block';
+            }
+        });
+
         function showToast(msg) {
             const t = document.getElementById('channelToast');
             t.innerText = msg;
@@ -778,7 +844,7 @@
         function nativeShare() {
             closeShareSheet();
             if (navigator.share) {
-                navigator.share({ title: 'Charandas Bhaskar on BTube', url: window.location.href }).catch(() => {});
+                navigator.share({ title: 'BTube Channel', url: window.location.href }).catch(() => {});
             } else {
                 copyChannelLink();
             }
