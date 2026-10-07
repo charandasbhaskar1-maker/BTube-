@@ -77,6 +77,17 @@
             color: #ffffff;
             flex-shrink: 0;
             box-shadow: 0 4px 16px rgba(229, 9, 20, 0.35);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
         }
 
         .hero-meta {
@@ -84,12 +95,16 @@
             flex-direction: column;
             gap: 2px;
             flex: 1;
+            min-width: 0;
         }
 
         .hero-name {
             font-size: 22px;
             font-weight: 800;
             letter-spacing: -0.4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .hero-handle {
@@ -194,7 +209,6 @@
             display: none;
         }
 
-        /* Video Cards in History */
         .history-card-item {
             width: 146px;
             display: flex;
@@ -270,7 +284,7 @@
             color: #aaaaaa;
         }
 
-        /* Playlists Cards */
+        /* 4. PLAYLIST CARDS */
         .playlist-card-box {
             width: 146px;
             display: flex;
@@ -337,7 +351,7 @@
             color: #888888;
         }
 
-        /* 4. PREMIUM BANNER PROMO */
+        /* 5. PREMIUM BANNER */
         .premium-promo-card {
             margin: 12px 16px;
             padding: 14px 16px;
@@ -379,7 +393,7 @@
             cursor: pointer;
         }
 
-        /* 5. MENU LIST WITH EXCLUSIVE LINKS */
+        /* 6. LIST OPTIONS */
         .menu-options-list {
             display: flex;
             flex-direction: column;
@@ -420,7 +434,7 @@
             color: #888888;
         }
 
-        /* Bottom Nav */
+        /* 7. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -478,38 +492,40 @@
 
     <!-- 1. TOP HEADER -->
     <header class="profile-header">
-        <a href="cast.html" class="header-tool-btn">
+        <a href="cast.html" class="header-tool-btn" title="Cast">
             <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
         </a>
-        <a href="notifications.html" class="header-tool-btn">
+        <a href="notifications.html" class="header-tool-btn" title="Notifications">
             <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </a>
-        <a href="search.html" class="header-tool-btn">
+        <a href="search.html" class="header-tool-btn" title="Search">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </a>
-        <!-- Naya Settings Page Link -->
-        <a href="settings.html" class="header-tool-btn">
+        <a href="settings.html" class="header-tool-btn" title="Settings">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
         </a>
     </header>
 
-    <!-- 2. USER HERO CARD (Links directly to Channel page) -->
-    <a href="channel.html" class="user-hero-card">
-        <div class="hero-avatar">CB</div>
+    <!-- 2. USER HERO CARD -->
+    <section class="user-hero-card">
+        <a href="channel.html" class="hero-avatar">
+            <span id="heroInitsTxt">CB</span>
+            <img id="heroDpImg" alt="Profile Picture">
+        </a>
         <div class="hero-meta">
-            <h1 class="hero-name">Charandas Bhaskar</h1>
-            <span class="hero-handle">@charandasbhaskar • View channel ›</span>
-            <span class="hero-channel-link">Manage Channel</span>
+            <h1 class="hero-name" id="heroNameTxt">Charandas Bhaskar</h1>
+            <a href="channel.html" style="text-decoration:none;" class="hero-handle" id="heroHandleTxt">@charandasbhaskar • View channel ›</a>
+            <a href="manage-channel.html" class="hero-channel-link">Manage Channel</a>
         </div>
-    </a>
+    </section>
 
-    <!-- Quick Account Pills -->
+    <!-- 3. QUICK ACCOUNT PILLS -->
     <div class="account-pills-row">
-        <a href="login.html" class="acc-pill-btn">
+        <a href="switch-account.html" class="acc-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             <span>Switch account</span>
         </a>
-        <a href="login.html" class="acc-pill-btn">
+        <a href="google-account.html" class="acc-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Google Account</span>
         </a>
@@ -519,7 +535,7 @@
         </a>
     </div>
 
-    <!-- 3. HISTORY SHELF (Links to history.html) -->
+    <!-- 4. HISTORY SHELF -->
     <section class="shelf-container">
         <div class="shelf-head-row">
             <span class="shelf-title">History</span>
@@ -554,10 +570,24 @@
                     </div>
                 </div>
             </div>
+
+            <div class="history-card-item">
+                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="history-thumb-wrap">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
+                    <span class="history-badge-duration">06:25</span>
+                    <div class="history-progress-line" style="width: 90%;"></div>
+                </a>
+                <div class="history-meta-box">
+                    <div class="history-texts">
+                        <span class="history-title">Morning Commute Village Lifestyle Vlog</span>
+                        <span class="history-channel">The Bhaskar Vlog</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- 4. PLAYLISTS SHELF (Links to playlists.html) -->
+    <!-- 5. PLAYLISTS SHELF -->
     <section class="shelf-container">
         <div class="shelf-head-row">
             <span class="shelf-title">Playlists</span>
@@ -565,7 +595,7 @@
         </div>
 
         <div class="shelf-horizontal-slider">
-            <a href="watch.html?title=Liked+Videos" class="playlist-card-box">
+            <a href="liked-videos.html" class="playlist-card-box">
                 <div class="playlist-thumb-cover">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Liked">
                     <div class="playlist-center-icon">
@@ -580,7 +610,7 @@
                 <span class="playlist-sub-txt">Auto playlist</span>
             </a>
 
-            <a href="watch.html?title=Watch+Later" class="playlist-card-box">
+            <a href="watch-later.html" class="playlist-card-box">
                 <div class="playlist-thumb-cover">
                     <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Watch Later">
                     <div class="playlist-center-icon">
@@ -597,9 +627,17 @@
         </div>
     </section>
 
-    <!-- 5. MENU LIST WITH SEPARATE PAGES -->
+    <!-- 6. PREMIUM BANNER -->
+    <a href="premium.html" class="premium-promo-card">
+        <div class="premium-title-box">
+            <span class="premium-tag">Get BTube Premium</span>
+            <span class="premium-sub">Ad-free music and videos in background</span>
+        </div>
+        <button class="btn-get-premium">Get it</button>
+    </a>
+
+    <!-- 7. MENU OPTIONS LIST (HAR BUTTON NAYA PAGE LINK) -->
     <main class="menu-options-list">
-        <!-- 1. Your Videos Page -->
         <a href="your-videos.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
@@ -608,7 +646,6 @@
             <span class="menu-count-badge">8</span>
         </a>
 
-        <!-- 2. Downloads Page -->
         <a href="downloads.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
@@ -617,7 +654,6 @@
             <span class="menu-count-badge">3 offline</span>
         </a>
 
-        <!-- 3. Time Watched Page -->
         <a href="time-watched.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
@@ -626,7 +662,6 @@
             <span class="menu-count-badge">2h 15m daily</span>
         </a>
 
-        <!-- 4. Settings Page -->
         <a href="settings.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
@@ -634,7 +669,6 @@
             </div>
         </a>
 
-        <!-- 5. Help Page -->
         <a href="help.html" class="menu-row-item">
             <div class="menu-left-box">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
@@ -643,7 +677,7 @@
         </a>
     </main>
 
-    <!-- BOTTOM NAVIGATION -->
+    <!-- 8. BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -661,10 +695,40 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item active">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
             <span>You</span>
         </a>
     </nav>
 
+    <!-- LIVE STORAGE SYNC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const savedDp = localStorage.getItem('btube_channel_dp');
+
+            if (savedName) {
+                document.getElementById('heroNameTxt').innerText = savedName;
+
+                // Initials
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('heroInitsTxt').innerText = inits.toUpperCase();
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+
+            if (savedHandle) {
+                document.getElementById('heroHandleTxt').innerText = `${savedHandle} • View channel ›`;
+            }
+
+            if (savedDp) {
+                const dpImg = document.getElementById('heroDpImg');
+                dpImg.src = savedDp;
+                dpImg.style.display = 'block';
+                document.getElementById('heroInitsTxt').style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
