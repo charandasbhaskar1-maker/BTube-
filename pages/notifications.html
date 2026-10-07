@@ -49,7 +49,7 @@
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 4px;
+            text-decoration: none;
         }
 
         .btn-back-nav svg {
@@ -76,6 +76,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            text-decoration: none;
         }
 
         .tool-icon-btn svg {
@@ -84,7 +85,7 @@
             fill: #ffffff;
         }
 
-        /* 2. FILTER PILLS (All, Mentions) */
+        /* 2. FILTER PILLS */
         .filter-row {
             display: flex;
             align-items: center;
@@ -156,12 +157,10 @@
             top: 24px;
         }
 
-        /* Channel Avatar */
         .notif-avatar-circle {
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -171,13 +170,6 @@
             flex-shrink: 0;
         }
 
-        .notif-avatar-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Message details */
         .notif-details {
             flex: 1;
             min-width: 0;
@@ -205,7 +197,6 @@
             color: #888888;
         }
 
-        /* Mini Video Thumbnail */
         .notif-thumb-box {
             width: 68px;
             aspect-ratio: 16 / 9;
@@ -226,9 +217,10 @@
             border: none;
             color: #888888;
             cursor: pointer;
-            padding: 2px;
+            padding: 4px;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .btn-item-more svg {
@@ -237,7 +229,78 @@
             fill: currentColor;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* 5. OPTIONS BOTTOM SHEET */
+        .sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: none;
+            align-items: flex-end;
+            z-index: 2500;
+        }
+
+        .sheet-backdrop.open {
+            display: flex;
+        }
+
+        .bottom-panel-card {
+            width: 100%;
+            background: #1e1e1e;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .panel-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 6px;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .panel-item-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 6px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .panel-item-btn:active {
+            background: #2a2a2a;
+        }
+
+        .panel-item-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -299,28 +362,28 @@
         </div>
 
         <div class="header-right-tools">
-            <button class="tool-icon-btn" onclick="alert('Search notifications')">
+            <a href="search.html" class="tool-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </button>
-            <button class="tool-icon-btn" onclick="alert('Notification settings')">
+            </a>
+            <button class="tool-icon-btn" onclick="openGeneralSettings()">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- 2. FILTER PILLS -->
+    <!-- 2. FILTER PILLS (All, Mentions) -->
     <nav class="filter-row">
-        <button class="pill-btn active" onclick="setFilter(this)">All</button>
-        <button class="pill-btn" onclick="setFilter(this)">Mentions</button>
+        <button class="pill-btn active" onclick="filterNotifs('all', this)">All</button>
+        <button class="pill-btn" onclick="filterNotifs('mentions', this)">Mentions</button>
     </nav>
 
     <!-- 3. LIST -->
-    <main class="notif-feed-list">
+    <main class="notif-feed-list" id="notifList">
 
-        <div class="section-label">Important</div>
+        <div class="section-label" id="impLabel">Important</div>
 
-        <!-- Notification 1 (Unread) -->
-        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="notif-row-card unread">
+        <!-- Notification 1 -->
+        <div class="notif-row-card unread" data-type="video" id="notif-1" onclick="openVideo(this, 'watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar')">
             <div class="unread-indicator-dot"></div>
             <div class="notif-avatar-circle" style="background:#e50914;">CB</div>
             <div class="notif-details">
@@ -332,13 +395,13 @@
             <div class="notif-thumb-box">
                 <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
             </div>
-            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-1', 'Charandas Bhaskar')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
-        </a>
+        </div>
 
-        <!-- Notification 2 (Unread) -->
-        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="notif-row-card unread">
+        <!-- Notification 2 -->
+        <div class="notif-row-card unread" data-type="video" id="notif-2" onclick="openVideo(this, 'watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI')">
             <div class="unread-indicator-dot"></div>
             <div class="notif-avatar-circle" style="background:#3ea6ff;">DH</div>
             <div class="notif-details">
@@ -350,15 +413,15 @@
             <div class="notif-thumb-box">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Thumb">
             </div>
-            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-2', 'Dhun AI')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
-        </a>
+        </div>
 
-        <div class="section-label">Earlier</div>
+        <div class="section-label" id="earlierLabel">Earlier</div>
 
         <!-- Notification 3 -->
-        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="notif-row-card">
+        <div class="notif-row-card" data-type="video" id="notif-3" onclick="openVideo(this, 'watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog')">
             <div class="notif-avatar-circle" style="background:#2ecc71;">BV</div>
             <div class="notif-details">
                 <div class="notif-text">
@@ -369,13 +432,13 @@
             <div class="notif-thumb-box">
                 <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Thumb">
             </div>
-            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-3', 'The Bhaskar Vlog')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
-        </a>
+        </div>
 
-        <!-- Notification 4 (Comment Reply) -->
-        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="notif-row-card">
+        <!-- Notification 4 (Mention) -->
+        <div class="notif-row-card" data-type="mention" id="notif-4" onclick="openVideo(this, 'watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar')">
             <div class="notif-avatar-circle" style="background:#f39c12;">R</div>
             <div class="notif-details">
                 <div class="notif-text">
@@ -386,27 +449,45 @@
             <div class="notif-thumb-box">
                 <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
             </div>
-            <button class="btn-item-more" onclick="event.preventDefault(); alert('Options for this notification');">
+            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-4', '@ramesh_kumar')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
-        </a>
+        </div>
 
     </main>
 
-    <!-- 4. BOTTOM NAVIGATION -->
+    <!-- 4. BOTTOM ACTION SHEET (Options Modal) -->
+    <div class="sheet-backdrop" id="optSheet" onclick="closeSheetOnBackdrop(event)">
+        <div class="bottom-panel-card">
+            <div class="panel-header-row">
+                <span class="panel-title" id="sheetChannelTitle">Options</span>
+                <button class="panel-close-btn" onclick="closeSheet()">✕</button>
+            </div>
+            <button class="panel-item-btn" onclick="hideCurrentNotif()">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>
+                <span>Hide this notification</span>
+            </button>
+            <button class="panel-item-btn" onclick="turnOffChannelNotif()">
+                <svg viewBox="0 0 24 24"><path d="M20 18.69L7.84 6.14 5.27 3.49 4 4.76l2.8 2.8v.01c-.52.99-.8 2.16-.8 3.43v5l-2 2v1h13.73l2.25 2.25 1.27-1.27-1.25-1.29zM12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6.19L18 11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68c-.78.19-1.5.5-2.14.92L18 15.81z"/></svg>
+                <span id="turnOffText">Turn off notifications from this channel</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
-        <a href="upload.html" class="nav-link">
+        <a href="shorts.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
         <a href="upload.html" class="nav-plus-circle">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </a>
-        <a href="channel.html" class="nav-link">
+        <a href="subscriptions.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
@@ -417,9 +498,70 @@
     </nav>
 
     <script>
-        function setFilter(btn) {
+        let currentTargetId = null;
+
+        function filterNotifs(type, btn) {
             document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
+
+            const rows = document.querySelectorAll('.notif-row-card');
+            const impLabel = document.getElementById('impLabel');
+            const earlierLabel = document.getElementById('earlierLabel');
+
+            rows.forEach(row => {
+                const rowType = row.getAttribute('data-type');
+                if (type === 'all' || rowType === 'mention') {
+                    row.style.display = (type === 'all' || rowType === type) ? 'flex' : 'none';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            if (type === 'mentions') {
+                if (impLabel) impLabel.style.display = 'none';
+            } else {
+                if (impLabel) impLabel.style.display = 'block';
+            }
+        }
+
+        function openVideo(card, targetUrl) {
+            const dot = card.querySelector('.unread-indicator-dot');
+            if (dot) dot.remove();
+            card.classList.remove('unread');
+            window.location.href = targetUrl;
+        }
+
+        function openItemMenu(id, channel) {
+            currentTargetId = id;
+            document.getElementById('sheetChannelTitle').innerText = channel;
+            document.getElementById('turnOffText').innerText = `Turn off notifications from ${channel}`;
+            document.getElementById('optSheet').classList.add('open');
+        }
+
+        function closeSheet() {
+            document.getElementById('optSheet').classList.remove('open');
+        }
+
+        function closeSheetOnBackdrop(e) {
+            if (e.target.id === 'optSheet') closeSheet();
+        }
+
+        function hideCurrentNotif() {
+            if (currentTargetId) {
+                const el = document.getElementById(currentTargetId);
+                if (el) el.remove();
+            }
+            closeSheet();
+        }
+
+        function turnOffChannelNotif() {
+            hideCurrentNotif();
+        }
+
+        function openGeneralSettings() {
+            document.getElementById('sheetChannelTitle').innerText = 'Settings';
+            document.getElementById('turnOffText').innerText = 'Manage all notification preferences';
+            document.getElementById('optSheet').classList.add('open');
         }
     </script>
 </body>
