@@ -7,10 +7,172 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>BTube</title>
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Interactive Overlays */
+        .search-full-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 52px;
+            background: #0f0f0f;
+            display: none;
+            align-items: center;
+            padding: 0 12px;
+            gap: 10px;
+            z-index: 2000;
+            border-bottom: 1px solid #272727;
+        }
+
+        .search-full-bar.open {
+            display: flex;
+        }
+
+        .btn-search-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .btn-search-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .search-input-field {
+            flex: 1;
+            background: #222222;
+            border: 1px solid #333333;
+            border-radius: 20px;
+            padding: 8px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* Generic Bottom Sheet Drawer */
+        .sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: none;
+            align-items: flex-end;
+            z-index: 2500;
+        }
+
+        .sheet-backdrop.open {
+            display: flex;
+        }
+
+        .bottom-panel-card {
+            width: 100%;
+            max-height: 70vh;
+            background: #1e1e1e;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
+        }
+
+        .panel-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .panel-item-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 4px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .panel-item-row:active {
+            background: #2a2a2a;
+        }
+
+        .panel-item-row svg {
+            width: 22px;
+            height: 22px;
+            fill: #3ea6ff;
+            flex-shrink: 0;
+        }
+
+        .notif-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #272727;
+        }
+
+        .notif-icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .notif-content-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            font-size: 13px;
+        }
+
+        .notif-time {
+            font-size: 11px;
+            color: #888888;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- 1. FULLSCREEN SEARCH OVERLAY -->
+    <div class="search-full-bar" id="searchBarOverlay">
+        <button class="btn-search-back" onclick="closeSearchBar()">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <input type="text" id="homeSearchInput" class="search-input-field" placeholder="Search BTube..." oninput="handleSearchFilter(this.value)">
+    </div>
+
+    <!-- 2. TOP HEADER -->
     <header class="bt-header">
         <a href="index.html" class="bt-brand">
             <svg viewBox="0 0 32 24" class="bt-logo-svg">
@@ -23,35 +185,33 @@
         </a>
 
         <div class="bt-header-icons">
-            <button class="header-icon-btn" onclick="alert('Cast to TV')">
+            <button class="header-icon-btn" onclick="openCastModal()">
                 <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </button>
-            <button class="header-icon-btn" onclick="alert('Notifications')">
+            <button class="header-icon-btn" onclick="openNotifModal()">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span class="badge-counter">3</span>
+                <span class="badge-counter" id="notifBadge">3</span>
             </button>
-            <button class="header-icon-btn" onclick="alert('Search BTube')">
+            <button class="header-icon-btn" onclick="openSearchBar()">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- Chips -->
+    <!-- 3. CATEGORY CHIPS -->
     <nav class="category-tray">
-        <button class="cat-pill active">All</button>
-        <button class="cat-pill">Music</button>
-        <button class="cat-pill">Chhattisgarhi</button>
-        <button class="cat-pill">Vlogs</button>
-        <button class="cat-pill">Folk Banjo</button>
-        <button class="cat-pill">Education</button>
-        <button class="cat-pill">Tech</button>
+        <button class="cat-pill active" onclick="filterCategory('All', this)">All</button>
+        <button class="cat-pill" onclick="filterCategory('Music', this)">Music</button>
+        <button class="cat-pill" onclick="filterCategory('Chhattisgarhi', this)">Chhattisgarhi</button>
+        <button class="cat-pill" onclick="filterCategory('Vlogs', this)">Vlogs</button>
+        <button class="cat-pill" onclick="filterCategory('Tech', this)">Tech</button>
     </nav>
 
-    <!-- Video Feed -->
-    <main class="video-stream-feed">
+    <!-- 4. VIDEO FEED -->
+    <main class="video-stream-feed" id="videoFeedContainer">
 
-        <!-- Video 1 -->
-        <article class="feed-video-card">
+        <!-- Card 1 -->
+        <article class="feed-video-card" data-category="Chhattisgarhi Music" data-title="Chhattisgarhi Panthi Song Special Cultural Video 2026">
             <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-thumb-frame">
                 <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Video">
                 <span class="duration-tag">05:42</span>
@@ -68,7 +228,7 @@
         </article>
 
         <!-- Shorts Shelf -->
-        <section class="shorts-shelf">
+        <section class="shorts-shelf" id="shortsShelf">
             <div class="shorts-shelf-title">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
                 <span>Shorts</span>
@@ -99,8 +259,8 @@
             </div>
         </section>
 
-        <!-- Video 2 -->
-        <article class="feed-video-card">
+        <!-- Card 2 -->
+        <article class="feed-video-card" data-category="Tech Music" data-title="Typewriter Banjo with Magnetic Pickups Full Making Guide">
             <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-thumb-frame">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Video">
                 <span class="duration-tag">14:10</span>
@@ -116,9 +276,68 @@
             </div>
         </article>
 
+        <!-- Card 3 -->
+        <article class="feed-video-card" data-category="Vlogs" data-title="Morning Commute Village Lifestyle Daily Vlog">
+            <a href="../pages/watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-thumb-frame">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Video">
+                <span class="duration-tag">06:25</span>
+            </a>
+            <div class="video-details-row">
+                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#2ecc71; text-decoration:none;">BV</a>
+                <div class="details-column">
+                    <a href="../pages/watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="card-title-text" style="text-decoration:none; color:#fff;">
+                        Morning Commute & Village Lifestyle Daily Vlog #42
+                    </a>
+                    <span class="card-meta-text">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
+                </div>
+            </div>
+        </article>
+
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- 5. CAST BOTTOM MODAL -->
+    <div class="sheet-backdrop" id="castModal" onclick="closeSheetOnBackdrop(event, 'castModal')">
+        <div class="bottom-panel-card">
+            <div class="panel-header-row">
+                <span class="panel-title">Connect to a device</span>
+                <button class="panel-close-btn" onclick="closeModal('castModal')">✕</button>
+            </div>
+            <button class="panel-item-row" onclick="selectDevice('Smart TV Living Room')">
+                <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                <span>Smart TV (Living Room)</span>
+            </button>
+            <button class="panel-item-row" onclick="selectDevice('Android TV Bedroom')">
+                <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                <span>Android TV (Bedroom)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 6. NOTIFICATIONS BOTTOM MODAL -->
+    <div class="sheet-backdrop" id="notifModal" onclick="closeSheetOnBackdrop(event, 'notifModal')">
+        <div class="bottom-panel-card">
+            <div class="panel-header-row">
+                <span class="panel-title">Notifications</span>
+                <button class="panel-close-btn" onclick="closeModal('notifModal')">✕</button>
+            </div>
+            <div class="notif-item">
+                <div class="notif-icon-circle">CB</div>
+                <div class="notif-content-text">
+                    <span><b>Charandas Bhaskar</b> uploaded a new Panthi track.</span>
+                    <span class="notif-time">2 hours ago</span>
+                </div>
+            </div>
+            <div class="notif-item">
+                <div class="notif-icon-circle" style="background:#3ea6ff;">DH</div>
+                <div class="notif-content-text">
+                    <span><b>Dhun AI</b> scheduled a live stream for tonight.</span>
+                    <span class="notif-time">5 hours ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-bar">
         <a href="index.html" class="nav-tab-item active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -141,6 +360,76 @@
         </a>
     </nav>
 
-    <script src="app.js"></script>
+    <!-- CLEAN INTERACTIVE JAVASCRIPT -->
+    <script>
+        // Search Open / Close
+        function openSearchBar() {
+            document.getElementById('searchBarOverlay').classList.add('open');
+            document.getElementById('homeSearchInput').focus();
+        }
+
+        function closeSearchBar() {
+            document.getElementById('searchBarOverlay').classList.remove('open');
+            document.getElementById('homeSearchInput').value = '';
+            handleSearchFilter('');
+        }
+
+        // Live Search Filter
+        function handleSearchFilter(query) {
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.feed-video-card');
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                card.style.display = title.includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        // Category Filter
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.feed-video-card');
+            const shorts = document.getElementById('shortsShelf');
+
+            cards.forEach(card => {
+                const itemCat = card.getAttribute('data-category');
+                if (cat === 'All' || itemCat.includes(cat)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (shorts) {
+                shorts.style.display = (cat === 'All' || cat === 'Music') ? 'flex' : 'none';
+            }
+        }
+
+        // Modals
+        function openCastModal() {
+            document.getElementById('castModal').classList.add('open');
+        }
+
+        function openNotifModal() {
+            document.getElementById('notifModal').classList.add('open');
+            const badge = document.getElementById('notifBadge');
+            if (badge) badge.style.display = 'none';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeSheetOnBackdrop(e, id) {
+            if (e.target.id === id) {
+                closeModal(id);
+            }
+        }
+
+        function selectDevice(name) {
+            closeModal('castModal');
+        }
+    </script>
 </body>
 </html>
