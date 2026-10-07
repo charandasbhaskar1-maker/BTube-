@@ -19,7 +19,7 @@
         body {
             background-color: #0f0f0f;
             color: #ffffff;
-            padding-bottom: 30px;
+            padding-bottom: 40px;
             overflow-x: hidden;
         }
 
@@ -70,31 +70,43 @@
             border: none;
             font-size: 13px;
             font-weight: 700;
-            padding: 6px 14px;
+            padding: 6px 16px;
             border-radius: 18px;
             cursor: pointer;
         }
 
-        /* 2. BANNER & DP EDIT PREVIEW */
+        /* 2. BANNER & DP EDIT (PIXEL PERFECT) */
         .banner-edit-frame {
             width: 100%;
-            height: 120px;
+            height: 125px;
             background: linear-gradient(135deg, #1f1f1f 0%, #3a0007 60%, #151515 100%);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            overflow: hidden;
+        }
+
+        .banner-img-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
         }
 
         .banner-cam-btn {
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 2;
         }
 
         .banner-cam-btn svg {
@@ -106,40 +118,53 @@
         .avatar-edit-wrap {
             display: flex;
             justify-content: center;
-            margin-top: -38px;
+            margin-top: -42px;
             position: relative;
             z-index: 10;
         }
 
         .avatar-edit-circle {
-            width: 76px;
-            height: 76px;
+            width: 82px;
+            height: 82px;
             border-radius: 50%;
             background: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 4px solid #0f0f0f;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .avatar-txt {
             font-size: 26px;
             font-weight: 800;
             color: #ffffff;
-            border: 3px solid #0f0f0f;
-            position: relative;
-            cursor: pointer;
+        }
+
+        .avatar-img-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
         }
 
         .dp-cam-badge {
             position: absolute;
             inset: 0;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.45);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .dp-cam-badge svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             fill: #ffffff;
         }
 
@@ -147,7 +172,7 @@
         .edit-fields-list {
             display: flex;
             flex-direction: column;
-            padding: 16px 0;
+            padding: 16px 0 6px;
         }
 
         .field-row-item {
@@ -175,7 +200,7 @@
             font-size: 11px;
             color: #aaaaaa;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.5px;
         }
 
@@ -183,6 +208,7 @@
             font-size: 14px;
             color: #ffffff;
             font-weight: 500;
+            line-height: 1.35;
         }
 
         .field-edit-icon svg {
@@ -197,6 +223,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            border-top: 1px solid #1a1a1a;
         }
 
         .privacy-title {
@@ -218,7 +245,6 @@
             line-height: 1.35;
         }
 
-        /* Custom Switch */
         .switch {
             position: relative;
             display: inline-block;
@@ -261,7 +287,7 @@
         .edit-modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             z-index: 2000;
             display: none;
             align-items: flex-end;
@@ -279,7 +305,7 @@
             padding: 18px 16px 24px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
         .sheet-title {
@@ -298,14 +324,26 @@
             outline: none;
         }
 
+        .sheet-textarea {
+            min-height: 90px;
+            resize: none;
+        }
+
         .sheet-input:focus {
             border-color: #3ea6ff;
+        }
+
+        .sheet-counter {
+            font-size: 11px;
+            color: #888888;
+            text-align: right;
         }
 
         .sheet-btn-row {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
+            padding-top: 6px;
         }
 
         .sheet-btn {
@@ -314,7 +352,7 @@
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 16px;
         }
 
@@ -337,9 +375,18 @@
             z-index: 3000;
             display: none;
         }
+
+        /* Hidden file input */
+        #bannerFileInput, #dpFileInput {
+            display: none;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Hidden File Pickers -->
+    <input type="file" id="bannerFileInput" accept="image/*" onchange="previewSelectedImage(event, 'banner')">
+    <input type="file" id="dpFileInput" accept="image/*" onchange="previewSelectedImage(event, 'dp')">
 
     <!-- 1. TOP HEADER -->
     <header class="edit-header">
@@ -352,16 +399,18 @@
         <button class="btn-save-check" onclick="saveAllChanges()">Save</button>
     </header>
 
-    <!-- 2. BANNER & DP EDIT -->
-    <div class="banner-edit-frame" onclick="openPhotoPicker('Banner')">
+    <!-- 2. BANNER & DP EDIT (CLEAN CAMERA ICON) -->
+    <div class="banner-edit-frame" onclick="document.getElementById('bannerFileInput').click()">
+        <img id="bannerImg" class="banner-img-preview" alt="Banner">
         <div class="banner-cam-btn">
             <svg viewBox="0 0 24 24"><path d="M12 12c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3zm0 2c-2.21 0-4 1.79-4 4h8c0-2.21-1.79-4-4-4zm9-9h-3.17L16 3H8L6.17 5H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H3V7h3.88l1.83-2h6.58l1.83 2H21v12z"/></svg>
         </div>
     </div>
 
     <div class="avatar-edit-wrap">
-        <div class="avatar-edit-circle" onclick="openPhotoPicker('Profile Picture')">
-            CB
+        <div class="avatar-edit-circle" onclick="document.getElementById('dpFileInput').click()">
+            <span class="avatar-txt" id="avatarTxt">CB</span>
+            <img id="dpImg" class="avatar-img-preview" alt="DP">
             <div class="dp-cam-badge">
                 <svg viewBox="0 0 24 24"><path d="M12 12c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3zm0 2c-2.21 0-4 1.79-4 4h8c0-2.21-1.79-4-4-4zm9-9h-3.17L16 3H8L6.17 5H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H3V7h3.88l1.83-2h6.58l1.83 2H21v12z"/></svg>
             </div>
@@ -371,7 +420,7 @@
     <!-- 3. CHANNEL FIELDS -->
     <main class="edit-fields-list">
         <!-- Name -->
-        <div class="field-row-item" onclick="openEditModal('name', 'Name', document.getElementById('nameVal').innerText)">
+        <div class="field-row-item" onclick="openEditModal('name', 'Name', document.getElementById('nameVal').innerText, 50)">
             <div class="field-info">
                 <span class="field-label">Name</span>
                 <span class="field-value" id="nameVal">Charandas Bhaskar</span>
@@ -382,7 +431,7 @@
         </div>
 
         <!-- Handle -->
-        <div class="field-row-item" onclick="openEditModal('handle', 'Handle', document.getElementById('handleVal').innerText)">
+        <div class="field-row-item" onclick="openEditModal('handle', 'Handle', document.getElementById('handleVal').innerText, 30)">
             <div class="field-info">
                 <span class="field-label">Handle</span>
                 <span class="field-value" id="handleVal">@charandasbhaskar</span>
@@ -393,7 +442,7 @@
         </div>
 
         <!-- Description -->
-        <div class="field-row-item" onclick="openEditModal('desc', 'Description', document.getElementById('descVal').innerText)">
+        <div class="field-row-item" onclick="openEditModal('desc', 'Description', document.getElementById('descVal').innerText, 1000)">
             <div class="field-info">
                 <span class="field-label">Description</span>
                 <span class="field-value" id="descVal">Official BTube channel for Chhattisgarhi folk music, traditional bhajans, daily life stories and instruments.</span>
@@ -427,7 +476,10 @@
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-sheet-card">
             <span class="sheet-title" id="modalFieldTitle">Edit</span>
-            <input type="text" class="sheet-input" id="modalInputVal">
+            <div id="modalInputContainer">
+                <input type="text" class="sheet-input" id="modalInputVal" oninput="updateCharCount()">
+            </div>
+            <span class="sheet-counter" id="charCounter">0/50</span>
             <div class="sheet-btn-row">
                 <button class="sheet-btn cancel" onclick="closeEditModal()">Cancel</button>
                 <button class="sheet-btn confirm" onclick="confirmFieldValue()">Save</button>
@@ -439,6 +491,7 @@
 
     <script>
         let currentTargetField = null;
+        let currentMaxLen = 50;
 
         function showToast(msg) {
             const t = document.getElementById('toastPop');
@@ -447,16 +500,48 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function openPhotoPicker(type) {
-            showToast(`${type} selector opened`);
+        // Live image preview
+        function previewSelectedImage(event, target) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            if (target === 'banner') {
+                const bImg = document.getElementById('bannerImg');
+                bImg.src = url;
+                bImg.style.display = 'block';
+                showToast('Banner updated');
+            } else if (target === 'dp') {
+                const dpImg = document.getElementById('dpImg');
+                const avatarTxt = document.getElementById('avatarTxt');
+                dpImg.src = url;
+                dpImg.style.display = 'block';
+                avatarTxt.style.display = 'none';
+                showToast('Profile picture updated');
+            }
         }
 
-        function openEditModal(fieldId, title, currentVal) {
+        function openEditModal(fieldId, title, currentVal, maxLen) {
             currentTargetField = fieldId;
+            currentMaxLen = maxLen;
             document.getElementById('modalFieldTitle').innerText = title;
-            document.getElementById('modalInputVal').value = currentVal;
+
+            const container = document.getElementById('modalInputContainer');
+            if (fieldId === 'desc') {
+                container.innerHTML = `<textarea class="sheet-input sheet-textarea" id="modalInputVal" maxlength="${maxLen}" oninput="updateCharCount()">${currentVal}</textarea>`;
+            } else {
+                container.innerHTML = `<input type="text" class="sheet-input" id="modalInputVal" maxlength="${maxLen}" value="${currentVal}" oninput="updateCharCount()">`;
+            }
+
             document.getElementById('editModal').classList.add('open');
+            updateCharCount();
             document.getElementById('modalInputVal').focus();
+        }
+
+        function updateCharCount() {
+            const input = document.getElementById('modalInputVal');
+            const counter = document.getElementById('charCounter');
+            counter.innerText = `${input.value.length}/${currentMaxLen}`;
         }
 
         function closeEditModal() {
