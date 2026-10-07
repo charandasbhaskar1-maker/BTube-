@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Watch - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+        }
+
+        /* 1. STICKY VIDEO PLAYER */
+        .player-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000000;
+            z-index: 1000;
+        }
+
+        .player-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* 2. VIDEO INFO SECTION */
+        .video-meta-section {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .video-views-row {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        /* Channel Bar */
+        .channel-action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 6px;
+        }
+
+        .channel-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        .channel-names {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .channel-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sub-count {
+            font-size: 11px;
+            color: #aaaaaa;
+        }
+
+        .btn-subscribe {
+            background: #ffffff;
+            color: #0f0f0f;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-subscribe.subscribed {
+            background: #272727;
+            color: #ffffff;
+        }
+
+        /* Action Buttons Pill Strip */
+        .actions-pill-strip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .actions-pill-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pill-btn {
+            background: #272727;
+            border: none;
+            color: #ffffff;
+            padding: 7px 14px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .pill-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+
+        /* Description Box */
+        .desc-collapsed-box {
+            background: #212121;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #dddddd;
+            cursor: pointer;
+        }
+
+        /* Comments Box */
+        .comments-teaser {
+            background: #212121;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 6px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .comments-head-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .comments-snippet {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        /* 3. RECOMMENDED VIDEOS FEED */
+        .rec-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-top: 6px;
+        }
+
+        .rec-card {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: #ffffff;
+        }
+
+        .rec-thumb {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #1c1c1c;
+            position: relative;
+        }
+
+        .rec-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .duration-tag {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: rgba(0,0,0,0.85);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .rec-meta {
+            display: flex;
+            padding: 10px 16px;
+            gap: 12px;
+        }
+
+        .rec-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .rec-texts {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .rec-title {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .rec-sub {
+            font-size: 11px;
+            color: #aaaaaa;
+        }
+
+        /* 4. BOTTOM NAV */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-link svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. VIDEO PLAYER -->
+    <div class="player-container">
+        <video id="mainVideoPlayer" controls autoplay playsinline poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4">
+            Aapka browser video tag support nahi karta.
+        </video>
+    </div>
+
+    <!-- 2. DETAILS & ACTIONS -->
+    <section class="video-meta-section">
+        <h1 class="video-title" id="pageVideoTitle">Chhattisgarhi Panthi Song • Special Cultural Video 2026</h1>
+        <div class="video-views-row">210K views • 2 weeks ago • #BTube #Culture</div>
+
+        <!-- Channel Row -->
+        <div class="channel-action-row">
+            <a href="channel.html" class="channel-left">
+                <div class="channel-avatar" id="pageChannelAvatar">CB</div>
+                <div class="channel-names">
+                    <span class="channel-title" id="pageChannelName">Charandas Bhaskar</span>
+                    <span class="sub-count">245 subscribers</span>
+                </div>
+            </a>
+            <button class="btn-subscribe" id="subBtn" onclick="toggleSub()">Subscribe</button>
+        </div>
+
+        <!-- Action Buttons (Like, Dislike, Share, Download) -->
+        <div class="actions-pill-strip">
+            <button class="pill-btn" onclick="toggleLike(this)">
+                <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                <span id="likeCount">12K</span>
+            </button>
+            <button class="pill-btn" onclick="alert('Disliked')">
+                <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+            </button>
+            <button class="pill-btn" onclick="shareVideo()">
+                <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                <span>Share</span>
+            </button>
+            <button class="pill-btn" onclick="alert('Downloading video...')">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span>Download</span>
+            </button>
+        </div>
+
+        <!-- Description Box -->
+        <div class="desc-collapsed-box" onclick="alert('Full description: Official cultural Panthi song dedicated to Guru Ghasidas Baba ji.')">
+            <b>Description:</b> Official cultural Panthi song performed live with traditional instruments... <span style="color:#aaa;">more</span>
+        </div>
+    </section>
+
+    <!-- Comments Teaser -->
+    <div class="comments-teaser" onclick="alert('Comments opening...')">
+        <div class="comments-head-row">
+            <span>Comments</span>
+            <span style="color:#aaa; font-weight:400;">482</span>
+        </div>
+        <div class="comments-snippet">
+            <div style="width:22px; height:22px; border-radius:50%; background:#3ea6ff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">R</div>
+            <span>Jay Satnam bhaiya! Bahut sughar geet he...</span>
+        </div>
+    </div>
+
+    <!-- 3. UP NEXT / RECOMMENDED -->
+    <div class="rec-feed">
+        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="rec-card">
+            <div class="rec-thumb">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Rec 1">
+                <span class="duration-tag">14:10</span>
+            </div>
+            <div class="rec-meta">
+                <div class="rec-avatar" style="background:#3ea6ff;">DH</div>
+                <div class="rec-texts">
+                    <span class="rec-title">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
+                    <span class="rec-sub">Dhun AI • 45K views • 1 day ago</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="rec-card">
+            <div class="rec-thumb">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Rec 2">
+                <span class="duration-tag">06:25</span>
+            </div>
+            <div class="rec-meta">
+                <div class="rec-avatar" style="background:#2ecc71;">BV</div>
+                <div class="rec-texts">
+                    <span class="rec-title">Morning Commute & Village Lifestyle Daily Vlog #42</span>
+                    <span class="rec-sub">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- 4. BOTTOM NAV -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="upload.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Create</span>
+        </a>
+        <a href="subscriptions.html" class="nav-link">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <script>
+        // URL Parameters se title/channel dynamically pick karna
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('title')) {
+            document.getElementById('pageVideoTitle').innerText = params.get('title');
+        }
+        if (params.get('channel')) {
+            document.getElementById('pageChannelName').innerText = params.get('channel');
+            document.getElementById('pageChannelAvatar').innerText = params.get('channel').substring(0, 2).toUpperCase();
+        }
+
+        let isSub = false;
+        function toggleSub() {
+            const btn = document.getElementById('subBtn');
+            isSub = !isSub;
+            btn.innerText = isSub ? 'Subscribed ✓' : 'Subscribe';
+            btn.classList.toggle('subscribed', isSub);
+        }
+
+        function toggleLike(btn) {
+            const svg = btn.querySelector('svg');
+            const isLiked = svg.style.fill === 'rgb(62, 166, 255)';
+            svg.style.fill = isLiked ? '#ffffff' : '#3ea6ff';
+        }
+
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+    </script>
+</body>
+</html>
