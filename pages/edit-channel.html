@@ -75,7 +75,7 @@
             cursor: pointer;
         }
 
-        /* 2. BANNER & DP EDIT (PIXEL PERFECT) */
+        /* 2. BANNER & DP EDIT */
         .banner-edit-frame {
             width: 100%;
             height: 125px;
@@ -359,7 +359,6 @@
         .sheet-btn.cancel { color: #aaaaaa; }
         .sheet-btn.confirm { background: #3ea6ff; color: #0f0f0f; }
 
-        /* Toast */
         .toast-pop {
             position: fixed;
             bottom: 30px;
@@ -376,7 +375,6 @@
             display: none;
         }
 
-        /* Hidden file input */
         #bannerFileInput, #dpFileInput {
             display: none;
         }
@@ -384,7 +382,6 @@
 </head>
 <body>
 
-    <!-- Hidden File Pickers -->
     <input type="file" id="bannerFileInput" accept="image/*" onchange="previewSelectedImage(event, 'banner')">
     <input type="file" id="dpFileInput" accept="image/*" onchange="previewSelectedImage(event, 'dp')">
 
@@ -399,7 +396,7 @@
         <button class="btn-save-check" onclick="saveAllChanges()">Save</button>
     </header>
 
-    <!-- 2. BANNER & DP EDIT (CLEAN CAMERA ICON) -->
+    <!-- 2. BANNER & DP EDIT -->
     <div class="banner-edit-frame" onclick="document.getElementById('bannerFileInput').click()">
         <img id="bannerImg" class="banner-img-preview" alt="Banner">
         <div class="banner-cam-btn">
@@ -419,7 +416,6 @@
 
     <!-- 3. CHANNEL FIELDS -->
     <main class="edit-fields-list">
-        <!-- Name -->
         <div class="field-row-item" onclick="openEditModal('name', 'Name', document.getElementById('nameVal').innerText, 50)">
             <div class="field-info">
                 <span class="field-label">Name</span>
@@ -430,7 +426,6 @@
             </div>
         </div>
 
-        <!-- Handle -->
         <div class="field-row-item" onclick="openEditModal('handle', 'Handle', document.getElementById('handleVal').innerText, 30)">
             <div class="field-info">
                 <span class="field-label">Handle</span>
@@ -441,7 +436,6 @@
             </div>
         </div>
 
-        <!-- Description -->
         <div class="field-row-item" onclick="openEditModal('desc', 'Description', document.getElementById('descVal').innerText, 1000)">
             <div class="field-info">
                 <span class="field-label">Description</span>
@@ -459,20 +453,20 @@
         <div class="toggle-row">
             <span class="toggle-desc">Keep all my subscriptions private</span>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" id="privSubs" checked>
                 <span class="slider"></span>
             </label>
         </div>
         <div class="toggle-row">
             <span class="toggle-desc">Keep all my saved playlists private</span>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" id="privPlaylists" checked>
                 <span class="slider"></span>
             </label>
         </div>
     </section>
 
-    <!-- 5. EDIT VALUE MODAL -->
+    <!-- 5. EDIT MODAL -->
     <div class="edit-modal-overlay" id="editModal">
         <div class="edit-sheet-card">
             <span class="sheet-title" id="modalFieldTitle">Edit</span>
@@ -493,6 +487,41 @@
         let currentTargetField = null;
         let currentMaxLen = 50;
 
+        // Load existing saved data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const savedDesc = localStorage.getItem('btube_channel_desc');
+            const savedDp = localStorage.getItem('btube_channel_dp');
+            const savedBanner = localStorage.getItem('btube_channel_banner');
+
+            if (savedName) {
+                document.getElementById('nameVal').innerText = savedName;
+                updateInitials(savedName);
+            }
+            if (savedHandle) document.getElementById('handleVal').innerText = savedHandle;
+            if (savedDesc) document.getElementById('descVal').innerText = savedDesc;
+
+            if (savedDp) {
+                const dpImg = document.getElementById('dpImg');
+                dpImg.src = savedDp;
+                dpImg.style.display = 'block';
+                document.getElementById('avatarTxt').style.display = 'none';
+            }
+            if (savedBanner) {
+                const bImg = document.getElementById('bannerImg');
+                bImg.src = savedBanner;
+                bImg.style.display = 'block';
+            }
+        });
+
+        function updateInitials(name) {
+            const parts = name.trim().split(' ');
+            let inits = parts[0][0];
+            if (parts.length > 1) inits += parts[1][0];
+            document.getElementById('avatarTxt').innerText = inits.toUpperCase();
+        }
+
         function showToast(msg) {
             const t = document.getElementById('toastPop');
             t.innerText = msg;
@@ -500,25 +529,29 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // Live image preview
         function previewSelectedImage(event, target) {
             const file = event.target.files[0];
             if (!file) return;
 
-            const url = URL.createObjectURL(file);
-            if (target === 'banner') {
-                const bImg = document.getElementById('bannerImg');
-                bImg.src = url;
-                bImg.style.display = 'block';
-                showToast('Banner updated');
-            } else if (target === 'dp') {
-                const dpImg = document.getElementById('dpImg');
-                const avatarTxt = document.getElementById('avatarTxt');
-                dpImg.src = url;
-                dpImg.style.display = 'block';
-                avatarTxt.style.display = 'none';
-                showToast('Profile picture updated');
-            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                if (target === 'banner') {
+                    const bImg = document.getElementById('bannerImg');
+                    bImg.src = base64Data;
+                    bImg.style.display = 'block';
+                    localStorage.setItem('btube_channel_banner', base64Data);
+                    showToast('Banner updated');
+                } else if (target === 'dp') {
+                    const dpImg = document.getElementById('dpImg');
+                    dpImg.src = base64Data;
+                    dpImg.style.display = 'block';
+                    document.getElementById('avatarTxt').style.display = 'none';
+                    localStorage.setItem('btube_channel_dp', base64Data);
+                    showToast('Profile picture updated');
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         function openEditModal(fieldId, title, currentVal, maxLen) {
@@ -551,19 +584,31 @@
         function confirmFieldValue() {
             const val = document.getElementById('modalInputVal').value.trim();
             if (val && currentTargetField) {
-                if (currentTargetField === 'name') document.getElementById('nameVal').innerText = val;
+                if (currentTargetField === 'name') {
+                    document.getElementById('nameVal').innerText = val;
+                    updateInitials(val);
+                }
                 if (currentTargetField === 'handle') document.getElementById('handleVal').innerText = val.startsWith('@') ? val : '@' + val;
                 if (currentTargetField === 'desc') document.getElementById('descVal').innerText = val;
-                showToast('Updated successfully');
+                showToast('Updated');
             }
             closeEditModal();
         }
 
+        // SAVE BUTTON: Writes everything to LocalStorage and redirects
         function saveAllChanges() {
+            const name = document.getElementById('nameVal').innerText;
+            const handle = document.getElementById('handleVal').innerText;
+            const desc = document.getElementById('descVal').innerText;
+
+            localStorage.setItem('btube_channel_name', name);
+            localStorage.setItem('btube_channel_handle', handle);
+            localStorage.setItem('btube_channel_desc', desc);
+
             showToast('Channel settings saved ✓');
             setTimeout(() => {
                 window.location.href = 'channel.html';
-            }, 800);
+            }, 600);
         }
     </script>
 </body>
