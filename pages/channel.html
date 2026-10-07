@@ -153,7 +153,6 @@
             color: #aaaaaa;
         }
 
-        /* Channel Bio Snippet */
         .channel-bio-line {
             font-size: 12px;
             color: #cccccc;
@@ -211,6 +210,7 @@
             cursor: pointer;
             color: #ffffff;
             flex-shrink: 0;
+            text-decoration: none;
         }
 
         .action-icon-pill svg {
@@ -409,6 +409,68 @@
             fill: #aaaaaa;
         }
 
+        /* Share Bottom Sheet */
+        .sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .sheet-backdrop.open {
+            display: flex;
+        }
+
+        .sheet-content-box {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sheet-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 6px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .sheet-btn-row svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
         /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
@@ -477,7 +539,7 @@
             <a href="search.html" class="tool-btn">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </a>
-            <button class="tool-btn" onclick="shareChannel()">
+            <button class="tool-btn" onclick="openShareSheet()">
                 <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
             </button>
         </div>
@@ -503,13 +565,14 @@
             Official BTube channel for Chhattisgarhi folk music, traditional bhajans, daily life stories and instruments. <span>...more</span>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Buttons (Sabhi Dedicated HTML Pages se Jude Hain) -->
         <div class="channel-action-btns-row">
             <a href="your-videos.html" class="action-main-btn">Manage Videos</a>
-            <a href="time-watched.html" class="action-main-btn">Analytics</a>
-            <button class="action-icon-pill" onclick="alert('Edit channel profile')">
+            <a href="analytics.html" class="action-main-btn">Analytics</a>
+            <!-- Pencil button seedhe edit-channel.html kholega -->
+            <a href="edit-channel.html" class="action-icon-pill" title="Edit channel">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            </button>
+            </a>
         </div>
     </section>
 
@@ -527,7 +590,6 @@
 
         <!-- TAB 1: HOME -->
         <div class="tab-content-view active" id="tab-home">
-            <!-- Featured Video -->
             <div style="padding: 0 16px;">
                 <span style="font-size: 15px; font-weight: 700; display: block; margin-bottom: 10px;">Popular Video</span>
                 <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" style="display: flex; flex-direction: column; text-decoration: none; color: #fff; gap: 8px;">
@@ -597,7 +659,7 @@
 
         <!-- TAB 4: PLAYLISTS -->
         <div class="tab-content-view" id="tab-playlists" style="padding: 0 16px;">
-            <a href="watch.html?title=Chhattisgarhi+Folk+Tracks" style="display: flex; gap: 12px; text-decoration: none; color: #fff;">
+            <a href="playlists.html" style="display: flex; gap: 12px; text-decoration: none; color: #fff;">
                 <div style="width: 140px; aspect-ratio: 16/9; background: #222; border-radius: 8px; position: relative; overflow: hidden;">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" style="width:100%; height:100%; object-fit: cover; opacity: 0.7;" alt="Playlist">
                     <div style="position: absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; background:rgba(0,0,0,0.5);">6 Videos</div>
@@ -636,7 +698,25 @@
 
     </main>
 
-    <!-- 6. BOTTOM NAVIGATION -->
+    <!-- 6. SHARE DRAWER (NO BROWSER ALERT) -->
+    <div class="sheet-backdrop" id="shareSheet" onclick="closeShareSheetOnBackdrop(event)">
+        <div class="sheet-content-box">
+            <span style="font-size:15px; font-weight:700; padding:4px 6px;">Share channel</span>
+            <button class="sheet-btn-row" onclick="copyChannelLink()">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <span>Copy link</span>
+            </button>
+            <button class="sheet-btn-row" onclick="nativeShare()">
+                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+                <span>Share via apps</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="channelToast"></div>
+
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -659,8 +739,15 @@
         </a>
     </nav>
 
-    <!-- TABS SWITCHING LOGIC -->
+    <!-- INTERACTION LOGIC -->
     <script>
+        function showToast(msg) {
+            const t = document.getElementById('channelToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-btn-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -670,12 +757,30 @@
             if (panel) panel.classList.add('active');
         }
 
-        function shareChannel() {
+        function openShareSheet() {
+            document.getElementById('shareSheet').classList.add('open');
+        }
+
+        function closeShareSheet() {
+            document.getElementById('shareSheet').classList.remove('open');
+        }
+
+        function closeShareSheetOnBackdrop(e) {
+            if (e.target.id === 'shareSheet') closeShareSheet();
+        }
+
+        function copyChannelLink() {
+            navigator.clipboard.writeText(window.location.href);
+            closeShareSheet();
+            showToast('Channel link copied to clipboard');
+        }
+
+        function nativeShare() {
+            closeShareSheet();
             if (navigator.share) {
                 navigator.share({ title: 'Charandas Bhaskar on BTube', url: window.location.href }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('Channel link copied!');
+                copyChannelLink();
             }
         }
     </script>
