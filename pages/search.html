@@ -20,6 +20,7 @@
             background-color: #0f0f0f;
             color: #ffffff;
             padding-bottom: 30px;
+            overflow-x: hidden;
         }
 
         /* 1. TOP SEARCH BAR */
@@ -101,7 +102,89 @@
             fill: #ffffff;
         }
 
-        /* 2. HISTORY & SUGGESTIONS LIST */
+        /* 2. VOICE SEARCH FULL SCREEN MODAL (YOUTUBE STYLE) */
+        .voice-overlay {
+            position: fixed;
+            inset: 0;
+            background: #181818;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 20px 60px;
+        }
+
+        .voice-overlay.open {
+            display: flex;
+        }
+
+        .voice-top-row {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .voice-close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .voice-center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .voice-status-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .voice-spoken-text {
+            font-size: 16px;
+            color: #aaaaaa;
+            min-height: 24px;
+        }
+
+        .voice-mic-circle {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            position: relative;
+            cursor: pointer;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        .voice-mic-circle svg {
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
+            }
+            70% {
+                box-shadow: 0 0 0 24px rgba(255, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+            }
+        }
+
+        /* 3. SUGGESTIONS LIST */
         .search-suggestions-wrap {
             display: flex;
             flex-direction: column;
@@ -150,7 +233,7 @@
             font-size: 16px;
         }
 
-        /* 3. SEARCH RESULTS LIST */
+        /* 4. SEARCH RESULTS */
         .results-container {
             display: none;
             flex-direction: column;
@@ -238,12 +321,32 @@
             <button class="btn-clear-txt" id="clearBtn" onclick="clearSearchText()">✕</button>
         </div>
 
-        <button class="btn-mic-icon" onclick="startVoiceSearch()">
+        <button class="btn-mic-icon" onclick="openVoiceSearchModal()">
             <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
         </button>
     </header>
 
-    <!-- 2. SUGGESTIONS / HISTORY TRAY -->
+    <!-- 2. FULLSCREEN YOUTUBE-STYLE VOICE SEARCH MODAL -->
+    <div class="voice-overlay" id="voiceModal">
+        <div class="voice-top-row">
+            <button class="voice-close-btn" onclick="closeVoiceSearchModal()">✕</button>
+        </div>
+
+        <div class="voice-center-content">
+            <h2 class="voice-status-title" id="voiceTitle">Listening...</h2>
+            <div class="voice-spoken-text" id="voiceSpokenTxt">Say something in Hindi or English</div>
+
+            <div class="voice-mic-circle" onclick="restartListening()">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5-3c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: #777; font-size: 13px;">
+            Tap microphone to try again
+        </div>
+    </div>
+
+    <!-- 3. SUGGESTIONS / HISTORY TRAY -->
     <main class="search-suggestions-wrap" id="suggestionsWrap">
         <!-- Item 1 -->
         <div class="suggest-item-row" onclick="executeSearch('Chhattisgarhi Panthi Geet')">
@@ -273,7 +376,7 @@
         </div>
     </main>
 
-    <!-- 3. SEARCH RESULTS STREAM -->
+    <!-- 4. SEARCH RESULTS STREAM -->
     <section class="results-container" id="resultsBox">
         <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="result-card-video" data-keywords="panthi chhattisgarhi song geet charandas">
             <div class="result-thumb-box">
@@ -318,12 +421,14 @@
         </a>
     </section>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- INTERACTIVE JAVASCRIPT -->
     <script>
         const input = document.getElementById('searchInput');
         const clearBtn = document.getElementById('clearBtn');
         const suggestWrap = document.getElementById('suggestionsWrap');
         const resultsBox = document.getElementById('resultsBox');
+
+        let speechRecognizer = null;
 
         function onSearchChange(val) {
             clearBtn.style.display = val.trim().length > 0 ? 'block' : 'none';
@@ -379,25 +484,65 @@
             }
         }
 
-        // Voice Search (Speech Recognition)
-        function startVoiceSearch() {
+        // FULL SCREEN VOICE SEARCH MODAL
+        function openVoiceSearchModal() {
+            const modal = document.getElementById('voiceModal');
+            modal.classList.add('open');
+            startVoiceEngine();
+        }
+
+        function closeVoiceSearchModal() {
+            const modal = document.getElementById('voiceModal');
+            modal.classList.remove('open');
+            if (speechRecognizer) {
+                speechRecognizer.stop();
+            }
+        }
+
+        function startVoiceEngine() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const title = document.getElementById('voiceTitle');
+            const spokenTxt = document.getElementById('voiceSpokenTxt');
+
             if (!SpeechRec) {
-                input.placeholder = 'Mic not supported in this browser';
+                title.innerText = 'Not Supported';
+                spokenTxt.innerText = 'Speech recognition is not available in this browser.';
                 return;
             }
-            const rec = new SpeechRec();
-            rec.lang = 'hi-IN';
-            input.placeholder = 'Listening... Bolen';
-            rec.onresult = (e) => {
-                const speech = e.results[0][0].transcript;
-                input.value = speech;
-                executeSearch(speech);
+
+            speechRecognizer = new SpeechRec();
+            speechRecognizer.lang = 'hi-IN';
+            speechRecognizer.interimResults = true;
+
+            title.innerText = 'Listening...';
+            spokenTxt.innerText = 'Say something...';
+
+            speechRecognizer.onresult = (e) => {
+                const transcript = Array.from(e.results)
+                    .map(r => r[0])
+                    .map(r => r.transcript)
+                    .join('');
+
+                spokenTxt.innerText = transcript;
+
+                if (e.results[0].isFinal) {
+                    setTimeout(() => {
+                        closeVoiceSearchModal();
+                        executeSearch(transcript);
+                    }, 600);
+                }
             };
-            rec.onerror = () => {
-                input.placeholder = 'Search BTube...';
+
+            speechRecognizer.onerror = (e) => {
+                title.innerText = 'Didn\'t catch that';
+                spokenTxt.innerText = 'Tap the microphone to try again';
             };
-            rec.start();
+
+            speechRecognizer.start();
+        }
+
+        function restartListening() {
+            startVoiceEngine();
         }
     </script>
 </body>
