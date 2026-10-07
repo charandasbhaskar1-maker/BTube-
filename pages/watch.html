@@ -152,7 +152,7 @@
             display: flex;
         }
 
-        /* 4. ACTIONS BAR (Like, Dislike, Share, Download) */
+        /* 4. ACTIONS BAR */
         .actions-pill-strip {
             display: flex;
             align-items: center;
@@ -452,6 +452,23 @@
             fill: #ffffff;
         }
 
+        /* Toast notification */
+        .toast-bubble {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #333;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
         /* 9. RECOMMENDED FEED */
         .rec-feed {
             display: flex;
@@ -583,17 +600,17 @@
             </a>
 
             <!-- Subscribed + Bell Group -->
-            <div class="sub-wrap-btn" id="subWrapBtn">
-                <button class="btn-sub-text" id="subBtnText" onclick="handleSubscribeClick()">Subscribe</button>
-                <button class="btn-sub-bell" onclick="openBellMenu()">
-                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <div class="sub-wrap-btn is-subscribed" id="subWrapBtn">
+                <button class="btn-sub-text" id="subBtnText" onclick="handleSubscribeClick()">Subscribed</button>
+                <button class="btn-sub-bell" id="bellIconBtn" onclick="openBellMenu()">
+                    <!-- All Notifications Ringing Bell Icon -->
+                    <svg id="bellSvg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                 </button>
             </div>
         </div>
 
         <!-- Action Buttons (Like / Dislike / Share / Download) -->
         <div class="actions-pill-strip">
-            <!-- Grouped Like & Dislike -->
             <div class="like-dislike-group">
                 <button class="like-btn" id="likeBtn" onclick="handleLike()">
                     <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
@@ -604,20 +621,18 @@
                 </button>
             </div>
 
-            <!-- Share Button -->
             <button class="pill-action-btn" onclick="shareVideo()">
                 <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                 <span>Share</span>
             </button>
 
-            <!-- Download Button with Progress -->
             <button class="pill-action-btn" id="downloadBtn" onclick="handleDownload()">
                 <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                 <span id="downloadText">Download</span>
             </button>
         </div>
 
-        <!-- Description Box (Expandable without alert) -->
+        <!-- Description Box -->
         <div class="desc-block" onclick="toggleDesc()">
             <div class="desc-text collapsed" id="descContent">
                 <b>210K views • Oct 7, 2026</b><br>
@@ -627,7 +642,7 @@
         </div>
     </section>
 
-    <!-- Comments Teaser (Opens Drawer) -->
+    <!-- Comments Teaser -->
     <div class="comments-card-teaser" onclick="openCommentsSheet()">
         <div class="comments-head-row">
             <span>Comments</span>
@@ -670,7 +685,7 @@
         </a>
     </div>
 
-    <!-- 4. COMMENTS BOTTOM SHEET (असली YouTube जैसा) -->
+    <!-- 4. COMMENTS BOTTOM SHEET -->
     <div class="comments-sheet-modal" id="commentsModal">
         <div class="sheet-top-header">
             <span class="sheet-title-text">Comments <span id="sheetCmtTotal">482</span></span>
@@ -700,7 +715,7 @@
         </div>
     </div>
 
-    <!-- 5. BELL MENU MODAL (All / Personalized / None) -->
+    <!-- 5. BELL MENU MODAL -->
     <div class="bell-dialog-overlay" id="bellOverlay" onclick="closeBellMenu(event)">
         <div class="bell-options-card">
             <button class="bell-opt-row" onclick="selectBell('All')">
@@ -718,13 +733,16 @@
         </div>
     </div>
 
+    <!-- Small Toast Bubble -->
+    <div class="toast-bubble" id="toastMsg"></div>
+
     <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
-        <a href="upload.html" class="nav-link">
+        <a href="shorts.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
@@ -742,26 +760,42 @@
         </a>
     </nav>
 
-    <!-- JAVASCRIPT LOGIC (NO BROWSER ALERTS!) -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // 1. URL Se Title & Channel Load
+        // 1. Dynamic Title & Channel Initials (CB)
         const params = new URLSearchParams(window.location.search);
         if (params.get('title')) {
             document.getElementById('pageVideoTitle').innerText = params.get('title');
         }
         if (params.get('channel')) {
-            document.getElementById('pageChannelName').innerText = params.get('channel');
-            document.getElementById('pageChannelAvatar').innerText = params.get('channel').substring(0, 2).toUpperCase();
+            const chName = params.get('channel');
+            document.getElementById('pageChannelName').innerText = chName;
+            
+            // Extract First letter of first word and second word (e.g. Charandas Bhaskar -> CB)
+            const words = chName.trim().split(' ');
+            let initials = words[0][0];
+            if (words.length > 1) initials += words[1][0];
+            document.getElementById('pageChannelAvatar').innerText = initials.toUpperCase();
         }
 
-        // 2. Subscribe & Bell Logic
-        let isSubscribed = false;
+        // 2. Toast display
+        function showToast(msg) {
+            const toast = document.getElementById('toastMsg');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+
+        // 3. Subscribe & Bell Logic
+        let isSubscribed = true;
+
         function handleSubscribeClick() {
             if (!isSubscribed) {
                 isSubscribed = true;
                 document.getElementById('subWrapBtn').classList.add('is-subscribed');
                 document.getElementById('subBtnText').innerText = 'Subscribed';
                 document.getElementById('subCountLabel').innerText = '246 subscribers';
+                showToast('Subscription added');
             } else {
                 openBellMenu();
             }
@@ -779,6 +813,7 @@
 
         function selectBell(type) {
             document.getElementById('bellOverlay').classList.remove('open');
+            showToast(`Notifications: ${type}`);
         }
 
         function unsubscribeChannel() {
@@ -787,9 +822,10 @@
             document.getElementById('subBtnText').innerText = 'Subscribe';
             document.getElementById('subCountLabel').innerText = '245 subscribers';
             document.getElementById('bellOverlay').classList.remove('open');
+            showToast('Subscription removed');
         }
 
-        // 3. Like / Dislike Toggle
+        // 4. Like / Dislike Toggle
         let isLiked = false;
         let isDisliked = false;
 
@@ -828,7 +864,7 @@
             }
         }
 
-        // 4. Download In-Button Animation
+        // 5. Download Progress
         let isDownloaded = false;
         function handleDownload() {
             if (isDownloaded) return;
@@ -837,10 +873,11 @@
             setTimeout(() => {
                 textSpan.innerText = 'Downloaded ✓';
                 isDownloaded = true;
-            }, 1200);
+                showToast('Video saved offline');
+            }, 1000);
         }
 
-        // 5. Expandable Description
+        // 6. Expandable Description
         let isDescExpanded = false;
         function toggleDesc() {
             const desc = document.getElementById('descContent');
@@ -850,7 +887,7 @@
             toggle.innerText = isDescExpanded ? 'Show less' : '...more';
         }
 
-        // 6. Comments Slide Sheet
+        // 7. Comments Slide Sheet
         function openCommentsSheet() {
             document.getElementById('commentsModal').classList.add('open');
         }
@@ -881,19 +918,20 @@
             container.prepend(newRow);
             input.value = '';
 
-            // Update comment count
             const cmtLabel = document.getElementById('cmtCount');
             const sheetCmtTotal = document.getElementById('sheetCmtTotal');
             cmtLabel.innerText = '483';
             sheetCmtTotal.innerText = '483';
+            showToast('Comment added');
         }
 
-        // 7. Web Share API
+        // 8. Share
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard');
             }
         }
     </script>
