@@ -1,15 +1,10 @@
-// BTube Global Application Script
-
 document.addEventListener('DOMContentLoaded', () => {
-    initCategoryChips();
-});
-
-function initCategoryChips() {
-    const chips = document.querySelectorAll('.cat-chip');
-    chips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            chips.forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
+    // Chips switching
+    const pills = document.querySelectorAll('.cat-pill');
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
         });
     });
-}
+});
