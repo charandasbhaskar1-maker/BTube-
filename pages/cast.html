@@ -2,62 +2,407 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Connect to a Device - BTube</title>
+    <title>Connect to a device - BTube</title>
+
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-        body { background:#0f0f0f; color:#fff; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 30px;
+        }
+
+        /* 1. TOP HEADER */
         .cast-header {
             height: 52px;
             display: flex;
             align-items: center;
             padding: 0 16px;
             gap: 16px;
-            border-bottom: 1px solid #222;
+            border-bottom: 1px solid #1f1f1f;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 100;
         }
-        .cast-header a { color: #fff; display: flex; text-decoration: none; }
-        .cast-header a svg { width: 22px; height: 22px; fill: #fff; }
-        .cast-header span { font-size: 18px; font-weight: 700; }
-        .device-list { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-        .device-card {
-            background: #1e1e1e;
+
+        .btn-back-nav {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back-nav svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .cast-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. SCANNING STATUS BAR */
+        .scanning-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px 8px;
+            font-size: 13px;
+            color: #aaaaaa;
+        }
+
+        .scanning-spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #333333;
+            border-top: 2px solid #3ea6ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 3. DEVICE LIST */
+        .device-section {
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .device-card-item {
+            background: #1c1c1c;
+            border: 1px solid #282828;
+            border-radius: 14px;
             padding: 16px;
-            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .device-card-item:active {
+            background: #252525;
+        }
+
+        .device-left-wrap {
             display: flex;
             align-items: center;
             gap: 14px;
+        }
+
+        .device-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(62, 166, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .device-icon-box svg {
+            width: 24px;
+            height: 24px;
+            fill: #3ea6ff;
+        }
+
+        .device-texts {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .device-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .device-status-txt {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .btn-disconnect {
+            background: #272727;
+            border: none;
+            color: #ff4e4e;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
             cursor: pointer;
         }
-        .device-card svg { width: 26px; height: 26px; fill: #3ea6ff; }
-        .device-info { display: flex; flex-direction: column; gap: 3px; }
-        .device-name { font-size: 15px; font-weight: 600; }
-        .device-status { font-size: 12px; color: #888; }
+
+        /* 4. LINK WITH TV CODE ROW */
+        .manual-link-card {
+            background: #181818;
+            border: 1px solid #252525;
+            border-radius: 14px;
+            margin: 12px 16px 6px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .manual-link-card:active {
+            background: #222222;
+        }
+
+        .manual-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .manual-left svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .manual-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .manual-arrow {
+            color: #777777;
+            font-size: 16px;
+        }
+
+        /* 5. TV CODE MODAL */
+        .tv-code-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .tv-code-modal.open {
+            display: flex;
+        }
+
+        .tv-code-sheet {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 20px 16px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tv-code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .tv-code-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .tv-code-input {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #383838;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: 2px;
+            text-align: center;
+            outline: none;
+        }
+
+        .btn-link-submit {
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border: none;
+            border-radius: 20px;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* 6. HINT FOOTER */
+        .wifi-hint-text {
+            font-size: 12px;
+            color: #777777;
+            line-height: 1.4;
+            padding: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+
+    <!-- 1. TOP HEADER -->
     <header class="cast-header">
-        <a href="../frontend/index.html">
+        <a href="../frontend/index.html" class="btn-back-nav">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
         </a>
-        <span>Connect to a device</span>
+        <span class="cast-title">Connect to a device</span>
     </header>
 
-    <div class="device-list">
-        <div class="device-card" onclick="this.querySelector('.device-status').innerText = 'Connected ✓'; this.querySelector('.device-status').style.color = '#2ecc71';">
-            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-            <div class="device-info">
-                <span class="device-name">Smart TV (Living Room)</span>
-                <span class="device-status">Ready to connect</span>
+    <!-- 2. SCANNING STATUS -->
+    <div class="scanning-bar">
+        <div class="scanning-spinner" id="scanSpinner"></div>
+        <span id="scanStatusText">Searching for nearby screens...</span>
+    </div>
+
+    <!-- 3. DEVICES LIST -->
+    <main class="device-section">
+        <!-- Device 1 -->
+        <div class="device-card-item" id="device-1" onclick="toggleConnectDevice('device-1', 'Smart TV (Living Room)')">
+            <div class="device-left-wrap">
+                <div class="device-icon-box">
+                    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                </div>
+                <div class="device-texts">
+                    <span class="device-name">Smart TV (Living Room)</span>
+                    <span class="device-status-txt">Ready to connect</span>
+                </div>
             </div>
+            <button class="btn-disconnect" onclick="event.stopPropagation(); disconnectDevice('device-1')">Disconnect</button>
         </div>
-        <div class="device-card" onclick="this.querySelector('.device-status').innerText = 'Connected ✓'; this.querySelector('.device-status').style.color = '#2ecc71';">
-            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-            <div class="device-info">
-                <span class="device-name">Android TV (Bedroom)</span>
-                <span class="device-status">Ready to connect</span>
+
+        <!-- Device 2 -->
+        <div class="device-card-item" id="device-2" onclick="toggleConnectDevice('device-2', 'Android TV (Bedroom)')">
+            <div class="device-left-wrap">
+                <div class="device-icon-box">
+                    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                </div>
+                <div class="device-texts">
+                    <span class="device-name">Android TV (Bedroom)</span>
+                    <span class="device-status-txt">Ready to connect</span>
+                </div>
             </div>
+            <button class="btn-disconnect" onclick="event.stopPropagation(); disconnectDevice('device-2')">Disconnect</button>
+        </div>
+    </main>
+
+    <!-- 4. LINK WITH TV CODE OPTION -->
+    <div class="manual-link-card" onclick="openTvCodeModal()">
+        <div class="manual-left">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z"/></svg>
+            <span class="manual-title">Link with TV code</span>
+        </div>
+        <span class="manual-arrow">›</span>
+    </div>
+
+    <!-- 5. HINT FOOTER -->
+    <div class="wifi-hint-text">
+        Make sure your TV and phone are connected to the same Wi-Fi network.
+    </div>
+
+    <!-- 6. TV CODE MODAL BOTTOM SHEET -->
+    <div class="tv-code-modal" id="tvCodeModal" onclick="closeModalOnBackdrop(event)">
+        <div class="tv-code-sheet">
+            <div class="tv-code-header">
+                <span>Enter TV Code</span>
+                <button class="tv-code-close" onclick="closeTvCodeModal()">✕</button>
+            </div>
+            <p style="font-size: 13px; color: #aaa;">Find the 12-digit code in your TV settings under "Link with TV code".</p>
+            <input type="number" id="tvCodeInput" class="tv-code-input" placeholder="000 000 000 000">
+            <button class="btn-link-submit" onclick="submitTvCode()">Link TV</button>
         </div>
     </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Stop scanning animation after 3 seconds
+        setTimeout(() => {
+            const spinner = document.getElementById('scanSpinner');
+            const text = document.getElementById('scanStatusText');
+            if (spinner) spinner.style.display = 'none';
+            if (text) text.innerText = 'Devices on your Wi-Fi network';
+        }, 3000);
+
+        function toggleConnectDevice(cardId, name) {
+            const card = document.getElementById(cardId);
+            const status = card.querySelector('.device-status-txt');
+            const disBtn = card.querySelector('.btn-disconnect');
+
+            if (status.innerText.includes('Connected')) return;
+
+            status.innerText = 'Connecting...';
+            status.style.color = '#3ea6ff';
+
+            setTimeout(() => {
+                status.innerText = 'Connected ✓';
+                status.style.color = '#2ecc71';
+                disBtn.style.display = 'block';
+            }, 1000);
+        }
+
+        function disconnectDevice(cardId) {
+            const card = document.getElementById(cardId);
+            const status = card.querySelector('.device-status-txt');
+            const disBtn = card.querySelector('.btn-disconnect');
+
+            status.innerText = 'Ready to connect';
+            status.style.color = '#888888';
+            disBtn.style.display = 'none';
+        }
+
+        function openTvCodeModal() {
+            document.getElementById('tvCodeModal').classList.add('open');
+            document.getElementById('tvCodeInput').focus();
+        }
+
+        function closeTvCodeModal() {
+            document.getElementById('tvCodeModal').classList.remove('open');
+        }
+
+        function closeModalOnBackdrop(e) {
+            if (e.target.id === 'tvCodeModal') closeTvCodeModal();
+        }
+
+        function submitTvCode() {
+            const val = document.getElementById('tvCodeInput').value.trim();
+            if (val.length >= 6) {
+                closeTvCodeModal();
+                alert('Connected to TV successfully!');
+            } else {
+                document.getElementById('tvCodeInput').style.borderColor = '#ff4e4e';
+            }
+        }
+    </script>
 </body>
 </html>
