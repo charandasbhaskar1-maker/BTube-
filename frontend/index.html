@@ -10,136 +10,132 @@
 </head>
 <body>
 
-    <!-- 1. HEADER -->
+    <!-- Header -->
     <header class="bt-header">
-        <a href="index.html" class="bt-brand-box">
+        <a href="index.html" class="bt-brand">
             <svg viewBox="0 0 32 24" class="bt-logo-svg">
                 <rect width="32" height="24" rx="7" fill="#FF0000"/>
                 <path d="M 9 5.5 L 16 5.5 C 18.2 5.5 19.8 6.8 19.8 8.8 C 19.8 10.2 18.9 11.3 17.5 11.8 C 19.2 12.3 20.2 13.6 20.2 15.2 C 20.2 17.4 18.4 18.5 16 18.5 L 9 18.5 Z" fill="#ffffff" fill-rule="evenodd"/>
                 <path d="M 12 7.8 L 12 11 L 15.5 9.4 Z" fill="#FF0000"/>
                 <path d="M 12 13 L 12 16.2 L 15.8 14.6 Z" fill="#FF0000"/>
             </svg>
-            <span class="bt-brand-title">B<span>Tube</span></span>
+            <span class="bt-brand-text">B<span>Tube</span></span>
         </a>
 
-        <div class="bt-header-tools">
-            <button class="tool-icon-btn" onclick="alert('Cast to TV')">
+        <div class="bt-header-icons">
+            <button class="header-icon-btn" onclick="alert('Cast to TV')">
                 <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </button>
-            <button class="tool-icon-btn" onclick="alert('Notifications')">
+            <button class="header-icon-btn" onclick="alert('Notifications')">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span class="badge-count">3</span>
+                <span class="badge-counter">3</span>
             </button>
-            <button class="tool-icon-btn" onclick="alert('Search BTube')">
+            <button class="header-icon-btn" onclick="alert('Search BTube')">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- 2. CATEGORY CHIPS -->
-    <nav class="chips-container">
-        <button class="cat-chip active">All</button>
-        <button class="cat-chip">Music</button>
-        <button class="cat-chip">Chhattisgarhi</button>
-        <button class="cat-chip">Vlogs</button>
-        <button class="cat-chip">Folk Banjo</button>
-        <button class="cat-chip">Education</button>
-        <button class="cat-chip">Tech</button>
+    <!-- Chips -->
+    <nav class="category-tray">
+        <button class="cat-pill active">All</button>
+        <button class="cat-pill">Music</button>
+        <button class="cat-pill">Chhattisgarhi</button>
+        <button class="cat-pill">Vlogs</button>
+        <button class="cat-pill">Folk Banjo</button>
+        <button class="cat-pill">Education</button>
+        <button class="cat-pill">Tech</button>
     </nav>
 
-    <!-- 3. FEED -->
-    <main class="video-feed">
+    <!-- Video Feed -->
+    <main class="video-stream-feed">
 
-        <!-- Card 1 -->
-        <article class="video-card-item">
-            <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="thumb-wrapper">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Thumbnail">
-                <span class="timestamp-badge">05:42</span>
+        <!-- Video 1 -->
+        <article class="feed-video-card">
+            <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-thumb-frame">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Video">
+                <span class="duration-tag">05:42</span>
             </a>
-            <div class="video-details-box">
-                <a href="../pages/channel.html" class="creator-avatar-link" style="background:#e50914;">CB</a>
-                <div class="text-info-meta">
-                    <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-headline-txt">
+            <div class="video-details-row">
+                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#e50914; text-decoration:none;">CB</a>
+                <div class="details-column">
+                    <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="card-title-text" style="text-decoration:none; color:#fff;">
                         Chhattisgarhi Panthi Song • Special Cultural Video 2026
                     </a>
-                    <span class="sub-details-txt">Charandas Bhaskar • 210K views • 2 weeks ago</span>
+                    <span class="card-meta-text">Charandas Bhaskar • 210K views • 2 weeks ago</span>
                 </div>
             </div>
         </article>
 
         <!-- Shorts Shelf -->
-        <section class="shorts-shelf-block">
-            <div class="shelf-header-row">
-                <div class="shorts-red-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-                </div>
-                <h3 class="shelf-header-title">Shorts</h3>
+        <section class="shorts-shelf">
+            <div class="shorts-shelf-title">
+                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+                <span>Shorts</span>
             </div>
 
-            <div class="shorts-horizontal-scroll">
-                <a href="../pages/shorts.html" class="short-card-box">
+            <div class="shorts-slider">
+                <a href="../pages/upload.html" class="short-box-card">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600" alt="Short 1">
-                    <div class="short-overlay-meta">
-                        <span class="short-title-text">Panthi dholak beat practice! 🔥</span>
-                        <span class="short-views-count">142K views</span>
+                    <div class="short-box-overlay">
+                        <span class="short-box-title">Panthi dholak beat practice! 🔥</span>
+                        <span class="short-box-views">142K views</span>
                     </div>
                 </a>
-
-                <a href="../pages/shorts.html" class="short-card-box">
+                <a href="../pages/upload.html" class="short-box-card">
                     <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600" alt="Short 2">
-                    <div class="short-overlay-meta">
-                        <span class="short-title-text">Typewriter Banjo electric test ⚡</span>
-                        <span class="short-views-count">88K views</span>
+                    <div class="short-box-overlay">
+                        <span class="short-box-title">Typewriter Banjo electric test ⚡</span>
+                        <span class="short-box-views">88K views</span>
                     </div>
                 </a>
-
-                <a href="../pages/shorts.html" class="short-card-box">
+                <a href="../pages/upload.html" class="short-box-card">
                     <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600" alt="Short 3">
-                    <div class="short-overlay-meta">
-                        <span class="short-title-text">Early morning village vibe 🌾</span>
-                        <span class="short-views-count">210K views</span>
+                    <div class="short-box-overlay">
+                        <span class="short-box-title">Early morning village vibe 🌾</span>
+                        <span class="short-box-views">210K views</span>
                     </div>
                 </a>
             </div>
         </section>
 
-        <!-- Card 2 -->
-        <article class="video-card-item">
-            <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="thumb-wrapper">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Thumbnail">
-                <span class="timestamp-badge">14:10</span>
+        <!-- Video 2 -->
+        <article class="feed-video-card">
+            <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-thumb-frame">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Video">
+                <span class="duration-tag">14:10</span>
             </a>
-            <div class="video-details-box">
-                <a href="../pages/channel.html" class="creator-avatar-link" style="background:#3ea6ff;">DH</a>
-                <div class="text-info-meta">
-                    <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-headline-txt">
+            <div class="video-details-row">
+                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#3ea6ff; text-decoration:none;">DH</a>
+                <div class="details-column">
+                    <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="card-title-text" style="text-decoration:none; color:#fff;">
                         Typewriter Banjo with Magnetic Pickups Full Making Guide
                     </a>
-                    <span class="sub-details-txt">Dhun AI • 45K views • 1 day ago</span>
+                    <span class="card-meta-text">Dhun AI • 45K views • 1 day ago</span>
                 </div>
             </div>
         </article>
 
     </main>
 
-    <!-- 4. BOTTOM NAV -->
-    <nav class="bottom-nav-fixed">
-        <a href="index.html" class="nav-link-btn active">
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav-bar">
+        <a href="index.html" class="nav-tab-item active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
-        <a href="../pages/shorts.html" class="nav-link-btn">
+        <a href="../pages/upload.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
-        <a href="../pages/upload.html" class="nav-btn-plus">
+        <a href="../pages/upload.html" class="nav-plus-circle">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </a>
-        <a href="../pages/subscriptions.html" class="nav-link-btn">
+        <a href="../pages/channel.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subscriptions</span>
         </a>
-        <a href="../pages/profile.html" class="nav-link-btn">
+        <a href="../pages/profile.html" class="nav-tab-item">
             <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
             <span>You</span>
         </a>
