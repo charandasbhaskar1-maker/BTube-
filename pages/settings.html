@@ -34,7 +34,7 @@
             top: 0;
             background: #0f0f0f;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .btn-back {
@@ -54,23 +54,104 @@
         }
 
         .header-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 700;
         }
 
-        /* 2. SETTINGS LIST GROUPS */
-        .settings-group-list {
+        /* 2. PROFILE HERO MINI CARD */
+        .account-preview-box {
+            padding: 14px 16px;
+            margin: 12px 16px 6px;
+            background: #181818;
+            border: 1px solid #262626;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: #ffffff;
+            transition: background 0.15s;
+        }
+
+        .account-preview-box:active {
+            background: #222222;
+        }
+
+        .acc-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .acc-avatar-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .acc-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: none;
+        }
+
+        .acc-name-block {
             display: flex;
             flex-direction: column;
-            padding: 4px 0 16px;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .acc-display-name {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .acc-handle-name {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        .acc-edit-badge {
+            font-size: 12px;
+            color: #3ea6ff;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        /* 3. SETTINGS GROUP LIST */
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            padding-top: 4px;
         }
 
         .group-heading {
-            font-size: 12px;
-            font-weight: 700;
-            color: #3ea6ff;
+            font-size: 11px;
+            font-weight: 800;
+            color: #aaaaaa;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             padding: 16px 16px 6px;
         }
 
@@ -82,18 +163,18 @@
             color: #ffffff;
             text-decoration: none;
             cursor: pointer;
-            border-bottom: 1px solid #161616;
+            border-bottom: 1px solid #141414;
             transition: background 0.15s;
         }
 
         .settings-row-item:active {
-            background: #1c1c1c;
+            background: #1a1a1a;
         }
 
         .row-left-content {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
             flex: 1;
             padding-right: 12px;
         }
@@ -107,6 +188,7 @@
         .row-sub-desc {
             font-size: 12px;
             color: #888888;
+            line-height: 1.35;
         }
 
         .row-right-badge {
@@ -121,10 +203,10 @@
         .row-right-badge svg {
             width: 14px;
             height: 14px;
-            fill: #888888;
+            fill: #777777;
         }
 
-        /* Switch styling */
+        /* 4. TOGGLE SWITCH */
         .switch {
             position: relative;
             display: inline-block;
@@ -164,11 +246,11 @@
             transform: translateX(20px);
         }
 
-        /* 3. BOTTOM DRAWERS */
+        /* 5. POPUP DRAWERS (QUALITY & GENERAL) */
         .drawer-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 2500;
             display: none;
             align-items: flex-end;
@@ -186,7 +268,7 @@
             padding: 18px 16px 24px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
         }
 
@@ -212,21 +294,22 @@
             cursor: pointer;
         }
 
-        .quality-radio-row {
+        .radio-selection-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 6px;
+            padding: 12px 8px;
             border-radius: 8px;
             cursor: pointer;
             color: #ffffff;
+            font-size: 14px;
         }
 
-        .quality-radio-row:active {
+        .radio-selection-row:active {
             background: #2a2a2a;
         }
 
-        .quality-radio-row.selected {
+        .radio-selection-row.selected {
             color: #3ea6ff;
             font-weight: 700;
         }
@@ -248,7 +331,7 @@
             display: none;
         }
 
-        /* 4. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -308,27 +391,44 @@
         <span class="header-title">Settings</span>
     </header>
 
-    <!-- 2. MAIN SETTINGS OPTIONS -->
-    <main class="settings-group-list">
+    <!-- 2. ACCOUNT HERO MINI BAR -->
+    <a href="edit-channel.html" class="account-preview-box">
+        <div class="acc-left-cluster">
+            <div class="acc-avatar-circle">
+                <span id="settingsInits">CB</span>
+                <img id="settingsDpImg" class="acc-avatar-img" alt="DP">
+            </div>
+            <div class="acc-name-block">
+                <span class="acc-display-name" id="settingsName">Charandas Bhaskar</span>
+                <span class="acc-handle-name" id="settingsHandle">@charandasbhaskar</span>
+            </div>
+        </div>
+        <div class="acc-edit-badge">
+            <span>Edit</span>
+            <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#3ea6ff;"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </div>
+    </a>
 
-        <div class="group-heading">Account & Profile</div>
+    <!-- 3. SETTINGS SECTIONS -->
+    <main class="settings-container">
 
-        <a href="edit-channel.html" class="settings-row-item">
+        <!-- PREFERENCES -->
+        <div class="group-heading">Preferences</div>
+
+        <div class="settings-row-item" onclick="openGeneralDrawer()">
             <div class="row-left-content">
-                <span class="row-main-title">Account</span>
-                <span class="row-sub-desc">Edit channel profile, name and handle</span>
+                <span class="row-main-title">General</span>
+                <span class="row-sub-desc" id="generalSubDesc">Language: Hindi • Double-tap seek: 10s</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
             </div>
-        </a>
-
-        <div class="group-heading">Playback & Preferences</div>
+        </div>
 
         <div class="settings-row-item" onclick="openQualityDrawer()">
             <div class="row-left-content">
                 <span class="row-main-title">Video quality preferences</span>
-                <span class="row-sub-desc" id="currentQualityDesc">Current: Auto (Recommended)</span>
+                <span class="row-sub-desc" id="currentQualityDesc">Auto (recommended: adapts to speed)</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -338,7 +438,7 @@
         <div class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Autoplay next video</span>
-                <span class="row-sub-desc">Play next video when current finishes</span>
+                <span class="row-sub-desc">Continuous playback on finish</span>
             </div>
             <label class="switch">
                 <input type="checkbox" checked onchange="handleToggle(this, 'Autoplay')">
@@ -349,7 +449,7 @@
         <div class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Data saving mode</span>
-                <span class="row-sub-desc">Reduces download & streaming bitrates</span>
+                <span class="row-sub-desc">Reduces download & video bitrates automatically</span>
             </div>
             <label class="switch">
                 <input type="checkbox" onchange="handleToggle(this, 'Data saving')">
@@ -357,12 +457,13 @@
             </label>
         </div>
 
-        <div class="group-heading">Content & History</div>
+        <!-- CONTENT & OFFLINE -->
+        <div class="group-heading">Content & Offline</div>
 
         <a href="downloads.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Downloads</span>
-                <span class="row-sub-desc">Download quality, offline storage & delete</span>
+                <span class="row-sub-desc">Offline storage, 1080p quality & management</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -372,7 +473,7 @@
         <a href="history.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Manage all history</span>
-                <span class="row-sub-desc">Watch history, search history & clear</span>
+                <span class="row-sub-desc">Watch history, search history & clear records</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -382,7 +483,7 @@
         <a href="time-watched.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Time watched & Wellbeing</span>
-                <span class="row-sub-desc">Daily average, break reminders & bedtime</span>
+                <span class="row-sub-desc">Daily average, bedtime & take a break reminder</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -392,29 +493,30 @@
         <a href="cast.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Watch on TV</span>
-                <span class="row-sub-desc">Link with TV code & wireless cast</span>
+                <span class="row-sub-desc">Link with TV code & screen cast</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
             </div>
         </a>
 
-        <div class="group-heading">About & App Info</div>
+        <!-- APP & SUPPORT -->
+        <div class="group-heading">Support & About</div>
 
-        <div class="settings-row-item" onclick="showToast('App is up to date (BTube 2026.10)')">
+        <a href="about.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">About BTube</span>
-                <span class="row-sub-desc">Version 2.4.0 • Up to date</span>
+                <span class="row-sub-desc">Version 2.4.0 (2026.10) • Platform specifications</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
             </div>
-        </div>
+        </a>
 
         <a href="help.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Help and feedback</span>
-                <span class="row-sub-desc">Support articles, bug report & feedback</span>
+                <span class="row-sub-desc">Troubleshooting articles, report bugs & feedback</span>
             </div>
             <div class="row-right-badge">
                 <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -423,24 +525,46 @@
 
     </main>
 
-    <!-- 3. DRAWER: VIDEO QUALITY SELECTION -->
+    <!-- 4. QUALITY PREFERENCES DRAWER -->
     <div class="drawer-overlay" id="qualityDrawer" onclick="closeDrawerOnBackdrop(event, 'qualityDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
-                <span class="drawer-title-txt">Video quality preferences</span>
+                <span class="drawer-title-txt">Video quality on mobile</span>
                 <button class="drawer-close-btn" onclick="closeDrawer('qualityDrawer')">✕</button>
             </div>
-            <div class="quality-radio-row selected" onclick="selectQuality('Auto (recommended)', this)">
+            <div class="radio-selection-row selected" onclick="selectQuality('Auto (recommended: adapts to speed)', this)">
                 <span>Auto (recommended)</span>
                 <span>✓</span>
             </div>
-            <div class="quality-radio-row" onclick="selectQuality('Higher picture quality (1080p)', this)">
-                <span>Higher picture quality (1080p)</span>
+            <div class="radio-selection-row" onclick="selectQuality('Higher picture quality (1080p FHD)', this)">
+                <span>Higher picture quality (1080p FHD)</span>
                 <span></span>
             </div>
-            <div class="quality-radio-row" onclick="selectQuality('Data saver (480p)', this)">
-                <span>Data saver (480p)</span>
+            <div class="radio-selection-row" onclick="selectQuality('Data saver (480p SD)', this)">
+                <span>Data saver (480p SD)</span>
                 <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. GENERAL PREFERENCES DRAWER -->
+    <div class="drawer-overlay" id="generalDrawer" onclick="closeDrawerOnBackdrop(event, 'generalDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt">General settings</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('generalDrawer')">✕</button>
+            </div>
+            <div class="radio-selection-row selected" onclick="selectLang('Hindi (हिंदी)', this)">
+                <span>Language: Hindi (हिंदी)</span>
+                <span>✓</span>
+            </div>
+            <div class="radio-selection-row" onclick="selectLang('English (India)', this)">
+                <span>Language: English (India)</span>
+                <span></span>
+            </div>
+            <div class="radio-selection-row" onclick="showToast('Double-tap seek set to 10 seconds')">
+                <span>Double-tap seek: 10 seconds</span>
+                <span>›</span>
             </div>
         </div>
     </div>
@@ -448,7 +572,7 @@
     <!-- Toast Bubble -->
     <div class="toast-pop" id="settingsToast"></div>
 
-    <!-- 4. BOTTOM NAVIGATION -->
+    <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -471,15 +595,31 @@
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- LIVE DATA LOAD & SCRIPT -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
+            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const savedDp = localStorage.getItem('btube_channel_dp');
+
             if (savedName) {
+                document.getElementById('settingsName').innerText = savedName;
                 const parts = savedName.trim().split(' ');
                 let inits = parts[0][0];
                 if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('settingsInits').innerText = inits.toUpperCase();
                 document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+
+            if (savedHandle) {
+                document.getElementById('settingsHandle').innerText = savedHandle;
+            }
+
+            if (savedDp) {
+                const dp = document.getElementById('settingsDpImg');
+                dp.src = savedDp;
+                dp.style.display = 'block';
+                document.getElementById('settingsInits').style.display = 'none';
             }
         });
 
@@ -498,6 +638,10 @@
             document.getElementById('qualityDrawer').classList.add('open');
         }
 
+        function openGeneralDrawer() {
+            document.getElementById('generalDrawer').classList.add('open');
+        }
+
         function closeDrawer(id) {
             document.getElementById(id).classList.remove('open');
         }
@@ -507,15 +651,27 @@
         }
 
         function selectQuality(val, row) {
-            document.querySelectorAll('.quality-radio-row').forEach(r => {
+            document.querySelectorAll('#qualityDrawer .radio-selection-row').forEach(r => {
                 r.classList.remove('selected');
                 r.querySelector('span:last-child').innerText = '';
             });
             row.classList.add('selected');
             row.querySelector('span:last-child').innerText = '✓';
-            document.getElementById('currentQualityDesc').innerText = `Current: ${val}`;
+            document.getElementById('currentQualityDesc').innerText = val;
             closeDrawer('qualityDrawer');
-            showToast(`Quality set to ${val}`);
+            showToast(`Quality updated`);
+        }
+
+        function selectLang(lang, row) {
+            document.querySelectorAll('#generalDrawer .radio-selection-row').forEach(r => {
+                r.classList.remove('selected');
+                r.querySelector('span:last-child').innerText = '';
+            });
+            row.classList.add('selected');
+            row.querySelector('span:last-child').innerText = '✓';
+            document.getElementById('generalSubDesc').innerText = `Language: ${lang} • Seek: 10s`;
+            closeDrawer('generalDrawer');
+            showToast(`Language set to ${lang}`);
         }
     </script>
 </body>
