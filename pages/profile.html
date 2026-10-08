@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>You - BTube</title>
+    <title>Profile - BTube</title>
 
     <style>
         * {
@@ -24,7 +24,7 @@
         }
 
         /* 1. TOP HEADER */
-        .profile-header {
+        .profile-top-bar {
             height: 52px;
             display: flex;
             align-items: center;
@@ -35,53 +35,52 @@
             top: 0;
             background: #0f0f0f;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .header-tool-btn {
+        .top-tool-btn {
             background: none;
             border: none;
             color: #ffffff;
+            cursor: pointer;
             display: flex;
             align-items: center;
             text-decoration: none;
-            cursor: pointer;
         }
 
-        .header-tool-btn svg {
+        .top-tool-btn svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
         }
 
-        /* 2. USER HERO CARD */
-        .user-hero-card {
+        /* 2. CREATOR PROFILE HERO */
+        .profile-hero-card {
+            padding: 4px 16px 14px;
             display: flex;
             align-items: center;
-            padding: 12px 16px 14px;
             gap: 16px;
             text-decoration: none;
             color: #ffffff;
         }
 
-        .hero-avatar {
-            width: 76px;
-            height: 76px;
+        .profile-avatar-frame {
+            width: 72px;
+            height: 72px;
             border-radius: 50%;
             background: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: #ffffff;
             flex-shrink: 0;
-            box-shadow: 0 4px 16px rgba(229, 9, 20, 0.35);
             overflow: hidden;
             position: relative;
+            box-shadow: 0 4px 14px rgba(229, 9, 20, 0.35);
         }
 
-        .hero-avatar img {
+        .profile-avatar-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -90,228 +89,215 @@
             display: none;
         }
 
-        .hero-meta {
+        .profile-meta-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            flex: 1;
+            gap: 3px;
             min-width: 0;
         }
 
-        .hero-name {
-            font-size: 22px;
+        .profile-channel-name {
+            font-size: 20px;
             font-weight: 800;
-            letter-spacing: -0.4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            letter-spacing: -0.3px;
         }
 
-        .hero-handle {
+        .profile-channel-handle {
             font-size: 13px;
             color: #aaaaaa;
-        }
-
-        .hero-channel-link {
-            font-size: 13px;
-            color: #3ea6ff;
-            text-decoration: none;
-            margin-top: 4px;
-            font-weight: 600;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 4px;
         }
 
-        /* Quick Account Pills */
-        .account-pills-row {
+        .profile-channel-handle svg {
+            width: 14px;
+            height: 14px;
+            fill: #aaaaaa;
+        }
+
+        .profile-sub-link {
+            font-size: 12px;
+            color: #3ea6ff;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* 3. HORIZONTAL PILL BUTTON BAR */
+        .pill-actions-bar {
             display: flex;
-            align-items: center;
             gap: 8px;
-            padding: 0 16px 16px;
+            padding: 2px 16px 14px;
             overflow-x: auto;
             scrollbar-width: none;
         }
 
-        .account-pills-row::-webkit-scrollbar {
+        .pill-actions-bar::-webkit-scrollbar {
             display: none;
         }
 
-        .acc-pill-btn {
+        .action-pill-btn {
             background: #212121;
-            border: 1px solid #2d2d2d;
             color: #ffffff;
+            border: 1px solid #303030;
             padding: 7px 14px;
             border-radius: 18px;
             font-size: 12px;
             font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
             text-decoration: none;
+            cursor: pointer;
+            transition: background 0.15s;
         }
 
-        .acc-pill-btn:active {
-            background: #2e2e2e;
+        .action-pill-btn:active {
+            background: #2c2c2c;
         }
 
-        .acc-pill-btn svg {
-            width: 15px;
-            height: 15px;
+        .action-pill-btn svg {
+            width: 16px;
+            height: 16px;
             fill: #ffffff;
         }
 
-        /* 3. SHELF CONTAINER */
-        .shelf-container {
-            padding: 14px 0 8px;
-            border-top: 1px solid #1c1c1c;
+        /* 4. SHELF SECTIONS (HISTORY / PLAYLISTS) */
+        .content-shelf-section {
+            padding: 12px 0 16px;
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .shelf-head-row {
+        .shelf-header-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px 10px;
+            padding: 0 16px;
         }
 
-        .shelf-title {
-            font-size: 17px;
+        .shelf-title-txt {
+            font-size: 16px;
             font-weight: 700;
         }
 
-        .shelf-action-link {
-            background: none;
-            border: 1px solid #333333;
+        .btn-view-all {
+            background: #272727;
+            border: 1px solid #383838;
             color: #ffffff;
-            padding: 4px 12px;
-            border-radius: 16px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 14px;
             text-decoration: none;
-            cursor: pointer;
         }
 
-        .shelf-action-link:active {
-            background: #252525;
-        }
-
-        .shelf-horizontal-slider {
+        .shelf-carousel-feed {
             display: flex;
             gap: 12px;
-            padding: 0 16px;
             overflow-x: auto;
+            padding: 2px 16px;
             scrollbar-width: none;
         }
 
-        .shelf-horizontal-slider::-webkit-scrollbar {
+        .shelf-carousel-feed::-webkit-scrollbar {
             display: none;
         }
 
-        .history-card-item {
-            width: 146px;
+        /* Video Card Item */
+        .shelf-video-card {
+            width: 145px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
             gap: 6px;
             text-decoration: none;
             color: #ffffff;
-            flex-shrink: 0;
-            position: relative;
         }
 
-        .history-thumb-wrap {
+        .video-thumb-container {
             width: 100%;
             aspect-ratio: 16 / 9;
-            background: #1f1f1f;
+            background: #202020;
             border-radius: 8px;
-            overflow: hidden;
             position: relative;
+            overflow: hidden;
         }
 
-        .history-thumb-wrap img {
+        .video-thumb-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .history-progress-line {
+        .video-duration-tag {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.85);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .video-progress-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             height: 3px;
-            background: #ff0000;
+            background: #e50914;
         }
 
-        .history-badge-duration {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            background: rgba(0,0,0,0.85);
-            font-size: 10px;
-            font-weight: 700;
-            padding: 1px 5px;
-            border-radius: 4px;
-        }
-
-        .history-meta-box {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 4px;
-        }
-
-        .history-texts {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .history-title {
+        .shelf-card-title {
             font-size: 12px;
             font-weight: 600;
-            line-height: 1.3;
+            line-height: 1.35;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .history-channel {
+        .shelf-card-sub {
             font-size: 11px;
-            color: #aaaaaa;
+            color: #888888;
         }
 
-        /* 4. PLAYLIST CARDS */
-        .playlist-card-box {
-            width: 146px;
+        /* Playlist Card Item */
+        .shelf-playlist-card {
+            width: 145px;
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
             gap: 6px;
             text-decoration: none;
             color: #ffffff;
-            flex-shrink: 0;
         }
 
-        .playlist-thumb-cover {
+        .pl-thumb-frame {
             width: 100%;
             aspect-ratio: 16 / 9;
-            background: #1a1a1a;
+            background: #202020;
             border-radius: 8px;
             position: relative;
             overflow: hidden;
         }
 
-        .playlist-thumb-cover img {
+        .pl-thumb-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.6);
+            filter: brightness(0.7);
         }
 
-        .playlist-center-icon {
+        .pl-center-badge {
             position: absolute;
             inset: 0;
             display: flex;
@@ -319,45 +305,32 @@
             justify-content: center;
         }
 
-        .playlist-center-icon svg {
-            width: 28px;
-            height: 28px;
+        .pl-center-badge svg {
+            width: 24px;
+            height: 24px;
             fill: #ffffff;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
         }
 
-        .playlist-badge-overlay {
+        .pl-count-banner {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(0,0,0,0.75);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 3px 8px;
+            background: rgba(0, 0, 0, 0.85);
             font-size: 10px;
             font-weight: 700;
-            color: #ffffff;
+            padding: 2px 6px;
+            display: flex;
+            justify-content: space-between;
         }
 
-        .playlist-title-txt {
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .playlist-sub-txt {
-            font-size: 11px;
-            color: #888888;
-        }
-
-        /* 5. PREMIUM BANNER */
+        /* 5. PREMIUM PROMO BANNER */
         .premium-promo-card {
-            margin: 12px 16px;
+            margin: 12px 16px 16px;
             padding: 14px 16px;
+            background: linear-gradient(135deg, #24090c 0%, #151515 100%);
+            border: 1px solid #381216;
             border-radius: 12px;
-            background: linear-gradient(135deg, #1e1e1e 0%, #2a0c0e 100%);
-            border: 1px solid rgba(255, 0, 0, 0.2);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -365,73 +338,100 @@
             color: #ffffff;
         }
 
-        .premium-title-box {
+        .prem-promo-left {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
         }
 
-        .premium-tag {
+        .prem-promo-title {
             font-size: 14px;
             font-weight: 800;
-            color: #ff3b30;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .premium-sub {
+        .prem-badge {
+            background: #e50914;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .prem-promo-sub {
             font-size: 11px;
-            color: #bbbbbb;
+            color: #aaaaaa;
         }
 
-        .btn-get-premium {
+        .btn-get-prem-chip {
             background: #ffffff;
             color: #0f0f0f;
             border: none;
-            border-radius: 16px;
-            padding: 7px 14px;
             font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 16px;
+            flex-shrink: 0;
         }
 
-        /* 6. LIST OPTIONS */
-        .menu-options-list {
+        /* 6. SETTINGS & UTILITY ROWS */
+        .profile-menu-list {
             display: flex;
             flex-direction: column;
-            border-top: 1px solid #1c1c1c;
-            padding: 4px 0 16px;
+            border-top: 1px solid #1a1a1a;
+            padding-top: 4px;
         }
 
         .menu-row-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 14px 16px;
-            color: #ffffff;
+            gap: 18px;
             text-decoration: none;
-            cursor: pointer;
+            color: #ffffff;
+            transition: background 0.15s;
         }
 
         .menu-row-item:active {
-            background: #1c1c1c;
+            background: #181818;
         }
 
-        .menu-left-box {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .menu-left-box svg {
+        .menu-row-item svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
+            flex-shrink: 0;
         }
 
-        .menu-count-badge {
+        .menu-row-text {
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .menu-badge-indicator {
             font-size: 12px;
             color: #888888;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
         }
 
         /* 7. BOTTOM NAVIGATION */
@@ -461,6 +461,7 @@
 
         .nav-tab-item.active {
             color: #ffffff;
+            font-weight: 700;
         }
 
         .nav-tab-item svg {
@@ -490,194 +491,194 @@
 </head>
 <body>
 
-    <!-- 1. TOP HEADER -->
-    <header class="profile-header">
-        <a href="cast.html" class="header-tool-btn" title="Cast">
+    <!-- 1. TOP HEADER TOOLS -->
+    <header class="profile-top-bar">
+        <a href="cast.html" class="top-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
         </a>
-        <a href="notifications.html" class="header-tool-btn" title="Notifications">
+        <a href="notifications.html" class="top-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </a>
-        <a href="search.html" class="header-tool-btn" title="Search">
+        <a href="search.html" class="top-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
         </a>
-        <a href="settings.html" class="header-tool-btn" title="Settings">
+        <a href="settings.html" class="top-tool-btn">
             <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
         </a>
     </header>
 
-    <!-- 2. USER HERO CARD -->
-    <section class="user-hero-card">
-        <a href="channel.html" class="hero-avatar">
-            <span id="heroInitsTxt">CB</span>
-            <img id="heroDpImg" alt="Profile Picture">
-        </a>
-        <div class="hero-meta">
-            <h1 class="hero-name" id="heroNameTxt">Charandas Bhaskar</h1>
-            <a href="channel.html" style="text-decoration:none;" class="hero-handle" id="heroHandleTxt">@charandasbhaskar • View channel ›</a>
-            <a href="manage-channel.html" class="hero-channel-link">Manage Channel</a>
+    <!-- 2. CREATOR PROFILE HERO -->
+    <a href="channel.html" class="profile-hero-card">
+        <div class="profile-avatar-frame">
+            <span id="profileAvatarInits">CB</span>
+            <img id="profileAvatarImg" alt="DP">
         </div>
-    </section>
+        <div class="profile-meta-info">
+            <h1 class="profile-channel-name" id="profileChannelName">Charandas Bhaskar</h1>
+            <div class="profile-channel-handle">
+                <span id="profileChannelHandle">@charandasbhaskar</span>
+                <span>•</span>
+                <span>View channel</span>
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+            <span class="profile-sub-link">Manage Channel</span>
+        </div>
+    </a>
 
-    <!-- 3. QUICK ACCOUNT PILLS -->
-    <div class="account-pills-row">
-        <a href="switch-account.html" class="acc-pill-btn">
+    <!-- 3. ACTION PILLS ROW -->
+    <nav class="pill-actions-bar">
+        <a href="switch-account.html" class="action-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             <span>Switch account</span>
         </a>
-        <a href="google-account.html" class="acc-pill-btn">
+        <a href="switch-account.html" class="action-pill-btn">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Google Account</span>
         </a>
-        <a href="your-videos.html" class="acc-pill-btn">
-            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-            <span>Your uploads</span>
-        </a>
-    </div>
+        <button class="action-pill-btn" onclick="toggleIncognito(this)">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-10 10 9.94 9.94 0 0 0 2.22 6.26l.48.58A9.97 9.97 0 0 0 12 22a9.97 9.97 0 0 0 7.3-3.16l.48-.58A9.94 9.94 0 0 0 22 12A10 10 0 0 0 12 2zm-4 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm8 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+            <span id="incognitoBtnTxt">Turn on Incognito</span>
+        </button>
+    </nav>
 
-    <!-- 4. HISTORY SHELF -->
-    <section class="shelf-container">
-        <div class="shelf-head-row">
-            <span class="shelf-title">History</span>
-            <a href="history.html" class="shelf-action-link">View all</a>
+    <!-- 4. SHELF: HISTORY -->
+    <section class="content-shelf-section">
+        <div class="shelf-header-row">
+            <span class="shelf-title-txt">History</span>
+            <a href="history.html" class="btn-view-all">View all</a>
         </div>
-
-        <div class="shelf-horizontal-slider">
-            <div class="history-card-item">
-                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="history-thumb-wrap">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
-                    <span class="history-badge-duration">05:42</span>
-                    <div class="history-progress-line" style="width: 75%;"></div>
-                </a>
-                <div class="history-meta-box">
-                    <div class="history-texts">
-                        <span class="history-title">Chhattisgarhi Panthi Song • Cultural 2026</span>
-                        <span class="history-channel">Charandas Bhaskar</span>
-                    </div>
+        <div class="shelf-carousel-feed">
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="shelf-video-card">
+                <div class="video-thumb-container">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Video">
+                    <span class="video-duration-tag">05:42</span>
+                    <div class="video-progress-bar" style="width: 80%;"></div>
                 </div>
-            </div>
+                <span class="shelf-card-title">Chhattisgarhi Panthi Song • Cultural 2026</span>
+                <span class="shelf-card-sub">Charandas Bhaskar</span>
+            </a>
 
-            <div class="history-card-item">
-                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="history-thumb-wrap">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
-                    <span class="history-badge-duration">14:10</span>
-                    <div class="history-progress-line" style="width: 40%;"></div>
-                </a>
-                <div class="history-meta-box">
-                    <div class="history-texts">
-                        <span class="history-title">Typewriter Banjo with Pickups Guide</span>
-                        <span class="history-channel">Dhun AI</span>
-                    </div>
+            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="shelf-video-card">
+                <div class="video-thumb-container">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video">
+                    <span class="video-duration-tag">14:10</span>
+                    <div class="video-progress-bar" style="width: 45%;"></div>
                 </div>
-            </div>
+                <span class="shelf-card-title">Typewriter Banjo with Magnetic Pickups</span>
+                <span class="shelf-card-sub">Dhun AI</span>
+            </a>
 
-            <div class="history-card-item">
-                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="history-thumb-wrap">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
-                    <span class="history-badge-duration">06:25</span>
-                    <div class="history-progress-line" style="width: 90%;"></div>
-                </a>
-                <div class="history-meta-box">
-                    <div class="history-texts">
-                        <span class="history-title">Morning Commute Village Lifestyle Vlog</span>
-                        <span class="history-channel">The Bhaskar Vlog</span>
-                    </div>
+            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="shelf-video-card">
+                <div class="video-thumb-container">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Video">
+                    <span class="video-duration-tag">06:25</span>
+                    <div class="video-progress-bar" style="width: 95%;"></div>
                 </div>
-            </div>
+                <span class="shelf-card-title">Morning Commute & Village Lifestyle #42</span>
+                <span class="shelf-card-sub">The Bhaskar Vlog</span>
+            </a>
         </div>
     </section>
 
-    <!-- 5. PLAYLISTS SHELF -->
-    <section class="shelf-container">
-        <div class="shelf-head-row">
-            <span class="shelf-title">Playlists</span>
-            <a href="playlists.html" class="shelf-action-link">View all</a>
+    <!-- 5. SHELF: PLAYLISTS -->
+    <section class="content-shelf-section">
+        <div class="shelf-header-row">
+            <span class="shelf-title-txt">Playlists</span>
+            <a href="playlists.html" class="btn-view-all">View all</a>
         </div>
-
-        <div class="shelf-horizontal-slider">
-            <a href="liked-videos.html" class="playlist-card-box">
-                <div class="playlist-thumb-cover">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Liked">
-                    <div class="playlist-center-icon">
+        <div class="shelf-carousel-feed">
+            <!-- Liked Videos -->
+            <a href="liked-videos.html" class="shelf-playlist-card">
+                <div class="pl-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Liked">
+                    <div class="pl-center-badge">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                     </div>
-                    <div class="playlist-badge-overlay">
-                        <span>Playlist</span>
-                        <span>38 videos</span>
+                    <div class="pl-count-banner">
+                        <span>Auto</span>
+                        <span>38</span>
                     </div>
                 </div>
-                <span class="playlist-title-txt">Liked videos</span>
-                <span class="playlist-sub-txt">Auto playlist</span>
+                <span class="shelf-card-title">Liked videos</span>
+                <span class="shelf-card-sub">Auto playlist</span>
             </a>
 
-            <a href="watch-later.html" class="playlist-card-box">
-                <div class="playlist-thumb-cover">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Watch Later">
-                    <div class="playlist-center-icon">
+            <!-- Watch Later -->
+            <a href="watch-later.html" class="shelf-playlist-card">
+                <div class="pl-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Watch Later">
+                    <div class="pl-center-badge">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
                     </div>
-                    <div class="playlist-badge-overlay">
-                        <span>Playlist</span>
-                        <span>14 videos</span>
+                    <div class="pl-count-banner">
+                        <span>Private</span>
+                        <span>14</span>
                     </div>
                 </div>
-                <span class="playlist-title-txt">Watch Later</span>
-                <span class="playlist-sub-txt">Private</span>
+                <span class="shelf-card-title">Watch Later</span>
+                <span class="shelf-card-sub">Private</span>
+            </a>
+
+            <!-- Custom Playlist -->
+            <a href="playlists.html" class="shelf-playlist-card">
+                <div class="pl-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Folk">
+                    <div class="pl-center-badge">
+                        <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
+                    </div>
+                    <div class="pl-count-banner">
+                        <span>Public</span>
+                        <span>6</span>
+                    </div>
+                </div>
+                <span class="shelf-card-title">Chhattisgarhi Folk Songs</span>
+                <span class="shelf-card-sub">Charandas Bhaskar</span>
             </a>
         </div>
     </section>
 
-    <!-- 6. PREMIUM BANNER -->
+    <!-- 6. GET BTUBE PREMIUM PROMO (NO 404) -->
     <a href="premium.html" class="premium-promo-card">
-        <div class="premium-title-box">
-            <span class="premium-tag">Get BTube Premium</span>
-            <span class="premium-sub">Ad-free music and videos in background</span>
+        <div class="prem-promo-left">
+            <span class="prem-promo-title">
+                <span class="prem-badge">B</span>
+                <span>Get BTube Premium</span>
+            </span>
+            <span class="prem-promo-sub">Ad-free streaming, downloads & background play</span>
         </div>
-        <button class="btn-get-premium">Get it</button>
+        <button class="btn-get-prem-chip">Get it</button>
     </a>
 
-    <!-- 7. MENU OPTIONS LIST (HAR BUTTON NAYA PAGE LINK) -->
-    <main class="menu-options-list">
+    <!-- 7. PROFILE OPTIONS MENU -->
+    <nav class="profile-menu-list">
         <a href="your-videos.html" class="menu-row-item">
-            <div class="menu-left-box">
-                <svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-                <span>Your videos</span>
-            </div>
-            <span class="menu-count-badge">8</span>
+            <svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+            <span class="menu-row-text">Your videos</span>
+            <span class="menu-badge-indicator">8 videos</span>
         </a>
 
         <a href="downloads.html" class="menu-row-item">
-            <div class="menu-left-box">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                <span>Downloads</span>
-            </div>
-            <span class="menu-count-badge">3 offline</span>
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            <span class="menu-row-text">Downloads</span>
+            <span class="menu-badge-indicator">3 downloaded</span>
         </a>
 
         <a href="time-watched.html" class="menu-row-item">
-            <div class="menu-left-box">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
-                <span>Time watched</span>
-            </div>
-            <span class="menu-count-badge">2h 15m daily</span>
-        </a>
-
-        <a href="settings.html" class="menu-row-item">
-            <div class="menu-left-box">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span>Settings</span>
-            </div>
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 14h-2V7h2v9z"/></svg>
+            <span class="menu-row-text">Time watched</span>
+            <span class="menu-badge-indicator">2h 15m daily</span>
         </a>
 
         <a href="help.html" class="menu-row-item">
-            <div class="menu-left-box">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
-                <span>Help and feedback</span>
-            </div>
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+            <span class="menu-row-text">Help and feedback</span>
         </a>
-    </main>
+    </nav>
 
-    <!-- 8. BOTTOM NAVIGATION BAR -->
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="profileToast"></div>
+
+    <!-- 8. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -700,35 +701,50 @@
         </a>
     </nav>
 
-    <!-- LIVE STORAGE SYNC -->
+    <!-- SCRIPT LOGIC -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const currentName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
+            const currentHandle = localStorage.getItem('btube_channel_handle') || '@charandasbhaskar';
             const savedDp = localStorage.getItem('btube_channel_dp');
 
-            if (savedName) {
-                document.getElementById('heroNameTxt').innerText = savedName;
+            document.getElementById('profileChannelName').innerText = currentName;
+            document.getElementById('profileChannelHandle').innerText = currentHandle;
 
-                // Initials
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('heroInitsTxt').innerText = inits.toUpperCase();
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            // Generate initials
+            const parts = currentName.trim().split(' ');
+            let inits = parts[0][0];
+            if (parts.length > 1) inits += parts[1][0];
+            const initsUpper = inits.toUpperCase();
 
-            if (savedHandle) {
-                document.getElementById('heroHandleTxt').innerText = `${savedHandle} • View channel ›`;
-            }
+            document.getElementById('profileAvatarInits').innerText = initsUpper;
+            document.getElementById('bottomNavInits').innerText = initsUpper;
 
             if (savedDp) {
-                const dpImg = document.getElementById('heroDpImg');
-                dpImg.src = savedDp;
-                dpImg.style.display = 'block';
-                document.getElementById('heroInitsTxt').style.display = 'none';
+                const img = document.getElementById('profileAvatarImg');
+                img.src = savedDp;
+                img.style.display = 'block';
+                document.getElementById('profileAvatarInits').style.display = 'none';
             }
         });
+
+        function showToast(msg) {
+            const t = document.getElementById('profileToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function toggleIncognito(btn) {
+            const txt = document.getElementById('incognitoBtnTxt');
+            if (txt.innerText.includes('Turn on')) {
+                txt.innerText = 'Turn off Incognito';
+                showToast('Incognito mode activated');
+            } else {
+                txt.innerText = 'Turn on Incognito';
+                showToast('Incognito mode turned off');
+            }
+        }
     </script>
 </body>
 </html>
