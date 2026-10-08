@@ -74,7 +74,7 @@
             cursor: pointer;
         }
 
-        /* 2. INITIAL CREATION TILES */
+        /* 2. CREATE OPTIONS (STEP 1) */
         .create-options-wrap {
             display: flex;
             flex-direction: column;
@@ -91,6 +91,12 @@
             align-items: center;
             gap: 16px;
             cursor: pointer;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .create-action-card:active {
+            background: #252525;
+            transform: scale(0.98);
         }
 
         .create-icon-bubble {
@@ -109,7 +115,7 @@
             fill: #ffffff;
         }
 
-        /* 3. DETAILS FORM VIEW */
+        /* 3. DETAILS FORM VIEW (STEP 2) */
         .upload-editor-view {
             display: none;
             flex-direction: column;
@@ -224,6 +230,10 @@
             cursor: pointer;
         }
 
+        .picker-clickable-bar:active {
+            background: #202020;
+        }
+
         .picker-col-left {
             display: flex;
             align-items: center;
@@ -246,7 +256,7 @@
             color: #888888;
         }
 
-        /* 4. FULL SUB-PAGE SCREENS (COMMUNITY, ATTRIBUTES, COLLABORATOR) */
+        /* 4. SUB-PAGE SCREENS */
         .subpage-view {
             position: fixed;
             inset: 0;
@@ -284,10 +294,9 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* Collaborator Search input */
         .search-pill-input {
             width: 100%;
             background: #252525;
@@ -352,7 +361,7 @@
             background: #3ea6ff;
         }
 
-        /* Dynamic bottom sheets */
+        /* Drawers */
         .drawer-scrim {
             position: fixed;
             inset: 0;
@@ -392,7 +401,7 @@
             background: #282828;
         }
 
-        /* Tags container */
+        /* Tags cluster */
         .tags-cluster {
             display: flex;
             flex-wrap: wrap;
@@ -493,9 +502,9 @@
         <button class="btn-upload-publish" id="btnPublish" style="display:none;" onclick="startPublishProcess()">Upload</button>
     </header>
 
-    <!-- 2. CREATE PICKER VIEW (INITIAL) -->
+    <!-- 2. CREATE OPTIONS (STEP 1: 4 OFFICIAL YOUTUBE TILES) -->
     <main class="create-options-wrap" id="stepPicker">
-        <!-- Create a Short -->
+        <!-- 1. Create a Short -->
         <label for="shortMediaInput" class="create-action-card">
             <div class="create-icon-bubble" style="background:#e50914;">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
@@ -507,7 +516,7 @@
         </label>
         <input type="file" id="shortMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, true)">
 
-        <!-- Upload a Video -->
+        <!-- 2. Upload a Video -->
         <label for="videoMediaInput" class="create-action-card">
             <div class="create-icon-bubble" style="background:#272727;">
                 <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
@@ -519,7 +528,7 @@
         </label>
         <input type="file" id="videoMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, false)">
 
-        <!-- Go Live -->
+        <!-- 3. Go Live -->
         <div class="create-action-card" onclick="showToast('Live streaming will be enabled for verified creators')">
             <div class="create-icon-bubble" style="background:#272727;">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
@@ -529,9 +538,20 @@
                 <span style="font-size:12px; color:#aaa;">Broadcast live to your audience</span>
             </div>
         </div>
+
+        <!-- 4. Create a Post (Community) -->
+        <div class="create-action-card" onclick="openSubpage('postComposerSubpage')">
+            <div class="create-icon-bubble" style="background:#272727;">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <div>
+                <strong style="font-size:15px; display:block;">Create a post</strong>
+                <span style="font-size:12px; color:#aaa;">Publish polls, images or text updates to subscribers</span>
+            </div>
+        </div>
     </main>
 
-    <!-- 3. DETAILS FORM VIEW -->
+    <!-- 3. DETAILS FORM VIEW (STEP 2) -->
     <section class="upload-editor-view" id="stepEditor">
         <!-- Media / Thumbnail Preview -->
         <div class="preview-media-section">
@@ -587,7 +607,7 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- NEW: Community Hub Row -->
+            <!-- Community Hub Row -->
             <div class="picker-clickable-bar" onclick="openSubpage('communitySubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -599,7 +619,7 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- NEW: Attributes Hub Row (AI Use & Tags) -->
+            <!-- Attributes Hub Row (AI Use & Tags) -->
             <div class="picker-clickable-bar" onclick="openSubpage('attributesSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
@@ -613,7 +633,62 @@
         </div>
     </section>
 
-    <!-- ================= SUBPAGE 1: COMMUNITY ================= -->
+    <!-- ================= SUBPAGE: COMMUNITY POST COMPOSER ================= -->
+    <div class="subpage-view" id="postComposerSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('postComposerSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Create post</span>
+            <button class="btn-upload-publish" style="margin-left:auto;" onclick="publishCommunityPost()">Post</button>
+        </div>
+
+        <div class="subpage-content">
+            <!-- Channel Info Bar -->
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px;" id="postCreatorInits">CB</div>
+                <div>
+                    <strong style="font-size:14px; display:block;" id="postCreatorName">Charandas Bhaskar</strong>
+                    <div style="display:inline-flex; align-items:center; gap:4px; font-size:11px; color:#2ecc71; background:rgba(46,204,113,0.12); padding:1px 6px; border-radius:10px;">
+                        <span>Public 🌐</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Post Textarea -->
+            <textarea id="communityPostText" class="custom-field-input" style="min-height:120px; font-size:15px; border:none; background:transparent; padding:8px 0;" placeholder="Give a shoutout to your subscribers or share an update..."></textarea>
+
+            <!-- Poll Options Container -->
+            <div id="postPollSection" style="display:none; flex-direction:column; gap:10px; background:#161616; padding:12px; border-radius:12px; border:1px solid #282828;">
+                <span style="font-size:12px; color:#aaa; font-weight:700;">COMMUNITY POLL</span>
+                <input type="text" class="custom-field-input" placeholder="Option 1" style="height:40px;">
+                <input type="text" class="custom-field-input" placeholder="Option 2" style="height:40px;">
+                <button type="button" style="background:none; border:none; color:#3ea6ff; font-size:13px; font-weight:700; text-align:left; cursor:pointer;" onclick="showToast('Max 4 options allowed')">+ Add option</button>
+            </div>
+
+            <!-- Image Attachment Preview -->
+            <div id="postImageHolder" style="display:none; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; border:1px solid #333; position:relative;">
+                <img id="postAttachedImg" src="" style="width:100%; height:100%; object-fit:cover;" alt="Post image">
+                <button type="button" onclick="removeAttachedImage()" style="position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); border:none; color:#fff; width:28px; height:28px; border-radius:50%; cursor:pointer;">✕</button>
+            </div>
+
+            <!-- Media Attach Toolbar -->
+            <div style="display:flex; align-items:center; gap:20px; padding-top:14px; border-top:1px solid #222; margin-top:auto;">
+                <label for="postImageFileInput" style="cursor:pointer; display:flex; align-items:center; gap:6px; color:#3ea6ff; font-size:13px; font-weight:600;">
+                    <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:currentColor;"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                    <span>Image</span>
+                </label>
+                <input type="file" id="postImageFileInput" accept="image/*" style="display:none;" onchange="handlePostImageSelect(event)">
+
+                <button type="button" onclick="togglePollSection()" style="background:none; border:none; color:#3ea6ff; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; cursor:pointer;">
+                    <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:currentColor;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <span>Poll</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SUBPAGE: COMMUNITY ================= -->
     <div class="subpage-view" id="communitySubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('communitySubpage')">
@@ -622,18 +697,14 @@
             <span class="subpage-title">Community</span>
         </div>
         <div class="subpage-content">
-            <!-- Invite a collaborator -->
             <div class="picker-clickable-bar" onclick="openSubpage('collabSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z"/></svg>
-                    <div>
-                        <strong>Invite a collaborator</strong>
-                    </div>
+                    <div><strong>Invite a collaborator</strong></div>
                 </div>
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Comments Master Row -->
             <div class="picker-clickable-bar" onclick="openSubpage('commentsSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
@@ -645,7 +716,6 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Shorts remixing Row -->
             <div class="picker-clickable-bar" onclick="openSubpage('remixingSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
@@ -659,7 +729,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE 2: INVITE A COLLABORATOR ================= -->
+    <!-- ================= SUBPAGE: INVITE A COLLABORATOR ================= -->
     <div class="subpage-view" id="collabSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('collabSubpage')">
@@ -668,7 +738,7 @@
             <span class="subpage-title">Invite a collaborator</span>
         </div>
         <div class="subpage-content">
-            <input type="text" class="search-pill-input" placeholder="Search for a channel" onkeydown="if(event.key==='Enter') showToast('Channel invitation sent')">
+            <input type="text" class="search-pill-input" placeholder="Search for a channel" onkeydown="if(event.key==='Enter') showToast('Collaborator invited ✓')">
 
             <div class="feature-bullets-list">
                 <div class="bullet-item-row">
@@ -693,14 +763,10 @@
                     </div>
                 </div>
             </div>
-
-            <p style="font-size:11px; color:#666; margin-top:14px; line-height:1.4;">
-                If you have paid product placements, endorsements, sponsorships or other content that requires disclosure to viewers in your videos, you have to let us know.
-            </p>
         </div>
     </div>
 
-    <!-- ================= SUBPAGE 3: COMMENTS ================= -->
+    <!-- ================= SUBPAGE: COMMENTS ================= -->
     <div class="subpage-view" id="commentsSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('commentsSubpage')">
@@ -709,12 +775,10 @@
             <span class="subpage-title">Comments</span>
         </div>
         <div class="subpage-content">
-            <!-- ON Radio -->
             <div class="radio-setting-row selected" id="optCommentsOn" onclick="toggleCommentsMaster(true)">
                 <div class="radio-dot-outer"></div>
                 <div style="flex:1;">
                     <strong style="font-size:15px;">On</strong>
-                    <!-- Nested options when ON -->
                     <div id="commentsOnSuboptions" style="margin-top:14px; display:flex; flex-direction:column; gap:16px;">
                         <div class="picker-clickable-bar" style="background:#161616;" onclick="openCommentsDrawer('moderationDrawer')">
                             <div>
@@ -734,17 +798,14 @@
                 </div>
             </div>
 
-            <!-- OFF Radio -->
             <div class="radio-setting-row" id="optCommentsOff" onclick="toggleCommentsMaster(false)">
                 <div class="radio-dot-outer"></div>
-                <div>
-                    <strong style="font-size:15px;">Off</strong>
-                </div>
+                <div><strong style="font-size:15px;">Off</strong></div>
             </div>
         </div>
     </div>
 
-    <!-- ================= SUBPAGE 4: SHORTS REMIXING ================= -->
+    <!-- ================= SUBPAGE: SHORTS REMIXING ================= -->
     <div class="subpage-view" id="remixingSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('remixingSubpage')">
@@ -770,7 +831,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE 5: ATTRIBUTES ================= -->
+    <!-- ================= SUBPAGE: ATTRIBUTES ================= -->
     <div class="subpage-view" id="attributesSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('attributesSubpage')">
@@ -779,7 +840,6 @@
             <span class="subpage-title">Attributes</span>
         </div>
         <div class="subpage-content">
-            <!-- AI Use -->
             <div class="picker-clickable-bar" onclick="openSubpage('aiUseSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
@@ -788,7 +848,6 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Add Tags Section -->
             <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
@@ -802,7 +861,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE 6: AI USE DECLARATION ================= -->
+    <!-- ================= SUBPAGE: AI USE ================= -->
     <div class="subpage-view" id="aiUseSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('aiUseSubpage')">
@@ -829,57 +888,50 @@
                     <strong>No</strong>
                 </div>
             </div>
-
-            <p style="font-size:11px; color:#777; margin-top:20px; line-height:1.4;">
-                To follow YouTube's policy, you're required to tell us about your use of AI. Selecting 'yes' adds a label to your content.
-            </p>
         </div>
     </div>
 
-    <!-- ================= DRAWERS (MODERATION & WHO CAN COMMENT) ================= -->
-    <!-- Comment Moderation Drawer -->
+    <!-- ================= DRAWERS ================= -->
     <div class="drawer-scrim" id="moderationDrawer" onclick="if(event.target.id==='moderationDrawer') closeCommentsDrawer('moderationDrawer')">
         <div class="drawer-menu-card">
             <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Comment moderation</div>
-            <div class="drawer-option-row" onclick="setModeration('None', 'Don\'t hold any comments')">
+            <div class="drawer-option-row" onclick="setModeration('None')">
                 <div><strong>None</strong><div style="font-size:11px; color:#888;">Don't hold any comments</div></div>
             </div>
-            <div class="drawer-option-row selected" onclick="setModeration('Basic', 'Hold potentially inappropriate comments')">
+            <div class="drawer-option-row selected" onclick="setModeration('Basic')">
                 <div><strong>Basic</strong><div style="font-size:11px; color:#888;">Hold potentially inappropriate comments</div></div>
             </div>
-            <div class="drawer-option-row" onclick="setModeration('Strict', 'Hold a broader range of comments')">
+            <div class="drawer-option-row" onclick="setModeration('Strict')">
                 <div><strong>Strict</strong><div style="font-size:11px; color:#888;">Hold a broader range of potentially inappropriate comments</div></div>
             </div>
-            <div class="drawer-option-row" onclick="setModeration('Hold all', 'Hold all comments')">
+            <div class="drawer-option-row" onclick="setModeration('Hold all')">
                 <div><strong>Hold all</strong><div style="font-size:11px; color:#888;">Hold all comments for review</div></div>
             </div>
         </div>
     </div>
 
-    <!-- Who can comment Drawer -->
     <div class="drawer-scrim" id="whoCanCommentDrawer" onclick="if(event.target.id==='whoCanCommentDrawer') closeCommentsDrawer('whoCanCommentDrawer')">
         <div class="drawer-menu-card">
             <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Who can comment</div>
-            <div class="drawer-option-row selected" onclick="setWhoCanComment('Anyone', 'Anyone with a YouTube channel')">
+            <div class="drawer-option-row selected" onclick="setWhoCanComment('Anyone')">
                 <div><strong>Anyone</strong><div style="font-size:11px; color:#888;">Anyone with a channel</div></div>
             </div>
-            <div class="drawer-option-row" onclick="setWhoCanComment('Subscribers and members', 'Only subscribers for a set time')">
+            <div class="drawer-option-row" onclick="setWhoCanComment('Subscribers and members')">
                 <div><strong>Subscribers and members</strong><div style="font-size:11px; color:#888;">Only people who have subscribed for a set amount of time or paid members</div></div>
             </div>
         </div>
     </div>
 
-    <!-- Visibility Bottom Sheet -->
     <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeVisDrawer()">
         <div class="drawer-menu-card">
             <div style="font-size:15px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
-            <div class="drawer-option-row selected" onclick="setVisOption('Public', 'Anyone can search for and view')">
+            <div class="drawer-option-row selected" onclick="setVisOption('Public')">
                 <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to everyone</div></div>
             </div>
-            <div class="drawer-option-row" onclick="setVisOption('Unlisted', 'Anyone with the link can view')">
+            <div class="drawer-option-row" onclick="setVisOption('Unlisted')">
                 <div><strong>Unlisted 🔗</strong><div style="font-size:11px; color:#888;">Visible only via link</div></div>
             </div>
-            <div class="drawer-option-row" onclick="setVisOption('Private', 'Only you can view')">
+            <div class="drawer-option-row" onclick="setVisOption('Private')">
                 <div><strong>Private 🔒</strong><div style="font-size:11px; color:#888;">Only visible to your channel</div></div>
             </div>
         </div>
@@ -888,13 +940,49 @@
     <!-- Toast Notification -->
     <div class="toast-pop" id="uploadToast"></div>
 
+    <!-- 5. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-bar">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
     <!-- SCRIPT ENGINE -->
     <script>
         let isShortMode = false;
         let selectedVideoFile = null;
         let selectedThumbFile = null;
         let currentVisState = "Public";
-        let aiUsed = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+                const pInits = document.getElementById('postCreatorInits');
+                const pName = document.getElementById('postCreatorName');
+                if (pInits) pInits.innerText = inits.toUpperCase();
+                if (pName) pName.innerText = savedName;
+            }
+        });
 
         function showToast(msg) {
             const t = document.getElementById('uploadToast');
@@ -903,7 +991,6 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // Subpage controllers
         function openSubpage(id) {
             document.getElementById(id).classList.add('active');
         }
@@ -922,7 +1009,6 @@
             }
         }
 
-        // File pickers
         function handleFileChosen(e, isShort) {
             const file = e.target.files[0];
             if (!file) return;
@@ -968,7 +1054,6 @@
             document.getElementById('txtTitleCount').innerText = `${count}/100`;
         }
 
-        // Visibility
         function openVisibilityDrawer() {
             document.getElementById('visDrawerScrim').classList.add('open');
         }
@@ -982,7 +1067,6 @@
             showToast(`Visibility set to ${vis}`);
         }
 
-        // Audience
         function toggleAudienceSetting() {
             const txt = document.getElementById('txtKidsSetting');
             if (txt.innerText.includes('No')) {
@@ -994,7 +1078,6 @@
             }
         }
 
-        // Community: Comments Toggle
         function toggleCommentsMaster(isOn) {
             const onRow = document.getElementById('optCommentsOn');
             const offRow = document.getElementById('optCommentsOff');
@@ -1016,7 +1099,6 @@
             }
         }
 
-        // Moderation
         function openCommentsDrawer(id) {
             document.getElementById(id).classList.add('open');
         }
@@ -1034,18 +1116,15 @@
             showToast(`Who can comment: ${val}`);
         }
 
-        // Remixing
         function selectRemixOption(txt, elId) {
             document.querySelectorAll('#remixingSubpage .radio-setting-row').forEach(r => r.classList.remove('selected'));
             document.getElementById(elId).classList.add('selected');
             document.getElementById('dispRemixingVal').innerText = txt;
             closeSubpage('remixingSubpage');
-            showToast('Remixing settings updated');
+            showToast('Remixing updated');
         }
 
-        // AI Use
         function selectAiOption(isYes) {
-            aiUsed = isYes;
             document.getElementById('aiOptYes').classList.toggle('selected', isYes);
             document.getElementById('aiOptNo').classList.toggle('selected', !isYes);
             document.getElementById('txtAttributesSub').innerText = `AI use: ${isYes ? 'Yes' : 'No'} • Tags`;
@@ -1053,7 +1132,6 @@
             showToast(`AI declaration: ${isYes ? 'Yes' : 'No'}`);
         }
 
-        // Tags
         function handleTagKey(e) {
             if (e.key === 'Enter' || e.key === ',') {
                 e.preventDefault();
@@ -1069,7 +1147,43 @@
             }
         }
 
-        // Publish
+        /* Community Post Logic */
+        function togglePollSection() {
+            const sec = document.getElementById('postPollSection');
+            sec.style.display = (sec.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function handlePostImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('postAttachedImg').src = evt.target.result;
+                    document.getElementById('postImageHolder').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeAttachedImage() {
+            document.getElementById('postImageHolder').style.display = 'none';
+            document.getElementById('postAttachedImg').src = '';
+            document.getElementById('postImageFileInput').value = '';
+        }
+
+        function publishCommunityPost() {
+            const text = document.getElementById('communityPostText').value.trim();
+            if (!text) {
+                showToast('Please write something to post');
+                return;
+            }
+            showToast('Post published to Community tab ✓');
+            setTimeout(() => {
+                closeSubpage('postComposerSubpage');
+                window.location.href = 'channel.html';
+            }, 800);
+        }
+
         function startPublishProcess() {
             const title = document.getElementById('inputVideoTitle').value.trim();
             if (!title) {
