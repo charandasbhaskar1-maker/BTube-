@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Downloads - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .down-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .header-right-tools {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .tool-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 2. DEVICE STORAGE BAR */
+        .storage-status-card {
+            padding: 12px 16px;
+            background: #161616;
+            border-bottom: 1px solid #222222;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .storage-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        .storage-meta-row strong {
+            color: #ffffff;
+        }
+
+        .storage-track-bar {
+            width: 100%;
+            height: 5px;
+            background: #2b2b2b;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .storage-fill-used {
+            width: 12%;
+            background: #3ea6ff;
+            height: 100%;
+        }
+
+        .storage-fill-other {
+            width: 48%;
+            background: #555555;
+            height: 100%;
+        }
+
+        /* 3. DOWNLOADS FEED */
+        .downloads-feed-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-label-bar {
+            padding: 14px 16px 8px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .down-item-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 16px;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: background 0.15s;
+            position: relative;
+        }
+
+        .down-item-card:active {
+            background: #181818;
+        }
+
+        .down-thumb-box {
+            width: 130px;
+            aspect-ratio: 16 / 9;
+            background: #202020;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .down-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .duration-pill {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.85);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+
+        .down-details-col {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .down-video-title {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .down-sub-meta {
+            font-size: 11px;
+            color: #aaaaaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .blue-check-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border-radius: 50%;
+            width: 13px;
+            height: 13px;
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .btn-more-card {
+            background: none;
+            border: none;
+            color: #888888;
+            cursor: pointer;
+            padding: 2px 4px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-more-card svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* 4. RECOMMENDATIONS SECTION */
+        .recom-container {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #1f1f1f;
+        }
+
+        .btn-download-action {
+            background: #272727;
+            border: 1px solid #383838;
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            margin-top: 4px;
+            align-self: flex-start;
+        }
+
+        .btn-download-action svg {
+            width: 13px;
+            height: 13px;
+            fill: #ffffff;
+        }
+
+        /* 5. EMPTY STATE */
+        .empty-downloads-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 20px;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .empty-downloads-box svg {
+            width: 56px;
+            height: 56px;
+            fill: #444444;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .empty-sub {
+            font-size: 13px;
+            color: #888888;
+            max-width: 260px;
+            line-height: 1.4;
+        }
+
+        /* 6. BOTTOM DRAWERS */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        .drawer-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2d2d2d;
+            margin-bottom: 6px;
+        }
+
+        .drawer-title-txt {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%;
+        }
+
+        .drawer-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .drawer-row-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 6px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .drawer-row-btn:active {
+            background: #2a2a2a;
+        }
+
+        .drawer-row-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 7. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="down-header">
+        <div class="header-left">
+            <a href="profile.html" class="btn-back">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            <span class="header-title">Downloads</span>
+        </div>
+
+        <div class="header-right-tools">
+            <a href="cast.html" class="tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+            </a>
+            <a href="search.html" class="tool-btn">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </a>
+            <button class="tool-btn" onclick="openGlobalOptionsDrawer()">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. DEVICE STORAGE BAR -->
+    <section class="storage-status-card">
+        <div class="storage-meta-row">
+            <span>BTube used: <strong id="usedStorageTxt">148 MB</strong></span>
+            <span>Free: <strong id="freeStorageTxt">58.4 GB</strong></span>
+        </div>
+        <div class="storage-track-bar">
+            <div class="storage-fill-used" id="usedBar"></div>
+            <div class="storage-fill-other"></div>
+        </div>
+    </section>
+
+    <!-- 3. DOWNLOADED ITEMS LIST -->
+    <main class="downloads-feed-list" id="downloadsFeed">
+
+        <div class="section-label-bar">
+            <span>Downloaded videos (<span id="downloadCount">3</span>)</span>
+        </div>
+
+        <!-- Download 1 -->
+        <div class="down-item-card" id="down-item-1" data-size="42">
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="down-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
+                <span class="duration-pill">05:42</span>
+            </a>
+            <div class="down-details-col">
+                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="down-video-title" style="text-decoration:none; color:#fff;">
+                    Chhattisgarhi Panthi Song • Special Cultural Video 2026
+                </a>
+                <div class="down-sub-meta">
+                    <span class="blue-check-badge">✓</span>
+                    <span>Charandas Bhaskar • 42 MB • 1080p</span>
+                </div>
+            </div>
+            <button class="btn-more-card" onclick="openItemDrawer('down-item-1', 'Chhattisgarhi Panthi Song')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Download 2 -->
+        <div class="down-item-card" id="down-item-2" data-size="78">
+            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="down-thumb-box">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
+                <span class="duration-pill">14:10</span>
+            </a>
+            <div class="down-details-col">
+                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="down-video-title" style="text-decoration:none; color:#fff;">
+                    Typewriter Banjo with Magnetic Pickups Full Making Guide
+                </a>
+                <div class="down-sub-meta">
+                    <span class="blue-check-badge">✓</span>
+                    <span>Dhun AI • 78 MB • 720p</span>
+                </div>
+            </div>
+            <button class="btn-more-card" onclick="openItemDrawer('down-item-2', 'Typewriter Banjo Guide')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Download 3 -->
+        <div class="down-item-card" id="down-item-3" data-size="28">
+            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="down-thumb-box">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
+                <span class="duration-pill">06:25</span>
+            </a>
+            <div class="down-details-col">
+                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="down-video-title" style="text-decoration:none; color:#fff;">
+                    Morning Commute & Village Lifestyle Daily Vlog #42
+                </a>
+                <div class="down-sub-meta">
+                    <span class="blue-check-badge">✓</span>
+                    <span>The Bhaskar Vlog • 28 MB • 720p</span>
+                </div>
+            </div>
+            <button class="btn-more-card" onclick="openItemDrawer('down-item-3', 'Morning Commute Vlog')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- 4. EMPTY STATE (Hidden by default) -->
+    <div class="empty-downloads-box" id="emptyState">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        <span class="empty-title">No downloaded videos</span>
+        <span class="empty-sub">Videos you download will be available offline here anytime.</span>
+    </div>
+
+    <!-- 5. RECOMMENDED OFFLINE SHELF -->
+    <section class="recom-container">
+        <div class="section-label-bar">
+            <span>Recommended for download</span>
+        </div>
+
+        <div class="down-item-card" id="recom-card">
+            <a href="watch.html" class="down-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Recom">
+                <span class="duration-pill">08:15</span>
+            </a>
+            <div class="down-details-col">
+                <span class="down-video-title">Traditional Chhattisgarhi Suwa Geet & Dholak Beats</span>
+                <span class="down-sub-meta">BTube Folk • 48 MB</span>
+                <button class="btn-download-action" onclick="downloadRecommendedVideo()">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <span>Download</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. DRAWER: SINGLE ITEM OPTIONS -->
+    <div class="drawer-overlay" id="itemDrawer" onclick="closeDrawerOnBackdrop(event, 'itemDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt" id="itemDrawerTitle">Options</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('itemDrawer')">✕</button>
+            </div>
+            <button class="drawer-row-btn" onclick="deleteSingleDownload()" style="color:#ff4e4e;">
+                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Delete from downloads</span>
+            </button>
+            <button class="drawer-row-btn" onclick="pauseOrResumeDownload()">
+                <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                <span>Pause download</span>
+            </button>
+            <button class="drawer-row-btn" onclick="shareDownload()">
+                <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                <span>Share offline video</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 7. DRAWER: GLOBAL SETTINGS & CLEAR -->
+    <div class="drawer-overlay" id="globalDrawer" onclick="closeDrawerOnBackdrop(event, 'globalDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt">Downloads settings</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('globalDrawer')">✕</button>
+            </div>
+            <button class="drawer-row-btn" onclick="deleteAllDownloads()" style="color:#ff4e4e;">
+                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Delete all downloads</span>
+            </button>
+            <a href="settings.html" class="drawer-row-btn">
+                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <span>Download quality settings</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="downToast"></div>
+
+    <!-- 8. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- INTERACTION LOGIC -->
+    <script>
+        let currentTargetItemId = null;
+        let totalUsedMb = 148;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('downToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function openItemDrawer(id, title) {
+            currentTargetItemId = id;
+            document.getElementById('itemDrawerTitle').innerText = title;
+            document.getElementById('itemDrawer').classList.add('open');
+        }
+
+        function openGlobalOptionsDrawer() {
+            document.getElementById('globalDrawer').classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function deleteSingleDownload() {
+            if (currentTargetItemId) {
+                const target = document.getElementById(currentTargetItemId);
+                if (target) {
+                    const size = parseInt(target.getAttribute('data-size')) || 0;
+                    totalUsedMb = Math.max(0, totalUsedMb - size);
+                    target.remove();
+                    updateStorageDisplay();
+                    showToast('Download deleted');
+                    checkIfFeedEmpty();
+                }
+            }
+            closeDrawer('itemDrawer');
+        }
+
+        function pauseOrResumeDownload() {
+            closeDrawer('itemDrawer');
+            showToast('Download paused');
+        }
+
+        function shareDownload() {
+            closeDrawer('itemDrawer');
+            if (navigator.share) {
+                navigator.share({ title: 'Offline Video', url: window.location.href }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showToast('Video link copied');
+            }
+        }
+
+        function deleteAllDownloads() {
+            const cards = document.querySelectorAll('.down-item-card:not(#recom-card)');
+            cards.forEach(c => c.remove());
+            totalUsedMb = 0;
+            updateStorageDisplay();
+            checkIfFeedEmpty();
+            closeDrawer('globalDrawer');
+            showToast('All downloads cleared');
+        }
+
+        function downloadRecommendedVideo() {
+            const recom = document.getElementById('recom-card');
+            if (recom) {
+                showToast('Downloading to offline storage (48 MB)...');
+                setTimeout(() => {
+                    showToast('Download complete ✓');
+                    totalUsedMb += 48;
+                    updateStorageDisplay();
+                }, 1500);
+            }
+        }
+
+        function updateStorageDisplay() {
+            document.getElementById('usedStorageTxt').innerText = totalUsedMb + ' MB';
+            const count = document.querySelectorAll('.down-item-card:not(#recom-card)').length;
+            document.getElementById('downloadCount').innerText = count;
+            const barFill = document.getElementById('usedBar');
+            barFill.style.width = Math.max(2, (totalUsedMb / 1000) * 100) + '%';
+        }
+
+        function checkIfFeedEmpty() {
+            const remaining = document.querySelectorAll('.down-item-card:not(#recom-card)');
+            if (remaining.length === 0) {
+                document.getElementById('downloadsFeed').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'flex';
+            }
+        }
+    </script>
+</body>
+</html>
