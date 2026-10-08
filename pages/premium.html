@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Get BTube Premium</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* 1. TOP HEADER */
+        .prem-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-badge {
+            width: 26px;
+            height: 18px;
+            background: #e50914;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .brand-name {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        /* 2. HERO SHOWCASE */
+        .prem-hero {
+            padding: 28px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 0%, #2e090c 0%, #0f0f0f 75%);
+            border-bottom: 1px solid #1c1c1c;
+            gap: 10px;
+        }
+
+        .hero-logo-large {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .hero-sub-head {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            max-width: 320px;
+        }
+
+        .hero-trial-tag {
+            font-size: 12px;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.12);
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-weight: 700;
+        }
+
+        .btn-get-trial {
+            margin-top: 6px;
+            width: 100%;
+            max-width: 320px;
+            background: #3ea6ff;
+            color: #0a0a0a;
+            border: none;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(62, 166, 255, 0.3);
+        }
+
+        .trial-terms-txt {
+            font-size: 11px;
+            color: #888888;
+            max-width: 300px;
+        }
+
+        /* 3. FEATURES LIST */
+        .prem-features-section {
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            border-bottom: 1px solid #1c1c1c;
+        }
+
+        .sec-heading {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .feature-card-row {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .feat-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #1c1c1c;
+            border: 1px solid #282828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feat-icon-box svg {
+            width: 20px;
+            height: 20px;
+            fill: #e50914;
+        }
+
+        .feat-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .feat-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .feat-desc {
+            font-size: 12px;
+            color: #aaaaaa;
+            line-height: 1.4;
+        }
+
+        /* 4. PLANS SELECTOR */
+        .plans-section {
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .plan-box {
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .plan-box.recommended {
+            border-color: #3ea6ff;
+            background: linear-gradient(180deg, #18222b 0%, #151515 100%);
+        }
+
+        .plan-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .plan-name {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .plan-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #3ea6ff;
+        }
+
+        .plan-sub {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        /* 5. PAYMENT SHEET MODAL */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .payment-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            padding: 20px 16px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.9);
+        }
+
+        .sheet-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2d2d2d;
+            padding-bottom: 8px;
+        }
+
+        .sheet-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .btn-close-sheet {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .pay-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 10px;
+            background: #181818;
+            border: 1px solid #2e2e2e;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .pay-option-row:active {
+            border-color: #3ea6ff;
+        }
+
+        .pay-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-confirm-pay {
+            background: #2ecc71;
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="prem-header">
+        <a href="profile.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <div class="header-title-box">
+            <div class="brand-badge">B</div>
+            <span class="brand-name">Premium</span>
+        </div>
+    </header>
+
+    <!-- 2. HERO SHOWCASE -->
+    <section class="prem-hero">
+        <div class="hero-logo-large">
+            <div class="brand-badge" style="width:34px; height:24px; font-size:16px;">B</div>
+            <span><span style="color:#e50914;">B</span>Tube Premium</span>
+        </div>
+        <p class="hero-sub-head">All BTube. No interruptions. Listen in background, offline and ad-free.</p>
+        <span class="hero-trial-tag">1-Month Free Trial Available</span>
+        <button class="btn-get-trial" onclick="openPaymentModal('Individual Plan (₹129/mo)')">Get BTube Premium</button>
+        <span class="trial-terms-txt">1 month free • Then ₹129/month • Cancel anytime via Settings</span>
+    </section>
+
+    <!-- 3. PREMIUM ADVANTAGES -->
+    <section class="prem-features-section">
+        <span class="sec-heading">Why upgrade to Premium?</span>
+
+        <div class="feature-card-row">
+            <div class="feat-icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            </div>
+            <div class="feat-info">
+                <span class="feat-title">Ad-free streaming</span>
+                <span class="feat-desc">Enjoy unlimited regional videos, panthi songs and tutorials without video or banner ads.</span>
+            </div>
+        </div>
+
+        <div class="feature-card-row">
+            <div class="feat-icon-box">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <div class="feat-info">
+                <span class="feat-title">Background playback</span>
+                <span class="feat-desc">Videos keep playing in the background while using other apps or when screen is locked.</span>
+            </div>
+        </div>
+
+        <div class="feature-card-row">
+            <div class="feat-icon-box">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            </div>
+            <div class="feat-info">
+                <span class="feat-title">High Quality Downloads</span>
+                <span class="feat-desc">Download videos in 1080p Full HD to watch completely offline on journeys.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. MEMBERSHIP PLANS -->
+    <section class="plans-section">
+        <span class="sec-heading">Choose your plan</span>
+
+        <div class="plan-box recommended" onclick="openPaymentModal('Individual Plan (₹129/mo)')">
+            <div class="plan-top-row">
+                <span class="plan-name">Individual</span>
+                <span class="plan-price">₹129/month</span>
+            </div>
+            <span class="plan-sub">1 month free trial • Auto-renews monthly</span>
+        </div>
+
+        <div class="plan-box" onclick="openPaymentModal('Family Plan (₹189/mo)')">
+            <div class="plan-top-row">
+                <span class="plan-name">Family Plan</span>
+                <span class="plan-price">₹189/month</span>
+            </div>
+            <span class="plan-sub">Up to 5 family members (ages 13+) in household</span>
+        </div>
+
+        <div class="plan-box" onclick="openPaymentModal('Annual Plan (₹1,290/yr)')">
+            <div class="plan-top-row">
+                <span class="plan-name">Annual Prepaid</span>
+                <span class="plan-price">₹1,290/year</span>
+            </div>
+            <span class="plan-sub">Save 15% with 12 months non-recurring access</span>
+        </div>
+    </section>
+
+    <!-- 5. PAYMENT MODAL SHEET -->
+    <div class="drawer-overlay" id="paymentDrawer" onclick="closeDrawerOnBackdrop(event)">
+        <div class="payment-sheet-card">
+            <div class="sheet-head">
+                <span class="sheet-title" id="selectedPlanTitle">Complete Subscription</span>
+                <button class="btn-close-sheet" onclick="closePaymentModal()">✕</button>
+            </div>
+
+            <div class="pay-option-row" onclick="selectPaymentMethod('UPI / GPay')">
+                <div class="pay-left">
+                    <span>📱 UPI (Google Pay / PhonePe / Paytm)</span>
+                </div>
+                <span style="color:#3ea6ff;">Select</span>
+            </div>
+
+            <div class="pay-option-row" onclick="selectPaymentMethod('Credit/Debit Card')">
+                <div class="pay-left">
+                    <span>💳 Debit / Credit Card</span>
+                </div>
+                <span style="color:#3ea6ff;">Select</span>
+            </div>
+
+            <button class="btn-confirm-pay" onclick="activateSubscription()">Start 1-Month Free Trial</button>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="premToast"></div>
+
+    <!-- 6. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('premToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function openPaymentModal(plan) {
+            document.getElementById('selectedPlanTitle').innerText = plan;
+            document.getElementById('paymentDrawer').classList.add('open');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentDrawer').classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e) {
+            if (e.target.id === 'paymentDrawer') closePaymentModal();
+        }
+
+        function selectPaymentMethod(method) {
+            showToast(`${method} selected`);
+        }
+
+        function activateSubscription() {
+            closePaymentModal();
+            localStorage.setItem('btube_is_premium', 'true');
+            showToast('🎉 BTube Premium Activated!');
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
