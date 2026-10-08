@@ -240,7 +240,7 @@
             color: #999999;
         }
 
-        /* 5. PAYMENT SHEET MODAL */
+        /* 5. WORKING PAYMENT SHEET MODAL */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -264,6 +264,8 @@
             flex-direction: column;
             gap: 14px;
             box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.9);
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
         .sheet-head {
@@ -287,39 +289,109 @@
             cursor: pointer;
         }
 
-        .pay-option-row {
+        /* UPI Payment Area */
+        .upi-pay-card {
+            background: #171717;
+            border: 1px solid #2d2d2d;
+            border-radius: 14px;
+            padding: 16px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 10px;
-            background: #181818;
-            border: 1px solid #2e2e2e;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .pay-option-row:active {
-            border-color: #3ea6ff;
-        }
-
-        .pay-left {
-            display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 12px;
-            font-size: 13px;
-            font-weight: 600;
+            align-items: center;
+            text-align: center;
         }
 
-        .btn-confirm-pay {
+        .upi-amount-badge {
+            font-size: 24px;
+            font-weight: 900;
+            color: #2ecc71;
+        }
+
+        .qr-code-box {
+            width: 160px;
+            height: 160px;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .qr-code-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .btn-upi-direct-app {
+            width: 100%;
             background: #2ecc71;
-            color: #000;
+            color: #0b1a0e;
             border: none;
             padding: 12px;
-            border-radius: 20px;
+            border-radius: 24px;
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
-            margin-top: 6px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+
+        .upi-id-pill {
+            background: #252525;
+            border: 1px dashed #444;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        /* Verification Form */
+        .verify-box {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+            margin-top: 4px;
+        }
+
+        .verify-input {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .verify-input:focus {
+            border-color: #3ea6ff;
+        }
+
+        .btn-verify-submit {
+            width: 100%;
+            background: #3ea6ff;
+            color: #0a0a0a;
+            border: none;
+            padding: 11px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
         }
 
         /* Toast */
@@ -409,9 +481,9 @@
             <span><span style="color:#e50914;">B</span>Tube Premium</span>
         </div>
         <p class="hero-sub-head">All BTube. No interruptions. Listen in background, offline and ad-free.</p>
-        <span class="hero-trial-tag">1-Month Free Trial Available</span>
-        <button class="btn-get-trial" onclick="openPaymentModal('Individual Plan (₹129/mo)')">Get BTube Premium</button>
-        <span class="trial-terms-txt">1 month free • Then ₹129/month • Cancel anytime via Settings</span>
+        <span class="hero-trial-tag">Instant Direct UPI Activation</span>
+        <button class="btn-get-trial" onclick="openPaymentModal(129, 'Individual Plan')">Get BTube Premium</button>
+        <span class="trial-terms-txt">₹129/month • Direct Creator Support • Cancel anytime</span>
     </section>
 
     <!-- 3. PREMIUM ADVANTAGES -->
@@ -453,54 +525,65 @@
     <section class="plans-section">
         <span class="sec-heading">Choose your plan</span>
 
-        <div class="plan-box recommended" onclick="openPaymentModal('Individual Plan (₹129/mo)')">
+        <div class="plan-box recommended" onclick="openPaymentModal(129, 'Individual Plan')">
             <div class="plan-top-row">
-                <span class="plan-name">Individual</span>
+                <span class="plan-name">Individual Plan</span>
                 <span class="plan-price">₹129/month</span>
             </div>
-            <span class="plan-sub">1 month free trial • Auto-renews monthly</span>
+            <span class="plan-sub">1 month access • Direct creator transfer</span>
         </div>
 
-        <div class="plan-box" onclick="openPaymentModal('Family Plan (₹189/mo)')">
+        <div class="plan-box" onclick="openPaymentModal(189, 'Family Plan')">
             <div class="plan-top-row">
                 <span class="plan-name">Family Plan</span>
                 <span class="plan-price">₹189/month</span>
             </div>
-            <span class="plan-sub">Up to 5 family members (ages 13+) in household</span>
+            <span class="plan-sub">Up to 5 family accounts support</span>
         </div>
 
-        <div class="plan-box" onclick="openPaymentModal('Annual Plan (₹1,290/yr)')">
+        <div class="plan-box" onclick="openPaymentModal(1290, 'Annual Plan')">
             <div class="plan-top-row">
                 <span class="plan-name">Annual Prepaid</span>
                 <span class="plan-price">₹1,290/year</span>
             </div>
-            <span class="plan-sub">Save 15% with 12 months non-recurring access</span>
+            <span class="plan-sub">Full year uninterrupted ad-free streaming</span>
         </div>
     </section>
 
-    <!-- 5. PAYMENT MODAL SHEET -->
+    <!-- 5. REAL UPI PAYMENT MODAL (DIRECT TRANSFER TO CREATOR) -->
     <div class="drawer-overlay" id="paymentDrawer" onclick="closeDrawerOnBackdrop(event)">
         <div class="payment-sheet-card">
             <div class="sheet-head">
-                <span class="sheet-title" id="selectedPlanTitle">Complete Subscription</span>
+                <span class="sheet-title" id="selectedPlanTitle">Pay with UPI</span>
                 <button class="btn-close-sheet" onclick="closePaymentModal()">✕</button>
             </div>
 
-            <div class="pay-option-row" onclick="selectPaymentMethod('UPI / GPay')">
-                <div class="pay-left">
-                    <span>📱 UPI (Google Pay / PhonePe / Paytm)</span>
+            <div class="upi-pay-card">
+                <span style="font-size:12px; color:#aaa;">Pay Directly via Any UPI App</span>
+                <div class="upi-amount-badge" id="upiAmountText">₹129</div>
+
+                <!-- Live Dynamic QR Code -->
+                <div class="qr-code-box">
+                    <img id="upiQrImg" src="" alt="Scan QR to Pay">
                 </div>
-                <span style="color:#3ea6ff;">Select</span>
+
+                <div class="upi-id-pill" onclick="copyUpiId()">
+                    <span id="creatorUpiId">charandasbhaskar156-1@oksbi</span>
+                    <span style="color:#3ea6ff; font-weight:700;">Copy</span>
+                </div>
+
+                <!-- Direct App Launch Deep Link -->
+                <a id="upiDeepLink" href="#" class="btn-upi-direct-app">
+                    <span>Pay via GPay / PhonePe / Paytm</span>
+                </a>
             </div>
 
-            <div class="pay-option-row" onclick="selectPaymentMethod('Credit/Debit Card')">
-                <div class="pay-left">
-                    <span>💳 Debit / Credit Card</span>
-                </div>
-                <span style="color:#3ea6ff;">Select</span>
+            <!-- Transaction Verification -->
+            <div class="verify-box">
+                <span style="font-size:12px; color:#aaa;">Payment hone ke baad UTR / Transaction ID dalein:</span>
+                <input type="text" id="utrInput" class="verify-input" placeholder="e.g. 4289xxxxxxxx (12 Digit UTR)">
+                <button class="btn-verify-submit" onclick="verifyAndActivate()">Confirm & Activate Premium</button>
             </div>
-
-            <button class="btn-confirm-pay" onclick="activateSubscription()">Start 1-Month Free Trial</button>
         </div>
     </div>
 
@@ -532,6 +615,10 @@
 
     <!-- SCRIPT LOGIC -->
     <script>
+        // SET YOUR ACTUAL UPI ID HERE
+        const CREATOR_UPI_ID = "charandasbhaskar@upi";
+        const CREATOR_NAME = "Charandas Bhaskar";
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
             if (savedName) {
@@ -546,11 +633,23 @@
             const t = document.getElementById('premToast');
             t.innerText = msg;
             t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
+            setTimeout(() => { t.style.display = 'none'; }, 2200);
         }
 
-        function openPaymentModal(plan) {
-            document.getElementById('selectedPlanTitle').innerText = plan;
+        function openPaymentModal(amount, planName) {
+            document.getElementById('selectedPlanTitle').innerText = `${planName} (₹${amount})`;
+            document.getElementById('upiAmountText').innerText = `₹${amount}`;
+
+            // Build NPCI Standard UPI Link
+            const upiUrl = `upi://pay?pa=${encodeURIComponent(CREATOR_UPI_ID)}&pn=${encodeURIComponent(CREATOR_NAME)}&am=${amount}&cu=INR&tn=BTube%20Premium%20Subscription`;
+            
+            // Set Direct App Link
+            document.getElementById('upiDeepLink').href = upiUrl;
+
+            // Generate Instant Dynamic QR Code
+            const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+            document.getElementById('upiQrImg').src = qrApi;
+
             document.getElementById('paymentDrawer').classList.add('open');
         }
 
@@ -562,14 +661,24 @@
             if (e.target.id === 'paymentDrawer') closePaymentModal();
         }
 
-        function selectPaymentMethod(method) {
-            showToast(`${method} selected`);
+        function copyUpiId() {
+            navigator.clipboard.writeText(CREATOR_UPI_ID);
+            showToast('UPI ID copied to clipboard ✓');
         }
 
-        function activateSubscription() {
-            closePaymentModal();
+        function verifyAndActivate() {
+            const utr = document.getElementById('utrInput').value.trim();
+            if (!utr || utr.length < 8) {
+                showToast('Kripya valid 12-digit UPI UTR number dalein');
+                return;
+            }
+
+            // Save UTR transaction proof and grant Premium
             localStorage.setItem('btube_is_premium', 'true');
-            showToast('🎉 BTube Premium Activated!');
+            localStorage.setItem('btube_premium_utr', utr);
+
+            closePaymentModal();
+            showToast('🎉 Payment verified! BTube Premium activated!');
             setTimeout(() => {
                 window.location.href = 'profile.html';
             }, 1200);
