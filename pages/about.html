@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>About BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .about-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. APP HERO BRANDING */
+        .app-hero-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px 24px;
+            gap: 10px;
+            text-align: center;
+            border-bottom: 1px solid #1c1c1c;
+        }
+
+        .app-logo-badge {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #e50914 0%, #ff3b30 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(229, 9, 20, 0.4);
+        }
+
+        .app-logo-badge svg {
+            width: 38px;
+            height: 38px;
+            fill: #ffffff;
+        }
+
+        .app-name-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .app-version-tag {
+            font-size: 12px;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.12);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .app-tagline {
+            font-size: 13px;
+            color: #aaaaaa;
+            max-width: 280px;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        /* 3. INFO SECTIONS */
+        .info-group-box {
+            display: flex;
+            flex-direction: column;
+            padding: 6px 0;
+            border-bottom: 1px solid #1c1c1c;
+        }
+
+        .info-group-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #3ea6ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 14px 16px 6px;
+        }
+
+        .info-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 16px;
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+            border-bottom: 1px solid #141414;
+        }
+
+        .info-row-item:active {
+            background: #181818;
+        }
+
+        .row-text-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .row-text-val {
+            font-size: 13px;
+            color: #888888;
+        }
+
+        .row-text-val svg {
+            width: 14px;
+            height: 14px;
+            fill: #666666;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+
+        /* 4. LEGAL & COPYRIGHT FOOTER */
+        .about-footer {
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .footer-sub {
+            font-size: 11px;
+            color: #444444;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 5. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="about-header">
+        <a href="settings.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span class="header-title">About BTube</span>
+    </header>
+
+    <!-- 2. APP HERO BRANDING -->
+    <section class="app-hero-brand">
+        <div class="app-logo-badge">
+            <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 20c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 4c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+        </div>
+        <h1 class="app-name-title">BTube (भारतट्यूब)</h1>
+        <span class="app-version-tag">Version 2.4.0 (Build 2026.10)</span>
+        <p class="app-tagline">Desi video platform designed for regional music, culture, and high-quality creator streaming.</p>
+    </section>
+
+    <!-- 3. PLATFORM SPECIFICATIONS -->
+    <main>
+        <div class="info-group-box">
+            <span class="info-group-title">App Details</span>
+
+            <div class="info-row-item" onclick="showToast('App is running on the latest stable release')">
+                <span class="row-text-label">Release Channel</span>
+                <span class="row-text-val">Production Stable</span>
+            </div>
+
+            <div class="info-row-item" onclick="showToast('Engine: HTML5 Progressive Web App')">
+                <span class="row-text-label">Platform Engine</span>
+                <span class="row-text-val">PWA / Web Mobile</span>
+            </div>
+
+            <div class="info-row-item" onclick="showToast('Storage state: Synced locally')">
+                <span class="row-text-label">Local Data Storage</span>
+                <span class="row-text-val">HTML5 LocalStorage</span>
+            </div>
+        </div>
+
+        <div class="info-group-box">
+            <span class="info-group-title">Developer & Creator</span>
+
+            <a href="channel.html" class="info-row-item">
+                <span class="row-text-label">Developed For</span>
+                <span class="row-text-val">Charandas Bhaskar
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </span>
+            </a>
+
+            <div class="info-row-item" onclick="showToast('Focus: Regional Chhattisgarhi Folk & Tutorials')">
+                <span class="row-text-label">Primary Region</span>
+                <span class="row-text-val">Chhattisgarh, India</span>
+            </div>
+        </div>
+
+        <div class="info-group-box">
+            <span class="info-group-title">Legal & Terms</span>
+
+            <div class="info-row-item" onclick="showToast('Terms of Service: Standard BTube Community Rules')">
+                <span class="row-text-label">Terms of Service</span>
+                <span class="row-text-val">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </span>
+            </div>
+
+            <div class="info-row-item" onclick="showToast('Privacy Policy: No personal data is tracked or sold')">
+                <span class="row-text-label">Privacy Policy</span>
+                <span class="row-text-val">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </span>
+            </div>
+
+            <div class="info-row-item" onclick="showToast('All open-source UI icons and components licensed under MIT')">
+                <span class="row-text-label">Open-source Licenses</span>
+                <span class="row-text-val">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. FOOTER -->
+    <footer class="about-footer">
+        <span class="footer-copy">© 2026 BTube Inc. All rights reserved.</span>
+        <span class="footer-sub">Made with pride in India 🇮🇳</span>
+    </footer>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="aboutToast"></div>
+
+    <!-- 5. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('aboutToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+    </script>
+</body>
+</html>
