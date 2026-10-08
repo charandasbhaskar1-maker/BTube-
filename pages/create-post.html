@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Create Post - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .post-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-header-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .btn-header-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title-txt {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-publish-post {
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border: none;
+            padding: 7px 20px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-publish-post:disabled {
+            background: #272727;
+            color: #777777;
+            cursor: not-allowed;
+        }
+
+        /* 2. CREATOR BADGE & VISIBILITY ROW */
+        .creator-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 16px 8px;
+        }
+
+        .creator-meta-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .creator-avatar-bubble {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #ffffff;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .creator-avatar-bubble img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .creator-names-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .creator-display-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .vis-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #3ea6ff;
+            background: rgba(62, 166, 255, 0.12);
+            padding: 2px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        /* 3. POST TEXTAREA */
+        .post-body-container {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 16px;
+            flex: 1;
+            gap: 16px;
+        }
+
+        .post-text-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 15px;
+            line-height: 1.5;
+            outline: none;
+            resize: none;
+            min-height: 120px;
+        }
+
+        .post-text-input::placeholder {
+            color: #717171;
+        }
+
+        /* 4. POLL CARD SECTION */
+        .poll-composer-card {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 14px;
+            position: relative;
+        }
+
+        .poll-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #242424;
+            padding-bottom: 8px;
+        }
+
+        .poll-close-btn {
+            background: none;
+            border: none;
+            color: #888888;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .poll-inputs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .poll-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .poll-option-box {
+            flex: 1;
+            background: #242424;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .poll-option-box:focus {
+            border-color: #3ea6ff;
+        }
+
+        .btn-remove-option {
+            background: none;
+            border: none;
+            color: #888888;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .btn-add-poll-option {
+            background: none;
+            border: none;
+            color: #3ea6ff;
+            font-size: 13px;
+            font-weight: 700;
+            align-self: flex-start;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        /* 5. IMAGE PREVIEW CARD */
+        .image-preview-card {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 16 / 9;
+            background: #141414;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #282828;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+        }
+
+        .image-preview-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* 6. BOTTOM TOOLBAR (MEDIA ATTACHMENT DOCK) */
+        .post-toolbar-dock {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 14px 16px;
+            border-top: 1px solid #1c1c1c;
+            background: #0f0f0f;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .tool-dock-btn {
+            background: none;
+            border: none;
+            color: #3ea6ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tool-dock-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        /* 7. VISIBILITY BOTTOM SHEET */
+        .drawer-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 3000;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-scrim.open {
+            display: flex;
+        }
+
+        .drawer-menu-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .drawer-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .drawer-option-row.selected {
+            background: #282828;
+        }
+
+        .schedule-box {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            background: #181818;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            margin-top: 6px;
+        }
+
+        .schedule-box input {
+            background: #252525;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 5000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="post-header">
+        <div class="header-left">
+            <a href="upload.html" class="btn-header-back">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </a>
+            <span class="header-title-txt">Create post</span>
+        </div>
+        <button class="btn-publish-post" id="btnPublish" onclick="publishPost()">Post</button>
+    </header>
+
+    <!-- 2. CREATOR INFO & VISIBILITY -->
+    <section class="creator-info-row">
+        <div class="creator-meta-left">
+            <div class="creator-avatar-bubble" id="creatorAvatarInits">CB</div>
+            <div class="creator-names-col">
+                <span class="creator-display-name" id="creatorDisplayName">Charandas Bhaskar</span>
+                <div class="vis-badge-pill" onclick="openVisibilityDrawer()">
+                    <span id="txtVisPill">Public 🌐</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. COMPOSER MAIN BODY -->
+    <main class="post-body-container">
+        <!-- Text content input -->
+        <textarea id="postTextInput" class="post-text-input" placeholder="Give a shoutout to your subscribers or share what's on your mind..."></textarea>
+
+        <!-- Image Preview Card -->
+        <div class="image-preview-card" id="imagePreviewCard">
+            <img id="attachedPostImg" src="" alt="Post Attachment">
+            <button class="btn-remove-image" onclick="removeAttachedImage()">✕</button>
+        </div>
+
+        <!-- Interactive Poll Card -->
+        <section class="poll-composer-card" id="pollComposerCard">
+            <div class="poll-card-header">
+                <span>Community Poll</span>
+                <button class="poll-close-btn" onclick="closePollCard()">✕</button>
+            </div>
+            <div class="poll-inputs-list" id="pollInputsList">
+                <div class="poll-input-row">
+                    <input type="text" class="poll-option-box" placeholder="Option 1">
+                </div>
+                <div class="poll-input-row">
+                    <input type="text" class="poll-option-box" placeholder="Option 2">
+                </div>
+            </div>
+            <button type="button" class="btn-add-poll-option" id="btnAddOption" onclick="addPollOption()">+ Add option</button>
+        </section>
+    </main>
+
+    <!-- 4. BOTTOM MEDIA TOOLBAR -->
+    <footer class="post-toolbar-dock">
+        <!-- Attach Image -->
+        <label for="postImageUploadInput" class="tool-dock-btn">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <span>Image</span>
+        </label>
+        <input type="file" id="postImageUploadInput" accept="image/*" style="display:none;" onchange="handleImageAttached(event)">
+
+        <!-- Add Poll -->
+        <button type="button" class="tool-dock-btn" onclick="openPollCard()">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            <span>Poll</span>
+        </button>
+    </footer>
+
+    <!-- 5. VISIBILITY DRAWER -->
+    <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeDrawer('visDrawerScrim')">
+        <div class="drawer-menu-card">
+            <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Post Visibility</div>
+            <div class="drawer-option-row selected" id="opt-public" onclick="setVis('Public 🌐', 'opt-public')">
+                <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Visible to everyone on Community tab</div></div>
+            </div>
+            <div class="drawer-option-row" id="opt-schedule" onclick="toggleSchedule()">
+                <div><strong>Schedule ⏰</strong><div style="font-size:11px; color:#888;">Publish at a specific date and time</div></div>
+            </div>
+            <div class="schedule-box" id="scheduleBox">
+                <span style="font-size:12px; color:#aaa;">Publish Time:</span>
+                <input type="datetime-local" id="scheduleTimeInput">
+                <button type="button" class="btn-publish-post" style="margin-top:6px;" onclick="applySchedule()">Set Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-pop" id="postToast"></div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        let attachedImageBase64 = null;
+        let isPollActive = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                document.getElementById('creatorDisplayName').innerText = savedName;
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('creatorAvatarInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('postToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function openDrawer(id) { document.getElementById(id).classList.add('open'); }
+        function closeDrawer(id) { document.getElementById(id).classList.remove('open'); }
+
+        // Visibility
+        function openVisibilityDrawer() { openDrawer('visDrawerScrim'); }
+
+        function setVis(txt, elId) {
+            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
+            document.getElementById(elId).classList.add('selected');
+            document.getElementById('scheduleBox').style.display = 'none';
+            document.getElementById('txtVisPill').innerText = txt;
+            closeDrawer('visDrawerScrim');
+            showToast(`Visibility: ${txt}`);
+        }
+
+        function toggleSchedule() {
+            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
+            document.getElementById('opt-schedule').classList.add('selected');
+            const box = document.getElementById('scheduleBox');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function applySchedule() {
+            const val = document.getElementById('scheduleTimeInput').value;
+            if (!val) {
+                showToast('Please select a valid date/time');
+                return;
+            }
+            const d = new Date(val);
+            document.getElementById('txtVisPill').innerText = `Scheduled ⏰ (${d.toLocaleDateString()})`;
+            closeDrawer('visDrawerScrim');
+            showToast('Post scheduled successfully ✓');
+        }
+
+        // Image Attachment
+        function handleImageAttached(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                attachedImageBase64 = evt.target.result;
+                document.getElementById('attachedPostImg').src = evt.target.result;
+                document.getElementById('imagePreviewCard').style.display = 'block';
+                showToast('Image attached ✓');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeAttachedImage() {
+            attachedImageBase64 = null;
+            document.getElementById('imagePreviewCard').style.display = 'none';
+            document.getElementById('attachedPostImg').src = '';
+            document.getElementById('postImageUploadInput').value = '';
+        }
+
+        // Poll Logic
+        function openPollCard() {
+            isPollActive = true;
+            document.getElementById('pollComposerCard').style.display = 'flex';
+            showToast('Poll created');
+        }
+
+        function closePollCard() {
+            isPollActive = false;
+            document.getElementById('pollComposerCard').style.display = 'none';
+        }
+
+        function addPollOption() {
+            const list = document.getElementById('pollInputsList');
+            const count = list.children.length;
+            if (count >= 4) {
+                showToast('Maximum 4 poll options allowed');
+                return;
+            }
+
+            const row = document.createElement('div');
+            row.className = 'poll-input-row';
+            row.innerHTML = `
+                <input type="text" class="poll-option-box" placeholder="Option ${count + 1}">
+                <button type="button" class="btn-remove-option" onclick="this.parentElement.remove()">✕</button>
+            `;
+            list.appendChild(row);
+        }
+
+        // Publish Post
+        function publishPost() {
+            const text = document.getElementById('postTextInput').value.trim();
+            if (!text && !attachedImageBase64 && !isPollActive) {
+                showToast('Please write something or attach media');
+                return;
+            }
+
+            // Save recent community post into localStorage
+            localStorage.setItem('btube_last_community_post', text || 'New post');
+
+            showToast('Published to Community tab ✓');
+            setTimeout(() => {
+                window.location.href = 'channel.html';
+            }, 600);
+        }
+    </script>
+</body>
+</html>
