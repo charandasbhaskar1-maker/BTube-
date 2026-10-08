@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Edit Video Details - BTube Studio</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* 1. TOP HEADER */
+        .edit-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-header-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-header-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title-txt {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-save-action {
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-save-action:active {
+            opacity: 0.8;
+        }
+
+        /* 2. FORMAT TOGGLE (LONG VIDEO vs SHORTS) */
+        .format-toggle-bar {
+            display: flex;
+            background: #191919;
+            margin: 14px 16px;
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid #282828;
+        }
+
+        .format-btn {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            background: none;
+            color: #888888;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .format-btn.active {
+            background: #2b2b2b;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        /* 3. THUMBNAIL EDIT HERO */
+        .thumb-edit-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 16px 20px;
+            border-bottom: 1px solid #1a1a1a;
+            position: relative;
+        }
+
+        /* Aspect ratio container dynamically shifts between 16:9 and 9:16 */
+        .preview-thumb-box {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 16 / 9;
+            background: #1c1c1c;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333333;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+            transition: aspect-ratio 0.3s ease, max-width 0.3s ease;
+        }
+
+        .preview-thumb-box.shorts-aspect {
+            max-width: 180px;
+            aspect-ratio: 9 / 16;
+        }
+
+        .preview-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-edit-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-edit-badge svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+
+        .thumb-helper-note {
+            font-size: 11px;
+            color: #888888;
+            margin-top: 8px;
+        }
+
+        /* 4. DETAILS FORM SECTIONS */
+        .editor-form-wrap {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 18px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .field-label-txt {
+            font-size: 12px;
+            font-weight: 700;
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .char-counter {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        .input-box {
+            width: 100%;
+            background: #161616;
+            border: 1px solid #282828;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus {
+            border-color: #3ea6ff;
+            background: #1b1b1b;
+        }
+
+        textarea.input-box {
+            min-height: 95px;
+            resize: vertical;
+            line-height: 1.45;
+        }
+
+        /* 5. VISIBILITY SELECTOR ROW */
+        .interactive-picker-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: #161616;
+            border: 1px solid #282828;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .interactive-picker-row:active {
+            background: #202020;
+        }
+
+        .picker-left-col {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .picker-icon-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: #252525;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .picker-icon-box svg {
+            width: 18px;
+            height: 18px;
+            fill: #3ea6ff;
+        }
+
+        .picker-text-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .picker-main-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .picker-sub-val {
+            font-size: 12px;
+            color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .picker-chevron svg {
+            width: 16px;
+            height: 16px;
+            fill: #666666;
+        }
+
+        /* 6. TAGS DISPLAY PILLS */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .tag-pill {
+            background: #252525;
+            color: #3ea6ff;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag-remove-x {
+            color: #888888;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        /* 7. VISIBILITY MODAL SHEET */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.9);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .sheet-head-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d2d2d;
+        }
+
+        .sheet-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sheet-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .vis-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .vis-option-row:active {
+            background: #2a2a2a;
+        }
+
+        .vis-option-row.selected {
+            background: #262626;
+            border-color: #3ea6ff;
+        }
+
+        .vis-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .vis-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .vis-desc {
+            font-size: 11px;
+            color: #888888;
+        }
+
+        .vis-radio-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #555555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vis-option-row.selected .vis-radio-dot {
+            border-color: #3ea6ff;
+        }
+
+        .vis-option-row.selected .vis-radio-dot::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3ea6ff;
+        }
+
+        /* Schedule DateTime Picker */
+        .schedule-box {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            background: #171717;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333333;
+            margin-top: 4px;
+        }
+
+        .schedule-box input {
+            background: #222222;
+            border: 1px solid #444444;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="edit-header">
+        <div class="header-left">
+            <a href="your-videos.html" class="btn-header-back">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            <span class="header-title-txt">Edit details</span>
+        </div>
+        <button class="btn-save-action" onclick="saveAllVideoDetails()">Save</button>
+    </header>
+
+    <!-- 2. FORMAT TOGGLE (VIDEO vs SHORTS) -->
+    <div class="format-toggle-bar">
+        <button class="format-btn active" id="btnModeVideo" onclick="setMode('video')">Long Video (16:9)</button>
+        <button class="format-btn" id="btnModeShorts" onclick="setMode('shorts')">Shorts (9:16)</button>
+    </div>
+
+    <!-- 3. THUMBNAIL / COVER PICKER -->
+    <section class="thumb-edit-card">
+        <div class="preview-thumb-box" id="previewThumbBox">
+            <img id="currentThumbImg" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Thumbnail">
+            <label for="thumbFileInput" class="btn-edit-badge" title="Change Thumbnail">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </label>
+        </div>
+        <!-- Hidden Real File Input -->
+        <input type="file" id="thumbFileInput" accept="image/*" style="display:none;" onchange="handleThumbnailUpload(event)">
+        <span class="thumb-helper-note" id="thumbHelperTxt">Tap edit icon to select thumbnail from gallery</span>
+    </section>
+
+    <!-- 4. EDIT FIELDS FORM -->
+    <main class="editor-form-wrap">
+
+        <!-- TITLE FIELD -->
+        <div class="field-group">
+            <div class="field-label-row">
+                <span class="field-label-txt">Title</span>
+                <span class="char-counter" id="titleCharCount">54/100</span>
+            </div>
+            <input type="text" id="videoTitleInput" class="input-box" maxlength="100" 
+                value="Chhattisgarhi Panthi Song • Special Cultural Video 2026" oninput="updateCharCount()">
+        </div>
+
+        <!-- DESCRIPTION FIELD -->
+        <div class="field-group">
+            <div class="field-label-row">
+                <span class="field-label-txt">Description</span>
+            </div>
+            <textarea id="videoDescInput" class="input-box" placeholder="Tell viewers about your video...">Official Panthi folk music recorded in Chhattisgarh celebrating regional heritage. Produced by Charandas Bhaskar on BTube. 
+
+#Chhattisgarhi #PanthiSong #FolkBeat</textarea>
+        </div>
+
+        <!-- VISIBILITY SELECTOR -->
+        <div class="field-group">
+            <span class="field-label-txt">Visibility</span>
+            <div class="interactive-picker-row" onclick="openVisibilityDrawer()">
+                <div class="picker-left-col">
+                    <div class="picker-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    </div>
+                    <div class="picker-text-wrap">
+                        <span class="picker-main-title" id="visDisplayTitle">Public</span>
+                        <span class="picker-sub-val" id="visDisplaySub">Anyone can search for and view</span>
+                    </div>
+                </div>
+                <div class="picker-chevron">
+                    <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAGS FIELD -->
+        <div class="field-group">
+            <div class="field-label-row">
+                <span class="field-label-txt">Tags</span>
+                <span style="font-size:11px; color:#888;">Press comma or enter to add</span>
+            </div>
+            <input type="text" id="tagInputField" class="input-box" placeholder="e.g. panthi, folk, chhattisgarh" onkeydown="handleTagKey(event)">
+            
+            <div class="tags-container" id="tagsList">
+                <div class="tag-pill"><span>#Chhattisgarhi</span><span class="tag-remove-x" onclick="removeTag(this)">×</span></div>
+                <div class="tag-pill"><span>#Panthi</span><span class="tag-remove-x" onclick="removeTag(this)">×</span></div>
+                <div class="tag-pill"><span>#FolkSong</span><span class="tag-remove-x" onclick="removeTag(this)">×</span></div>
+            </div>
+        </div>
+
+        <!-- AUDIENCE SETTING (MADE FOR KIDS) -->
+        <div class="field-group">
+            <span class="field-label-txt">Audience</span>
+            <div class="interactive-picker-row" onclick="toggleAudience()">
+                <div class="picker-left-col">
+                    <div class="picker-icon-box" style="background: rgba(243, 156, 18, 0.15);">
+                        <svg viewBox="0 0 24 24" style="fill: #f39c12;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    </div>
+                    <div class="picker-text-wrap">
+                        <span class="picker-main-title">Made for Kids</span>
+                        <span class="picker-sub-val" id="kidsSettingVal" style="color:#aaa;">No, it's not made for kids</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 5. VISIBILITY SELECTION BOTTOM SHEET -->
+    <div class="drawer-overlay" id="visDrawer" onclick="closeDrawerOnBackdrop(event, 'visDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="sheet-head-bar">
+                <span class="sheet-title-txt">Select visibility</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('visDrawer')">✕</button>
+            </div>
+
+            <!-- Option 1: Public -->
+            <div class="vis-option-row selected" id="opt-public" onclick="selectVisibility('Public', 'Anyone can search for and view', 'opt-public')">
+                <div class="vis-left">
+                    <span class="vis-title">Public 🌐</span>
+                    <span class="vis-desc">Anyone can search for and view instantly</span>
+                </div>
+                <div class="vis-radio-dot"></div>
+            </div>
+
+            <!-- Option 2: Unlisted -->
+            <div class="vis-option-row" id="opt-unlisted" onclick="selectVisibility('Unlisted', 'Anyone with the link can view', 'opt-unlisted')">
+                <div class="vis-left">
+                    <span class="vis-title">Unlisted 🔗</span>
+                    <span class="vis-desc">Anyone with the link can view</span>
+                </div>
+                <div class="vis-radio-dot"></div>
+            </div>
+
+            <!-- Option 3: Private -->
+            <div class="vis-option-row" id="opt-private" onclick="selectVisibility('Private', 'Only you can view', 'opt-private')">
+                <div class="vis-left">
+                    <span class="vis-title">Private 🔒</span>
+                    <span class="vis-desc">Only you and people you choose can view</span>
+                </div>
+                <div class="vis-radio-dot"></div>
+            </div>
+
+            <!-- Option 4: Schedule -->
+            <div class="vis-option-row" id="opt-schedule" onclick="toggleScheduleSection()">
+                <div class="vis-left">
+                    <span class="vis-title">Schedule ⏰</span>
+                    <span class="vis-desc">Select a date to make your video public</span>
+                </div>
+                <div class="vis-radio-dot"></div>
+            </div>
+
+            <div class="schedule-box" id="scheduleInputs">
+                <span style="font-size:12px; color:#aaa;">Publish Date & Time:</span>
+                <input type="datetime-local" id="scheduleDateTimeInput">
+                <button class="btn-save-action" style="margin-top:4px;" onclick="applySchedule()">Set Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="editToast"></div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        let currentVis = "Public";
+        let isShortsMode = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Read query params if arriving from your-videos.html
+            const urlParams = new URLSearchParams(window.location.search);
+            const passedTitle = urlParams.get('title');
+            const passedVis = urlParams.get('vis');
+            const passedMode = urlParams.get('mode');
+
+            if (passedTitle) {
+                document.getElementById('videoTitleInput').value = passedTitle;
+            }
+            if (passedVis) {
+                if (passedVis.includes('Unlisted')) {
+                    selectVisibility('Unlisted', 'Anyone with the link can view', 'opt-unlisted');
+                } else if (passedVis.includes('Private')) {
+                    selectVisibility('Private', 'Only you can view', 'opt-private');
+                }
+            }
+            if (passedMode === 'shorts') {
+                setMode('shorts');
+            }
+
+            updateCharCount();
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('editToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        // Format switch (Long Video vs Shorts)
+        function setMode(mode) {
+            const box = document.getElementById('previewThumbBox');
+            const helper = document.getElementById('thumbHelperTxt');
+            const btnV = document.getElementById('btnModeVideo');
+            const btnS = document.getElementById('btnModeShorts');
+
+            if (mode === 'shorts') {
+                isShortsMode = true;
+                btnS.classList.add('active');
+                btnV.classList.remove('active');
+                box.classList.add('shorts-aspect');
+                helper.innerText = 'Vertical 9:16 Shorts frame selected';
+                showToast('Switched to Shorts layout (9:16)');
+            } else {
+                isShortsMode = false;
+                btnV.classList.add('active');
+                btnS.classList.remove('active');
+                box.classList.remove('shorts-aspect');
+                helper.innerText = 'Landscape 16:9 Video thumbnail selected';
+                showToast('Switched to Long Video layout (16:9)');
+            }
+        }
+
+        // Handle Real Thumbnail Upload from Device
+        function handleThumbnailUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('currentThumbImg').src = e.target.result;
+                    localStorage.setItem('btube_temp_edit_thumb', e.target.result);
+                    showToast('Thumbnail updated successfully ✓');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateCharCount() {
+            const count = document.getElementById('videoTitleInput').value.length;
+            document.getElementById('titleCharCount').innerText = `${count}/100`;
+        }
+
+        // Visibility Drawer Handlers
+        function openVisibilityDrawer() {
+            document.getElementById('visDrawer').classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function selectVisibility(title, sub, elId) {
+            document.querySelectorAll('.vis-option-row').forEach(r => r.classList.remove('selected'));
+            document.getElementById(elId).classList.add('selected');
+            document.getElementById('scheduleInputs').style.display = 'none';
+
+            currentVis = title;
+            document.getElementById('visDisplayTitle').innerText = title;
+            document.getElementById('visDisplaySub').innerText = sub;
+            closeDrawer('visDrawer');
+            showToast(`Visibility set to ${title}`);
+        }
+
+        function toggleScheduleSection() {
+            document.querySelectorAll('.vis-option-row').forEach(r => r.classList.remove('selected'));
+            document.getElementById('opt-schedule').classList.add('selected');
+            const box = document.getElementById('scheduleInputs');
+            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function applySchedule() {
+            const dt = document.getElementById('scheduleDateTimeInput').value;
+            if (!dt) {
+                showToast('Please pick a date and time');
+                return;
+            }
+            currentVis = "Scheduled";
+            document.getElementById('visDisplayTitle').innerText = 'Scheduled ⏰';
+            document.getElementById('visDisplaySub').innerText = `Will go public on ${new Date(dt).toLocaleDateString()}`;
+            closeDrawer('visDrawer');
+            showToast('Video scheduled successfully ✓');
+        }
+
+        // Tags Logic
+        function handleTagKey(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = e.target.value.trim().replace(/^#/, '').replace(/,/g, '');
+                if (val) {
+                    addTagPill(val);
+                    e.target.value = '';
+                }
+            }
+        }
+
+        function addTagPill(tagText) {
+            const container = document.getElementById('tagsList');
+            const pill = document.createElement('div');
+            pill.className = 'tag-pill';
+            pill.innerHTML = `<span>#${tagText}</span><span class="tag-remove-x" onclick="removeTag(this)">×</span>`;
+            container.appendChild(pill);
+        }
+
+        function removeTag(el) {
+            el.parentElement.remove();
+        }
+
+        function toggleAudience() {
+            const label = document.getElementById('kidsSettingVal');
+            if (label.innerText.includes('No')) {
+                label.innerText = 'Yes, made for kids';
+                label.style.color = '#3ea6ff';
+                showToast('Audience set: Made for kids');
+            } else {
+                label.innerText = "No, it's not made for kids";
+                label.style.color = '#aaa';
+                showToast('Audience set: Standard');
+            }
+        }
+
+        // SAVE ALL DETAILS AND RETURN
+        function saveAllVideoDetails() {
+            const title = document.getElementById('videoTitleInput').value.trim();
+            if (!title) {
+                showToast('Title cannot be empty');
+                return;
+            }
+
+            // Save state to LocalStorage
+            localStorage.setItem('btube_last_edited_title', title);
+            localStorage.setItem('btube_last_edited_vis', currentVis);
+
+            showToast('Changes saved to video ✓');
+            setTimeout(() => {
+                window.location.href = 'your-videos.html';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
