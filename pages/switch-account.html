@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Switch Account - BTube</title>
+    <title>Accounts - BTube</title>
 
     <style>
         * {
@@ -34,7 +34,7 @@
             top: 0;
             background: #0f0f0f;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .header-left {
@@ -60,7 +60,7 @@
         }
 
         .header-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 700;
         }
 
@@ -74,6 +74,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            padding: 6px 4px;
         }
 
         .btn-add-acc svg {
@@ -82,37 +83,66 @@
             fill: #3ea6ff;
         }
 
-        /* 2. SECTION LABELS */
-        .section-label {
-            font-size: 12px;
-            font-weight: 700;
-            color: #aaaaaa;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 16px 16px 8px;
+        /* 2. GOOGLE ACCOUNT IDENTITY CARD */
+        .google-account-banner {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #151515;
+            border-bottom: 1px solid #202020;
         }
 
-        /* 3. ACCOUNTS LIST */
-        .account-list-feed {
+        .ga-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .ga-email-txt {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .ga-manage-sub {
+            font-size: 12px;
+            color: #3ea6ff;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* 3. SECTION LABELS */
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 18px 16px 8px;
+        }
+
+        /* 4. CHANNELS LIST */
+        .channels-list-feed {
             display: flex;
             flex-direction: column;
         }
 
-        .account-card-row {
+        .channel-card-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 16px;
-            border-bottom: 1px solid #161616;
+            padding: 12px 16px;
             cursor: pointer;
+            border-bottom: 1px solid #141414;
             transition: background 0.15s;
         }
 
-        .account-card-row:active {
+        .channel-card-item:active {
             background: #1c1c1c;
         }
 
-        .acc-left-cluster {
+        .ch-left-cluster {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -120,7 +150,7 @@
             flex: 1;
         }
 
-        .acc-avatar {
+        .ch-avatar-frame {
             width: 44px;
             height: 44px;
             border-radius: 50%;
@@ -128,7 +158,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: #ffffff;
             flex-shrink: 0;
@@ -136,34 +166,37 @@
             position: relative;
         }
 
-        .acc-avatar img {
+        .ch-avatar-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            position: absolute;
+            inset: 0;
             display: none;
         }
 
-        .acc-info-box {
+        .ch-text-block {
             display: flex;
             flex-direction: column;
             gap: 2px;
             min-width: 0;
         }
 
-        .acc-name-txt {
+        .ch-title-txt {
             font-size: 15px;
             font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: #ffffff;
         }
 
-        .acc-sub-txt {
+        .ch-meta-sub {
             font-size: 12px;
             color: #888888;
         }
 
-        .acc-check-icon {
+        .active-check-icon {
             width: 22px;
             height: 22px;
             fill: #3ea6ff;
@@ -171,20 +204,19 @@
             display: none;
         }
 
-        .account-card-row.active .acc-check-icon {
+        .channel-card-item.active .active-check-icon {
             display: block;
         }
 
-        /* 4. UTILITY ACTIONS */
+        /* 5. UTILITY & MORE OPTIONS */
         .util-action-row {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
             padding: 14px 16px;
             color: #ffffff;
-            text-decoration: none;
-            border-bottom: 1px solid #161616;
             cursor: pointer;
+            border-bottom: 1px solid #141414;
         }
 
         .util-action-row:active {
@@ -194,10 +226,10 @@
         .util-action-row svg {
             width: 22px;
             height: 22px;
-            fill: #ffffff;
+            fill: #aaaaaa;
         }
 
-        .util-text {
+        .util-text-txt {
             font-size: 14px;
             font-weight: 500;
         }
@@ -219,7 +251,7 @@
             display: none;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -286,73 +318,81 @@
         </button>
     </header>
 
-    <!-- 2. SECTION: CHANNELS -->
-    <span class="section-label">Your Channels</span>
+    <!-- 2. GOOGLE ACCOUNT HEADER -->
+    <section class="google-account-banner">
+        <div class="ga-left">
+            <span class="ga-email-txt">charandasbhaskar@gmail.com</span>
+            <span class="ga-manage-sub" onclick="showToast('Google Account settings synced')">Google Account</span>
+        </div>
+    </section>
 
-    <main class="account-list-feed">
+    <!-- 3. CHANNELS LIST -->
+    <span class="section-label">Channels on this account</span>
 
-        <!-- Channel 1: Primary Account -->
-        <div class="account-card-row active" id="acc-primary" onclick="selectAccount('Charandas Bhaskar', '@charandasbhaskar', 'acc-primary')">
-            <div class="acc-left-cluster">
-                <div class="acc-avatar" style="background:#e50914;">
-                    <span id="primaryInits">CB</span>
-                    <img id="primaryDpImg" alt="DP">
+    <main class="channels-list-feed">
+
+        <!-- Channel 1: Charandas Bhaskar (Official Main Channel) -->
+        <div class="channel-card-item" id="ch-charandas" onclick="switchChannel('Charandas Bhaskar', '@charandasbhaskar', '245 subscribers', 'CB', '#e50914', 'ch-charandas')">
+            <div class="ch-left-cluster">
+                <div class="ch-avatar-frame" style="background:#e50914;">
+                    <span id="customMainInits">CB</span>
+                    <img id="customMainDp" alt="DP">
                 </div>
-                <div class="acc-info-box">
-                    <span class="acc-name-txt" id="primaryNameTxt">Charandas Bhaskar</span>
-                    <span class="acc-sub-txt" id="primaryHandleTxt">@charandasbhaskar • 245 subscribers</span>
+                <div class="ch-text-block">
+                    <span class="ch-title-txt">Charandas Bhaskar</span>
+                    <span class="ch-meta-sub">@charandasbhaskar • 245 subscribers</span>
                 </div>
             </div>
-            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>
 
-        <!-- Channel 2: The Bhaskar Vlog -->
-        <div class="account-card-row" id="acc-vlog" onclick="selectAccount('The Bhaskar Vlog', '@thebhaskarvlog', 'acc-vlog')">
-            <div class="acc-left-cluster">
-                <div class="acc-avatar" style="background:#f39c12;">
+        <!-- Channel 2: The Bhaskar Vlog (Daily Vlogs & Life) -->
+        <div class="channel-card-item" id="ch-vlog" onclick="switchChannel('The Bhaskar Vlog', '@thebhaskarvlog', '1.2K subscribers', 'BV', '#f39c12', 'ch-vlog')">
+            <div class="ch-left-cluster">
+                <div class="ch-avatar-frame" style="background:#f39c12;">
                     <span>BV</span>
                 </div>
-                <div class="acc-info-box">
-                    <span class="acc-name-txt">The Bhaskar Vlog</span>
-                    <span class="acc-sub-txt">@thebhaskarvlog • Daily Lifestyle & Vlogs</span>
+                <div class="ch-text-block">
+                    <span class="ch-title-txt">The Bhaskar Vlog</span>
+                    <span class="ch-meta-sub">@thebhaskarvlog • 1.2K subscribers</span>
                 </div>
             </div>
-            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>
 
-        <!-- Channel 3: Dhun AI / Banjo Studio -->
-        <div class="account-card-row" id="acc-dhun" onclick="selectAccount('Dhun AI Studio', '@dhunai', 'acc-dhun')">
-            <div class="acc-left-cluster">
-                <div class="acc-avatar" style="background:#3ea6ff;">
+        <!-- Channel 3: Dhun AI Studio (Music & Banjo Instrumentals) -->
+        <div class="channel-card-item" id="ch-dhun" onclick="switchChannel('Dhun AI Studio', '@dhunai', '850 subscribers', 'DA', '#3ea6ff', 'ch-dhun')">
+            <div class="ch-left-cluster">
+                <div class="ch-avatar-frame" style="background:#3ea6ff;">
                     <span>DA</span>
                 </div>
-                <div class="acc-info-box">
-                    <span class="acc-name-txt">Dhun AI Studio</span>
-                    <span class="acc-sub-txt">@dhunai • Music & Banjo Tutorials</span>
+                <div class="ch-text-block">
+                    <span class="ch-title-txt">Dhun AI Studio</span>
+                    <span class="ch-meta-sub">@dhunai • 850 subscribers</span>
                 </div>
             </div>
-            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>
 
     </main>
 
-    <!-- 3. SECTION: OTHER MODES -->
-    <span class="section-label" style="margin-top:10px;">More Options</span>
+    <!-- 4. MORE OPTIONS -->
+    <span class="section-label" style="margin-top:8px;">More Options</span>
 
-    <div class="util-action-row" onclick="showToast('Incognito mode activated')">
+    <div class="util-action-row" onclick="toggleIncognito()">
         <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-10 10 9.94 9.94 0 0 0 2.22 6.26l.48.58A9.97 9.97 0 0 0 12 22a9.97 9.97 0 0 0 7.3-3.16l.48-.58A9.94 9.94 0 0 0 22 12A10 10 0 0 0 12 2zm0 18a7.95 7.95 0 0 1-5.66-2.34l-.4-.46A7.95 7.95 0 0 1 4 12a8 8 0 1 1 16 0 7.95 7.95 0 0 1-1.94 5.2l-.4.46A7.95 7.95 0 0 1 12 20zm-4-8a2 2 0 1 0 2-2 2 2 0 0 0-2 2zm8 0a2 2 0 1 0 2-2 2 2 0 0 0-2 2z"/></svg>
-        <span class="util-text">Turn on Incognito</span>
+        <span class="util-text-txt" id="incognitoTxt">Turn on Incognito</span>
     </div>
 
-    <div class="util-action-row" onclick="showToast('Manage accounts via device settings')">
+    <div class="util-action-row" onclick="showToast('Manage accounts via Android settings')">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-        <span class="util-text">Manage accounts on this device</span>
+        <span class="util-text-txt">Manage accounts on this device</span>
     </div>
 
     <!-- Toast Bubble -->
     <div class="toast-pop" id="accToast"></div>
 
-    <!-- 4. BOTTOM NAVIGATION -->
+    <!-- 5. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -375,31 +415,32 @@
         </a>
     </nav>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- INTERACTION LOGIC -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const currentActiveName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
             const savedDp = localStorage.getItem('btube_channel_dp');
 
-            if (savedName) {
-                document.getElementById('primaryNameTxt').innerText = savedName;
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('primaryInits').innerText = inits.toUpperCase();
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
-
-            if (savedHandle) {
-                document.getElementById('primaryHandleTxt').innerText = `${savedHandle} • 245 subscribers`;
-            }
-
+            // Set custom avatar if exists for main channel
             if (savedDp) {
-                const img = document.getElementById('primaryDpImg');
-                img.src = savedDp;
-                img.style.display = 'block';
-                document.getElementById('primaryInits').style.display = 'none';
+                const dp = document.getElementById('customMainDp');
+                dp.src = savedDp;
+                dp.style.display = 'block';
+                document.getElementById('customMainInits').style.display = 'none';
+            }
+
+            // Highlight currently active channel card
+            document.querySelectorAll('.channel-card-item').forEach(c => c.classList.remove('active'));
+
+            if (currentActiveName.includes('Vlog')) {
+                document.getElementById('ch-vlog').classList.add('active');
+                document.getElementById('bottomNavInits').innerText = 'BV';
+            } else if (currentActiveName.includes('Dhun')) {
+                document.getElementById('ch-dhun').classList.add('active');
+                document.getElementById('bottomNavInits').innerText = 'DA';
+            } else {
+                document.getElementById('ch-charandas').classList.add('active');
+                document.getElementById('bottomNavInits').innerText = 'CB';
             }
         });
 
@@ -410,18 +451,38 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function selectAccount(name, handle, elId) {
-            document.querySelectorAll('.account-card-row').forEach(r => r.classList.remove('active'));
+        function switchChannel(name, handle, subs, inits, color, elId) {
+            document.querySelectorAll('.channel-card-item').forEach(c => c.classList.remove('active'));
             document.getElementById(elId).classList.add('active');
 
-            // Save active switch
+            // Save to LocalStorage
             localStorage.setItem('btube_channel_name', name);
             localStorage.setItem('btube_channel_handle', handle);
 
+            // If switching away from primary, clear primary custom photo override
+            if (elId !== 'ch-charandas') {
+                localStorage.setItem('btube_temp_inits', inits);
+            } else {
+                localStorage.removeItem('btube_temp_inits');
+            }
+
+            document.getElementById('bottomNavInits').innerText = inits;
             showToast(`Switched to ${name}`);
+
             setTimeout(() => {
                 window.location.href = 'profile.html';
-            }, 800);
+            }, 750);
+        }
+
+        function toggleIncognito() {
+            const txt = document.getElementById('incognitoTxt');
+            if (txt.innerText.includes('Turn on')) {
+                txt.innerText = 'Turn off Incognito';
+                showToast('Incognito mode ON');
+            } else {
+                txt.innerText = 'Turn on Incognito';
+                showToast('Incognito mode OFF');
+            }
         }
     </script>
 </body>
