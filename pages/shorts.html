@@ -5,78 +5,96 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>Shorts - BTube</title>
+    <title>BTube Shorts</title>
 
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: #000000;
-            color: #ffffff;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
+        :root {
+            --app-height: 100dvh;
         }
 
-        /* 1. TOP FLOATING BAR */
-        .shorts-top-bar {
+        html, body {
+            background-color: #000000;
+            color: #ffffff;
+            height: 100%;
+            height: var(--app-height);
+            width: 100vw;
+            overflow: hidden;
             position: fixed;
+        }
+
+        /* 1. TOP FLOATING APP BAR */
+        .shorts-top-header {
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 52px;
+            height: 54px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 16px;
             z-index: 100;
-            background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 70%, transparent 100%);
+            pointer-events: auto;
         }
 
-        .shorts-brand-logo {
+        .shorts-brand {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 19px;
             font-weight: 800;
             letter-spacing: -0.4px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
-        .shorts-red-b {
-            color: #e50914;
+        .brand-badge {
+            width: 24px;
+            height: 18px;
+            background: #e50914;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 900;
+            color: #fff;
         }
 
-        .top-right-tools {
+        .top-action-cluster {
             display: flex;
             align-items: center;
             gap: 16px;
         }
 
-        .top-tool-btn {
+        .top-action-btn {
             background: none;
             border: none;
             color: #ffffff;
             cursor: pointer;
             display: flex;
             align-items: center;
+            text-decoration: none;
         }
 
-        .top-tool-btn svg {
+        .top-action-btn svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
         }
 
-        /* 2. FULLSCREEN SHORTS FEED CONTAINER */
-        .shorts-feed-viewport {
-            height: calc(100vh - 56px);
+        /* 2. SHORTS CONTAINER (SNAP SCROLL) */
+        .shorts-scroller {
+            height: calc(var(--app-height) - 56px);
             width: 100%;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
@@ -84,48 +102,91 @@
             position: relative;
         }
 
-        .shorts-feed-viewport::-webkit-scrollbar {
+        .shorts-scroller::-webkit-scrollbar {
             display: none;
         }
 
         /* 3. INDIVIDUAL SHORT CARD */
-        .short-slide-card {
-            height: calc(100vh - 56px);
+        .short-slide {
+            height: calc(var(--app-height) - 56px);
             width: 100%;
             scroll-snap-align: start;
             scroll-snap-stop: always;
             position: relative;
-            background: #0a0a0a;
+            background-color: #0d0d0d;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
-        .short-video-el {
+        .short-media-video {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             cursor: pointer;
         }
 
-        /* Gradient Overlays */
-        .scrim-overlay-bottom {
+        /* Gradient scrims for readability */
+        .scrim-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .scrim-bottom {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 240px;
+            height: 260px;
             background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Play / Pause Animated Icon Overlay */
+        .play-indicator-overlay {
+            position: absolute;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.7);
+            transition: all 0.25s ease;
             pointer-events: none;
             z-index: 10;
         }
 
+        .play-indicator-overlay.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .play-indicator-overlay svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+        }
+
         /* 4. RIGHT ACTION RAIL */
-        .shorts-action-rail {
+        .shorts-rail {
             position: absolute;
             right: 12px;
-            bottom: 24px;
+            bottom: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -133,7 +194,7 @@
             z-index: 20;
         }
 
-        .rail-action-btn {
+        .rail-btn-unit {
             background: none;
             border: none;
             display: flex;
@@ -144,75 +205,88 @@
             cursor: pointer;
         }
 
-        .btn-round-glass {
+        .rail-btn-bubble {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: rgba(30, 30, 30, 0.45);
-            backdrop-filter: blur(8px);
+            background: rgba(35, 35, 35, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.15s, background 0.15s;
+            transition: transform 0.15s, background 0.2s;
         }
 
-        .btn-round-glass:active {
-            transform: scale(0.9);
-            background: rgba(229, 9, 20, 0.6);
+        .rail-btn-bubble:active {
+            transform: scale(0.85);
+            background: rgba(229, 9, 20, 0.5);
         }
 
-        .btn-round-glass svg {
+        .rail-btn-bubble svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
+            transition: fill 0.2s;
         }
 
-        .rail-action-count {
+        .rail-btn-unit.liked .rail-btn-bubble svg {
+            fill: #e50914;
+        }
+
+        .rail-btn-unit.disliked .rail-btn-bubble svg {
+            fill: #3ea6ff;
+        }
+
+        .rail-counter-txt {
             font-size: 11px;
             font-weight: 700;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            letter-spacing: -0.2px;
         }
 
-        .spinning-disc {
+        .disc-sound-wrap {
             width: 38px;
             height: 38px;
             border-radius: 50%;
             background: #111;
-            border: 2px solid #fff;
+            border: 2px solid #ffffff;
             overflow: hidden;
-            animation: discSpin 4s linear infinite;
+            animation: spinDisc 4s linear infinite;
+            margin-top: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.7);
         }
 
-        .spinning-disc img {
+        .disc-sound-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        @keyframes discSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes spinDisc {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        /* 5. BOTTOM CREATOR DETAILS */
-        .shorts-meta-overlay {
+        /* 5. BOTTOM CREATOR OVERLAY */
+        .shorts-meta-box {
             position: absolute;
-            left: 16px;
+            left: 14px;
             right: 76px;
-            bottom: 20px;
+            bottom: 18px;
             display: flex;
             flex-direction: column;
             gap: 10px;
             z-index: 20;
         }
 
-        .creator-info-row {
+        .creator-title-row {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .creator-avatar {
+        .creator-pfp {
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -220,97 +294,100 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
-            color: #ffffff;
-            border: 1.5px solid rgba(255,255,255,0.7);
+            color: #fff;
             flex-shrink: 0;
             overflow: hidden;
+            border: 1.5px solid rgba(255,255,255,0.8);
         }
 
-        .creator-avatar img {
+        .creator-pfp img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .creator-handle {
+        .creator-user-name {
             font-size: 14px;
             font-weight: 700;
+            color: #ffffff;
             text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
-        .btn-sub-chip {
+        .btn-subscribe-pill {
             background: #ffffff;
             color: #0f0f0f;
             border: none;
             padding: 5px 12px;
             border-radius: 16px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .btn-sub-chip.subscribed {
+        .btn-subscribe-pill.subscribed {
             background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(6px);
         }
 
-        .shorts-caption-txt {
+        .short-caption-text {
             font-size: 13px;
             line-height: 1.35;
             color: #ffffff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .sound-track-tag {
+        .sound-badge-row {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
             font-weight: 600;
             color: #ffffff;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
         }
 
-        .sound-track-tag svg {
+        .sound-badge-row svg {
             width: 13px;
             height: 13px;
             fill: #ffffff;
         }
 
-        /* 6. COMMENTS DRAWER */
-        .drawer-scrim {
+        /* 6. LIVE COMMENTS DRAWER SHEET */
+        .drawer-overlay-scrim {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 2500;
             display: none;
             align-items: flex-end;
         }
 
-        .drawer-scrim.open {
+        .drawer-overlay-scrim.open {
             display: flex;
         }
 
-        .comments-sheet {
+        .comments-bottom-sheet {
             width: 100%;
-            max-height: 65vh;
+            max-height: 68vh;
             background: #181818;
             border-top-left-radius: 16px;
             border-top-right-radius: 16px;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
+            box-shadow: 0 -6px 24px rgba(0,0,0,0.9);
+            overflow: hidden;
         }
 
-        .comments-head-bar {
+        .comments-header-bar {
             padding: 14px 16px;
             display: flex;
             align-items: center;
@@ -318,37 +395,39 @@
             border-bottom: 1px solid #262626;
         }
 
-        .comments-title {
+        .comments-count-title {
             font-size: 15px;
             font-weight: 700;
         }
 
-        .btn-close-comments {
+        .btn-close-comments-sheet {
             background: none;
             border: none;
-            color: #aaa;
+            color: #aaaaaa;
             font-size: 20px;
             cursor: pointer;
+            padding: 2px 6px;
         }
 
-        .comments-list-box {
+        .comments-feed-area {
             padding: 14px 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 14px;
-            max-height: 40vh;
+            flex: 1;
+            max-height: 44vh;
         }
 
-        .comment-single-row {
+        .single-comment-item {
             display: flex;
             gap: 10px;
             align-items: flex-start;
         }
 
-        .comment-avatar-bubble {
-            width: 30px;
-            height: 30px;
+        .comment-user-dp {
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: #e50914;
             display: flex;
@@ -356,58 +435,65 @@
             justify-content: center;
             font-size: 11px;
             font-weight: 800;
+            color: #ffffff;
             flex-shrink: 0;
         }
 
-        .comment-text-box {
+        .comment-body-col {
             display: flex;
             flex-direction: column;
             gap: 2px;
             font-size: 12px;
+            flex: 1;
         }
 
-        .comment-user-name {
+        .comment-meta-user {
             font-weight: 700;
-            color: #888;
+            color: #888888;
         }
 
-        .comment-body-msg {
-            color: #eee;
+        .comment-text-content {
+            color: #ffffff;
             line-height: 1.35;
         }
 
-        .comment-input-strip {
+        .comments-input-dock {
             padding: 10px 16px 14px;
             border-top: 1px solid #262626;
             display: flex;
             align-items: center;
             gap: 10px;
+            background: #141414;
         }
 
-        .comment-input-strip input {
+        .comments-input-dock input {
             flex: 1;
             background: #252525;
-            border: 1px solid #333;
+            border: 1px solid #333333;
             border-radius: 20px;
-            padding: 8px 14px;
-            color: #fff;
+            padding: 10px 14px;
+            color: #ffffff;
             font-size: 13px;
             outline: none;
         }
 
-        .comment-send-btn {
+        .comments-input-dock input:focus {
+            border-color: #3ea6ff;
+        }
+
+        .btn-comment-send {
             background: #3ea6ff;
-            color: #000;
+            color: #000000;
             border: none;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 12px;
-            padding: 8px 14px;
-            border-radius: 16px;
+            padding: 9px 15px;
+            border-radius: 18px;
             cursor: pointer;
         }
 
-        /* Toast */
-        .toast-pop {
+        /* Toast notification */
+        .toast-bubble {
             position: fixed;
             top: 60px;
             left: 50%;
@@ -415,15 +501,16 @@
             background: rgba(33, 33, 33, 0.95);
             border: 1px solid #444;
             color: #fff;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
             z-index: 3000;
             display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
         }
 
-        /* 7. BOTTOM NAVIGATION */
+        /* 7. BOTTOM NAVIGATION BAR */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -434,7 +521,7 @@
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #1c1c1c;
+            border-top: 1px solid #1a1a1a;
             z-index: 1000;
         }
 
@@ -480,168 +567,251 @@
 </head>
 <body>
 
-    <!-- 1. TOP BAR -->
-    <header class="shorts-top-bar">
-        <div class="shorts-brand-logo">
-            <span class="shorts-red-b">B</span><span>Tube Shorts</span>
+    <!-- 1. TOP FLOATING APP BAR -->
+    <header class="shorts-top-header">
+        <div class="shorts-brand">
+            <div class="brand-badge">B</div>
+            <span>Shorts</span>
         </div>
-        <div class="top-right-tools">
-            <a href="search.html" class="top-tool-btn">
+        <div class="top-action-cluster">
+            <a href="search.html" class="top-action-btn">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </a>
-            <button class="top-tool-btn" onclick="showToast('Shorts camera opening...')">
+            <a href="upload.html" class="top-action-btn">
                 <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-            </button>
+            </a>
         </div>
     </header>
 
-    <!-- 2. SHORTS FEED VIEWPORT -->
-    <main class="shorts-feed-viewport" id="shortsViewport">
+    <!-- 2. SHORTS VERTICAL VIEWPORT -->
+    <main class="shorts-scroller" id="shortsViewport">
 
-        <!-- SHORT 1: Chhattisgarhi Banjo Special -->
-        <section class="short-slide-card" id="short-card-1">
-            <video class="short-video-el" loop playsinline autoplay muted onclick="togglePlayPause(this)">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
-            </video>
-            <div class="scrim-overlay-bottom"></div>
-
-            <div class="shorts-action-rail">
-                <button class="rail-action-btn" onclick="toggleLike(this, 18400)">
-                    <div class="btn-round-glass">
-                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                    </div>
-                    <span class="rail-action-count">18.4K</span>
-                </button>
-
-                <button class="rail-action-btn" onclick="showToast('Disliked')">
-                    <div class="btn-round-glass">
-                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-                    </div>
-                    <span class="rail-action-count">Dislike</span>
-                </button>
-
-                <button class="rail-action-btn" onclick="openComments('Chhattisgarhi Banjo Tune')">
-                    <div class="btn-round-glass">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                    </div>
-                    <span class="rail-action-count">342</span>
-                </button>
-
-                <button class="rail-action-btn" onclick="shareShort()">
-                    <div class="btn-round-glass">
-                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                    </div>
-                    <span class="rail-action-count">Share</span>
-                </button>
-
-                <div class="spinning-disc">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100" alt="Audio">
-                </div>
-            </div>
-
-            <div class="shorts-meta-overlay">
-                <div class="creator-info-row">
-                    <div class="creator-avatar">DA</div>
-                    <span class="creator-handle">@dhunai</span>
-                    <button class="btn-sub-chip" onclick="toggleSub(this)">Subscribe</button>
-                </div>
-                <p class="shorts-caption-txt">Electronic Banjo Solo with magnetic pickups! 🪕 #Chhattisgarhi #Banjo #FolkBeat</p>
-                <div class="sound-track-tag">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                    <span>Original Audio • Dhun AI Studio</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SHORT 2: Village Life Vlog Clip -->
-        <section class="short-slide-card" id="short-card-2">
-            <video class="short-video-el" loop playsinline muted onclick="togglePlayPause(this)">
+        <!-- SHORT 1: The Bhaskar Vlog - Mungeli Morning Road -->
+        <section class="short-slide" id="short-1" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800');">
+            <video class="short-media-video" loop playsinline autoplay muted poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" onclick="togglePlayPause(this)">
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
             </video>
-            <div class="scrim-overlay-bottom"></div>
 
-            <div class="shorts-action-rail">
-                <button class="rail-action-btn" onclick="toggleLike(this, 9200)">
-                    <div class="btn-round-glass">
+            <div class="scrim-top"></div>
+            <div class="scrim-bottom"></div>
+
+            <div class="play-indicator-overlay">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+
+            <!-- Action Rail -->
+            <div class="shorts-rail">
+                <button class="rail-btn-unit" onclick="handleLike(this, 9200)">
+                    <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                     </div>
-                    <span class="rail-action-count">9.2K</span>
+                    <span class="rail-counter-txt">9.2K</span>
                 </button>
 
-                <button class="rail-action-btn" onclick="showToast('Disliked')">
-                    <div class="btn-round-glass">
+                <button class="rail-btn-unit" onclick="handleDislike(this)">
+                    <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
                     </div>
-                    <span class="rail-action-count">Dislike</span>
+                    <span class="rail-counter-txt">Dislike</span>
                 </button>
 
-                <button class="rail-action-btn" onclick="openComments('Village Morning Calm')">
-                    <div class="btn-round-glass">
+                <button class="rail-btn-unit" onclick="openCommentsSheet('short-1', 118)">
+                    <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                     </div>
-                    <span class="rail-action-count">118</span>
+                    <span class="rail-counter-txt" id="comment-count-short-1">118</span>
                 </button>
 
-                <button class="rail-action-btn" onclick="shareShort()">
-                    <div class="btn-round-glass">
+                <button class="rail-btn-unit" onclick="handleShare()">
+                    <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                     </div>
-                    <span class="rail-action-count">Share</span>
+                    <span class="rail-counter-txt">Share</span>
                 </button>
 
-                <div class="spinning-disc">
+                <div class="disc-sound-wrap">
                     <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100" alt="Audio">
                 </div>
             </div>
 
-            <div class="shorts-meta-overlay">
-                <div class="creator-info-row">
-                    <div class="creator-avatar" style="background:#f39c12;">BV</div>
-                    <span class="creator-handle">@thebhaskarvlog</span>
-                    <button class="btn-sub-chip" onclick="toggleSub(this)">Subscribe</button>
+            <!-- Creator Information -->
+            <div class="shorts-meta-box">
+                <div class="creator-title-row">
+                    <div class="creator-pfp" style="background:#f39c12;">BV</div>
+                    <span class="creator-user-name">@thebhaskarvlog</span>
+                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
                 </div>
-                <p class="shorts-caption-txt">Mungeli morning quiet road vlog 🌅 Shandar subah! #BTube #VillageVlog</p>
-                <div class="sound-track-tag">
+                <p class="short-caption-text">Mungeli morning quiet road vlog 🌅 Shandar subah! #BTube #VillageVlog #Chhattisgarh</p>
+                <div class="sound-badge-row">
                     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                     <span>Morning Instrumental • The Bhaskar Vlog</span>
                 </div>
             </div>
         </section>
 
+        <!-- SHORT 2: Dhun AI Studio - Typewriter Banjo Solo -->
+        <section class="short-slide" id="short-2" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800');">
+            <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" onclick="togglePlayPause(this)">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+            </video>
+
+            <div class="scrim-top"></div>
+            <div class="scrim-bottom"></div>
+
+            <div class="play-indicator-overlay">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+
+            <!-- Action Rail -->
+            <div class="shorts-rail">
+                <button class="rail-btn-unit" onclick="handleLike(this, 18400)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">18.4K</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="handleDislike(this)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">Dislike</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="openCommentsSheet('short-2', 342)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt" id="comment-count-short-2">342</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="handleShare()">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">Share</span>
+                </button>
+
+                <div class="disc-sound-wrap">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100" alt="Audio">
+                </div>
+            </div>
+
+            <!-- Creator Information -->
+            <div class="shorts-meta-box">
+                <div class="creator-title-row">
+                    <div class="creator-pfp" style="background:#3ea6ff;">DA</div>
+                    <span class="creator-user-name">@dhunai</span>
+                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
+                </div>
+                <p class="short-caption-text">Electronic Banjo Solo with magnetic pickups! 🪕 #Chhattisgarhi #Banjo #FolkBeat</p>
+                <div class="sound-badge-row">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                    <span>Original Audio • Dhun AI Studio</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SHORT 3: Cultural Panthi Geet Special -->
+        <section class="short-slide" id="short-3" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800');">
+            <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" onclick="togglePlayPause(this)">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4" type="video/mp4">
+            </video>
+
+            <div class="scrim-top"></div>
+            <div class="scrim-bottom"></div>
+
+            <div class="play-indicator-overlay">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+
+            <!-- Action Rail -->
+            <div class="shorts-rail">
+                <button class="rail-btn-unit" onclick="handleLike(this, 32100)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">32.1K</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="handleDislike(this)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">Dislike</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="openCommentsSheet('short-3', 510)">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt" id="comment-count-short-3">510</span>
+                </button>
+
+                <button class="rail-btn-unit" onclick="handleShare()">
+                    <div class="rail-btn-bubble">
+                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                    </div>
+                    <span class="rail-counter-txt">Share</span>
+                </button>
+
+                <div class="disc-sound-wrap">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=100" alt="Audio">
+                </div>
+            </div>
+
+            <!-- Creator Information -->
+            <div class="shorts-meta-box">
+                <div class="creator-title-row">
+                    <div class="creator-pfp" style="background:#e50914;">CB</div>
+                    <span class="creator-user-name">@charandasbhaskar</span>
+                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
+                </div>
+                <p class="short-caption-text">Chhattisgarhi Panthi Geet Special Cultural Dance 2026 🙏 #Panthi #Culture #CG</p>
+                <div class="sound-badge-row">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                    <span>Panthi Dhun 2026 • Charandas Bhaskar</span>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- 3. COMMENTS DRAWER -->
-    <div class="drawer-scrim" id="commentsDrawer" onclick="closeDrawerOnBackdrop(event)">
-        <div class="comments-sheet">
-            <div class="comments-head-bar">
-                <span class="comments-title">Comments</span>
-                <button class="btn-close-comments" onclick="closeComments()">✕</button>
+    <!-- 3. LIVE COMMENTS SHEET -->
+    <div class="drawer-overlay-scrim" id="commentsDrawerScrim" onclick="closeCommentsOnBackdrop(event)">
+        <div class="comments-bottom-sheet">
+            <div class="comments-header-bar">
+                <span class="comments-count-title" id="commentsDrawerHeaderTitle">Comments • 118</span>
+                <button class="btn-close-comments-sheet" onclick="closeCommentsSheet()">✕</button>
             </div>
-            <div class="comments-list-box" id="commentsBox">
-                <div class="comment-single-row">
-                    <div class="comment-avatar-bubble">AK</div>
-                    <div class="comment-text-box">
-                        <span class="comment-user-name">@amitkumar • 2h ago</span>
-                        <span class="comment-body-msg">Bahut badhiya banjo sound bhaiya! Pickup ki setting kaise kiye?</span>
+            
+            <div class="comments-feed-area" id="liveCommentsList">
+                <div class="single-comment-item">
+                    <div class="comment-user-dp" style="background:#f39c12;">AK</div>
+                    <div class="comment-body-col">
+                        <span class="comment-meta-user">@amitkumar • 2h ago</span>
+                        <span class="comment-text-content">Bahut sundar video bhaiya! Chhattisgarh mahol ekdam mast dikh raha hai 🔥</span>
                     </div>
                 </div>
-                <div class="comment-single-row">
-                    <div class="comment-avatar-bubble" style="background:#3ea6ff;">RS</div>
-                    <div class="comment-text-box">
-                        <span class="comment-user-name">@rahul_sahu • 4h ago</span>
-                        <span class="comment-body-msg">Chhattisgarh ma btube shandar chalgis 🔥</span>
+
+                <div class="single-comment-item">
+                    <div class="comment-user-dp" style="background:#3ea6ff;">RS</div>
+                    <div class="comment-body-col">
+                        <span class="comment-meta-user">@rahul_sahu • 4h ago</span>
+                        <span class="comment-text-content">BTube app me shorts bilkul fast chal raha hai. Maza aa gaya! 👏</span>
                     </div>
                 </div>
             </div>
-            <div class="comment-input-strip">
-                <input type="text" id="newCommentInput" placeholder="Add a comment...">
-                <button class="comment-send-btn" onclick="postComment()">Send</button>
+
+            <div class="comments-input-dock">
+                <input type="text" id="liveCommentField" placeholder="Add a comment..." onkeydown="if(event.key==='Enter') submitLiveComment()">
+                <button class="btn-comment-send" onclick="submitLiveComment()">Comment</button>
             </div>
         </div>
     </div>
 
     <!-- Toast Bubble -->
-    <div class="toast-pop" id="shortsToast"></div>
+    <div class="toast-bubble" id="shortsToastBubble"></div>
 
     <!-- 4. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
@@ -666,8 +836,18 @@
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- 5. INTERACTION LOGIC ENGINE -->
     <script>
+        let currentShortId = 'short-1';
+        let currentShortCommentsCount = 118;
+
+        // Dynamic 100dvh Calculation for Android/iOS Screen Resizing
+        function resetAppHeight() {
+            document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+        }
+        window.addEventListener('resize', resetAppHeight);
+        resetAppHeight();
+
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
             if (savedName) {
@@ -677,105 +857,152 @@
                 document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
             }
 
-            // Auto-play visible video on scroll
+            // IntersectionObserver for auto-playing active video
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const video = entry.target.querySelector('video');
                     if (video) {
                         if (entry.isIntersecting) {
+                            currentShortId = entry.target.id;
                             video.play().catch(() => {});
                         } else {
                             video.pause();
                         }
                     }
                 });
-            }, { threshold: 0.6 });
+            }, { threshold: 0.65 });
 
-            document.querySelectorAll('.short-slide-card').forEach(slide => observer.observe(slide));
+            document.querySelectorAll('.short-slide').forEach(slide => observer.observe(slide));
         });
 
         function showToast(msg) {
-            const t = document.getElementById('shortsToast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
+            const toast = document.getElementById('shortsToastBubble');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
         }
 
+        // Tap on screen: Play / Pause toggle
         function togglePlayPause(video) {
+            const slide = video.closest('.short-slide');
+            const overlay = slide.querySelector('.play-indicator-overlay');
+
             if (video.paused) {
                 video.play();
-                showToast('Playing');
+                overlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                showOverlay(overlay);
             } else {
                 video.pause();
-                showToast('Paused');
+                overlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                showOverlay(overlay);
             }
         }
 
-        function toggleLike(btn, baseCount) {
+        function showOverlay(overlay) {
+            overlay.classList.add('show');
+            setTimeout(() => { overlay.classList.remove('show'); }, 600);
+        }
+
+        // Working Like button with counter update
+        function handleLike(btn, baseCount) {
             const isLiked = btn.classList.toggle('liked');
-            const svg = btn.querySelector('svg');
-            const countElem = btn.querySelector('.rail-action-count');
+            const counter = btn.querySelector('.rail-counter-txt');
+            
+            // Uncheck dislike if liked
+            const dislikeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(2)');
+            if (dislikeBtn) dislikeBtn.classList.remove('disliked');
+
             if (isLiked) {
-                svg.style.fill = '#e50914';
-                countElem.innerText = (baseCount + 1).toLocaleString();
-                showToast('Added to Liked videos');
+                counter.innerText = (baseCount + 1).toLocaleString();
+                showToast('Added to Liked videos ❤️');
             } else {
-                svg.style.fill = '#ffffff';
-                countElem.innerText = (baseCount).toLocaleString();
+                counter.innerText = (baseCount).toLocaleString();
+                showToast('Removed from Liked videos');
             }
         }
 
-        function toggleSub(btn) {
+        // Working Dislike button
+        function handleDislike(btn) {
+            const isDisliked = btn.classList.toggle('disliked');
+            const likeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(1)');
+            if (isDisliked && likeBtn && likeBtn.classList.contains('liked')) {
+                likeBtn.classList.remove('liked');
+            }
+            showToast(isDisliked ? 'Disliked' : 'Dislike removed');
+        }
+
+        // Working Subscribe toggle
+        function handleSubscribe(btn) {
             const isSub = btn.classList.toggle('subscribed');
             if (isSub) {
-                btn.innerText = 'Subscribed';
-                showToast('Subscribed ✓');
+                btn.innerText = 'Subscribed ✓';
+                showToast('Subscribed to channel');
             } else {
                 btn.innerText = 'Subscribe';
-                showToast('Unsubscribed');
+                showToast('Subscription removed');
             }
         }
 
-        function shareShort() {
+        // Working Share action
+        function handleShare() {
             if (navigator.share) {
-                navigator.share({ title: 'BTube Shorts', url: window.location.href }).catch(() => {});
+                navigator.share({
+                    title: 'BTube Shorts',
+                    url: window.location.href
+                }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                showToast('Shorts link copied');
+                showToast('Shorts link copied to clipboard ✓');
             }
         }
 
-        function openComments(title) {
-            document.getElementById('commentsDrawer').classList.add('open');
-            document.getElementById('newCommentInput').focus();
+        // Working Comments Sheet
+        function openCommentsSheet(shortId, count) {
+            currentShortId = shortId;
+            currentShortCommentsCount = count;
+            document.getElementById('commentsDrawerHeaderTitle').innerText = `Comments • ${count}`;
+            document.getElementById('commentsDrawerScrim').classList.add('open');
+            document.getElementById('liveCommentField').focus();
         }
 
-        function closeComments() {
-            document.getElementById('commentsDrawer').classList.remove('open');
+        function closeCommentsSheet() {
+            document.getElementById('commentsDrawerScrim').classList.remove('open');
         }
 
-        function closeDrawerOnBackdrop(e) {
-            if (e.target.id === 'commentsDrawer') closeComments();
+        function closeCommentsOnBackdrop(e) {
+            if (e.target.id === 'commentsDrawerScrim') closeCommentsSheet();
         }
 
-        function postComment() {
-            const input = document.getElementById('newCommentInput');
+        // Submit Live Comment
+        function submitLiveComment() {
+            const input = document.getElementById('liveCommentField');
             const txt = input.value.trim();
             if (!txt) return;
 
-            const box = document.getElementById('commentsBox');
-            const row = document.createElement('div');
-            row.className = 'comment-single-row';
-            row.innerHTML = `
-                <div class="comment-avatar-bubble">CB</div>
-                <div class="comment-text-box">
-                    <span class="comment-user-name">@you • Just now</span>
-                    <span class="comment-body-msg">${txt}</span>
+            const feed = document.getElementById('liveCommentsList');
+            const newComment = document.createElement('div');
+            newComment.className = 'single-comment-item';
+
+            const userInits = document.getElementById('bottomNavInits').innerText || 'CB';
+            const userName = localStorage.getItem('btube_channel_name') || 'You';
+
+            newComment.innerHTML = `
+                <div class="comment-user-dp" style="background:#e50914;">${userInits}</div>
+                <div class="comment-body-col">
+                    <span class="comment-meta-user">@${userName.toLowerCase().replace(/\s+/g,'')} • Just now</span>
+                    <span class="comment-text-content">${txt}</span>
                 </div>
             `;
-            box.prepend(row);
+            feed.prepend(newComment);
             input.value = '';
-            showToast('Comment posted');
+
+            // Update Counts
+            currentShortCommentsCount++;
+            document.getElementById('commentsDrawerHeaderTitle').innerText = `Comments • ${currentShortCommentsCount}`;
+            const targetCounter = document.getElementById(`comment-count-${currentShortId}`);
+            if (targetCounter) targetCounter.innerText = currentShortCommentsCount;
+
+            showToast('Comment posted ✓');
         }
     </script>
 </body>
