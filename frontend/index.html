@@ -7,6 +7,12 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>BTube</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- PWA Setup (Root Manifest & Fullscreen Mode) -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -181,6 +187,15 @@
             if (shorts) {
                 shorts.style.display = (cat === 'All' || cat === 'Music') ? 'flex' : 'none';
             }
+        }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(reg => console.log('BTube Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Failed', err));
+            });
         }
     </script>
 </body>
