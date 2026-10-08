@@ -107,6 +107,7 @@
             border: none;
             border-bottom: 2px solid transparent;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .content-tab-btn.active {
@@ -143,6 +144,11 @@
             overflow: hidden;
             position: relative;
             flex-shrink: 0;
+        }
+
+        .thumb-frame-box.shorts-frame {
+            width: 75px;
+            aspect-ratio: 9 / 16;
         }
 
         .thumb-frame-box img {
@@ -206,6 +212,16 @@
         .visibility-badge.unlisted {
             color: #f39c12;
             background: rgba(243, 156, 18, 0.12);
+        }
+
+        .visibility-badge.private {
+            color: #ff4e4e;
+            background: rgba(255, 78, 78, 0.12);
+        }
+
+        .visibility-badge.scheduled {
+            color: #3ea6ff;
+            background: rgba(62, 166, 255, 0.12);
         }
 
         .btn-card-menu {
@@ -289,6 +305,7 @@
             cursor: pointer;
             text-align: left;
             border-radius: 8px;
+            text-decoration: none;
         }
 
         .drawer-row-btn:active {
@@ -301,41 +318,22 @@
             fill: #ffffff;
         }
 
-        /* 5. EDIT VIDEO MODAL */
-        .modal-input-field {
-            width: 100%;
-            background: #141414;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: #ffffff;
-            font-size: 13px;
-            outline: none;
+        /* Empty State */
+        .empty-placeholder {
+            padding: 40px 16px;
+            text-align: center;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #888888;
         }
 
-        .modal-input-field:focus {
-            border-color: #3ea6ff;
+        .empty-placeholder svg {
+            width: 48px;
+            height: 48px;
+            fill: #444444;
         }
-
-        .modal-btn-row {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            padding-top: 6px;
-        }
-
-        .modal-btn {
-            background: none;
-            border: none;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 16px;
-        }
-
-        .modal-btn.cancel { color: #aaaaaa; }
-        .modal-btn.confirm { background: #3ea6ff; color: #0f0f0f; }
 
         /* Toast */
         .toast-pop {
@@ -354,7 +352,7 @@
             display: none;
         }
 
-        /* 6. BOTTOM NAVIGATION */
+        /* 5. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -436,9 +434,9 @@
     <main class="studio-feed-wrap" id="videosListFeed">
 
         <!-- Video 1 -->
-        <div class="studio-video-row" id="vid-1">
+        <div class="studio-video-row" id="vid-1" data-type="videos">
             <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="thumb-frame-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
+                <img id="img-vid-1" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
                 <span class="tag-duration">05:42</span>
             </a>
             <div class="video-meta-col">
@@ -452,15 +450,15 @@
                     <span>2 weeks ago</span>
                 </div>
             </div>
-            <button class="btn-card-menu" onclick="openStudioActions('vid-1')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-1', 'video')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
         <!-- Video 2 -->
-        <div class="studio-video-row" id="vid-2">
+        <div class="studio-video-row" id="vid-2" data-type="videos">
             <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="thumb-frame-box">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
+                <img id="img-vid-2" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
                 <span class="tag-duration">14:10</span>
             </a>
             <div class="video-meta-col">
@@ -474,15 +472,15 @@
                     <span>1 month ago</span>
                 </div>
             </div>
-            <button class="btn-card-menu" onclick="openStudioActions('vid-2')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-2', 'video')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
         <!-- Video 3 -->
-        <div class="studio-video-row" id="vid-3">
+        <div class="studio-video-row" id="vid-3" data-type="videos">
             <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="thumb-frame-box">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
+                <img id="img-vid-3" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
                 <span class="tag-duration">06:25</span>
             </a>
             <div class="video-meta-col">
@@ -496,15 +494,15 @@
                     <span>3 days ago</span>
                 </div>
             </div>
-            <button class="btn-card-menu" onclick="openStudioActions('vid-3')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-3', 'video')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
         <!-- Video 4 -->
-        <div class="studio-video-row" id="vid-4">
+        <div class="studio-video-row" id="vid-4" data-type="videos">
             <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="thumb-frame-box">
-                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400" alt="Video 4">
+                <img id="img-vid-4" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400" alt="Video 4">
                 <span class="tag-duration">04:18</span>
             </a>
             <div class="video-meta-col">
@@ -518,32 +516,88 @@
                     <span>1 week ago</span>
                 </div>
             </div>
-            <button class="btn-card-menu" onclick="openStudioActions('vid-4')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-4', 'video')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
+        <!-- Short 1 -->
+        <div class="studio-video-row" id="short-row-1" data-type="shorts" style="display:none;">
+            <a href="shorts.html" class="thumb-frame-box shorts-frame">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Short 1">
+                <span class="tag-duration">0:45</span>
+            </a>
+            <div class="video-meta-col">
+                <a href="shorts.html" class="video-item-title" id="title-short-row-1">
+                    Electronic Banjo Solo with magnetic pickups! 🪕 #Chhattisgarhi
+                </a>
+                <span class="visibility-badge" id="vis-short-row-1">Public 🌐</span>
+                <div class="video-stats-row">
+                    <span>18.4K views</span>
+                    <span>•</span>
+                    <span>5 days ago</span>
+                </div>
+            </div>
+            <button class="btn-card-menu" onclick="openStudioActions('short-row-1', 'shorts')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Short 2 -->
+        <div class="studio-video-row" id="short-row-2" data-type="shorts" style="display:none;">
+            <a href="shorts.html" class="thumb-frame-box shorts-frame">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Short 2">
+                <span class="tag-duration">0:32</span>
+            </a>
+            <div class="video-meta-col">
+                <a href="shorts.html" class="video-item-title" id="title-short-row-2">
+                    Mungeli morning quiet road vlog 🌅 Shandar subah!
+                </a>
+                <span class="visibility-badge" id="vis-short-row-2">Public 🌐</span>
+                <div class="video-stats-row">
+                    <span>9.2K views</span>
+                    <span>•</span>
+                    <span>1 week ago</span>
+                </div>
+            </div>
+            <button class="btn-card-menu" onclick="openStudioActions('short-row-2', 'shorts')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Empty State for Live -->
+        <div class="empty-placeholder" id="emptyContentNotice">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span style="font-size:14px; font-weight:700; color:#fff;">No live streams yet</span>
+            <span style="font-size:12px;">Live streams will show up here after broadcasting.</span>
+        </div>
+
     </main>
 
-    <!-- 4. STUDIO OPTIONS DRAWER -->
+    <!-- 4. STUDIO OPTIONS DRAWER (INTEGRATED WITH EDIT-VIDEO.HTML) -->
     <div class="drawer-overlay" id="studioOptionsDrawer" onclick="closeDrawerOnBackdrop(event, 'studioOptionsDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
                 <span class="drawer-title-txt" id="drawerVideoTitle">Video options</span>
                 <button class="drawer-close-btn" onclick="closeDrawer('studioOptionsDrawer')">✕</button>
             </div>
-            <button class="drawer-row-btn" onclick="openEditModal()">
+            
+            <!-- Direct link to edit-video.html -->
+            <button class="drawer-row-btn" onclick="redirectToEditor()">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 <span>Edit video details</span>
             </button>
+            
             <button class="drawer-row-btn" onclick="shareVideo()">
                 <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
                 <span>Share video link</span>
             </button>
+            
             <button class="drawer-row-btn" onclick="downloadVideo()">
                 <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                 <span>Save to device</span>
             </button>
+            
             <button class="drawer-row-btn" onclick="deleteVideo()" style="color:#ff4e4e;">
                 <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 <span>Delete</span>
@@ -551,34 +605,10 @@
         </div>
     </div>
 
-    <!-- 5. EDIT VIDEO MODAL -->
-    <div class="drawer-overlay" id="editVideoModal" onclick="closeDrawerOnBackdrop(event, 'editVideoModal')">
-        <div class="drawer-sheet-card">
-            <div class="drawer-header-row">
-                <span class="drawer-title-txt">Edit video</span>
-                <button class="drawer-close-btn" onclick="closeDrawer('editVideoModal')">✕</button>
-            </div>
-            <label style="font-size:12px; color:#aaa;">Title</label>
-            <input type="text" id="editTitleInput" class="modal-input-field">
-            
-            <label style="font-size:12px; color:#aaa; margin-top:4px;">Visibility</label>
-            <select id="editVisibilitySelect" class="modal-input-field">
-                <option value="Public 🌐">Public</option>
-                <option value="Unlisted 🔗">Unlisted</option>
-                <option value="Private 🔒">Private</option>
-            </select>
-
-            <div class="modal-btn-row">
-                <button class="modal-btn cancel" onclick="closeDrawer('editVideoModal')">Cancel</button>
-                <button class="modal-btn confirm" onclick="saveVideoChanges()">Save</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast Bubble -->
     <div class="toast-pop" id="yvToast"></div>
 
-    <!-- 6. BOTTOM NAVIGATION -->
+    <!-- 5. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -604,6 +634,7 @@
     <!-- SCRIPT LOGIC -->
     <script>
         let currentTargetVidId = null;
+        let currentTargetMode = 'video';
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
@@ -612,6 +643,29 @@
                 let inits = parts[0][0];
                 if (parts.length > 1) inits += parts[1][0];
                 document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+
+            // Sync updates if returned from edit-video.html
+            const lastEditedTitle = localStorage.getItem('btube_last_edited_title');
+            const lastEditedVis = localStorage.getItem('btube_last_edited_vis');
+            const lastEditedThumb = localStorage.getItem('btube_temp_edit_thumb');
+
+            if (lastEditedTitle) {
+                const topVideoTitle = document.getElementById('title-vid-1');
+                if (topVideoTitle) topVideoTitle.innerText = lastEditedTitle;
+            }
+
+            if (lastEditedVis) {
+                const topVideoVis = document.getElementById('vis-vid-1');
+                if (topVideoVis) {
+                    topVideoVis.innerText = lastEditedVis + (lastEditedVis.includes('Public') ? ' 🌐' : (lastEditedVis.includes('Unlisted') ? ' 🔗' : ' 🔒'));
+                    topVideoVis.className = 'visibility-badge ' + lastEditedVis.toLowerCase();
+                }
+            }
+
+            if (lastEditedThumb) {
+                const topVideoImg = document.getElementById('img-vid-1');
+                if (topVideoImg) topVideoImg.src = lastEditedThumb;
             }
         });
 
@@ -625,17 +679,30 @@
         function switchContentTab(tab, btn) {
             document.querySelectorAll('.content-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            if (tab === 'videos') {
-                showToast('Showing Videos');
-            } else if (tab === 'shorts') {
-                showToast('Showing Shorts content');
+
+            const rows = document.querySelectorAll('.studio-video-row');
+            const notice = document.getElementById('emptyContentNotice');
+            let count = 0;
+
+            rows.forEach(r => {
+                if (r.getAttribute('data-type') === tab) {
+                    r.style.display = 'flex';
+                    count++;
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+
+            if (count === 0) {
+                notice.style.display = 'flex';
             } else {
-                showToast('No live streams scheduled');
+                notice.style.display = 'none';
             }
         }
 
-        function openStudioActions(vidId) {
+        function openStudioActions(vidId, mode) {
             currentTargetVidId = vidId;
+            currentTargetMode = mode;
             const titleElem = document.getElementById('title-' + vidId);
             document.getElementById('drawerVideoTitle').innerText = titleElem ? titleElem.innerText.trim() : 'Options';
             document.getElementById('studioOptionsDrawer').classList.add('open');
@@ -649,24 +716,16 @@
             if (e.target.id === id) closeDrawer(id);
         }
 
-        function openEditModal() {
+        // REDIRECT TO FULL EDIT-VIDEO.HTML PAGE
+        function redirectToEditor() {
             closeDrawer('studioOptionsDrawer');
             const titleElem = document.getElementById('title-' + currentTargetVidId);
-            document.getElementById('editTitleInput').value = titleElem ? titleElem.innerText.trim() : '';
-            document.getElementById('editVideoModal').classList.add('open');
-        }
+            const visElem = document.getElementById('vis-' + currentTargetVidId);
+            const titleVal = titleElem ? encodeURIComponent(titleElem.innerText.trim()) : '';
+            const visVal = visElem ? encodeURIComponent(visElem.innerText.trim()) : '';
 
-        function saveVideoChanges() {
-            const newTitle = document.getElementById('editTitleInput').value.trim();
-            const newVis = document.getElementById('editVisibilitySelect').value;
-            if (newTitle && currentTargetVidId) {
-                document.getElementById('title-' + currentTargetVidId).innerText = newTitle;
-                const visElem = document.getElementById('vis-' + currentTargetVidId);
-                visElem.innerText = newVis;
-                visElem.className = 'visibility-badge' + (newVis.includes('Unlisted') ? ' unlisted' : '');
-                showToast('Video details updated ✓');
-            }
-            closeDrawer('editVideoModal');
+            // Open the new professional video editing page
+            window.location.href = `edit-video.html?title=${titleVal}&vis=${visVal}&mode=${currentTargetMode}`;
         }
 
         function deleteVideo() {
