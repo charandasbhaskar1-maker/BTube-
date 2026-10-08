@@ -2,35 +2,599 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Terms of Service - BTube</title>
+    <title>Terms & Policies - BTube</title>
+
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-        body { background:#0f0f0f; color:#ffffff; padding-bottom:70px; }
-        .nav-head { height:52px; display:flex; align-items:center; gap:16px; padding:0 16px; border-bottom:1px solid #1f1f1f; position:sticky; top:0; background:#0f0f0f; z-index:10; }
-        .btn-back { background:none; border:none; color:#fff; display:flex; align-items:center; text-decoration:none; cursor:pointer; }
-        .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .content { padding:20px 16px; display:flex; flex-direction:column; gap:18px; line-height:1.6; font-size:14px; color:#cccccc; }
-        h1 { font-size:20px; font-weight:800; color:#fff; }
-        h2 { font-size:16px; font-weight:700; color:#fff; margin-top:8px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* 1. TOP HEADER */
+        .policy-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. POLICY CHIP SELECTOR */
+        .chip-nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 52px;
+            background: #0f0f0f;
+            z-index: 900;
+        }
+
+        .chip-nav-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            background: #212121;
+            color: #aaaaaa;
+            border: 1px solid #2e2e2e;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: #ffffff;
+            color: #0f0f0f;
+            font-weight: 700;
+            border-color: #ffffff;
+        }
+
+        /* 3. HERO OVERVIEW */
+        .policy-hero-card {
+            margin: 14px 16px;
+            padding: 18px 16px;
+            background: linear-gradient(135deg, #1b1b1b 0%, #29080b 100%);
+            border: 1px solid #331215;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hero-badge-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: #ff4e4e;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .hero-heading {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .hero-desc {
+            font-size: 13px;
+            color: #bbbbbb;
+            line-height: 1.45;
+        }
+
+        /* 4. CONTENT SECTIONS */
+        .policy-content-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 16px 20px;
+        }
+
+        .policy-section-box {
+            background: #151515;
+            border: 1px solid #242424;
+            border-radius: 14px;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-icon-badge svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        .section-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .section-para {
+            font-size: 13px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* Policy Rule Bullet Grid */
+        .policy-rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .rule-item {
+            background: #1c1c1c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-left: 3px solid #3ea6ff;
+        }
+
+        .rule-item.alert-danger {
+            border-left-color: #ff4e4e;
+        }
+
+        .rule-item.alert-success {
+            border-left-color: #2ecc71;
+        }
+
+        .rule-item.alert-warning {
+            border-left-color: #f39c12;
+        }
+
+        .rule-head {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .rule-body {
+            font-size: 12px;
+            color: #aaaaaa;
+            line-height: 1.4;
+        }
+
+        /* Strikes Step Visualizer */
+        .strike-steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .strike-step-card {
+            background: #1f1f1f;
+            border-radius: 8px;
+            padding: 10px 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .strike-step-number {
+            font-size: 12px;
+            font-weight: 800;
+            color: #f39c12;
+        }
+
+        .strike-step-card.final .strike-step-number {
+            color: #ff4e4e;
+        }
+
+        .strike-step-desc {
+            font-size: 10px;
+            color: #aaaaaa;
+            line-height: 1.3;
+        }
+
+        /* Monetization Thresholds Custom Table */
+        .threshold-meter-box {
+            background: #1c1c1c;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .threshold-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .meter-bar {
+            width: 100%;
+            height: 7px;
+            background: #2a2a2a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: #2ecc71;
+            border-radius: 4px;
+        }
+
+        /* Dynamic Tier Notice */
+        .dynamic-tier-badge {
+            background: rgba(62, 166, 255, 0.1);
+            border: 1px solid rgba(62, 166, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 12px;
+            color: #9ad2ff;
+            line-height: 1.45;
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .dynamic-tier-badge svg {
+            width: 18px;
+            height: 18px;
+            fill: #3ea6ff;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* 5. FOOTER */
+        .policy-footer {
+            padding: 24px 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
     </style>
 </head>
 <body>
-    <header class="nav-head">
-        <a href="about.html" class="btn-back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></a>
-        <span style="font-size:18px; font-weight:700;">Terms of Service</span>
+
+    <!-- 1. TOP HEADER -->
+    <header class="policy-header">
+        <a href="about.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span class="header-title">Terms & Policies</span>
     </header>
-    <main class="content">
-        <h1>BTube Terms of Service</h1>
-        <p>Effective Date: October 2026</p>
-        <p>Welcome to BTube. By accessing or using our platform, you agree to comply with and be bound by the following terms.</p>
-        <h2>1. User Community & Content</h2>
-        <p>Users are welcome to share folk music, cultural content, tutorials, and lifestyle media. Hate speech, abusive content, and illegal materials are strictly prohibited.</p>
-        <h2>2. Intellectual Property</h2>
-        <p>You retain ownership of the original audio and video content you create. You grant BTube a license to host, display, and stream your media to community viewers.</p>
-        <h2>3. Account Responsibilities</h2>
-        <p>You are responsible for safeguarding your profile credentials and channel assets stored in your browser.</p>
+
+    <!-- 2. QUICK ANCHOR CHIPS -->
+    <nav class="chip-nav-bar">
+        <a href="#overview" class="filter-chip active" onclick="activateChip(this)">Overview</a>
+        <a href="#monetization" class="filter-chip" onclick="activateChip(this)">Monetization</a>
+        <a href="#copyright" class="filter-chip" onclick="activateChip(this)">Copyright</a>
+        <a href="#strikes" class="filter-chip" onclick="activateChip(this)">Strikes Policy</a>
+        <a href="#community" class="filter-chip" onclick="activateChip(this)">Community Guidelines</a>
+    </nav>
+
+    <!-- 3. HERO OVERVIEW -->
+    <section class="policy-hero-card" id="overview">
+        <span class="hero-badge-tag">Official Governance</span>
+        <h1 class="hero-heading">BTube Terms of Service</h1>
+        <p class="hero-desc">BTube is a creator-first platform celebrating regional music, local culture, and high-standard media streaming. By using BTube, you agree to these legal conditions and creator guidelines.</p>
+        <span style="font-size:11px; color:#888; margin-top:2px;">Effective date: October 2026 • Version 2.4</span>
+    </section>
+
+    <!-- 4. POLICY SECTIONS -->
+    <main class="policy-content-wrap">
+
+        <!-- SECTION 1: MONETIZATION POLICY (CUSTOM 200 SUBS / 200 HOURS / 5 LAKH VIEWS) -->
+        <section class="policy-section-box" id="monetization">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(46, 204, 113, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #2ecc71;"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                </div>
+                <h2 class="section-title-txt">BTube Monetization & Partner Policy</h2>
+            </div>
+            <p class="section-para">BTube creators can earn through video advertisements, super-chats, and premium content memberships. The current qualification criteria for partner approval are:</p>
+
+            <div class="threshold-meter-box">
+                <!-- 1. Subscribers (200 Requirement) -->
+                <div>
+                    <div class="threshold-row">
+                        <span style="font-weight:600;">Subscribers</span>
+                        <span style="color:#2ecc71; font-weight:700;">200 Subscribers</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- 2. Watch Hours (200 Hours Requirement) -->
+                <div>
+                    <div class="threshold-row">
+                        <span style="font-weight:600;">Public Watch Hours</span>
+                        <span style="color:#2ecc71; font-weight:700;">200 Watch Hours (घंटे)</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: 75%;"></div>
+                    </div>
+                </div>
+
+                <!-- 3. Views (5 Lakh Views Requirement) -->
+                <div>
+                    <div class="threshold-row">
+                        <span style="font-weight:600;">Total Channel Views</span>
+                        <span style="color:#2ecc71; font-weight:700;">5,00,000 Views (5 लाख)</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: 52%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Future Scaling Notice -->
+            <div class="dynamic-tier-badge">
+                <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/></svg>
+                <span><strong>Flexible Growth Tier:</strong> Initial regional creators ko promote karne ke liye yeh threshold rakha gaya hai. Jaise-jaise BTube platform grow aur popular hoga, administration is monetization threshold ko aage badha (upgrade) sakta hai.</span>
+            </div>
+
+            <div class="policy-rules-list">
+                <div class="rule-item">
+                    <span class="rule-head">Advertiser-Friendly Content Guidelines</span>
+                    <span class="rule-body">Videos me abusive bhasha, non-consensual footage ya duplicate low-effort re-uploads nahi hone chahiye.</span>
+                </div>
+                <div class="rule-item alert-success">
+                    <span class="rule-head">Fast Payout Approval</span>
+                    <span class="rule-body">Yeh teeno shartein poori hote hi creator ko channel dashboard par automated "Apply for Monetization" ka button mil jata hai.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: COPYRIGHT & FAIR USE -->
+        <section class="policy-section-box" id="copyright">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(243, 156, 18, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #f39c12;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2.5-5.5h5c.83 0 1.5-.67 1.5-1.5v-1c0-.83-.67-1.5-1.5-1.5h-3.5v-2h5V7h-6.5v6.5h3.5v1h-3.5V14.5z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Copyright Information & Fair Use</h2>
+            </div>
+            <p class="section-para">Creators must only upload content that they have made or that they are authorized to use. This includes audio tracks, instruments, background songs, and recorded footage.</p>
+
+            <div class="policy-rules-list">
+                <div class="rule-item">
+                    <span class="rule-head">Original Ownership</span>
+                    <span class="rule-body">Aapke dwara banaye gaye original lokgeet, banjo tutorial, bhajan aur vlogs par 100% intellectual property ka adhikar aapka rehta hai.</span>
+                </div>
+                <div class="rule-item alert-warning">
+                    <span class="rule-head">Music Labels & Commercial Audio</span>
+                    <span class="rule-body">Bina permission kisi music company ka original recorded master track use karne par copyright claim ya strike aa sakti hai.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: COPYRIGHT STRIKES SYSTEM -->
+        <section class="policy-section-box" id="strikes">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(229, 9, 20, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #ff4e4e;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Copyright Strikes Policy</h2>
+            </div>
+            <p class="section-para">BTube 3-Strikes Penalty Model follow karta hai taaki creators aur original rights-holders dono surakshit rahein:</p>
+
+            <div class="strike-steps-grid">
+                <div class="strike-step-card">
+                    <span class="strike-step-number">Strike 1</span>
+                    <span class="strike-step-desc">1-week upload freeze. Live streaming & new videos band.</span>
+                </div>
+                <div class="strike-step-card">
+                    <span class="strike-step-number">Strike 2</span>
+                    <span class="strike-step-desc">2-week freeze. Playlist & shorts creation restricted.</span>
+                </div>
+                <div class="strike-step-card final">
+                    <span class="strike-step-number">Strike 3</span>
+                    <span class="strike-step-desc">Permanent channel termination aur videos delete.</span>
+                </div>
+            </div>
+
+            <div class="policy-rules-list" style="margin-top: 8px;">
+                <div class="rule-item alert-success">
+                    <span class="rule-head">90 Days Expiration Rule</span>
+                    <span class="rule-body">Har copyright strike 90 dinon ke baad apne-aap expire ho jati hai agar aage koi naya violation na ho.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: COMMUNITY GUIDELINES -->
+        <section class="policy-section-box" id="community">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(62, 166, 255, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #3ea6ff;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Community Guidelines</h2>
+            </div>
+            <p class="section-para">BTube par swachh aur sammanjanak vatavaran banaye rakhne ke liye nirdharit niyam:</p>
+
+            <div class="policy-rules-list">
+                <div class="rule-item">
+                    <span class="rule-head">Spam & Misleading Metadata</span>
+                    <span class="rule-body">Fake tags, clickbait scams aur fake views bots ka upayog pratibandhit hai.</span>
+                </div>
+                <div class="rule-item alert-danger">
+                    <span class="rule-head">Hate Speech & Abuse</span>
+                    <span class="rule-body">Dharmik, jaatiye ya vyaktigat galoch aur dveshpurn content par seedhe account ban ho sakta hai.</span>
+                </div>
+            </div>
+        </section>
+
     </main>
+
+    <!-- 5. FOOTER -->
+    <footer class="policy-footer">
+        <span class="footer-note">© 2026 BTube Inc. All legal terms are legally binding under IT Rules of India.</span>
+        <span class="footer-note">Proudly built for regional creators 🇮🇳</span>
+    </footer>
+
+    <!-- 6. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function activateChip(el) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
 </body>
 </html>
