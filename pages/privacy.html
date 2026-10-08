@@ -2,35 +2,485 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Privacy Policy - BTube</title>
+
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-        body { background:#0f0f0f; color:#ffffff; padding-bottom:70px; }
-        .nav-head { height:52px; display:flex; align-items:center; gap:16px; padding:0 16px; border-bottom:1px solid #1f1f1f; position:sticky; top:0; background:#0f0f0f; z-index:10; }
-        .btn-back { background:none; border:none; color:#fff; display:flex; align-items:center; text-decoration:none; cursor:pointer; }
-        .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .content { padding:20px 16px; display:flex; flex-direction:column; gap:18px; line-height:1.6; font-size:14px; color:#cccccc; }
-        h1 { font-size:20px; font-weight:800; color:#fff; }
-        h2 { font-size:16px; font-weight:700; color:#fff; margin-top:8px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* 1. TOP HEADER */
+        .policy-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. CHIP NAVIGATION */
+        .chip-nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 52px;
+            background: #0f0f0f;
+            z-index: 900;
+        }
+
+        .chip-nav-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            background: #212121;
+            color: #aaaaaa;
+            border: 1px solid #2e2e2e;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .filter-chip.active {
+            background: #ffffff;
+            color: #0f0f0f;
+            font-weight: 700;
+            border-color: #ffffff;
+        }
+
+        /* 3. HERO OVERVIEW CARD */
+        .policy-hero-card {
+            margin: 14px 16px;
+            padding: 18px 16px;
+            background: linear-gradient(135deg, #1b1b1b 0%, #0d263b 100%);
+            border: 1px solid #183e5f;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .hero-badge-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: #3ea6ff;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .hero-heading {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .hero-desc {
+            font-size: 13px;
+            color: #bbbbbb;
+            line-height: 1.45;
+        }
+
+        /* 4. CONTENT SECTIONS */
+        .policy-content-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 16px 20px;
+        }
+
+        .policy-section-box {
+            background: #151515;
+            border: 1px solid #242424;
+            border-radius: 14px;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .section-icon-badge svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        .section-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .section-para {
+            font-size: 13px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* Information Cards & Grids */
+        .privacy-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .privacy-grid-card {
+            background: #1c1c1c;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .grid-card-head {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .grid-card-body {
+            font-size: 11px;
+            color: #aaaaaa;
+            line-height: 1.35;
+        }
+
+        /* Policy Bullet List */
+        .policy-rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .rule-item {
+            background: #1c1c1c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-left: 3px solid #3ea6ff;
+        }
+
+        .rule-item.alert-success {
+            border-left-color: #2ecc71;
+        }
+
+        .rule-item.alert-warning {
+            border-left-color: #f39c12;
+        }
+
+        .rule-head {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .rule-body {
+            font-size: 12px;
+            color: #aaaaaa;
+            line-height: 1.4;
+        }
+
+        /* 5. FOOTER */
+        .policy-footer {
+            padding: 24px 16px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .footer-note {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
     </style>
 </head>
 <body>
-    <header class="nav-head">
-        <a href="about.html" class="btn-back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></a>
-        <span style="font-size:18px; font-weight:700;">Privacy Policy</span>
+
+    <!-- 1. TOP HEADER -->
+    <header class="policy-header">
+        <a href="about.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span class="header-title">Privacy Policy</span>
     </header>
-    <main class="content">
-        <h1>BTube Privacy Policy</h1>
-        <p>Last updated: October 2026</p>
-        <p>BTube is designed with privacy-first standards. We believe your entertainment data belongs solely to you.</p>
-        <h2>1. Local Device Storage</h2>
-        <p>Your channel customization (Display Name, Profile DP, Banner, Playlists, and Downloads) is saved securely directly inside your device's browser storage.</p>
-        <h2>2. No Ad-Tracking or Data Selling</h2>
-        <p>We do not track your off-app activity and we never sell your personal information to third-party ad networks.</p>
-        <h2>3. Data Control</h2>
-        <p>You can clear your entire watch history, offline downloads, and channel data anytime from the Settings screen.</p>
+
+    <!-- 2. QUICK ANCHOR CHIPS -->
+    <nav class="chip-nav-bar">
+        <a href="#overview" class="filter-chip active" onclick="activateChip(this)">Overview</a>
+        <a href="#storage" class="filter-chip" onclick="activateChip(this)">Device Storage</a>
+        <a href="#tracking" class="filter-chip" onclick="activateChip(this)">Zero Tracking</a>
+        <a href="#control" class="filter-chip" onclick="activateChip(this)">Data Control</a>
+        <a href="#security" class="filter-chip" onclick="activateChip(this)">Security</a>
+    </nav>
+
+    <!-- 3. HERO OVERVIEW -->
+    <section class="policy-hero-card" id="overview">
+        <span class="hero-badge-tag">Privacy & Security Hub</span>
+        <h1 class="hero-heading">BTube Privacy Policy</h1>
+        <p class="hero-desc">BTube creator-first aur privacy-by-design architecture par aadharit hai. Hum aapke viewing habits aur personal files ka poora aadar karte hain aur unhe surrender nahi karte.</p>
+        <span style="font-size:11px; color:#88b4db; margin-top:2px;">Last updated: October 2026 • Version 2.4</span>
+    </section>
+
+    <!-- 4. POLICY SECTIONS -->
+    <main class="policy-content-wrap">
+
+        <!-- SECTION 1: DEVICE STORAGE -->
+        <section class="policy-section-box" id="storage">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(62, 166, 255, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #3ea6ff;"><path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Local Device Storage Architecture</h2>
+            </div>
+            <p class="section-para">BTube par aapka profile aur channel setup aapke phone ke browser ki secure <strong>HTML5 LocalStorage</strong> me hi surakshit rehta hai:</p>
+
+            <div class="privacy-grid">
+                <div class="privacy-grid-card">
+                    <span class="grid-card-head">Profile DP & Banner</span>
+                    <span class="grid-card-body">Aapke local storage me compress hokar rahti hai, third-party server par upload nahi hoti.</span>
+                </div>
+                <div class="privacy-grid-card">
+                    <span class="grid-card-head">Custom Playlists</span>
+                    <span class="grid-card-body">Aapki banayi hui playlists aur save kiye huye gaane aapke device me private rehte hain.</span>
+                </div>
+                <div class="privacy-grid-card">
+                    <span class="grid-card-head">Offline Downloads</span>
+                    <span class="grid-card-body">Downloads phone ke offline browser cache me save hote hain bina external internet leak ke.</span>
+                </div>
+                <div class="privacy-grid-card">
+                    <span class="grid-card-head">Time Watched Stats</span>
+                    <span class="grid-card-body">Daily watch minutes aur weekly bar chart calculate hokar aapke device par hi render hota hai.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ZERO TRACKING & AD PROTECTION -->
+        <section class="policy-section-box" id="tracking">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(46, 204, 113, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #2ecc71;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                </div>
+                <h2 class="section-title-txt">No Ad-Tracking or Data Selling</h2>
+            </div>
+            <p class="section-para">Hum kisi bhi third-party data broker ya marketing company ko aapka data monitor ya sell nahi karte:</p>
+
+            <div class="policy-rules-list">
+                <div class="rule-item alert-success">
+                    <span class="rule-head">Zero Cross-App Tracking</span>
+                    <span class="rule-body">BTube app ke bahar aap kis website ya application ko use karte hain, hum use track nahi karte.</span>
+                </div>
+                <div class="rule-item alert-success">
+                    <span class="rule-head">No Location Snooping</span>
+                    <span class="rule-body">Background GPS ya precise location permissions ki koi zaroorat nahi hoti.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: DATA CONTROL & DELETION -->
+        <section class="policy-section-box" id="control">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(243, 156, 18, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #f39c12;"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Your Rights & Complete Data Control</h2>
+            </div>
+            <p class="section-para">Aap apne poore record ko Settings aur History menu se bina kisi rukawat ke manage aur delete kar sakte hain:</p>
+
+            <div class="policy-rules-list">
+                <div class="rule-item">
+                    <span class="rule-head">Clear Watch & Search History</span>
+                    <span class="rule-body">History page ke 3-dots menu se ek tap me saari watch history clear ki ja sakti hai.</span>
+                </div>
+                <div class="rule-item">
+                    <span class="rule-head">Purge Offline Downloads</span>
+                    <span class="rule-body">Downloads page se offline storage bar ke zariye aap sabhi videos ko kisi bhi waqt delete kar sakte hain.</span>
+                </div>
+                <div class="rule-item alert-warning">
+                    <span class="rule-head">Reset Channel Settings</span>
+                    <span class="rule-body">Browser cookies ya cache clear karne se local profile data fresh start ho jata hai.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: SECURITY -->
+        <section class="policy-section-box" id="security">
+            <div class="section-header-row">
+                <div class="section-icon-badge" style="background: rgba(229, 9, 20, 0.15);">
+                    <svg viewBox="0 0 24 24" style="fill: #ff4e4e;"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <h2 class="section-title-txt">Platform Security Standards</h2>
+            </div>
+            <p class="section-para">BTube SSL/TLS Encryption ke sath GitHub Pages aur PWA sandbox environment me run karta hai, jisse cross-site script injections aur unauthorized tampering rokhi jaati hai.</p>
+        </section>
+
     </main>
+
+    <!-- 5. FOOTER -->
+    <footer class="policy-footer">
+        <span class="footer-note">© 2026 BTube Inc. Encrypted & Secure Under Privacy Acts.</span>
+        <span class="footer-note">Built with creator privacy in mind 🇮🇳</span>
+    </footer>
+
+    <!-- 6. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function activateChip(el) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
 </body>
 </html>
