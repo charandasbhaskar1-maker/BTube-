@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Go Live - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .live-setup-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-header-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .btn-header-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title-txt {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-flip-cam {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-flip-cam svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 2. CAMERA PREVIEW FRAME */
+        .camera-viewport-wrap {
+            width: 100%;
+            height: 230px;
+            background: #141414;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+        }
+
+        .camera-viewport-wrap video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-placeholder-badge {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .camera-placeholder-badge svg {
+            width: 38px;
+            height: 38px;
+            fill: #555;
+        }
+
+        .live-indicator-pill {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #e50914;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .live-dot-pulse {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulseDot 1s infinite alternate;
+        }
+
+        @keyframes pulseDot {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* 3. SETUP FORM */
+        .live-form-container {
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .input-group-unit {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .label-counter-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: #aaaaaa;
+            text-transform: uppercase;
+        }
+
+        .custom-field-input {
+            width: 100%;
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .custom-field-input:focus {
+            border-color: #e50914;
+        }
+
+        .picker-clickable-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px;
+            background: #181818;
+            border: 1px solid #262626;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .picker-col-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .picker-col-left svg {
+            width: 20px;
+            height: 20px;
+            fill: #aaaaaa;
+        }
+
+        .picker-col-left strong {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .picker-col-left .sub-meta {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .btn-launch-broadcast {
+            background: #e50914;
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 24px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+
+        /* 4. FULLSCREEN ON-AIR LIVE STUDIO (HIDDEN INITIALLY) */
+        .live-onair-fullscreen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 5000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .onair-video-feed {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .onair-top-hud {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .hud-stats-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hud-pill {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hud-pill.live-badge {
+            background: #e50914;
+            border: none;
+        }
+
+        .btn-end-stream {
+            background: rgba(229, 9, 20, 0.9);
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* Live Chat Dock in Stream */
+        .onair-chat-stream {
+            position: relative;
+            z-index: 10;
+            margin-top: auto;
+            max-height: 200px;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 16px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .chat-bubble-msg {
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-block;
+            width: fit-content;
+            max-width: 90%;
+            animation: fadeInChat 0.3s ease;
+        }
+
+        .chat-user-tag {
+            font-weight: 700;
+            color: #3ea6ff;
+            margin-right: 6px;
+        }
+
+        @keyframes fadeInChat {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 5. STREAM SUMMARY MODAL */
+        .stream-summary-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 6000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .summary-card-box {
+            width: 100%;
+            max-width: 320px;
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .summary-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .summary-cell {
+            background: #252525;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .summary-cell-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: #3ea6ff;
+        }
+
+        .summary-cell-lbl {
+            font-size: 11px;
+            color: #888;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 7000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="live-setup-header">
+        <div class="header-left">
+            <a href="upload.html" class="btn-header-back">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </a>
+            <span class="header-title-txt">Go Live</span>
+        </div>
+        <button class="btn-flip-cam" onclick="toggleCameraFacing()" title="Switch Camera">
+            <svg viewBox="0 0 24 24"><path d="M9 12c0 1.66 1.34 3 3 3s3-1.34 3-3-1.34-3-3-3-3 1.34-3 3zm11-5h-3.17l-1.83-2H9L7.17 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+        </button>
+    </header>
+
+    <!-- 2. CAMERA PREVIEW VIEWPORT -->
+    <section class="camera-viewport-wrap" id="cameraWrap">
+        <video id="setupCamVideo" autoplay playsinline muted></video>
+        <div class="camera-placeholder-badge" id="camPlaceholder">
+            <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            <span>Tap Go Live to request camera access</span>
+        </div>
+        <div class="live-indicator-pill">
+            <span class="live-dot-pulse"></span>
+            <span>READY</span>
+        </div>
+    </section>
+
+    <!-- 3. SETUP FORM DETAILS -->
+    <main class="live-form-container">
+        
+        <!-- Stream Title -->
+        <div class="input-group-unit">
+            <div class="label-counter-bar">
+                <span>Create a title (required)</span>
+                <span id="txtTitleCount">0/100</span>
+            </div>
+            <input type="text" id="liveStreamTitle" class="custom-field-input" maxlength="100" placeholder="e.g. Chhattisgarhi Folk Jam & Live Q&A 🪕" oninput="updateTitleCount()">
+        </div>
+
+        <!-- Visibility -->
+        <div class="picker-clickable-bar" onclick="toggleVisState()">
+            <div class="picker-col-left">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <div>
+                    <strong>Visibility</strong>
+                    <div class="sub-meta" id="txtVisVal">Public (Anyone can watch)</div>
+                </div>
+            </div>
+            <span style="color:#666;">❯</span>
+        </div>
+
+        <!-- Audience -->
+        <div class="picker-clickable-bar" onclick="toggleAudienceState()">
+            <div class="picker-col-left">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                <div>
+                    <strong>Audience</strong>
+                    <div class="sub-meta" id="txtKidsVal">No, it's not made for kids</div>
+                </div>
+            </div>
+            <span style="color:#666;">❯</span>
+        </div>
+
+        <!-- Category -->
+        <div class="input-group-unit">
+            <div class="label-counter-bar"><span>Category</span></div>
+            <select id="selectLiveCategory" class="custom-field-input">
+                <option value="Chhattisgarhi Culture">Chhattisgarhi Culture & Folk</option>
+                <option value="Live Music">Music & Instruments</option>
+                <option value="Tech & Build">Tech & Tutorials</option>
+                <option value="Chit-Chat">Daily Vlogs & Chit-Chat</option>
+            </select>
+        </div>
+
+        <!-- Start Broadcast Button -->
+        <button type="button" class="btn-launch-broadcast" onclick="startLiveBroadcast()">
+            <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#fff;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            <span>Go Live</span>
+        </button>
+
+    </main>
+
+    <!-- 4. ON-AIR LIVE BROADCAST FULLSCREEN VIEW -->
+    <div class="live-onair-fullscreen" id="liveOnAirStudio">
+        <video id="onAirCamVideo" class="onair-video-feed" autoplay playsinline muted></video>
+
+        <!-- Top Heads-Up Display (HUD) -->
+        <div class="onair-top-hud">
+            <div class="hud-stats-group">
+                <div class="hud-pill live-badge">LIVE</div>
+                <div class="hud-pill" id="hudTimer">00:00</div>
+                <div class="hud-pill">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#fff;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    <span id="hudViewers">42</span>
+                </div>
+                <div class="hud-pill">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#fff;"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    <span id="hudLikes">18</span>
+                </div>
+            </div>
+
+            <button class="btn-end-stream" onclick="endLiveStream()">End</button>
+        </div>
+
+        <!-- Simulated Live Audience Chat Stream -->
+        <div class="onair-chat-stream" id="onAirChatList">
+            <div class="chat-bubble-msg"><span class="chat-user-tag">BTube Bot:</span>Live stream started! Say hi to your chat.</div>
+        </div>
+    </div>
+
+    <!-- 5. STREAM SUMMARY MODAL -->
+    <div class="stream-summary-modal" id="summaryModal">
+        <div class="summary-card-box">
+            <h3 style="font-size:18px;">Stream Finished! 🎉</h3>
+            <p style="font-size:12px; color:#aaa;" id="summaryStreamTitle">Live Stream</p>
+
+            <div class="summary-stat-grid">
+                <div class="summary-cell">
+                    <span class="summary-cell-val" id="sumTotalTime">00:45</span>
+                    <span class="summary-cell-lbl">Stream Duration</span>
+                </div>
+                <div class="summary-cell">
+                    <span class="summary-cell-val" id="sumPeakViewers">86</span>
+                    <span class="summary-cell-lbl">Peak Viewers</span>
+                </div>
+                <div class="summary-cell">
+                    <span class="summary-cell-val" id="sumLikes">64</span>
+                    <span class="summary-cell-lbl">Total Likes</span>
+                </div>
+                <div class="summary-cell">
+                    <span class="summary-cell-val">+5</span>
+                    <span class="summary-cell-lbl">New Subs</span>
+                </div>
+            </div>
+
+            <button type="button" class="btn-launch-broadcast" style="width:100%; margin-top:8px;" onclick="finishAndGoHome()">Done</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-pop" id="liveToast"></div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        let localStream = null;
+        let useFacingMode = "user"; // front or environment
+        let isPublic = true;
+        let isKids = false;
+        let streamTimerInterval = null;
+        let chatInterval = null;
+        let secondsElapsed = 0;
+        let viewersCount = 42;
+        let likesCount = 18;
+
+        const mockChatUsers = ["Ramesh CG", "Vikram Sahu", "Pooja Sharma", "Banjo Lover", "Anita Verma", "Rahul Dev"];
+        const mockChatMessages = [
+            "Namaskar bhaiya ji! 🙏",
+            "Sound ekdum clear aa raha hai!",
+            "Typewriter banjo ka sound test karo na",
+            "Super live session! 🔥🔥",
+            "Mungeli se live dekh raha hu",
+            "Audio balance mast hai"
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCamera();
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('liveToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        // Camera Initialization
+        async function initCamera() {
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    localStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: useFacingMode },
+                        audio: true
+                    });
+                    const setupVideo = document.getElementById('setupCamVideo');
+                    setupVideo.srcObject = localStream;
+                    document.getElementById('camPlaceholder').style.display = 'none';
+                }
+            } catch (err) {
+                console.log("Camera access not available or blocked, using mock studio preview.");
+            }
+        }
+
+        function toggleCameraFacing() {
+            useFacingMode = (useFacingMode === "user") ? "environment" : "user";
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            initCamera();
+            showToast(`Camera switched to ${useFacingMode}`);
+        }
+
+        function updateTitleCount() {
+            const count = document.getElementById('liveStreamTitle').value.length;
+            document.getElementById('txtTitleCount').innerText = `${count}/100`;
+        }
+
+        function toggleVisState() {
+            isPublic = !isPublic;
+            const txt = document.getElementById('txtVisVal');
+            txt.innerText = isPublic ? "Public (Anyone can watch)" : "Unlisted (Only with link)";
+            showToast(`Visibility: ${isPublic ? 'Public' : 'Unlisted'}`);
+        }
+
+        function toggleAudienceState() {
+            isKids = !isKids;
+            const txt = document.getElementById('txtKidsVal');
+            txt.innerText = isKids ? "Yes, made for kids" : "No, it's not made for kids";
+            txt.style.color = isKids ? "#3ea6ff" : "#888";
+        }
+
+        // Start Broadcasting
+        function startLiveBroadcast() {
+            const title = document.getElementById('liveStreamTitle').value.trim();
+            if (!title) {
+                showToast('Please enter a stream title first');
+                return;
+            }
+
+            document.getElementById('liveOnAirStudio').style.display = 'flex';
+            const onAirVideo = document.getElementById('onAirCamVideo');
+            if (localStream) {
+                onAirVideo.srcObject = localStream;
+            }
+
+            // Start HUD timer
+            secondsElapsed = 0;
+            streamTimerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('hudTimer').innerText = `${mins}:${secs}`;
+
+                // Fluctuating viewers & likes
+                if (Math.random() > 0.4) {
+                    viewersCount += Math.floor(Math.random() * 5) - 2;
+                    if (viewersCount < 20) viewersCount = 25;
+                    document.getElementById('hudViewers').innerText = viewersCount;
+                }
+                if (Math.random() > 0.6) {
+                    likesCount += Math.floor(Math.random() * 3) + 1;
+                    document.getElementById('hudLikes').innerText = likesCount;
+                }
+            }, 1000);
+
+            // Start Simulated Real-Time Chat
+            chatInterval = setInterval(() => {
+                const randomUser = mockChatUsers[Math.floor(Math.random() * mockChatUsers.length)];
+                const randomMsg = mockChatMessages[Math.floor(Math.random() * mockChatMessages.length)];
+                
+                const chatBox = document.getElementById('onAirChatList');
+                const bubble = document.createElement('div');
+                bubble.className = 'chat-bubble-msg';
+                bubble.innerHTML = `<span class="chat-user-tag">${randomUser}:</span>${randomMsg}`;
+                chatBox.appendChild(bubble);
+
+                if (chatBox.children.length > 5) {
+                    chatBox.removeChild(chatBox.children[0]);
+                }
+            }, 2500);
+
+            showToast('You are now LIVE! 🔴');
+        }
+
+        // End Stream & Summary
+        function endLiveStream() {
+            clearInterval(streamTimerInterval);
+            clearInterval(chatInterval);
+
+            const title = document.getElementById('liveStreamTitle').value.trim();
+            document.getElementById('summaryStreamTitle').innerText = title;
+
+            const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(secondsElapsed % 60).padStart(2, '0');
+            document.getElementById('sumTotalTime').innerText = `${mins}:${secs}`;
+            document.getElementById('sumPeakViewers').innerText = viewersCount + 14;
+            document.getElementById('sumLikes').innerText = likesCount;
+
+            document.getElementById('summaryModal').style.display = 'flex';
+        }
+
+        function finishAndGoHome() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            window.location.href = 'your-videos.html';
+        }
+    </script>
+</body>
+</html>
