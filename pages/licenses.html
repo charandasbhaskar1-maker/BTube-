@@ -2,37 +2,488 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Open-source Licenses - BTube</title>
+
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-        body { background:#0f0f0f; color:#ffffff; padding-bottom:70px; }
-        .nav-head { height:52px; display:flex; align-items:center; gap:16px; padding:0 16px; border-bottom:1px solid #1f1f1f; position:sticky; top:0; background:#0f0f0f; z-index:10; }
-        .btn-back { background:none; border:none; color:#fff; display:flex; align-items:center; text-decoration:none; cursor:pointer; }
-        .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .content { padding:20px 16px; display:flex; flex-direction:column; gap:16px; line-height:1.6; font-size:14px; color:#cccccc; }
-        .license-card { background:#161616; border:1px solid #262626; border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:8px; font-family:monospace; font-size:12px; color:#aaa; }
-        .lib-name { font-size:14px; font-weight:700; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* 1. TOP HEADER */
+        .lic-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. SEARCH BAR */
+        .lic-search-wrap {
+            padding: 12px 16px 8px;
+            background: #121212;
+            border-bottom: 1px solid #1c1c1c;
+        }
+
+        .lic-search-box {
+            width: 100%;
+            height: 40px;
+            background: #202020;
+            border: 1px solid #2d2d2d;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            gap: 10px;
+        }
+
+        .lic-search-box svg {
+            width: 16px;
+            height: 16px;
+            fill: #888888;
+        }
+
+        .lic-search-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 13px;
+        }
+
+        /* 3. FILTER CHIPS */
+        .chip-nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            overflow-x: auto;
+            scrollbar-width: none;
+            background: #0f0f0f;
+        }
+
+        .chip-nav-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            background: #212121;
+            color: #aaaaaa;
+            border: 1px solid #2e2e2e;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-chip.active {
+            background: #ffffff;
+            color: #0f0f0f;
+            font-weight: 700;
+            border-color: #ffffff;
+        }
+
+        /* 4. OVERVIEW CARD */
+        .lic-hero-card {
+            margin: 14px 16px;
+            padding: 16px;
+            background: #161616;
+            border: 1px solid #242424;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .hero-badge-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: #3ea6ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-heading {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .hero-desc {
+            font-size: 12px;
+            color: #aaaaaa;
+            line-height: 1.45;
+        }
+
+        /* 5. LICENSES LIST FEED */
+        .license-feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 16px 20px;
+        }
+
+        .license-accordion-card {
+            background: #171717;
+            border: 1px solid #262626;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .card-header-bar {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .card-header-bar:active {
+            background: #1c1c1c;
+        }
+
+        .pkg-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .pkg-name-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .pkg-lic-type {
+            font-size: 11px;
+            color: #3ea6ff;
+            font-weight: 600;
+        }
+
+        .accordion-chevron svg {
+            width: 16px;
+            height: 16px;
+            fill: #777777;
+            transition: transform 0.25s ease;
+        }
+
+        .license-accordion-card.open .accordion-chevron svg {
+            transform: rotate(180deg);
+        }
+
+        .card-legal-body {
+            padding: 0 16px 14px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid #202020;
+            background: #131313;
+        }
+
+        .license-accordion-card.open .card-legal-body {
+            display: flex;
+        }
+
+        .legal-copyright-owner {
+            font-size: 12px;
+            color: #cccccc;
+            font-weight: 600;
+            padding-top: 10px;
+        }
+
+        .legal-pre-text {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 11px;
+            color: #8f8f8f;
+            line-height: 1.5;
+            background: #0c0c0c;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #1a1a1a;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
     </style>
 </head>
 <body>
-    <header class="nav-head">
-        <a href="about.html" class="btn-back"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></a>
-        <span style="font-size:18px; font-weight:700;">Open-source Licenses</span>
+
+    <!-- 1. TOP HEADER -->
+    <header class="lic-header">
+        <a href="about.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span class="header-title">Open-source Licenses</span>
     </header>
-    <main class="content">
-        <span style="font-size:13px; color:#888;">BTube incorporates the following open-source libraries and icon packages:</span>
-        <div class="license-card">
-            <span class="lib-name">Material Design Icons</span>
-            <span>Apache License 2.0</span>
-            <p>Copyright (c) Google LLC. Licensed under the Apache License, Version 2.0.</p>
+
+    <!-- 2. SEARCH BOX -->
+    <div class="lic-search-wrap">
+        <div class="lic-search-box">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="licSearchInput" placeholder="Search libraries or licenses..." oninput="filterLicenses(this.value)">
         </div>
-        <div class="license-card">
-            <span class="lib-name">HTML5 Web Components & PWA Kits</span>
-            <span>MIT License</span>
-            <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.</p>
+    </div>
+
+    <!-- 3. FILTER CHIPS -->
+    <nav class="chip-nav-bar">
+        <button class="filter-chip active" onclick="filterByChip('all', this)">All</button>
+        <button class="filter-chip" onclick="filterByChip('apache', this)">Apache 2.0</button>
+        <button class="filter-chip" onclick="filterByChip('mit', this)">MIT</button>
+        <button class="filter-chip" onclick="filterByChip('bsd', this)">BSD-3</button>
+    </nav>
+
+    <!-- 4. OVERVIEW CARD -->
+    <section class="lic-hero-card">
+        <span class="hero-badge-tag">Attribution & Compliance</span>
+        <h1 class="hero-heading">Third-Party Software Notices</h1>
+        <p class="hero-desc">BTube relies on the following open-source software projects and icons. We gratefully acknowledge the contributions of open-source developers worldwide.</p>
+    </section>
+
+    <!-- 5. LICENSES LIST -->
+    <main class="license-feed-list" id="licenseFeed">
+
+        <!-- 1. Material Design Icons -->
+        <div class="license-accordion-card open" data-type="apache" data-name="Material Design Icons Google">
+            <div class="card-header-bar" onclick="toggleAccordion(this)">
+                <div class="pkg-info-col">
+                    <span class="pkg-name-title">Material Design Icons</span>
+                    <span class="pkg-lic-type">Apache License 2.0</span>
+                </div>
+                <div class="accordion-chevron">
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </div>
+            </div>
+            <div class="card-legal-body">
+                <span class="legal-copyright-owner">Copyright (c) Google LLC</span>
+                <div class="legal-pre-text">Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</div>
+            </div>
         </div>
+
+        <!-- 2. HTML5 & Progressive Web App Kits -->
+        <div class="license-accordion-card" data-type="mit" data-name="HTML5 Web Components PWA Kits">
+            <div class="card-header-bar" onclick="toggleAccordion(this)">
+                <div class="pkg-info-col">
+                    <span class="pkg-name-title">HTML5 Web Components & PWA Kits</span>
+                    <span class="pkg-lic-type">MIT License</span>
+                </div>
+                <div class="accordion-chevron">
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </div>
+            </div>
+            <div class="card-legal-body">
+                <span class="legal-copyright-owner">Copyright (c) 2026 Open Source Contributors</span>
+                <div class="legal-pre-text">Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.</div>
+            </div>
+        </div>
+
+        <!-- 3. Roboto & Inter Typography -->
+        <div class="license-accordion-card" data-type="apache" data-name="Roboto & System Fonts Typography">
+            <div class="card-header-bar" onclick="toggleAccordion(this)">
+                <div class="pkg-info-col">
+                    <span class="pkg-name-title">Roboto Typography</span>
+                    <span class="pkg-lic-type">Apache License 2.0</span>
+                </div>
+                <div class="accordion-chevron">
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </div>
+            </div>
+            <div class="card-legal-body">
+                <span class="legal-copyright-owner">Copyright 2011 Google Inc. All Rights Reserved.</span>
+                <div class="legal-pre-text">Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0</div>
+            </div>
+        </div>
+
+        <!-- 4. Video Stream Handler & Decoders -->
+        <div class="license-accordion-card" data-type="bsd" data-name="HLS Media Player & Decoders">
+            <div class="card-header-bar" onclick="toggleAccordion(this)">
+                <div class="pkg-info-col">
+                    <span class="pkg-name-title">Media Decoder Engine</span>
+                    <span class="pkg-lic-type">BSD 3-Clause License</span>
+                </div>
+                <div class="accordion-chevron">
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </div>
+            </div>
+            <div class="card-legal-body">
+                <span class="legal-copyright-owner">Copyright (c) Regents of the University of California</span>
+                <div class="legal-pre-text">Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice.
+2. Redistributions in binary form must reproduce the above copyright notice.</div>
+            </div>
+        </div>
+
     </main>
+
+    <!-- 6. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function toggleAccordion(bar) {
+            const card = bar.closest('.license-accordion-card');
+            card.classList.toggle('open');
+        }
+
+        function filterLicenses(query) {
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.license-accordion-card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                if (name.includes(q)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByChip(type, chip) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+
+            const cards = document.querySelectorAll('.license-accordion-card');
+            cards.forEach(card => {
+                const cType = card.getAttribute('data-type');
+                if (type === 'all' || cType === type) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
