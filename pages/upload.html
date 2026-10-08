@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Create - BTube</title>
+    <title>Upload - BTube</title>
 
     <style>
         * {
@@ -34,7 +34,7 @@
             top: 0;
             background: #0f0f0f;
             z-index: 1000;
-            border-bottom: 1px solid #1f1f1f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .header-left {
@@ -43,232 +43,363 @@
             gap: 16px;
         }
 
-        .btn-nav-close {
+        .btn-close-header {
             background: none;
             border: none;
             color: #ffffff;
-            font-size: 20px;
             cursor: pointer;
-            text-decoration: none;
             display: flex;
             align-items: center;
         }
 
-        .upload-header-title {
-            font-size: 18px;
+        .btn-close-header svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title-txt {
+            font-size: 17px;
             font-weight: 700;
         }
 
-        .btn-post-upload {
+        .btn-upload-publish {
             background: #3ea6ff;
             color: #0f0f0f;
             border: none;
-            padding: 6px 14px;
+            padding: 7px 18px;
             border-radius: 18px;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            display: none;
+            transition: opacity 0.2s;
         }
 
-        /* 2. CREATION MODES TRAY */
-        .creation-modes-grid {
-            padding: 20px 16px;
+        .btn-upload-publish:disabled {
+            background: #333333;
+            color: #777777;
+            cursor: not-allowed;
+        }
+
+        /* 2. CREATE PICKER VIEW (INITIAL SCREEN) */
+        .create-options-wrap {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            padding: 24px 16px;
+            gap: 14px;
         }
 
-        .create-mode-card {
+        .create-action-card {
             background: #1c1c1c;
-            border: 1px solid #2a2a2a;
+            border: 1px solid #282828;
             border-radius: 14px;
             padding: 16px;
             display: flex;
             align-items: center;
             gap: 16px;
             cursor: pointer;
-            text-decoration: none;
-            color: #ffffff;
+            transition: background 0.15s, transform 0.1s;
         }
 
-        .create-mode-card:active {
+        .create-action-card:active {
             background: #252525;
+            transform: scale(0.98);
         }
 
-        .mode-icon-circle {
-            width: 48px;
-            height: 48px;
+        .create-icon-bubble {
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            background: #272727;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
         }
 
-        .mode-icon-circle svg {
+        .create-icon-bubble svg {
             width: 24px;
             height: 24px;
             fill: #ffffff;
         }
 
-        .mode-info-meta {
+        .create-text-meta {
             display: flex;
             flex-direction: column;
             gap: 3px;
         }
 
-        .mode-name {
+        .create-item-title {
             font-size: 15px;
             font-weight: 700;
+            color: #ffffff;
         }
 
-        .mode-desc {
+        .create-item-sub {
             font-size: 12px;
-            color: #888888;
+            color: #aaaaaa;
         }
 
-        /* 3. UPLOAD FORM STAGE */
-        .upload-details-form {
+        /* 3. DETAILS EDITOR FORM (POST FILE SELECT) */
+        .upload-editor-view {
             display: none;
             flex-direction: column;
-            padding: 16px;
-            gap: 16px;
         }
 
-        .preview-media-box {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #141414;
-            border-radius: 12px;
-            overflow: hidden;
+        /* Video / Thumbnail preview box */
+        .preview-media-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            padding: 16px;
+            background: #141414;
+            border-bottom: 1px solid #222222;
             position: relative;
-            border: 1px dashed #333333;
         }
 
-        .preview-media-box video {
+        .preview-frame-holder {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333333;
+        }
+
+        .preview-frame-holder.shorts-frame {
+            max-width: 170px;
+            aspect-ratio: 9 / 16;
+        }
+
+        .preview-frame-holder video, 
+        .preview-frame-holder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: none;
         }
 
-        .preview-placeholder {
+        .change-thumb-trigger {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .change-thumb-trigger svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+
+        /* Form Details */
+        .editor-form-body {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: #888888;
-            font-size: 13px;
+            padding: 16px;
+            gap: 18px;
         }
 
-        .preview-placeholder svg {
-            width: 32px;
-            height: 32px;
-            fill: #666666;
-        }
-
-        .form-group-field {
+        .input-group-unit {
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
-        .form-label-txt {
-            font-size: 12px;
-            font-weight: 600;
-            color: #aaaaaa;
-        }
-
-        .form-input-ctrl {
-            background: #181818;
-            border: 1px solid #2a2a2a;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .form-input-ctrl:focus {
-            border-color: #3ea6ff;
-        }
-
-        .form-textarea-ctrl {
-            min-height: 80px;
-            resize: none;
-        }
-
-        .visibility-select-box {
-            background: #181818;
-            border: 1px solid #2a2a2a;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        /* 4. PROGRESS BAR */
-        .upload-progress-wrapper {
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            background: #1c1c1c;
-            padding: 14px;
-            border-radius: 10px;
-        }
-
-        .progress-meta-row {
+        .label-counter-bar {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
+            font-weight: 700;
+            color: #aaaaaa;
+            text-transform: uppercase;
+        }
+
+        .custom-field-input {
+            width: 100%;
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .custom-field-input:focus {
+            border-color: #3ea6ff;
+            background: #1d1d1d;
+        }
+
+        textarea.custom-field-input {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        /* Interactive Selectors */
+        .picker-clickable-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 14px;
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .picker-clickable-bar:active {
+            background: #222222;
+        }
+
+        .picker-col-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .picker-col-left svg {
+            width: 20px;
+            height: 20px;
+            fill: #3ea6ff;
+        }
+
+        /* Tags container */
+        .tags-cluster {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .tag-pill-item {
+            background: #252525;
+            color: #3ea6ff;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 12px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag-pill-item span:last-child {
+            cursor: pointer;
+            color: #888888;
+        }
+
+        /* Upload Progress Modal Screen */
+        .upload-progress-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .progress-box-card {
+            width: 100%;
+            max-width: 320px;
+            background: #202020;
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid #333333;
+            text-align: center;
         }
 
         .progress-track {
             width: 100%;
-            height: 6px;
-            background: #2a2a2a;
-            border-radius: 3px;
+            height: 8px;
+            background: #333333;
+            border-radius: 4px;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .progress-fill {
             height: 100%;
             width: 0%;
             background: #3ea6ff;
+            border-radius: 4px;
             transition: width 0.2s linear;
         }
 
-        /* Hidden File Input */
-        #hiddenFileInput {
+        /* Bottom Sheet for Visibility */
+        .drawer-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 2500;
             display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-scrim.open {
+            display: flex;
+        }
+
+        .drawer-menu-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .drawer-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .drawer-option-row:active {
+            background: #282828;
         }
 
         /* Toast */
-        .toast-msg-bubble {
+        .toast-pop {
             position: fixed;
-            bottom: 70px;
+            bottom: 75px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(33, 33, 33, 0.95);
             border: 1px solid #444;
             color: #fff;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 3000;
+            z-index: 4000;
             display: none;
         }
 
         /* 5. BOTTOM NAVIGATION */
-        .bottom-nav-fixed {
+        .bottom-nav-bar {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -278,7 +409,7 @@
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222222;
             z-index: 1000;
         }
 
@@ -299,21 +430,21 @@
         }
 
         .nav-plus-circle {
-            background: #ffffff;
+            background: #272727;
             border-radius: 50%;
             width: 38px;
             height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #0f0f0f;
+            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
             width: 22px;
             height: 22px;
-            fill: #0f0f0f;
+            fill: #ffffff;
         }
     </style>
 </head>
@@ -322,101 +453,178 @@
     <!-- 1. TOP HEADER -->
     <header class="upload-header">
         <div class="header-left">
-            <a href="../frontend/index.html" class="btn-nav-close">✕</a>
-            <span class="upload-header-title" id="headerTitle">Create</span>
+            <button class="btn-close-header" onclick="handleHeaderCancel()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <span class="header-title-txt" id="headerTitle">Create</span>
         </div>
-        <button class="btn-post-upload" id="uploadActionBtn" onclick="startSimulatedUpload()">Upload</button>
+        <button class="btn-upload-publish" id="btnPublish" style="display:none;" onclick="startPublishProcess()">Upload</button>
     </header>
 
-    <!-- 2. FILE INPUT (Hidden) -->
-    <input type="file" id="hiddenFileInput" accept="video/*" onchange="handleFilePicked(event)">
+    <!-- 2. CREATE OPTIONS (STEP 1: SELECT TYPE) -->
+    <main class="create-options-wrap" id="stepPicker">
+        
+        <!-- Create a Short -->
+        <label for="shortMediaInput" class="create-action-card">
+            <div class="create-icon-bubble" style="background:#e50914;">
+                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            </div>
+            <div class="create-text-meta">
+                <span class="create-item-title">Create a Short</span>
+                <span class="create-item-sub">Select vertical video up to 60 seconds</span>
+            </div>
+        </label>
+        <input type="file" id="shortMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, true)">
 
-    <!-- 3. MODE SELECTION VIEW -->
-    <main class="creation-modes-grid" id="modeSelectView">
-        <!-- Short -->
-        <div class="create-mode-card" onclick="triggerFilePicker('short')">
-            <div class="mode-icon-circle" style="background: rgba(255, 0, 0, 0.15);">
-                <svg viewBox="0 0 24 24" style="fill: #ff0000;"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+        <!-- Upload a Video -->
+        <label for="videoMediaInput" class="create-action-card">
+            <div class="create-icon-bubble" style="background:#272727;">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
             </div>
-            <div class="mode-info-meta">
-                <span class="mode-name">Create a Short</span>
-                <span class="mode-desc">Share a quick vertical video up to 60s</span>
+            <div class="create-text-meta">
+                <span class="create-item-title">Upload a video</span>
+                <span class="create-item-sub">Publish songs, banjo tutorials or vlogs</span>
             </div>
-        </div>
-
-        <!-- Video -->
-        <div class="create-mode-card" onclick="triggerFilePicker('video')">
-            <div class="mode-icon-circle">
-                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-            </div>
-            <div class="mode-info-meta">
-                <span class="mode-name">Upload a video</span>
-                <span class="mode-desc">Publish full songs, banjo tutorials or vlogs</span>
-            </div>
-        </div>
+        </label>
+        <input type="file" id="videoMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, false)">
 
         <!-- Go Live -->
-        <div class="create-mode-card" onclick="showToastBubble('Live streaming will be enabled for verified creators')">
-            <div class="mode-icon-circle">
+        <div class="create-action-card" onclick="showToast('Live streaming will be enabled for verified creators')">
+            <div class="create-icon-bubble" style="background:#272727;">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
             </div>
-            <div class="mode-info-meta">
-                <span class="mode-name">Go Live</span>
-                <span class="mode-desc">Broadcast live to your audience</span>
+            <div class="create-text-meta">
+                <span class="create-item-title">Go Live</span>
+                <span class="create-item-sub">Broadcast live to your audience</span>
             </div>
         </div>
+
     </main>
 
-    <!-- 4. UPLOAD METADATA FORM -->
-    <section class="upload-details-form" id="uploadFormView">
-        <!-- Media Preview -->
-        <div class="preview-media-box" id="previewBox" onclick="document.getElementById('hiddenFileInput').click()">
-            <video id="previewVideoTag" controls playsinline></video>
-            <div class="preview-placeholder" id="previewPlaceholder">
-                <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15h14l-4.5-6-3.5 4.51-2.5-3.01z"/></svg>
-                <span id="fileNameLabel">Tap to select or change video</span>
+    <!-- 3. DETAILS FORM VIEW (STEP 2: EDIT & CONFIGURE) -->
+    <section class="upload-editor-view" id="stepEditor">
+        
+        <!-- Video Preview + Thumbnail Picker -->
+        <div class="preview-media-section">
+            <div class="preview-frame-holder" id="previewHolder">
+                <video id="previewPlayer" playsinline controls></video>
+                <img id="customThumbPreview" style="display:none;" alt="Custom Thumbnail">
+
+                <!-- Button to change custom thumbnail from gallery -->
+                <label for="customThumbInput" class="change-thumb-trigger" title="Upload Custom Thumbnail">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </label>
+                <input type="file" id="customThumbInput" accept="image/*" style="display:none;" onchange="handleThumbnailSelect(event)">
             </div>
+            <span style="font-size:11px; color:#888; margin-top:8px;">Tap top-right icon on player to select custom thumbnail</span>
         </div>
 
-        <!-- Progress Tracker -->
-        <div class="upload-progress-wrapper" id="progressBox">
-            <div class="progress-meta-row">
-                <span id="progressStatusText">Uploading to BTube...</span>
-                <span id="progressPercentText">0%</span>
+        <!-- Form fields -->
+        <div class="editor-form-body">
+            
+            <!-- Title -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar">
+                    <span>Title (required)</span>
+                    <span id="txtTitleCount">0/100</span>
+                </div>
+                <input type="text" id="inputVideoTitle" class="custom-field-input" maxlength="100" placeholder="Add a title that describes your video" oninput="updateTitleCount()">
             </div>
-            <div class="progress-track">
-                <div class="progress-bar-fill" id="progressBarFill"></div>
+
+            <!-- Description -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar"><span>Description</span></div>
+                <textarea id="inputVideoDesc" class="custom-field-input" placeholder="Tell viewers about your video (Add links, social handles, or lyrics)..."></textarea>
             </div>
-        </div>
 
-        <!-- Title -->
-        <div class="form-group-field">
-            <label class="form-label-txt">Title (required)</label>
-            <input type="text" id="videoTitleInput" class="form-input-ctrl" placeholder="Create a title (type @ to mention a channel)">
-        </div>
+            <!-- Category -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar"><span>Category</span></div>
+                <select id="selectCategory" class="custom-field-input">
+                    <option value="Chhattisgarhi">Chhattisgarhi Culture & Folk</option>
+                    <option value="Music">Music & Instruments</option>
+                    <option value="Vlogs">Vlogs & Lifestyle</option>
+                    <option value="Tech">Technology & Tutorials</option>
+                </select>
+            </div>
 
-        <!-- Description -->
-        <div class="form-group-field">
-            <label class="form-label-txt">Description</label>
-            <textarea id="videoDescInput" class="form-input-ctrl form-textarea-ctrl" placeholder="Tell viewers about your video"></textarea>
-        </div>
+            <!-- Visibility Selector -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar"><span>Visibility</span></div>
+                <div class="picker-clickable-bar" onclick="openVisibilityDrawer()">
+                    <div class="picker-col-left">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <div>
+                            <div style="font-size:14px; font-weight:700;" id="txtVisValue">Public</div>
+                            <div style="font-size:11px; color:#888;">Anyone can search for and view</div>
+                        </div>
+                    </div>
+                    <span style="color:#666;">❯</span>
+                </div>
+            </div>
 
-        <!-- Visibility -->
-        <div class="form-group-field">
-            <label class="form-label-txt">Visibility</label>
-            <select class="visibility-select-box" id="visibilitySelect">
-                <option value="Public">Public (Anyone can search and view)</option>
-                <option value="Unlisted">Unlisted (Anyone with link can view)</option>
-                <option value="Private">Private (Only you can view)</option>
-            </select>
+            <!-- Tags -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar">
+                    <span>Tags</span>
+                    <span style="color:#666;">Press Enter or Comma</span>
+                </div>
+                <input type="text" id="inputTagField" class="custom-field-input" placeholder="e.g. panthi, banjo, vlog" onkeydown="handleTagKey(event)">
+                <div class="tags-cluster" id="tagsClusterWrap">
+                    <div class="tag-pill-item"><span>#BTube</span><span onclick="this.parentElement.remove()">×</span></div>
+                </div>
+            </div>
+
+            <!-- Audience (Made for Kids) -->
+            <div class="input-group-unit">
+                <div class="label-counter-bar"><span>Audience</span></div>
+                <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
+                    <div class="picker-col-left">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                        <div>
+                            <div style="font-size:14px; font-weight:700;">Made for kids</div>
+                            <div style="font-size:11px; color:#aaa;" id="txtKidsSetting">No, it's not made for kids</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- Toast Bubble -->
-    <div class="toast-msg-bubble" id="uploadToast"></div>
+    <!-- 4. UPLOAD PROGRESS OVERLAY -->
+    <div class="upload-progress-overlay" id="uploadModal">
+        <div class="progress-box-card">
+            <span style="font-size:16px; font-weight:700;">Uploading to BTube...</span>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFillBar"></div>
+            </div>
+            <span style="font-size:13px; color:#3ea6ff; font-weight:700;" id="progressPercentage">0%</span>
+            <span style="font-size:11px; color:#888;">Please don't close this tab while processing.</span>
+        </div>
+    </div>
 
-    <!-- 5. BOTTOM NAVIGATION BAR -->
-    <nav class="bottom-nav-fixed">
+    <!-- Visibility Bottom Sheet -->
+    <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeVisDrawer()">
+        <div class="drawer-menu-card">
+            <div style="font-size:15px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
+            <div class="drawer-option-row" onclick="setVisOption('Public', 'Anyone can search for and view')">
+                <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to everyone</div></div>
+            </div>
+            <div class="drawer-option-row" onclick="setVisOption('Unlisted', 'Anyone with the link can view')">
+                <div><strong>Unlisted 🔗</strong><div style="font-size:11px; color:#888;">Visible only via link</div></div>
+            </div>
+            <div class="drawer-option-row" onclick="setVisOption('Private', 'Only you can view')">
+                <div><strong>Private 🔒</strong><div style="font-size:11px; color:#888;">Only visible to your channel</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-pop" id="uploadToast"></div>
+
+    <!-- 5. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-bar">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
@@ -425,7 +633,7 @@
             <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
-        <a href="upload.html" class="nav-plus-circle">
+        <a href="upload.html" class="nav-plus-circle" style="background:#e50914;">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </a>
         <a href="subscriptions.html" class="nav-tab-item">
@@ -433,88 +641,174 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- SCRIPT LOGIC -->
     <script>
-        let currentUploadType = 'video';
+        let isShortMode = false;
+        let selectedVideoFile = null;
+        let selectedThumbFile = null;
+        let currentVisState = "Public";
 
-        function showToastBubble(text) {
-            const toast = document.getElementById('uploadToast');
-            toast.innerText = text;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2200);
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('uploadToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function triggerFilePicker(type) {
-            currentUploadType = type;
-            document.getElementById('hiddenFileInput').click();
-        }
-
-        function handleFilePicked(e) {
+        // STEP 1: Handle Video Selection
+        function handleFileChosen(e, isShort) {
             const file = e.target.files[0];
             if (!file) return;
 
-            // Switch view
-            document.getElementById('modeSelectView').style.display = 'none';
-            document.getElementById('uploadFormView').style.display = 'flex';
-            document.getElementById('uploadActionBtn').style.display = 'block';
-            document.getElementById('headerTitle').innerText = currentUploadType === 'short' ? 'Details (Short)' : 'Details (Video)';
+            selectedVideoFile = file;
+            isShortMode = isShort;
 
-            // Auto-fill title with file name
-            const cleanName = file.name.replace(/\.[^/.]+$/, "");
-            document.getElementById('videoTitleInput').value = cleanName;
+            // Clean title suggestion from file name
+            const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+            document.getElementById('inputVideoTitle').value = rawName;
+            updateTitleCount();
 
-            // Preview video
-            const videoTag = document.getElementById('previewVideoTag');
-            const placeholder = document.getElementById('previewPlaceholder');
-            const fileURL = URL.createObjectURL(file);
+            // Set Video Preview
+            const player = document.getElementById('previewPlayer');
+            const holder = document.getElementById('previewHolder');
+            player.src = URL.createObjectURL(file);
 
-            videoTag.src = fileURL;
-            videoTag.style.display = 'block';
-            placeholder.style.display = 'none';
+            if (isShort) {
+                holder.classList.add('shorts-frame');
+                document.getElementById('headerTitle').innerText = 'Details (Short)';
+            } else {
+                holder.classList.remove('shorts-frame');
+                document.getElementById('headerTitle').innerText = 'Details (Video)';
+            }
+
+            // Switch to Step 2
+            document.getElementById('stepPicker').style.display = 'none';
+            document.getElementById('stepEditor').style.display = 'flex';
+            document.getElementById('btnPublish').style.display = 'block';
         }
 
-        function startSimulatedUpload() {
-            const title = document.getElementById('videoTitleInput').value.trim();
+        // Handle Custom Thumbnail Picker from Gallery
+        function handleThumbnailSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            selectedThumbFile = file;
+            const thumbImg = document.getElementById('customThumbPreview');
+            thumbImg.src = URL.createObjectURL(file);
+            thumbImg.style.display = 'block';
+            document.getElementById('previewPlayer').style.display = 'none';
+            showToast('Custom thumbnail selected ✓');
+        }
+
+        function updateTitleCount() {
+            const count = document.getElementById('inputVideoTitle').value.length;
+            document.getElementById('txtTitleCount').innerText = `${count}/100`;
+        }
+
+        function handleHeaderCancel() {
+            if (document.getElementById('stepEditor').style.display === 'flex') {
+                if (confirm('Discard upload? All progress will be lost.')) {
+                    window.location.reload();
+                }
+            } else {
+                window.location.href = 'profile.html';
+            }
+        }
+
+        // Visibility Drawer
+        function openVisibilityDrawer() {
+            document.getElementById('visDrawerScrim').classList.add('open');
+        }
+        function closeVisDrawer() {
+            document.getElementById('visDrawerScrim').classList.remove('open');
+        }
+        function setVisOption(vis, desc) {
+            currentVisState = vis;
+            document.getElementById('txtVisValue').innerText = vis;
+            closeVisDrawer();
+            showToast(`Visibility set to ${vis}`);
+        }
+
+        // Audience Toggle
+        function toggleAudienceSetting() {
+            const txt = document.getElementById('txtKidsSetting');
+            if (txt.innerText.includes('No')) {
+                txt.innerText = 'Yes, made for kids';
+                txt.style.color = '#3ea6ff';
+            } else {
+                txt.innerText = "No, it's not made for kids";
+                txt.style.color = '#aaa';
+            }
+        }
+
+        // Tag Pills
+        function handleTagKey(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                const val = e.target.value.trim().replace(/^#/, '').replace(/,/g, '');
+                if (val) {
+                    const wrap = document.getElementById('tagsClusterWrap');
+                    const pill = document.createElement('div');
+                    pill.className = 'tag-pill-item';
+                    pill.innerHTML = `<span>#${val}</span><span onclick="this.parentElement.remove()">×</span>`;
+                    wrap.appendChild(pill);
+                    e.target.value = '';
+                }
+            }
+        }
+
+        // STEP 3: Real Animated Upload Process
+        function startPublishProcess() {
+            const title = document.getElementById('inputVideoTitle').value.trim();
             if (!title) {
-                showToastBubble('Please enter a video title');
-                document.getElementById('videoTitleInput').focus();
+                showToast('Please enter a video title');
                 return;
             }
 
-            const btn = document.getElementById('uploadActionBtn');
-            btn.disabled = true;
-            btn.style.opacity = '0.5';
-
-            const progressBox = document.getElementById('progressBox');
-            const bar = document.getElementById('progressBarFill');
-            const percentTxt = document.getElementById('progressPercentText');
-            const statusTxt = document.getElementById('progressStatusText');
-
-            progressBox.style.display = 'flex';
+            const modal = document.getElementById('uploadModal');
+            const bar = document.getElementById('progressFillBar');
+            const percent = document.getElementById('progressPercentage');
+            modal.style.display = 'flex';
 
             let progress = 0;
             const timer = setInterval(() => {
-                progress += 15;
+                progress += Math.floor(Math.random() * 15) + 8;
                 if (progress > 100) progress = 100;
-
                 bar.style.width = progress + '%';
-                percentTxt.innerText = progress + '%';
+                percent.innerText = progress + '%';
 
-                if (progress === 100) {
+                if (progress >= 100) {
                     clearInterval(timer);
-                    statusTxt.innerText = 'Processing complete ✓';
-                    showToastBubble('Video published successfully!');
+
+                    // Save state into LocalStorage for your-videos.html
+                    localStorage.setItem('btube_last_edited_title', title);
+                    localStorage.setItem('btube_last_edited_vis', currentVisState);
+                    if (selectedThumbFile) {
+                        localStorage.setItem('btube_temp_edit_thumb', document.getElementById('customThumbPreview').src);
+                    }
 
                     setTimeout(() => {
-                        window.location.href = `watch.html?title=${encodeURIComponent(title)}&channel=Charandas+Bhaskar`;
-                    }, 1200);
+                        modal.style.display = 'none';
+                        showToast('Uploaded to Your Videos ✓');
+                        window.location.href = 'your-videos.html';
+                    }, 500);
                 }
-            }, 250);
+            }, 180);
         }
     </script>
 </body>
