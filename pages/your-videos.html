@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Your videos - BTube</title>
+    <title>Your videos - BTube Studio</title>
 
     <style>
         * {
@@ -24,7 +24,7 @@
         }
 
         /* 1. TOP HEADER */
-        .manage-header {
+        .yv-header {
             height: 52px;
             display: flex;
             align-items: center;
@@ -37,13 +37,13 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .header-left-wrap {
+        .header-left {
             display: flex;
             align-items: center;
             gap: 16px;
         }
 
-        .btn-nav-back {
+        .btn-back {
             background: none;
             border: none;
             color: #ffffff;
@@ -53,18 +53,18 @@
             cursor: pointer;
         }
 
-        .btn-nav-back svg {
+        .btn-back svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
         }
 
-        .header-title-txt {
+        .header-title {
             font-size: 18px;
             font-weight: 700;
         }
 
-        .header-right-tools {
+        .header-tools {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -76,8 +76,8 @@
             color: #ffffff;
             display: flex;
             align-items: center;
-            text-decoration: none;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .tool-icon-btn svg {
@@ -86,74 +86,72 @@
             fill: #ffffff;
         }
 
-        /* 2. FILTER CHIPS */
-        .filter-tray-bar {
+        /* 2. CONTENT TABS (VIDEOS / SHORTS / LIVE) */
+        .content-nav-tabs {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
+            border-bottom: 1px solid #1f1f1f;
+            background: #0f0f0f;
             position: sticky;
             top: 52px;
-            background: #0f0f0f;
             z-index: 900;
-            border-bottom: 1px solid #1a1a1a;
         }
 
-        .filter-chip-pill {
-            background: #272727;
-            color: #ffffff;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 8px;
+        .content-tab-btn {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
+            color: #aaaaaa;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
             cursor: pointer;
         }
 
-        .filter-chip-pill.active {
-            background: #ffffff;
-            color: #0f0f0f;
+        .content-tab-btn.active {
+            color: #ffffff;
             font-weight: 700;
+            border-bottom-color: #ffffff;
         }
 
-        /* 3. VIDEO STUDIO LIST */
-        .studio-video-feed {
+        /* 3. VIDEOS LIST FEED */
+        .studio-feed-wrap {
             display: flex;
             flex-direction: column;
-            padding-top: 6px;
         }
 
-        .studio-item-card {
+        .studio-video-row {
             display: flex;
             align-items: flex-start;
             padding: 12px 16px;
             gap: 12px;
-            text-decoration: none;
-            color: #ffffff;
+            border-bottom: 1px solid #141414;
             transition: background 0.15s;
+            position: relative;
         }
 
-        .studio-item-card:active {
+        .studio-video-row:active {
             background: #181818;
         }
 
-        .studio-thumb-frame {
-            width: 130px;
+        .thumb-frame-box {
+            width: 126px;
             aspect-ratio: 16 / 9;
-            background: #222222;
+            background: #202020;
             border-radius: 8px;
-            position: relative;
             overflow: hidden;
+            position: relative;
             flex-shrink: 0;
         }
 
-        .studio-thumb-frame img {
+        .thumb-frame-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .studio-duration-tag {
+        .tag-duration {
             position: absolute;
             bottom: 4px;
             right: 4px;
@@ -164,15 +162,15 @@
             border-radius: 4px;
         }
 
-        .studio-details-col {
+        .video-meta-col {
             flex: 1;
             min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 4px;
         }
 
-        .studio-video-title {
+        .video-item-title {
             font-size: 13px;
             font-weight: 600;
             line-height: 1.35;
@@ -180,49 +178,55 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            color: #ffffff;
+            text-decoration: none;
         }
 
-        .studio-video-meta-row {
+        .video-stats-row {
             display: flex;
             align-items: center;
             gap: 6px;
             font-size: 11px;
-            color: #aaaaaa;
+            color: #888888;
         }
 
         .visibility-badge {
             display: inline-flex;
             align-items: center;
             gap: 3px;
-            color: #2ecc71;
+            font-size: 11px;
             font-weight: 600;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.12);
+            padding: 1px 6px;
+            border-radius: 10px;
+            align-self: flex-start;
         }
 
-        .visibility-badge svg {
-            width: 12px;
-            height: 12px;
-            fill: #2ecc71;
+        .visibility-badge.unlisted {
+            color: #f39c12;
+            background: rgba(243, 156, 18, 0.12);
         }
 
-        .btn-card-more-menu {
+        .btn-card-menu {
             background: none;
             border: none;
             color: #888888;
             cursor: pointer;
-            padding: 4px;
+            padding: 2px 4px;
             display: flex;
             align-items: center;
             flex-shrink: 0;
         }
 
-        .btn-card-more-menu svg {
+        .btn-card-menu svg {
             width: 18px;
             height: 18px;
             fill: currentColor;
         }
 
-        /* 4. BOTTOM ACTION SHEET */
-        .sheet-backdrop-overlay {
+        /* 4. ACTIONS DRAWER */
+        .drawer-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.65);
@@ -231,11 +235,11 @@
             align-items: flex-end;
         }
 
-        .sheet-backdrop-overlay.open {
+        .drawer-overlay.open {
             display: flex;
         }
 
-        .bottom-action-sheet-card {
+        .drawer-sheet-card {
             width: 100%;
             background: #212121;
             border-top-left-radius: 16px;
@@ -243,11 +247,11 @@
             padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            box-shadow: 0 -6px 24px rgba(0,0,0,0.8);
+            gap: 6px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
         }
 
-        .sheet-top-title-row {
+        .drawer-header-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -256,12 +260,16 @@
             margin-bottom: 6px;
         }
 
-        .sheet-title-text {
+        .drawer-title-txt {
             font-size: 15px;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%;
         }
 
-        .sheet-close-btn {
+        .drawer-close-btn {
             background: none;
             border: none;
             color: #aaaaaa;
@@ -269,7 +277,7 @@
             cursor: pointer;
         }
 
-        .sheet-menu-row-btn {
+        .drawer-row-btn {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -281,21 +289,56 @@
             cursor: pointer;
             text-align: left;
             border-radius: 8px;
-            text-decoration: none;
         }
 
-        .sheet-menu-row-btn:active {
+        .drawer-row-btn:active {
             background: #2a2a2a;
         }
 
-        .sheet-menu-row-btn svg {
+        .drawer-row-btn svg {
             width: 20px;
             height: 20px;
             fill: #ffffff;
         }
 
+        /* 5. EDIT VIDEO MODAL */
+        .modal-input-field {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 10px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .modal-input-field:focus {
+            border-color: #3ea6ff;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 6px;
+        }
+
+        .modal-btn {
+            background: none;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 16px;
+        }
+
+        .modal-btn.cancel { color: #aaaaaa; }
+        .modal-btn.confirm { background: #3ea6ff; color: #0f0f0f; }
+
         /* Toast */
-        .toast-bubble-pop {
+        .toast-pop {
             position: fixed;
             bottom: 70px;
             left: 50%;
@@ -311,7 +354,7 @@
             display: none;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -364,135 +407,178 @@
 <body>
 
     <!-- 1. TOP HEADER -->
-    <header class="manage-header">
-        <div class="header-left-wrap">
-            <a href="channel.html" class="btn-nav-back">
+    <header class="yv-header">
+        <div class="header-left">
+            <a href="profile.html" class="btn-back">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </a>
-            <span class="header-title-txt">Your videos</span>
+            <span class="header-title">Your videos</span>
         </div>
 
-        <div class="header-right-tools">
-            <a href="search.html" class="tool-icon-btn">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </a>
+        <div class="header-tools">
             <a href="upload.html" class="tool-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             </a>
+            <button class="tool-icon-btn" onclick="showToast('Filter: Showing all uploaded content')">
+                <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+            </button>
         </div>
     </header>
 
-    <!-- 2. FILTER CHIPS -->
-    <nav class="filter-tray-bar">
-        <button class="filter-chip-pill active" onclick="filterVideoCategory('all', this)">All</button>
-        <button class="filter-chip-pill" onclick="filterVideoCategory('videos', this)">Videos</button>
-        <button class="filter-chip-pill" onclick="filterVideoCategory('shorts', this)">Shorts</button>
-        <button class="filter-chip-pill" onclick="filterVideoCategory('live', this)">Live</button>
+    <!-- 2. CONTENT TABS -->
+    <nav class="content-nav-tabs">
+        <button class="content-tab-btn active" onclick="switchContentTab('videos', this)">Videos (4)</button>
+        <button class="content-tab-btn" onclick="switchContentTab('shorts', this)">Shorts (3)</button>
+        <button class="content-tab-btn" onclick="switchContentTab('live', this)">Live (0)</button>
     </nav>
 
     <!-- 3. STUDIO VIDEOS FEED -->
-    <main class="studio-video-feed" id="videoFeedArea">
+    <main class="studio-feed-wrap" id="videosListFeed">
 
         <!-- Video 1 -->
-        <div class="studio-item-card" id="item-video-1" data-cat="videos">
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="studio-thumb-frame">
+        <div class="studio-video-row" id="vid-1">
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="thumb-frame-box">
                 <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
-                <span class="studio-duration-tag">05:42</span>
+                <span class="tag-duration">05:42</span>
             </a>
-            <div class="studio-details-col">
-                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="studio-video-title" style="text-decoration:none; color:#fff;">
+            <div class="video-meta-col">
+                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-1">
                     Chhattisgarhi Panthi Song • Special Cultural Video 2026
                 </a>
-                <div class="studio-video-meta-row">
-                    <span class="visibility-badge">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        Public
-                    </span>
-                    <span>• 210K views</span>
-                    <span>• 2 weeks ago</span>
+                <span class="visibility-badge" id="vis-vid-1">Public 🌐</span>
+                <div class="video-stats-row">
+                    <span>210K views</span>
+                    <span>•</span>
+                    <span>2 weeks ago</span>
                 </div>
             </div>
-            <button class="btn-card-more-menu" onclick="openItemOptions('item-video-1', 'Chhattisgarhi Panthi Song')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-1')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
         <!-- Video 2 -->
-        <div class="studio-item-card" id="item-video-2" data-cat="videos">
-            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="studio-thumb-frame">
+        <div class="studio-video-row" id="vid-2">
+            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="thumb-frame-box">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
-                <span class="studio-duration-tag">14:10</span>
+                <span class="tag-duration">14:10</span>
             </a>
-            <div class="studio-details-col">
-                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="studio-video-title" style="text-decoration:none; color:#fff;">
+            <div class="video-meta-col">
+                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-2">
                     Typewriter Banjo with Magnetic Pickups Full Making Guide
                 </a>
-                <div class="studio-video-meta-row">
-                    <span class="visibility-badge">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        Public
-                    </span>
-                    <span>• 45K views</span>
-                    <span>• 1 month ago</span>
+                <span class="visibility-badge" id="vis-vid-2">Public 🌐</span>
+                <div class="video-stats-row">
+                    <span>45K views</span>
+                    <span>•</span>
+                    <span>1 month ago</span>
                 </div>
             </div>
-            <button class="btn-card-more-menu" onclick="openItemOptions('item-video-2', 'Typewriter Banjo Guide')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-2')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
-        <!-- Short 1 -->
-        <div class="studio-item-card" id="item-short-1" data-cat="shorts">
-            <a href="shorts.html" class="studio-thumb-frame" style="aspect-ratio: 9/16; width: 80px;">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Short 1">
-                <span class="studio-duration-tag">0:35</span>
+        <!-- Video 3 -->
+        <div class="studio-video-row" id="vid-3">
+            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="thumb-frame-box">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
+                <span class="tag-duration">06:25</span>
             </a>
-            <div class="studio-details-col">
-                <a href="shorts.html" class="studio-video-title" style="text-decoration:none; color:#fff;">
-                    Panthi dholak beat practice! 🔥
+            <div class="video-meta-col">
+                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-item-title" id="title-vid-3">
+                    Morning Commute & Village Lifestyle Daily Vlog #42
                 </a>
-                <div class="studio-video-meta-row">
-                    <span class="visibility-badge">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        Public
-                    </span>
-                    <span>• 142K views</span>
-                    <span>• 3 weeks ago</span>
+                <span class="visibility-badge" id="vis-vid-3">Public 🌐</span>
+                <div class="video-stats-row">
+                    <span>8.4K views</span>
+                    <span>•</span>
+                    <span>3 days ago</span>
                 </div>
             </div>
-            <button class="btn-card-more-menu" onclick="openItemOptions('item-short-1', 'Panthi dholak beat')">
+            <button class="btn-card-menu" onclick="openStudioActions('vid-3')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Video 4 -->
+        <div class="studio-video-row" id="vid-4">
+            <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="thumb-frame-box">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400" alt="Video 4">
+                <span class="tag-duration">04:18</span>
+            </a>
+            <div class="video-meta-col">
+                <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-4">
+                    Hareli Festival Folk Song • Farm Life & Nature Melody
+                </a>
+                <span class="visibility-badge unlisted" id="vis-vid-4">Unlisted 🔗</span>
+                <div class="video-stats-row">
+                    <span>98K views</span>
+                    <span>•</span>
+                    <span>1 week ago</span>
+                </div>
+            </div>
+            <button class="btn-card-menu" onclick="openStudioActions('vid-4')">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
 
     </main>
 
-    <!-- 4. BOTTOM ACTION SHEET -->
-    <div class="sheet-backdrop-overlay" id="actionSheet" onclick="closeSheetOnBackdrop(event)">
-        <div class="bottom-action-sheet-card">
-            <div class="sheet-top-title-row">
-                <span class="sheet-title-text" id="sheetTargetTitle">Options</span>
-                <button class="sheet-close-btn" onclick="closeActionSheet()">✕</button>
+    <!-- 4. STUDIO OPTIONS DRAWER -->
+    <div class="drawer-overlay" id="studioOptionsDrawer" onclick="closeDrawerOnBackdrop(event, 'studioOptionsDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt" id="drawerVideoTitle">Video options</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('studioOptionsDrawer')">✕</button>
             </div>
-            <button class="sheet-menu-row-btn" onclick="editVideoDetails()">
+            <button class="drawer-row-btn" onclick="openEditModal()">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 <span>Edit video details</span>
             </button>
-            <button class="sheet-menu-row-btn" onclick="shareVideoLink()">
+            <button class="drawer-row-btn" onclick="shareVideo()">
                 <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                <span>Share video</span>
+                <span>Share video link</span>
             </button>
-            <button class="sheet-menu-row-btn" onclick="deleteCurrentVideo()" style="color: #ff4e4e;">
-                <svg viewBox="0 0 24 24" style="fill: #ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            <button class="drawer-row-btn" onclick="downloadVideo()">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span>Save to device</span>
+            </button>
+            <button class="drawer-row-btn" onclick="deleteVideo()" style="color:#ff4e4e;">
+                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 <span>Delete</span>
             </button>
         </div>
     </div>
 
-    <!-- Toast Bubble -->
-    <div class="toast-bubble-pop" id="studioToast"></div>
+    <!-- 5. EDIT VIDEO MODAL -->
+    <div class="drawer-overlay" id="editVideoModal" onclick="closeDrawerOnBackdrop(event, 'editVideoModal')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt">Edit video</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('editVideoModal')">✕</button>
+            </div>
+            <label style="font-size:12px; color:#aaa;">Title</label>
+            <input type="text" id="editTitleInput" class="modal-input-field">
+            
+            <label style="font-size:12px; color:#aaa; margin-top:4px;">Visibility</label>
+            <select id="editVisibilitySelect" class="modal-input-field">
+                <option value="Public 🌐">Public</option>
+                <option value="Unlisted 🔗">Unlisted</option>
+                <option value="Private 🔒">Private</option>
+            </select>
 
-    <!-- 5. BOTTOM NAVIGATION -->
+            <div class="modal-btn-row">
+                <button class="modal-btn cancel" onclick="closeDrawer('editVideoModal')">Cancel</button>
+                <button class="modal-btn confirm" onclick="saveVideoChanges()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="yvToast"></div>
+
+    <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -509,72 +595,102 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
             <span>You</span>
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- SCRIPT LOGIC -->
     <script>
-        let selectedItemCardId = null;
+        let currentTargetVidId = null;
 
-        function showStudioToast(msg) {
-            const toast = document.getElementById('studioToast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
-        }
-
-        function filterVideoCategory(type, btn) {
-            document.querySelectorAll('.filter-chip-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const cards = document.querySelectorAll('.studio-item-card');
-            cards.forEach(card => {
-                const itemCat = card.getAttribute('data-cat');
-                if (type === 'all' || itemCat === type) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        function openItemOptions(id, title) {
-            selectedItemCardId = id;
-            document.getElementById('sheetTargetTitle').innerText = title;
-            document.getElementById('actionSheet').classList.add('open');
-        }
-
-        function closeActionSheet() {
-            document.getElementById('actionSheet').classList.remove('open');
-        }
-
-        function closeSheetOnBackdrop(e) {
-            if (e.target.id === 'actionSheet') closeActionSheet();
-        }
-
-        function editVideoDetails() {
-            closeActionSheet();
-            showStudioToast('Edit mode opened');
-        }
-
-        function shareVideoLink() {
-            closeActionSheet();
-            navigator.clipboard.writeText(window.location.origin + '/pages/watch.html');
-            showStudioToast('Video link copied');
-        }
-
-        function deleteCurrentVideo() {
-            if (selectedItemCardId) {
-                const target = document.getElementById(selectedItemCardId);
-                if (target) {
-                    target.remove();
-                    showStudioToast('Video deleted forever');
-                }
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
             }
-            closeActionSheet();
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('yvToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function switchContentTab(tab, btn) {
+            document.querySelectorAll('.content-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (tab === 'videos') {
+                showToast('Showing Videos');
+            } else if (tab === 'shorts') {
+                showToast('Showing Shorts content');
+            } else {
+                showToast('No live streams scheduled');
+            }
+        }
+
+        function openStudioActions(vidId) {
+            currentTargetVidId = vidId;
+            const titleElem = document.getElementById('title-' + vidId);
+            document.getElementById('drawerVideoTitle').innerText = titleElem ? titleElem.innerText.trim() : 'Options';
+            document.getElementById('studioOptionsDrawer').classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function openEditModal() {
+            closeDrawer('studioOptionsDrawer');
+            const titleElem = document.getElementById('title-' + currentTargetVidId);
+            document.getElementById('editTitleInput').value = titleElem ? titleElem.innerText.trim() : '';
+            document.getElementById('editVideoModal').classList.add('open');
+        }
+
+        function saveVideoChanges() {
+            const newTitle = document.getElementById('editTitleInput').value.trim();
+            const newVis = document.getElementById('editVisibilitySelect').value;
+            if (newTitle && currentTargetVidId) {
+                document.getElementById('title-' + currentTargetVidId).innerText = newTitle;
+                const visElem = document.getElementById('vis-' + currentTargetVidId);
+                visElem.innerText = newVis;
+                visElem.className = 'visibility-badge' + (newVis.includes('Unlisted') ? ' unlisted' : '');
+                showToast('Video details updated ✓');
+            }
+            closeDrawer('editVideoModal');
+        }
+
+        function deleteVideo() {
+            if (currentTargetVidId) {
+                const row = document.getElementById(currentTargetVidId);
+                if (row) row.remove();
+                showToast('Video deleted from channel');
+            }
+            closeDrawer('studioOptionsDrawer');
+        }
+
+        function shareVideo() {
+            closeDrawer('studioOptionsDrawer');
+            if (navigator.share) {
+                navigator.share({ title: 'BTube Video', url: window.location.origin + '/pages/watch.html' }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.origin + '/pages/watch.html');
+                showToast('Video link copied');
+            }
+        }
+
+        function downloadVideo() {
+            closeDrawer('studioOptionsDrawer');
+            showToast('Saving video file to device storage...');
         }
     </script>
 </body>
