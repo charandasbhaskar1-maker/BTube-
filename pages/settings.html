@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Settings - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .settings-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 18px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 2. SETTINGS LIST GROUPS */
+        .settings-group-list {
+            display: flex;
+            flex-direction: column;
+            padding: 4px 0 16px;
+        }
+
+        .group-heading {
+            font-size: 12px;
+            font-weight: 700;
+            color: #3ea6ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 16px 6px;
+        }
+
+        .settings-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            color: #ffffff;
+            text-decoration: none;
+            cursor: pointer;
+            border-bottom: 1px solid #161616;
+            transition: background 0.15s;
+        }
+
+        .settings-row-item:active {
+            background: #1c1c1c;
+        }
+
+        .row-left-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+            padding-right: 12px;
+        }
+
+        .row-main-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .row-sub-desc {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .row-right-badge {
+            font-size: 13px;
+            color: #aaaaaa;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .row-right-badge svg {
+            width: 14px;
+            height: 14px;
+            fill: #888888;
+        }
+
+        /* Switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #383838;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #3ea6ff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* 3. BOTTOM DRAWERS */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        .drawer-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d2d2d;
+            margin-bottom: 4px;
+        }
+
+        .drawer-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .drawer-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .quality-radio-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #ffffff;
+        }
+
+        .quality-radio-row:active {
+            background: #2a2a2a;
+        }
+
+        .quality-radio-row.selected {
+            color: #3ea6ff;
+            font-weight: 700;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 4. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="settings-header">
+        <a href="profile.html" class="btn-back">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </a>
+        <span class="header-title">Settings</span>
+    </header>
+
+    <!-- 2. MAIN SETTINGS OPTIONS -->
+    <main class="settings-group-list">
+
+        <div class="group-heading">Account & Profile</div>
+
+        <a href="edit-channel.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Account</span>
+                <span class="row-sub-desc">Edit channel profile, name and handle</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+        <div class="group-heading">Playback & Preferences</div>
+
+        <div class="settings-row-item" onclick="openQualityDrawer()">
+            <div class="row-left-content">
+                <span class="row-main-title">Video quality preferences</span>
+                <span class="row-sub-desc" id="currentQualityDesc">Current: Auto (Recommended)</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </div>
+
+        <div class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Autoplay next video</span>
+                <span class="row-sub-desc">Play next video when current finishes</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" checked onchange="handleToggle(this, 'Autoplay')">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Data saving mode</span>
+                <span class="row-sub-desc">Reduces download & streaming bitrates</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" onchange="handleToggle(this, 'Data saving')">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="group-heading">Content & History</div>
+
+        <a href="downloads.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Downloads</span>
+                <span class="row-sub-desc">Download quality, offline storage & delete</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+        <a href="history.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Manage all history</span>
+                <span class="row-sub-desc">Watch history, search history & clear</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+        <a href="time-watched.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Time watched & Wellbeing</span>
+                <span class="row-sub-desc">Daily average, break reminders & bedtime</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+        <a href="cast.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Watch on TV</span>
+                <span class="row-sub-desc">Link with TV code & wireless cast</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+        <div class="group-heading">About & App Info</div>
+
+        <div class="settings-row-item" onclick="showToast('App is up to date (BTube 2026.10)')">
+            <div class="row-left-content">
+                <span class="row-main-title">About BTube</span>
+                <span class="row-sub-desc">Version 2.4.0 • Up to date</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </div>
+
+        <a href="help.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Help and feedback</span>
+                <span class="row-sub-desc">Support articles, bug report & feedback</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
+    </main>
+
+    <!-- 3. DRAWER: VIDEO QUALITY SELECTION -->
+    <div class="drawer-overlay" id="qualityDrawer" onclick="closeDrawerOnBackdrop(event, 'qualityDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt">Video quality preferences</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('qualityDrawer')">✕</button>
+            </div>
+            <div class="quality-radio-row selected" onclick="selectQuality('Auto (recommended)', this)">
+                <span>Auto (recommended)</span>
+                <span>✓</span>
+            </div>
+            <div class="quality-radio-row" onclick="selectQuality('Higher picture quality (1080p)', this)">
+                <span>Higher picture quality (1080p)</span>
+                <span></span>
+            </div>
+            <div class="quality-radio-row" onclick="selectQuality('Data saver (480p)', this)">
+                <span>Data saver (480p)</span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="settingsToast"></div>
+
+    <!-- 4. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- INTERACTION LOGIC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('settingsToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function handleToggle(checkbox, name) {
+            showToast(`${name} is now ${checkbox.checked ? 'ON' : 'OFF'}`);
+        }
+
+        function openQualityDrawer() {
+            document.getElementById('qualityDrawer').classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function selectQuality(val, row) {
+            document.querySelectorAll('.quality-radio-row').forEach(r => {
+                r.classList.remove('selected');
+                r.querySelector('span:last-child').innerText = '';
+            });
+            row.classList.add('selected');
+            row.querySelector('span:last-child').innerText = '✓';
+            document.getElementById('currentQualityDesc').innerText = `Current: ${val}`;
+            closeDrawer('qualityDrawer');
+            showToast(`Quality set to ${val}`);
+        }
+    </script>
+</body>
+</html>
