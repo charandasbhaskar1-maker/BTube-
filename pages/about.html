@@ -58,58 +58,55 @@
             font-weight: 700;
         }
 
-        /* 2. APP HERO BRANDING (CUSTOM BTUBE LOGO) */
+        /* 2. EXACT BTUBE APP LOGO BRANDING */
         .app-hero-brand {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 32px 16px 24px;
-            gap: 10px;
+            gap: 12px;
             text-align: center;
             border-bottom: 1px solid #1c1c1c;
         }
 
-        .btube-brand-logo {
-            width: 76px;
-            height: 76px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, #e50914 0%, #b30006 100%);
+        /* Red curved box with white bold 'B' - Exact like top-left logo */
+        .btube-official-icon-box {
+            width: 72px;
+            height: 50px;
+            background: #e50914;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 28px rgba(229, 9, 20, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.35);
         }
 
-        .btube-logo-inner {
+        .btube-official-icon-box span {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .app-brand-title-row {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 2px;
-        }
-
-        .btube-logo-letter {
-            font-size: 38px;
-            font-weight: 900;
-            color: #ffffff;
-            line-height: 1;
-            letter-spacing: -1px;
-        }
-
-        .btube-logo-triangle {
-            width: 0;
-            height: 0;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 12px solid #ffffff;
-            margin-left: 2px;
-        }
-
-        .app-name-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: -0.4px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-red-b {
+            color: #e50914;
+        }
+
+        .brand-white-tube {
+            color: #ffffff;
         }
 
         .app-version-tag {
@@ -126,7 +123,7 @@
             color: #aaaaaa;
             max-width: 290px;
             line-height: 1.4;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* 3. INFO SECTIONS */
@@ -199,23 +196,6 @@
             color: #444444;
         }
 
-        /* Toast */
-        .toast-pop {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 3000;
-            display: none;
-        }
-
         /* 5. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
@@ -276,15 +256,18 @@
         <span class="header-title">About BTube</span>
     </header>
 
-    <!-- 2. APP HERO BRANDING (CUSTOM BTUBE LOGO) -->
+    <!-- 2. EXACT BTUBE APP BRAND HERO -->
     <section class="app-hero-brand">
-        <div class="btube-brand-logo">
-            <div class="btube-logo-inner">
-                <span class="btube-logo-letter">B</span>
-                <div class="btube-logo-triangle"></div>
-            </div>
+        <!-- Red rounded box with white B logo -->
+        <div class="btube-official-icon-box">
+            <span>B</span>
         </div>
-        <h1 class="app-name-title">BTube</h1>
+
+        <!-- BTube Title with Red 'B' and White 'Tube' -->
+        <div class="app-brand-title-row">
+            <span class="brand-red-b">B</span><span class="brand-white-tube">Tube</span>
+        </div>
+
         <span class="app-version-tag">Version 2.4.0 (Build 2026.10)</span>
         <p class="app-tagline">Desi video platform designed for regional music, culture, and high-quality creator streaming.</p>
     </section>
@@ -313,7 +296,7 @@
         <div class="info-group-box">
             <span class="info-group-title">Developer & Creator</span>
 
-            <!-- Non-clickable plain developer display -->
+            <!-- Non-clickable plain developer row -->
             <div class="info-row-item">
                 <span class="row-text-label">Developer</span>
                 <span class="row-text-val" style="color:#ffffff; font-weight:600;">Charandas Bhaskar</span>
@@ -328,7 +311,6 @@
         <div class="info-group-box">
             <span class="info-group-title">Legal & Terms</span>
 
-            <!-- Live Links for Legal Pages -->
             <a href="terms.html" class="info-row-item clickable">
                 <span class="row-text-label">Terms of Service</span>
                 <span class="row-text-val">
