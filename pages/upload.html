@@ -43,7 +43,7 @@
             gap: 16px;
         }
 
-        .btn-close-header {
+        .btn-header-icon {
             background: none;
             border: none;
             color: #ffffff;
@@ -52,14 +52,14 @@
             align-items: center;
         }
 
-        .btn-close-header svg {
+        .btn-header-icon svg {
             width: 22px;
             height: 22px;
             fill: #ffffff;
         }
 
         .header-title-txt {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
         }
 
@@ -72,16 +72,9 @@
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
 
-        .btn-upload-publish:disabled {
-            background: #333333;
-            color: #777777;
-            cursor: not-allowed;
-        }
-
-        /* 2. CREATE PICKER VIEW (INITIAL SCREEN) */
+        /* 2. INITIAL CREATION TILES */
         .create-options-wrap {
             display: flex;
             flex-direction: column;
@@ -98,12 +91,6 @@
             align-items: center;
             gap: 16px;
             cursor: pointer;
-            transition: background 0.15s, transform 0.1s;
-        }
-
-        .create-action-card:active {
-            background: #252525;
-            transform: scale(0.98);
         }
 
         .create-icon-bubble {
@@ -122,30 +109,12 @@
             fill: #ffffff;
         }
 
-        .create-text-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .create-item-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .create-item-sub {
-            font-size: 12px;
-            color: #aaaaaa;
-        }
-
-        /* 3. DETAILS EDITOR FORM (POST FILE SELECT) */
+        /* 3. DETAILS FORM VIEW */
         .upload-editor-view {
             display: none;
             flex-direction: column;
         }
 
-        /* Video / Thumbnail preview box */
         .preview-media-section {
             display: flex;
             flex-direction: column;
@@ -201,12 +170,11 @@
             fill: #ffffff;
         }
 
-        /* Form Details */
         .editor-form-body {
             display: flex;
             flex-direction: column;
             padding: 16px;
-            gap: 18px;
+            gap: 16px;
         }
 
         .input-group-unit {
@@ -233,33 +201,27 @@
             color: #ffffff;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
         }
 
         .custom-field-input:focus {
             border-color: #3ea6ff;
-            background: #1d1d1d;
         }
 
         textarea.custom-field-input {
-            min-height: 90px;
+            min-height: 85px;
             resize: vertical;
         }
 
-        /* Interactive Selectors */
+        /* YouTube Settings Row item */
         .picker-clickable-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 13px 14px;
+            padding: 14px;
             background: #181818;
-            border: 1px solid #2a2a2a;
+            border: 1px solid #262626;
             border-radius: 10px;
             cursor: pointer;
-        }
-
-        .picker-clickable-bar:active {
-            background: #222222;
         }
 
         .picker-col-left {
@@ -271,7 +233,163 @@
         .picker-col-left svg {
             width: 20px;
             height: 20px;
-            fill: #3ea6ff;
+            fill: #aaaaaa;
+        }
+
+        .picker-col-left strong {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        .picker-col-left .sub-meta {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        /* 4. FULL SUB-PAGE SCREENS (COMMUNITY, ATTRIBUTES, COLLABORATOR) */
+        .subpage-view {
+            position: fixed;
+            inset: 0;
+            background: #0f0f0f;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 30px;
+        }
+
+        .subpage-view.active {
+            display: flex;
+        }
+
+        .subpage-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 0 16px;
+            border-bottom: 1px solid #222222;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 10;
+        }
+
+        .subpage-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .subpage-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Collaborator Search input */
+        .search-pill-input {
+            width: 100%;
+            background: #252525;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 18px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .feature-bullets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .bullet-item-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .bullet-item-row svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .radio-setting-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 12px 0;
+            cursor: pointer;
+        }
+
+        .radio-dot-outer {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #666666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .radio-setting-row.selected .radio-dot-outer {
+            border-color: #3ea6ff;
+        }
+
+        .radio-setting-row.selected .radio-dot-outer::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #3ea6ff;
+        }
+
+        /* Dynamic bottom sheets */
+        .drawer-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 3000;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-scrim.open {
+            display: flex;
+        }
+
+        .drawer-menu-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .drawer-option-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .drawer-option-row.selected {
+            background: #282828;
         }
 
         /* Tags container */
@@ -279,7 +397,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
         .tag-pill-item {
@@ -295,92 +413,6 @@
             gap: 6px;
         }
 
-        .tag-pill-item span:last-child {
-            cursor: pointer;
-            color: #888888;
-        }
-
-        /* Upload Progress Modal Screen */
-        .upload-progress-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 3000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .progress-box-card {
-            width: 100%;
-            max-width: 320px;
-            background: #202020;
-            border-radius: 16px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            border: 1px solid #333333;
-            text-align: center;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: #333333;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #3ea6ff;
-            border-radius: 4px;
-            transition: width 0.2s linear;
-        }
-
-        /* Bottom Sheet for Visibility */
-        .drawer-scrim {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.65);
-            z-index: 2500;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-scrim.open {
-            display: flex;
-        }
-
-        .drawer-menu-card {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .drawer-option-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .drawer-option-row:active {
-            background: #282828;
-        }
-
         /* Toast */
         .toast-pop {
             position: fixed;
@@ -394,11 +426,11 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 4000;
+            z-index: 5000;
             display: none;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* Bottom Nav */
         .bottom-nav-bar {
             position: fixed;
             bottom: 0;
@@ -430,7 +462,7 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
+            background: #e50914;
             border-radius: 50%;
             width: 38px;
             height: 38px;
@@ -453,7 +485,7 @@
     <!-- 1. TOP HEADER -->
     <header class="upload-header">
         <div class="header-left">
-            <button class="btn-close-header" onclick="handleHeaderCancel()">
+            <button class="btn-header-icon" onclick="handleHeaderBack()">
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
             <span class="header-title-txt" id="headerTitle">Create</span>
@@ -461,17 +493,16 @@
         <button class="btn-upload-publish" id="btnPublish" style="display:none;" onclick="startPublishProcess()">Upload</button>
     </header>
 
-    <!-- 2. CREATE OPTIONS (STEP 1: SELECT TYPE) -->
+    <!-- 2. CREATE PICKER VIEW (INITIAL) -->
     <main class="create-options-wrap" id="stepPicker">
-        
         <!-- Create a Short -->
         <label for="shortMediaInput" class="create-action-card">
             <div class="create-icon-bubble" style="background:#e50914;">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             </div>
-            <div class="create-text-meta">
-                <span class="create-item-title">Create a Short</span>
-                <span class="create-item-sub">Select vertical video up to 60 seconds</span>
+            <div>
+                <strong style="font-size:15px; display:block;">Create a Short</strong>
+                <span style="font-size:12px; color:#aaa;">Share a quick vertical video up to 60s</span>
             </div>
         </label>
         <input type="file" id="shortMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, true)">
@@ -481,9 +512,9 @@
             <div class="create-icon-bubble" style="background:#272727;">
                 <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
             </div>
-            <div class="create-text-meta">
-                <span class="create-item-title">Upload a video</span>
-                <span class="create-item-sub">Publish songs, banjo tutorials or vlogs</span>
+            <div>
+                <strong style="font-size:15px; display:block;">Upload a video</strong>
+                <span style="font-size:12px; color:#aaa;">Publish full songs, banjo tutorials or vlogs</span>
             </div>
         </label>
         <input type="file" id="videoMediaInput" accept="video/*" style="display:none;" onchange="handleFileChosen(event, false)">
@@ -493,35 +524,30 @@
             <div class="create-icon-bubble" style="background:#272727;">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
             </div>
-            <div class="create-text-meta">
-                <span class="create-item-title">Go Live</span>
-                <span class="create-item-sub">Broadcast live to your audience</span>
+            <div>
+                <strong style="font-size:15px; display:block;">Go Live</strong>
+                <span style="font-size:12px; color:#aaa;">Broadcast live to your audience</span>
             </div>
         </div>
-
     </main>
 
-    <!-- 3. DETAILS FORM VIEW (STEP 2: EDIT & CONFIGURE) -->
+    <!-- 3. DETAILS FORM VIEW -->
     <section class="upload-editor-view" id="stepEditor">
-        
-        <!-- Video Preview + Thumbnail Picker -->
+        <!-- Media / Thumbnail Preview -->
         <div class="preview-media-section">
             <div class="preview-frame-holder" id="previewHolder">
                 <video id="previewPlayer" playsinline controls></video>
-                <img id="customThumbPreview" style="display:none;" alt="Custom Thumbnail">
+                <img id="customThumbPreview" style="display:none;" alt="Thumbnail">
 
-                <!-- Button to change custom thumbnail from gallery -->
                 <label for="customThumbInput" class="change-thumb-trigger" title="Upload Custom Thumbnail">
                     <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 </label>
                 <input type="file" id="customThumbInput" accept="image/*" style="display:none;" onchange="handleThumbnailSelect(event)">
             </div>
-            <span style="font-size:11px; color:#888; margin-top:8px;">Tap top-right icon on player to select custom thumbnail</span>
+            <span style="font-size:11px; color:#888; margin-top:8px;">Tap top-right pencil to choose custom thumbnail</span>
         </div>
 
-        <!-- Form fields -->
         <div class="editor-form-body">
-            
             <!-- Title -->
             <div class="input-group-unit">
                 <div class="label-counter-bar">
@@ -534,73 +560,312 @@
             <!-- Description -->
             <div class="input-group-unit">
                 <div class="label-counter-bar"><span>Description</span></div>
-                <textarea id="inputVideoDesc" class="custom-field-input" placeholder="Tell viewers about your video (Add links, social handles, or lyrics)..."></textarea>
+                <textarea id="inputVideoDesc" class="custom-field-input" placeholder="Tell viewers about your video..."></textarea>
             </div>
 
-            <!-- Category -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar"><span>Category</span></div>
-                <select id="selectCategory" class="custom-field-input">
-                    <option value="Chhattisgarhi">Chhattisgarhi Culture & Folk</option>
-                    <option value="Music">Music & Instruments</option>
-                    <option value="Vlogs">Vlogs & Lifestyle</option>
-                    <option value="Tech">Technology & Tutorials</option>
-                </select>
+            <!-- Visibility Row -->
+            <div class="picker-clickable-bar" onclick="openVisibilityDrawer()">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                    <div>
+                        <strong>Visibility</strong>
+                        <div class="sub-meta" id="txtVisValue">Public</div>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Visibility Selector -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar"><span>Visibility</span></div>
-                <div class="picker-clickable-bar" onclick="openVisibilityDrawer()">
-                    <div class="picker-col-left">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        <div>
-                            <div style="font-size:14px; font-weight:700;" id="txtVisValue">Public</div>
-                            <div style="font-size:11px; color:#888;">Anyone can search for and view</div>
+            <!-- Audience (Made for Kids) -->
+            <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                    <div>
+                        <strong>Audience</strong>
+                        <div class="sub-meta" id="txtKidsSetting">No, it's not made for kids</div>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+
+            <!-- NEW: Community Hub Row -->
+            <div class="picker-clickable-bar" onclick="openSubpage('communitySubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <div>
+                        <strong>Community</strong>
+                        <div class="sub-meta" id="txtCommunitySub">Comments On, Remixing allowed</div>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+
+            <!-- NEW: Attributes Hub Row (AI Use & Tags) -->
+            <div class="picker-clickable-bar" onclick="openSubpage('attributesSubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <div>
+                        <strong>Attributes</strong>
+                        <div class="sub-meta" id="txtAttributesSub">AI use: No • Tags</div>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SUBPAGE 1: COMMUNITY ================= -->
+    <div class="subpage-view" id="communitySubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('communitySubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Community</span>
+        </div>
+        <div class="subpage-content">
+            <!-- Invite a collaborator -->
+            <div class="picker-clickable-bar" onclick="openSubpage('collabSubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z"/></svg>
+                    <div>
+                        <strong>Invite a collaborator</strong>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+
+            <!-- Comments Master Row -->
+            <div class="picker-clickable-bar" onclick="openSubpage('commentsSubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                    <div>
+                        <div style="font-size:12px; color:#888;">Comments</div>
+                        <strong id="dispCommentsVal">On</strong>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+
+            <!-- Shorts remixing Row -->
+            <div class="picker-clickable-bar" onclick="openSubpage('remixingSubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                    <div>
+                        <div style="font-size:12px; color:#888;">Shorts remixing</div>
+                        <strong id="dispRemixingVal">Allow video and audio remixing</strong>
+                    </div>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SUBPAGE 2: INVITE A COLLABORATOR ================= -->
+    <div class="subpage-view" id="collabSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('collabSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Invite a collaborator</span>
+        </div>
+        <div class="subpage-content">
+            <input type="text" class="search-pill-input" placeholder="Search for a channel" onkeydown="if(event.key==='Enter') showToast('Channel invitation sent')">
+
+            <div class="feature-bullets-list">
+                <div class="bullet-item-row">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <div>
+                        <strong>You're in control</strong>
+                        <p style="font-size:12px; color:#888; margin-top:2px;">Only you can make changes to the video</p>
+                    </div>
+                </div>
+                <div class="bullet-item-row">
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    <div>
+                        <strong>Expanded reach</strong>
+                        <p style="font-size:12px; color:#888; margin-top:2px;">We'll help your video reach your collaborators' audiences</p>
+                    </div>
+                </div>
+                <div class="bullet-item-row">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    <div>
+                        <strong>Full ownership</strong>
+                        <p style="font-size:12px; color:#888; margin-top:2px;">You keep all the revenue, views and watch time from the video</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size:11px; color:#666; margin-top:14px; line-height:1.4;">
+                If you have paid product placements, endorsements, sponsorships or other content that requires disclosure to viewers in your videos, you have to let us know.
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= SUBPAGE 3: COMMENTS ================= -->
+    <div class="subpage-view" id="commentsSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('commentsSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Comments</span>
+        </div>
+        <div class="subpage-content">
+            <!-- ON Radio -->
+            <div class="radio-setting-row selected" id="optCommentsOn" onclick="toggleCommentsMaster(true)">
+                <div class="radio-dot-outer"></div>
+                <div style="flex:1;">
+                    <strong style="font-size:15px;">On</strong>
+                    <!-- Nested options when ON -->
+                    <div id="commentsOnSuboptions" style="margin-top:14px; display:flex; flex-direction:column; gap:16px;">
+                        <div class="picker-clickable-bar" style="background:#161616;" onclick="openCommentsDrawer('moderationDrawer')">
+                            <div>
+                                <div style="font-size:12px; color:#888;">Comment moderation</div>
+                                <strong id="txtModVal">Basic</strong>
+                            </div>
+                            <span style="color:#666;">❯</span>
+                        </div>
+                        <div class="picker-clickable-bar" style="background:#161616;" onclick="openCommentsDrawer('whoCanCommentDrawer')">
+                            <div>
+                                <div style="font-size:12px; color:#888;">Who can comment</div>
+                                <strong id="txtWhoCanVal">Anyone</strong>
+                            </div>
+                            <span style="color:#666;">❯</span>
                         </div>
                     </div>
-                    <span style="color:#666;">❯</span>
                 </div>
             </div>
 
-            <!-- Tags -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar">
-                    <span>Tags</span>
-                    <span style="color:#666;">Press Enter or Comma</span>
+            <!-- OFF Radio -->
+            <div class="radio-setting-row" id="optCommentsOff" onclick="toggleCommentsMaster(false)">
+                <div class="radio-dot-outer"></div>
+                <div>
+                    <strong style="font-size:15px;">Off</strong>
                 </div>
-                <input type="text" id="inputTagField" class="custom-field-input" placeholder="e.g. panthi, banjo, vlog" onkeydown="handleTagKey(event)">
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SUBPAGE 4: SHORTS REMIXING ================= -->
+    <div class="subpage-view" id="remixingSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('remixingSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Shorts remixing</span>
+        </div>
+        <div class="subpage-content">
+            <p style="font-size:12px; color:#888;">Let others create Shorts using content from this video.</p>
+            
+            <div class="radio-setting-row selected" id="remix-1" onclick="selectRemixOption('Allow video and audio remixing', 'remix-1')">
+                <div class="radio-dot-outer"></div>
+                <span>Allow video and audio remixing</span>
+            </div>
+            <div class="radio-setting-row" id="remix-2" onclick="selectRemixOption('Allow only audio remixing', 'remix-2')">
+                <div class="radio-dot-outer"></div>
+                <span>Allow only audio remixing</span>
+            </div>
+            <div class="radio-setting-row" id="remix-3" onclick="selectRemixOption('Don\'t allow remixing', 'remix-3')">
+                <div class="radio-dot-outer"></div>
+                <span>Don't allow remixing</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SUBPAGE 5: ATTRIBUTES ================= -->
+    <div class="subpage-view" id="attributesSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('attributesSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">Attributes</span>
+        </div>
+        <div class="subpage-content">
+            <!-- AI Use -->
+            <div class="picker-clickable-bar" onclick="openSubpage('aiUseSubpage')">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <strong>AI use</strong>
+                </div>
+                <span style="color:#666;">❯</span>
+            </div>
+
+            <!-- Add Tags Section -->
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+                <div class="picker-col-left">
+                    <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                    <strong>Add tags</strong>
+                </div>
+                <input type="text" id="attrTagInput" class="custom-field-input" placeholder="Add tag and press Enter" onkeydown="handleTagKey(event)">
                 <div class="tags-cluster" id="tagsClusterWrap">
                     <div class="tag-pill-item"><span>#BTube</span><span onclick="this.parentElement.remove()">×</span></div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Audience (Made for Kids) -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar"><span>Audience</span></div>
-                <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
-                    <div class="picker-col-left">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                        <div>
-                            <div style="font-size:14px; font-weight:700;">Made for kids</div>
-                            <div style="font-size:11px; color:#aaa;" id="txtKidsSetting">No, it's not made for kids</div>
-                        </div>
-                    </div>
+    <!-- ================= SUBPAGE 6: AI USE DECLARATION ================= -->
+    <div class="subpage-view" id="aiUseSubpage">
+        <div class="subpage-header">
+            <button class="btn-header-icon" onclick="closeSubpage('aiUseSubpage')">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="subpage-title">AI use</span>
+        </div>
+        <div class="subpage-content">
+            <strong>Was AI used to generate or edit your content in any of the following ways?</strong>
+            <ul style="padding-left:18px; font-size:12px; color:#aaa; line-height:1.6; display:flex; flex-direction:column; gap:8px;">
+                <li>Make a real person appear to say or do something they didn't say or do</li>
+                <li>Alter footage of a real event or place</li>
+                <li>Generate a realistic-looking scene that didn't actually occur</li>
+                <li>Create music that's the main focus of the video</li>
+            </ul>
+
+            <div style="margin-top:14px;">
+                <div class="radio-setting-row" id="aiOptYes" onclick="selectAiOption(true)">
+                    <div class="radio-dot-outer"></div>
+                    <strong>Yes</strong>
+                </div>
+                <div class="radio-setting-row selected" id="aiOptNo" onclick="selectAiOption(false)">
+                    <div class="radio-dot-outer"></div>
+                    <strong>No</strong>
                 </div>
             </div>
 
+            <p style="font-size:11px; color:#777; margin-top:20px; line-height:1.4;">
+                To follow YouTube's policy, you're required to tell us about your use of AI. Selecting 'yes' adds a label to your content.
+            </p>
         </div>
-    </section>
+    </div>
 
-    <!-- 4. UPLOAD PROGRESS OVERLAY -->
-    <div class="upload-progress-overlay" id="uploadModal">
-        <div class="progress-box-card">
-            <span style="font-size:16px; font-weight:700;">Uploading to BTube...</span>
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFillBar"></div>
+    <!-- ================= DRAWERS (MODERATION & WHO CAN COMMENT) ================= -->
+    <!-- Comment Moderation Drawer -->
+    <div class="drawer-scrim" id="moderationDrawer" onclick="if(event.target.id==='moderationDrawer') closeCommentsDrawer('moderationDrawer')">
+        <div class="drawer-menu-card">
+            <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Comment moderation</div>
+            <div class="drawer-option-row" onclick="setModeration('None', 'Don\'t hold any comments')">
+                <div><strong>None</strong><div style="font-size:11px; color:#888;">Don't hold any comments</div></div>
             </div>
-            <span style="font-size:13px; color:#3ea6ff; font-weight:700;" id="progressPercentage">0%</span>
-            <span style="font-size:11px; color:#888;">Please don't close this tab while processing.</span>
+            <div class="drawer-option-row selected" onclick="setModeration('Basic', 'Hold potentially inappropriate comments')">
+                <div><strong>Basic</strong><div style="font-size:11px; color:#888;">Hold potentially inappropriate comments</div></div>
+            </div>
+            <div class="drawer-option-row" onclick="setModeration('Strict', 'Hold a broader range of comments')">
+                <div><strong>Strict</strong><div style="font-size:11px; color:#888;">Hold a broader range of potentially inappropriate comments</div></div>
+            </div>
+            <div class="drawer-option-row" onclick="setModeration('Hold all', 'Hold all comments')">
+                <div><strong>Hold all</strong><div style="font-size:11px; color:#888;">Hold all comments for review</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who can comment Drawer -->
+    <div class="drawer-scrim" id="whoCanCommentDrawer" onclick="if(event.target.id==='whoCanCommentDrawer') closeCommentsDrawer('whoCanCommentDrawer')">
+        <div class="drawer-menu-card">
+            <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Who can comment</div>
+            <div class="drawer-option-row selected" onclick="setWhoCanComment('Anyone', 'Anyone with a YouTube channel')">
+                <div><strong>Anyone</strong><div style="font-size:11px; color:#888;">Anyone with a channel</div></div>
+            </div>
+            <div class="drawer-option-row" onclick="setWhoCanComment('Subscribers and members', 'Only subscribers for a set time')">
+                <div><strong>Subscribers and members</strong><div style="font-size:11px; color:#888;">Only people who have subscribed for a set amount of time or paid members</div></div>
+            </div>
         </div>
     </div>
 
@@ -608,7 +873,7 @@
     <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeVisDrawer()">
         <div class="drawer-menu-card">
             <div style="font-size:15px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
-            <div class="drawer-option-row" onclick="setVisOption('Public', 'Anyone can search for and view')">
+            <div class="drawer-option-row selected" onclick="setVisOption('Public', 'Anyone can search for and view')">
                 <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to everyone</div></div>
             </div>
             <div class="drawer-option-row" onclick="setVisOption('Unlisted', 'Anyone with the link can view')">
@@ -623,45 +888,13 @@
     <!-- Toast Notification -->
     <div class="toast-pop" id="uploadToast"></div>
 
-    <!-- 5. BOTTOM NAVIGATION -->
-    <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-plus-circle" style="background:#e50914;">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
-            <span>You</span>
-        </a>
-    </nav>
-
-    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT ENGINE -->
     <script>
         let isShortMode = false;
         let selectedVideoFile = null;
         let selectedThumbFile = null;
         let currentVisState = "Public";
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
-        });
+        let aiUsed = false;
 
         function showToast(msg) {
             const t = document.getElementById('uploadToast');
@@ -670,7 +903,26 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // STEP 1: Handle Video Selection
+        // Subpage controllers
+        function openSubpage(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeSubpage(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function handleHeaderBack() {
+            if (document.getElementById('stepEditor').style.display === 'flex') {
+                if (confirm('Discard upload? All progress will be lost.')) {
+                    window.location.reload();
+                }
+            } else {
+                window.location.href = 'profile.html';
+            }
+        }
+
+        // File pickers
         function handleFileChosen(e, isShort) {
             const file = e.target.files[0];
             if (!file) return;
@@ -678,12 +930,10 @@
             selectedVideoFile = file;
             isShortMode = isShort;
 
-            // Clean title suggestion from file name
             const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
             document.getElementById('inputVideoTitle').value = rawName;
             updateTitleCount();
 
-            // Set Video Preview
             const player = document.getElementById('previewPlayer');
             const holder = document.getElementById('previewHolder');
             player.src = URL.createObjectURL(file);
@@ -696,13 +946,11 @@
                 document.getElementById('headerTitle').innerText = 'Details (Video)';
             }
 
-            // Switch to Step 2
             document.getElementById('stepPicker').style.display = 'none';
             document.getElementById('stepEditor').style.display = 'flex';
             document.getElementById('btnPublish').style.display = 'block';
         }
 
-        // Handle Custom Thumbnail Picker from Gallery
         function handleThumbnailSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -720,31 +968,21 @@
             document.getElementById('txtTitleCount').innerText = `${count}/100`;
         }
 
-        function handleHeaderCancel() {
-            if (document.getElementById('stepEditor').style.display === 'flex') {
-                if (confirm('Discard upload? All progress will be lost.')) {
-                    window.location.reload();
-                }
-            } else {
-                window.location.href = 'profile.html';
-            }
-        }
-
-        // Visibility Drawer
+        // Visibility
         function openVisibilityDrawer() {
             document.getElementById('visDrawerScrim').classList.add('open');
         }
         function closeVisDrawer() {
             document.getElementById('visDrawerScrim').classList.remove('open');
         }
-        function setVisOption(vis, desc) {
+        function setVisOption(vis) {
             currentVisState = vis;
             document.getElementById('txtVisValue').innerText = vis;
             closeVisDrawer();
             showToast(`Visibility set to ${vis}`);
         }
 
-        // Audience Toggle
+        // Audience
         function toggleAudienceSetting() {
             const txt = document.getElementById('txtKidsSetting');
             if (txt.innerText.includes('No')) {
@@ -756,7 +994,66 @@
             }
         }
 
-        // Tag Pills
+        // Community: Comments Toggle
+        function toggleCommentsMaster(isOn) {
+            const onRow = document.getElementById('optCommentsOn');
+            const offRow = document.getElementById('optCommentsOff');
+            const subOpts = document.getElementById('commentsOnSuboptions');
+            const disp = document.getElementById('dispCommentsVal');
+
+            if (isOn) {
+                onRow.classList.add('selected');
+                offRow.classList.remove('selected');
+                subOpts.style.display = 'flex';
+                disp.innerText = 'On';
+                document.getElementById('txtCommunitySub').innerText = 'Comments On, Remixing allowed';
+            } else {
+                onRow.classList.remove('selected');
+                offRow.classList.add('selected');
+                subOpts.style.display = 'none';
+                disp.innerText = 'Off';
+                document.getElementById('txtCommunitySub').innerText = 'Comments Off, Remixing allowed';
+            }
+        }
+
+        // Moderation
+        function openCommentsDrawer(id) {
+            document.getElementById(id).classList.add('open');
+        }
+        function closeCommentsDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+        function setModeration(val) {
+            document.getElementById('txtModVal').innerText = val;
+            closeCommentsDrawer('moderationDrawer');
+            showToast(`Moderation: ${val}`);
+        }
+        function setWhoCanComment(val) {
+            document.getElementById('txtWhoCanVal').innerText = val;
+            closeCommentsDrawer('whoCanCommentDrawer');
+            showToast(`Who can comment: ${val}`);
+        }
+
+        // Remixing
+        function selectRemixOption(txt, elId) {
+            document.querySelectorAll('#remixingSubpage .radio-setting-row').forEach(r => r.classList.remove('selected'));
+            document.getElementById(elId).classList.add('selected');
+            document.getElementById('dispRemixingVal').innerText = txt;
+            closeSubpage('remixingSubpage');
+            showToast('Remixing settings updated');
+        }
+
+        // AI Use
+        function selectAiOption(isYes) {
+            aiUsed = isYes;
+            document.getElementById('aiOptYes').classList.toggle('selected', isYes);
+            document.getElementById('aiOptNo').classList.toggle('selected', !isYes);
+            document.getElementById('txtAttributesSub').innerText = `AI use: ${isYes ? 'Yes' : 'No'} • Tags`;
+            closeSubpage('aiUseSubpage');
+            showToast(`AI declaration: ${isYes ? 'Yes' : 'No'}`);
+        }
+
+        // Tags
         function handleTagKey(e) {
             if (e.key === 'Enter' || e.key === ',') {
                 e.preventDefault();
@@ -772,7 +1069,7 @@
             }
         }
 
-        // STEP 3: Real Animated Upload Process
+        // Publish
         function startPublishProcess() {
             const title = document.getElementById('inputVideoTitle').value.trim();
             if (!title) {
@@ -780,35 +1077,16 @@
                 return;
             }
 
-            const modal = document.getElementById('uploadModal');
-            const bar = document.getElementById('progressFillBar');
-            const percent = document.getElementById('progressPercentage');
-            modal.style.display = 'flex';
+            localStorage.setItem('btube_last_edited_title', title);
+            localStorage.setItem('btube_last_edited_vis', currentVisState);
+            if (selectedThumbFile) {
+                localStorage.setItem('btube_temp_edit_thumb', document.getElementById('customThumbPreview').src);
+            }
 
-            let progress = 0;
-            const timer = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 8;
-                if (progress > 100) progress = 100;
-                bar.style.width = progress + '%';
-                percent.innerText = progress + '%';
-
-                if (progress >= 100) {
-                    clearInterval(timer);
-
-                    // Save state into LocalStorage for your-videos.html
-                    localStorage.setItem('btube_last_edited_title', title);
-                    localStorage.setItem('btube_last_edited_vis', currentVisState);
-                    if (selectedThumbFile) {
-                        localStorage.setItem('btube_temp_edit_thumb', document.getElementById('customThumbPreview').src);
-                    }
-
-                    setTimeout(() => {
-                        modal.style.display = 'none';
-                        showToast('Uploaded to Your Videos ✓');
-                        window.location.href = 'your-videos.html';
-                    }, 500);
-                }
-            }, 180);
+            showToast('Video published successfully ✓');
+            setTimeout(() => {
+                window.location.href = 'your-videos.html';
+            }, 800);
         }
     </script>
 </body>
