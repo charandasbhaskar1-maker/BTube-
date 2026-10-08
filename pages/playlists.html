@@ -232,7 +232,7 @@
             fill: currentColor;
         }
 
-        /* 4. IN-PAGE PLAYLIST DETAIL SHEET (NO 404 EVER) */
+        /* 4. IN-PAGE PLAYLIST DETAIL SHEET */
         .playlist-view-sheet {
             position: fixed;
             inset: 0;
@@ -319,6 +319,7 @@
             justify-content: center;
             gap: 6px;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .btn-shuffle {
@@ -343,6 +344,8 @@
             gap: 12px;
             cursor: pointer;
             border-bottom: 1px solid #181818;
+            text-decoration: none;
+            color: #ffffff;
         }
 
         .playlist-video-item:active {
@@ -399,12 +402,12 @@
             color: #aaaaaa;
         }
 
-        /* 5. BOTTOM DRAWERS (Options & Creation) */
+        /* 5. MODALS & DRAWERS */
         .drawer-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.65);
-            z-index: 4000;
+            z-index: 5000;
             display: none;
             align-items: flex-end;
         }
@@ -470,7 +473,6 @@
             fill: #ffffff;
         }
 
-        /* Create Playlist Inputs */
         .modal-input-field {
             width: 100%;
             background: #141414;
@@ -517,7 +519,6 @@
         .modal-btn.cancel { color: #aaaaaa; }
         .modal-btn.confirm { background: #3ea6ff; color: #0f0f0f; }
 
-        /* Toast */
         .toast-pop {
             position: fixed;
             bottom: 70px;
@@ -530,7 +531,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 5000;
+            z-index: 6000;
             display: none;
         }
 
@@ -610,7 +611,7 @@
         <button class="sort-pill" onclick="applySort('videos', this)">Most videos</button>
     </nav>
 
-    <!-- 3. PLAYLISTS GRID FEED -->
+    <!-- 3. PLAYLISTS GRID -->
     <main class="playlist-grid-feed" id="playlistsContainer">
 
         <!-- 1. Liked Videos -->
@@ -707,7 +708,7 @@
 
     </main>
 
-    <!-- 4. FULL IN-PAGE PLAYLIST DETAIL SHEET (NO 404) -->
+    <!-- 4. IN-PAGE PLAYLIST DETAIL SHEET -->
     <div class="playlist-view-sheet" id="playlistDetailSheet">
         <header class="sheet-top-header">
             <button class="btn-back" onclick="closePlaylistView()">
@@ -728,19 +729,20 @@
         </section>
 
         <div class="sheet-btn-row">
-            <button class="btn-play-all" onclick="navigateToVideo('Chhattisgarhi Panthi Song Special', 'Charandas Bhaskar')">
+            <!-- Direct link to watch.html -->
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="btn-play-all">
                 <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
                 <span>Play all</span>
-            </button>
+            </a>
             <button class="btn-shuffle" onclick="showToast('Shuffling playlist...')">
                 <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
                 <span>Shuffle</span>
             </button>
         </div>
 
-        <!-- Playlist Videos Feed List -->
+        <!-- Playlist Videos Feed List (Direct links to watch.html inside pages/) -->
         <div id="playlistVideosList">
-            <div class="playlist-video-item" onclick="navigateToVideo('Chhattisgarhi Panthi Song Special', 'Charandas Bhaskar')">
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="playlist-video-item">
                 <div class="item-thumb-frame">
                     <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Video">
                     <span class="item-duration-tag">05:42</span>
@@ -749,9 +751,9 @@
                     <span class="item-title-txt">Chhattisgarhi Panthi Song • Special Cultural 2026</span>
                     <span class="item-meta-txt">Charandas Bhaskar • 210K views</span>
                 </div>
-            </div>
+            </a>
 
-            <div class="playlist-video-item" onclick="navigateToVideo('Typewriter Banjo Pickup Guide', 'Dhun AI')">
+            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="playlist-video-item">
                 <div class="item-thumb-frame">
                     <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video">
                     <span class="item-duration-tag">14:10</span>
@@ -760,9 +762,9 @@
                     <span class="item-title-txt">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
                     <span class="item-meta-txt">Dhun AI • 45K views</span>
                 </div>
-            </div>
+            </a>
 
-            <div class="playlist-video-item" onclick="navigateToVideo('Morning Commute Village Vlog', 'The Bhaskar Vlog')">
+            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="playlist-video-item">
                 <div class="item-thumb-frame">
                     <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Video">
                     <span class="item-duration-tag">06:25</span>
@@ -771,7 +773,7 @@
                     <span class="item-title-txt">Morning Commute & Village Lifestyle Daily Vlog #42</span>
                     <span class="item-meta-txt">The Bhaskar Vlog • 8.4K views</span>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
@@ -813,7 +815,6 @@
         </div>
     </div>
 
-    <!-- Toast Bubble -->
     <div class="toast-pop" id="plToast"></div>
 
     <!-- 7. BOTTOM NAVIGATION -->
@@ -839,7 +840,7 @@
         </a>
     </nav>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- INTERACTION LOGIC -->
     <script>
         let selectedPlCardId = null;
 
@@ -860,7 +861,6 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // Open YouTube Style In-page Playlist Detail
         function openPlaylistView(title, count, thumb) {
             document.getElementById('viewSheetHeadTitle').innerText = title;
             document.getElementById('viewSheetTitle').innerText = title;
@@ -871,16 +871,6 @@
 
         function closePlaylistView() {
             document.getElementById('playlistDetailSheet').classList.remove('open');
-        }
-
-        // Smart Video Navigator (Safe Navigation)
-        function navigateToVideo(title, channel) {
-            const qTitle = encodeURIComponent(title);
-            const qChannel = encodeURIComponent(channel);
-
-            // Tries internal player first, falls back to preview safely
-            const target = `watch.html?title=${qTitle}&channel=${qChannel}`;
-            window.location.href = target;
         }
 
         function openNewPlaylistModal() {
