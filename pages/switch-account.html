@@ -83,7 +83,7 @@
             fill: #3ea6ff;
         }
 
-        /* 2. GOOGLE ACCOUNT IDENTITY CARD */
+        /* 2. GOOGLE ACCOUNT IDENTITY BAR */
         .google-account-banner {
             padding: 14px 16px;
             display: flex;
@@ -108,7 +108,7 @@
         .ga-manage-sub {
             font-size: 12px;
             color: #3ea6ff;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
         }
 
@@ -234,6 +234,149 @@
             font-weight: 500;
         }
 
+        /* 6. MODAL DRAWERS (ADD ACCOUNT & MANAGE ACCOUNTS) */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.9);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .sheet-head-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d2d2d;
+        }
+
+        .sheet-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sheet-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Sign-in Inputs */
+        .input-group-label {
+            font-size: 12px;
+            color: #aaaaaa;
+            margin-bottom: -6px;
+        }
+
+        .sign-in-field {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .sign-in-field:focus {
+            border-color: #3ea6ff;
+        }
+
+        .sheet-btn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 6px;
+        }
+
+        .btn-sheet-text {
+            background: none;
+            border: none;
+            color: #3ea6ff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-sheet-primary {
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 20px;
+            border-radius: 18px;
+            cursor: pointer;
+        }
+
+        /* Manage Device Card Rows */
+        .device-acc-card {
+            background: #171717;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .device-acc-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .device-acc-email {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .device-acc-sync {
+            font-size: 11px;
+            color: #2ecc71;
+        }
+
+        .btn-remove-acc {
+            background: none;
+            border: 1px solid #3d3d3d;
+            color: #ff4e4e;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
         /* Toast */
         .toast-pop {
             position: fixed;
@@ -251,7 +394,7 @@
             display: none;
         }
 
-        /* 6. BOTTOM NAVIGATION */
+        /* 7. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -312,7 +455,8 @@
             <span class="header-title">Accounts</span>
         </div>
 
-        <button class="btn-add-acc" onclick="showToast('Google Account sign-in ready')">
+        <!-- + Add Account (Working Modal Trigger) -->
+        <button class="btn-add-acc" onclick="openAddAccountModal()">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Add</span>
         </button>
@@ -321,18 +465,18 @@
     <!-- 2. GOOGLE ACCOUNT HEADER -->
     <section class="google-account-banner">
         <div class="ga-left">
-            <span class="ga-email-txt">charandasbhaskar@gmail.com</span>
-            <span class="ga-manage-sub" onclick="showToast('Google Account settings synced')">Google Account</span>
+            <span class="ga-email-txt" id="displayGoogleEmail">charandasbhaskar@gmail.com</span>
+            <span class="ga-manage-sub" onclick="openManageAccountsModal()">Manage your Google Account</span>
         </div>
     </section>
 
     <!-- 3. CHANNELS LIST -->
     <span class="section-label">Channels on this account</span>
 
-    <main class="channels-list-feed">
+    <main class="channels-list-feed" id="channelsFeedContainer">
 
-        <!-- Channel 1: Charandas Bhaskar (Official Main Channel) -->
-        <div class="channel-card-item" id="ch-charandas" onclick="switchChannel('Charandas Bhaskar', '@charandasbhaskar', '245 subscribers', 'CB', '#e50914', 'ch-charandas')">
+        <!-- Channel 1: Charandas Bhaskar (Official Primary) -->
+        <div class="channel-card-item" id="ch-charandas" onclick="switchChannel('Charandas Bhaskar', '@charandasbhaskar', '245 subscribers', 'CB', 'ch-charandas')">
             <div class="ch-left-cluster">
                 <div class="ch-avatar-frame" style="background:#e50914;">
                     <span id="customMainInits">CB</span>
@@ -346,8 +490,8 @@
             <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>
 
-        <!-- Channel 2: The Bhaskar Vlog (Daily Vlogs & Life) -->
-        <div class="channel-card-item" id="ch-vlog" onclick="switchChannel('The Bhaskar Vlog', '@thebhaskarvlog', '1.2K subscribers', 'BV', '#f39c12', 'ch-vlog')">
+        <!-- Channel 2: The Bhaskar Vlog (Daily Vlogs) -->
+        <div class="channel-card-item" id="ch-vlog" onclick="switchChannel('The Bhaskar Vlog', '@thebhaskarvlog', '1.2K subscribers', 'BV', 'ch-vlog')">
             <div class="ch-left-cluster">
                 <div class="ch-avatar-frame" style="background:#f39c12;">
                     <span>BV</span>
@@ -360,8 +504,8 @@
             <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
         </div>
 
-        <!-- Channel 3: Dhun AI Studio (Music & Banjo Instrumentals) -->
-        <div class="channel-card-item" id="ch-dhun" onclick="switchChannel('Dhun AI Studio', '@dhunai', '850 subscribers', 'DA', '#3ea6ff', 'ch-dhun')">
+        <!-- Channel 3: Dhun AI Studio (Music & Banjo) -->
+        <div class="channel-card-item" id="ch-dhun" onclick="switchChannel('Dhun AI Studio', '@dhunai', '850 subscribers', 'DA', 'ch-dhun')">
             <div class="ch-left-cluster">
                 <div class="ch-avatar-frame" style="background:#3ea6ff;">
                     <span>DA</span>
@@ -384,15 +528,70 @@
         <span class="util-text-txt" id="incognitoTxt">Turn on Incognito</span>
     </div>
 
-    <div class="util-action-row" onclick="showToast('Manage accounts via Android settings')">
+    <!-- Manage Accounts on this Device (Working Drawer Trigger) -->
+    <div class="util-action-row" onclick="openManageAccountsModal()">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
         <span class="util-text-txt">Manage accounts on this device</span>
+    </div>
+
+    <!-- 5. WORKING SHEET: ADD GOOGLE ACCOUNT -->
+    <div class="drawer-overlay" id="addAccountDrawer" onclick="closeDrawerOnBackdrop(event, 'addAccountDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="sheet-head-bar">
+                <span class="sheet-title-txt">Sign in with Google</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('addAccountDrawer')">✕</button>
+            </div>
+            <p style="font-size:12px; color:#aaa; line-height:1.4;">Add your Google Account or create a new creator channel on BTube.</p>
+            
+            <span class="input-group-label">Email or Phone</span>
+            <input type="email" id="newAccEmailInput" class="sign-in-field" placeholder="example@gmail.com">
+
+            <span class="input-group-label">New Channel Name (Optional)</span>
+            <input type="text" id="newAccChannelName" class="sign-in-field" placeholder="My New Vlog Channel">
+
+            <div class="sheet-btn-row">
+                <button class="btn-sheet-text" onclick="showToast('Create account workflow ready')">Create account</button>
+                <button class="btn-sheet-primary" onclick="submitAddAccount()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. WORKING SHEET: MANAGE DEVICE ACCOUNTS -->
+    <div class="drawer-overlay" id="manageAccountsDrawer" onclick="closeDrawerOnBackdrop(event, 'manageAccountsDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="sheet-head-bar">
+                <span class="sheet-title-txt">Manage accounts on device</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('manageAccountsDrawer')">✕</button>
+            </div>
+            
+            <p style="font-size:12px; color:#888;">Accounts currently signed in on this phone:</p>
+
+            <!-- Account 1 -->
+            <div class="device-acc-card">
+                <div class="device-acc-left">
+                    <span class="device-acc-email">charandasbhaskar@gmail.com</span>
+                    <span class="device-acc-sync">● Synced with BTube</span>
+                </div>
+                <button class="btn-remove-acc" onclick="showToast('Primary account cannot be removed')">Active</button>
+            </div>
+
+            <!-- Account 2 -->
+            <div class="device-acc-card">
+                <div class="device-acc-left">
+                    <span class="device-acc-email">thebhaskarvlog.official@gmail.com</span>
+                    <span class="device-acc-sync">● Synced</span>
+                </div>
+                <button class="btn-remove-acc" onclick="removeDeviceAccount(this, 'thebhaskarvlog.official@gmail.com')">Sign out</button>
+            </div>
+
+            <button class="btn-sheet-primary" style="margin-top:6px; width:100%;" onclick="closeDrawer('manageAccountsDrawer'); openAddAccountModal();">+ Add another account</button>
+        </div>
     </div>
 
     <!-- Toast Bubble -->
     <div class="toast-pop" id="accToast"></div>
 
-    <!-- 5. BOTTOM NAVIGATION -->
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -421,7 +620,6 @@
             const currentActiveName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
             const savedDp = localStorage.getItem('btube_channel_dp');
 
-            // Set custom avatar if exists for main channel
             if (savedDp) {
                 const dp = document.getElementById('customMainDp');
                 dp.src = savedDp;
@@ -451,15 +649,74 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function switchChannel(name, handle, subs, inits, color, elId) {
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        // Open Add Account Sheet
+        function openAddAccountModal() {
+            document.getElementById('newAccEmailInput').value = '';
+            document.getElementById('newAccChannelName').value = '';
+            document.getElementById('addAccountDrawer').classList.add('open');
+            document.getElementById('newAccEmailInput').focus();
+        }
+
+        // Open Manage Accounts on Device Sheet
+        function openManageAccountsModal() {
+            document.getElementById('manageAccountsDrawer').classList.add('open');
+        }
+
+        function removeDeviceAccount(btn, email) {
+            btn.closest('.device-acc-card').remove();
+            showToast(`Signed out from ${email}`);
+        }
+
+        function submitAddAccount() {
+            const email = document.getElementById('newAccEmailInput').value.trim();
+            const chName = document.getElementById('newAccChannelName').value.trim() || 'New Creator';
+
+            if (!email || !email.includes('@')) {
+                showToast('Please enter a valid Google email');
+                return;
+            }
+
+            closeDrawer('addAccountDrawer');
+            showToast(`Account ${email} added successfully ✓`);
+
+            // Dynamically prepend new channel to list
+            const newId = 'ch-user-' + Date.now();
+            const container = document.getElementById('channelsFeedContainer');
+            const card = document.createElement('div');
+            card.className = 'channel-card-item';
+            card.id = newId;
+            card.onclick = () => switchChannel(chName, '@' + chName.toLowerCase().replace(/\s+/g, ''), '0 subscribers', chName.slice(0,2).toUpperCase(), newId);
+
+            card.innerHTML = `
+                <div class="ch-left-cluster">
+                    <div class="ch-avatar-frame" style="background:#2ecc71;">
+                        <span>${chName.slice(0,2).toUpperCase()}</span>
+                    </div>
+                    <div class="ch-text-block">
+                        <span class="ch-title-txt">${chName}</span>
+                        <span class="ch-meta-sub">@${chName.toLowerCase().replace(/\s+/g, '')} • 0 subscribers</span>
+                    </div>
+                </div>
+                <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+            `;
+            container.appendChild(card);
+        }
+
+        function switchChannel(name, handle, subs, inits, elId) {
             document.querySelectorAll('.channel-card-item').forEach(c => c.classList.remove('active'));
             document.getElementById(elId).classList.add('active');
 
-            // Save to LocalStorage
             localStorage.setItem('btube_channel_name', name);
             localStorage.setItem('btube_channel_handle', handle);
 
-            // If switching away from primary, clear primary custom photo override
             if (elId !== 'ch-charandas') {
                 localStorage.setItem('btube_temp_inits', inits);
             } else {
