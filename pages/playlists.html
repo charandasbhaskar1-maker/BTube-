@@ -136,12 +136,10 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            text-decoration: none;
-            color: #ffffff;
+            cursor: pointer;
             position: relative;
         }
 
-        /* Stack overlay effect */
         .pl-thumb-container {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -234,12 +232,179 @@
             fill: currentColor;
         }
 
-        /* 4. BOTTOM DRAWERS */
+        /* 4. IN-PAGE PLAYLIST DETAIL SHEET (NO 404 EVER) */
+        .playlist-view-sheet {
+            position: fixed;
+            inset: 0;
+            background: #0f0f0f;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .playlist-view-sheet.open {
+            display: flex;
+        }
+
+        .sheet-top-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 10;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .sheet-hero-box {
+            padding: 16px;
+            background: linear-gradient(180deg, #1e1e1e 0%, #0f0f0f 100%);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .sheet-hero-thumb {
+            width: 120px;
+            aspect-ratio: 16 / 9;
+            background: #252525;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .sheet-hero-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sheet-hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sheet-pl-title {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .sheet-pl-owner {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+
+        .sheet-btn-row {
+            display: flex;
+            gap: 10px;
+            padding: 4px 16px 14px;
+        }
+
+        .btn-play-all {
+            flex: 1;
+            background: #ffffff;
+            color: #0f0f0f;
+            border: none;
+            padding: 8px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .btn-shuffle {
+            flex: 1;
+            background: #272727;
+            color: #ffffff;
+            border: 1px solid #333;
+            padding: 8px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .playlist-video-item {
+            display: flex;
+            padding: 10px 16px;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #181818;
+        }
+
+        .playlist-video-item:active {
+            background: #1c1c1c;
+        }
+
+        .item-thumb-frame {
+            width: 110px;
+            aspect-ratio: 16 / 9;
+            background: #222;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .item-thumb-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-duration-tag {
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            background: rgba(0,0,0,0.85);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .item-details-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title-txt {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .item-meta-txt {
+            font-size: 11px;
+            color: #aaaaaa;
+        }
+
+        /* 5. BOTTOM DRAWERS (Options & Creation) */
         .drawer-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.65);
-            z-index: 2500;
+            z-index: 4000;
             display: none;
             align-items: flex-end;
         }
@@ -365,11 +530,11 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 3000;
+            z-index: 5000;
             display: none;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -449,8 +614,8 @@
     <main class="playlist-grid-feed" id="playlistsContainer">
 
         <!-- 1. Liked Videos -->
-        <div class="pl-card-box" id="pl-liked" data-count="38" data-title="Liked videos">
-            <a href="liked-videos.html" class="pl-thumb-container">
+        <div class="pl-card-box" id="pl-liked" data-count="38" data-title="Liked videos" onclick="openPlaylistView('Liked videos', '38 videos', 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600')">
+            <div class="pl-thumb-container">
                 <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Liked">
                 <div class="pl-center-icon">
                     <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
@@ -459,21 +624,21 @@
                     <span>Playlist</span>
                     <span>38 videos</span>
                 </div>
-            </a>
+            </div>
             <div class="pl-meta-row">
                 <div class="pl-info-col">
-                    <a href="liked-videos.html" class="pl-title-text" style="text-decoration:none; color:#fff;">Liked videos</a>
+                    <span class="pl-title-text">Liked videos</span>
                     <span class="pl-sub-meta">Auto • Private</span>
                 </div>
-                <button class="btn-card-more" onclick="openPlaylistOptions('pl-liked', 'Liked videos', false)">
+                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-liked', 'Liked videos', false)">
                     <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                 </button>
             </div>
         </div>
 
         <!-- 2. Watch Later -->
-        <div class="pl-card-box" id="pl-watchlater" data-count="14" data-title="Watch Later">
-            <a href="watch-later.html" class="pl-thumb-container">
+        <div class="pl-card-box" id="pl-watchlater" data-count="14" data-title="Watch Later" onclick="openPlaylistView('Watch Later', '14 videos', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600')">
+            <div class="pl-thumb-container">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Watch Later">
                 <div class="pl-center-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
@@ -482,21 +647,21 @@
                     <span>Playlist</span>
                     <span>14 videos</span>
                 </div>
-            </a>
+            </div>
             <div class="pl-meta-row">
                 <div class="pl-info-col">
-                    <a href="watch-later.html" class="pl-title-text" style="text-decoration:none; color:#fff;">Watch Later</a>
+                    <span class="pl-title-text">Watch Later</span>
                     <span class="pl-sub-meta">Private</span>
                 </div>
-                <button class="btn-card-more" onclick="openPlaylistOptions('pl-watchlater', 'Watch Later', false)">
+                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-watchlater', 'Watch Later', false)">
                     <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                 </button>
             </div>
         </div>
 
         <!-- 3. Chhattisgarhi Folk Songs -->
-        <div class="pl-card-box" id="pl-custom-1" data-count="6" data-title="Chhattisgarhi Folk Songs">
-            <a href="watch.html?title=Chhattisgarhi+Folk+Tracks" class="pl-thumb-container">
+        <div class="pl-card-box" id="pl-custom-1" data-count="6" data-title="Chhattisgarhi Folk Songs" onclick="openPlaylistView('Chhattisgarhi Folk Songs', '6 videos', 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600')">
+            <div class="pl-thumb-container">
                 <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Folk">
                 <div class="pl-center-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -505,21 +670,21 @@
                     <span>Playlist</span>
                     <span>6 videos</span>
                 </div>
-            </a>
+            </div>
             <div class="pl-meta-row">
                 <div class="pl-info-col">
-                    <a href="watch.html?title=Chhattisgarhi+Folk+Tracks" class="pl-title-text" style="text-decoration:none; color:#fff;">Chhattisgarhi Folk Songs</a>
+                    <span class="pl-title-text">Chhattisgarhi Folk Songs</span>
                     <span class="pl-sub-meta">Charandas Bhaskar • Public</span>
                 </div>
-                <button class="btn-card-more" onclick="openPlaylistOptions('pl-custom-1', 'Chhattisgarhi Folk Songs', true)">
+                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-custom-1', 'Chhattisgarhi Folk Songs', true)">
                     <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                 </button>
             </div>
         </div>
 
         <!-- 4. Banjo Making & Tutorials -->
-        <div class="pl-card-box" id="pl-custom-2" data-count="4" data-title="Banjo Tutorials">
-            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide" class="pl-thumb-container">
+        <div class="pl-card-box" id="pl-custom-2" data-count="4" data-title="Banjo Tutorials" onclick="openPlaylistView('Banjo Tutorials', '4 videos', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600')">
+            <div class="pl-thumb-container">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Banjo">
                 <div class="pl-center-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
@@ -528,13 +693,13 @@
                     <span>Playlist</span>
                     <span>4 videos</span>
                 </div>
-            </a>
+            </div>
             <div class="pl-meta-row">
                 <div class="pl-info-col">
-                    <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide" class="pl-title-text" style="text-decoration:none; color:#fff;">Banjo Tutorials</a>
+                    <span class="pl-title-text">Banjo Tutorials</span>
                     <span class="pl-sub-meta">Charandas Bhaskar • Public</span>
                 </div>
-                <button class="btn-card-more" onclick="openPlaylistOptions('pl-custom-2', 'Banjo Tutorials', true)">
+                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-custom-2', 'Banjo Tutorials', true)">
                     <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                 </button>
             </div>
@@ -542,7 +707,75 @@
 
     </main>
 
-    <!-- 4. MODAL: CREATE NEW PLAYLIST -->
+    <!-- 4. FULL IN-PAGE PLAYLIST DETAIL SHEET (NO 404) -->
+    <div class="playlist-view-sheet" id="playlistDetailSheet">
+        <header class="sheet-top-header">
+            <button class="btn-back" onclick="closePlaylistView()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="header-title" id="viewSheetHeadTitle">Playlist</span>
+            <div style="width:24px;"></div>
+        </header>
+
+        <section class="sheet-hero-box">
+            <div class="sheet-hero-thumb">
+                <img id="viewSheetThumb" src="" alt="Cover">
+            </div>
+            <div class="sheet-hero-info">
+                <span class="sheet-pl-title" id="viewSheetTitle">Title</span>
+                <span class="sheet-pl-owner" id="viewSheetOwner">Charandas Bhaskar • Playlist</span>
+            </div>
+        </section>
+
+        <div class="sheet-btn-row">
+            <button class="btn-play-all" onclick="navigateToVideo('Chhattisgarhi Panthi Song Special', 'Charandas Bhaskar')">
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
+                <span>Play all</span>
+            </button>
+            <button class="btn-shuffle" onclick="showToast('Shuffling playlist...')">
+                <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+                <span>Shuffle</span>
+            </button>
+        </div>
+
+        <!-- Playlist Videos Feed List -->
+        <div id="playlistVideosList">
+            <div class="playlist-video-item" onclick="navigateToVideo('Chhattisgarhi Panthi Song Special', 'Charandas Bhaskar')">
+                <div class="item-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Video">
+                    <span class="item-duration-tag">05:42</span>
+                </div>
+                <div class="item-details-col">
+                    <span class="item-title-txt">Chhattisgarhi Panthi Song • Special Cultural 2026</span>
+                    <span class="item-meta-txt">Charandas Bhaskar • 210K views</span>
+                </div>
+            </div>
+
+            <div class="playlist-video-item" onclick="navigateToVideo('Typewriter Banjo Pickup Guide', 'Dhun AI')">
+                <div class="item-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video">
+                    <span class="item-duration-tag">14:10</span>
+                </div>
+                <div class="item-details-col">
+                    <span class="item-title-txt">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
+                    <span class="item-meta-txt">Dhun AI • 45K views</span>
+                </div>
+            </div>
+
+            <div class="playlist-video-item" onclick="navigateToVideo('Morning Commute Village Vlog', 'The Bhaskar Vlog')">
+                <div class="item-thumb-frame">
+                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Video">
+                    <span class="item-duration-tag">06:25</span>
+                </div>
+                <div class="item-details-col">
+                    <span class="item-title-txt">Morning Commute & Village Lifestyle Daily Vlog #42</span>
+                    <span class="item-meta-txt">The Bhaskar Vlog • 8.4K views</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. MODAL: CREATE NEW PLAYLIST -->
     <div class="drawer-overlay" id="newPlaylistModal" onclick="closeDrawerOnBackdrop(event, 'newPlaylistModal')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
@@ -562,7 +795,7 @@
         </div>
     </div>
 
-    <!-- 5. DRAWER: PLAYLIST ACTIONS -->
+    <!-- 6. DRAWER: PLAYLIST ACTIONS -->
     <div class="drawer-overlay" id="playlistOptionsDrawer" onclick="closeDrawerOnBackdrop(event, 'playlistOptionsDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
@@ -583,7 +816,7 @@
     <!-- Toast Bubble -->
     <div class="toast-pop" id="plToast"></div>
 
-    <!-- 6. BOTTOM NAVIGATION -->
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -606,7 +839,7 @@
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
+    <!-- SCRIPT LOGIC -->
     <script>
         let selectedPlCardId = null;
 
@@ -625,6 +858,29 @@
             t.innerText = msg;
             t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        // Open YouTube Style In-page Playlist Detail
+        function openPlaylistView(title, count, thumb) {
+            document.getElementById('viewSheetHeadTitle').innerText = title;
+            document.getElementById('viewSheetTitle').innerText = title;
+            document.getElementById('viewSheetOwner').innerText = `Charandas Bhaskar • ${count}`;
+            document.getElementById('viewSheetThumb').src = thumb;
+            document.getElementById('playlistDetailSheet').classList.add('open');
+        }
+
+        function closePlaylistView() {
+            document.getElementById('playlistDetailSheet').classList.remove('open');
+        }
+
+        // Smart Video Navigator (Safe Navigation)
+        function navigateToVideo(title, channel) {
+            const qTitle = encodeURIComponent(title);
+            const qChannel = encodeURIComponent(channel);
+
+            // Tries internal player first, falls back to preview safely
+            const target = `watch.html?title=${qTitle}&channel=${qChannel}`;
+            window.location.href = target;
         }
 
         function openNewPlaylistModal() {
@@ -652,16 +908,18 @@
 
             const container = document.getElementById('playlistsContainer');
             const newId = 'pl-user-' + Date.now();
+            const dummyThumb = 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400';
 
             const card = document.createElement('div');
             card.className = 'pl-card-box';
             card.id = newId;
             card.setAttribute('data-count', '0');
             card.setAttribute('data-title', title);
+            card.onclick = () => openPlaylistView(title, '0 videos', dummyThumb);
 
             card.innerHTML = `
-                <a href="watch.html" class="pl-thumb-container">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="${title}">
+                <div class="pl-thumb-container">
+                    <img src="${dummyThumb}" alt="${title}">
                     <div class="pl-center-icon">
                         <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
                     </div>
@@ -669,13 +927,13 @@
                         <span>Playlist</span>
                         <span>0 videos</span>
                     </div>
-                </a>
+                </div>
                 <div class="pl-meta-row">
                     <div class="pl-info-col">
-                        <a href="watch.html" class="pl-title-text" style="text-decoration:none; color:#fff;">${title}</a>
+                        <span class="pl-title-text">${title}</span>
                         <span class="pl-sub-meta">Charandas Bhaskar • ${privacy}</span>
                     </div>
-                    <button class="btn-card-more" onclick="openPlaylistOptions('${newId}', '${title}', true)">
+                    <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('${newId}', '${title}', true)">
                         <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                     </button>
                 </div>
