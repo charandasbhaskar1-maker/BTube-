@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Watch Later - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .wl-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .header-tools {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-icon-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .tool-icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* 2. PLAYLIST HERO CARD */
+        .playlist-hero-section {
+            padding: 16px;
+            background: linear-gradient(180deg, #1f1f1f 0%, #0f0f0f 100%);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .hero-thumb-box {
+            width: 130px;
+            aspect-ratio: 16 / 9;
+            background: #252525;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .hero-badge-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-badge-overlay svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+        }
+
+        .hero-meta-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hero-pl-title {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .hero-pl-author {
+            font-size: 12px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .hero-pl-stats {
+            font-size: 11px;
+            color: #888888;
+        }
+
+        /* 3. PLAY / SHUFFLE BUTTONS ROW */
+        .action-cta-row {
+            display: flex;
+            gap: 10px;
+            padding: 0 16px 14px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .btn-play-all {
+            flex: 1;
+            background: #ffffff;
+            color: #0f0f0f;
+            border: none;
+            padding: 9px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-shuffle {
+            flex: 1;
+            background: #252525;
+            color: #ffffff;
+            border: 1px solid #333333;
+            padding: 9px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        /* 4. VIDEOS FEED LIST */
+        .wl-videos-feed {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-card-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 16px;
+            gap: 12px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: background 0.15s;
+            position: relative;
+        }
+
+        .video-card-row:active {
+            background: #181818;
+        }
+
+        .video-thumb-wrap {
+            width: 126px;
+            aspect-ratio: 16 / 9;
+            background: #222222;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .video-thumb-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tag-duration {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.85);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+
+        .video-meta-box {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .video-headline {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-channel-sub {
+            font-size: 11px;
+            color: #aaaaaa;
+        }
+
+        .btn-card-menu {
+            background: none;
+            border: none;
+            color: #888888;
+            cursor: pointer;
+            padding: 2px 4px;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-card-menu svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* 5. OPTIONS DRAWER */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
+        }
+
+        .drawer-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2d2d2d;
+            margin-bottom: 6px;
+        }
+
+        .drawer-title-txt {
+            font-size: 15px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%;
+        }
+
+        .drawer-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .drawer-row-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 6px;
+            color: #ffffff;
+            background: none;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .drawer-row-btn:active {
+            background: #2a2a2a;
+        }
+
+        .drawer-row-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffff;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 6. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="wl-header">
+        <div class="header-left">
+            <a href="profile.html" class="btn-back">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            <span class="header-title">Watch Later</span>
+        </div>
+
+        <div class="header-tools">
+            <a href="cast.html" class="tool-icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+            </a>
+            <a href="search.html" class="tool-icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </a>
+            <button class="tool-icon-btn" onclick="showToast('Playlist options: Private playlist')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. HERO PLAYLIST CARD -->
+    <section class="playlist-hero-section">
+        <div class="hero-thumb-box">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500" alt="Watch Later Cover">
+            <div class="hero-badge-overlay">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+            </div>
+        </div>
+        <div class="hero-meta-col">
+            <h1 class="hero-pl-title">Watch Later</h1>
+            <span class="hero-pl-author" id="plOwnerTxt">Charandas Bhaskar</span>
+            <span class="hero-pl-stats"><span id="videoCountVal">14</span> videos • Private</span>
+        </div>
+    </section>
+
+    <!-- 3. ACTION BUTTONS (PLAY ALL & SHUFFLE) -->
+    <div class="action-cta-row">
+        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="btn-play-all">
+            <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
+            <span>Play all</span>
+        </a>
+        <button class="btn-shuffle" onclick="shuffleWatchLaterVideos()">
+            <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+            <span>Shuffle</span>
+        </button>
+    </div>
+
+    <!-- 4. WATCH LATER VIDEOS FEED -->
+    <main class="wl-videos-feed" id="wlVideosList">
+
+        <!-- Video 1 -->
+        <div class="video-card-row" id="wl-1">
+            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-thumb-wrap">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 1">
+                <span class="tag-duration">14:10</span>
+            </a>
+            <div class="video-meta-box">
+                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-headline" style="text-decoration:none; color:#fff;">
+                    Typewriter Banjo with Magnetic Pickups Full Making Guide
+                </a>
+                <span class="video-channel-sub">Dhun AI • 45K views</span>
+            </div>
+            <button class="btn-card-menu" onclick="openOptionsDrawer('wl-1', 'Typewriter Banjo Guide')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-card-row" id="wl-2">
+            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-thumb-wrap">
+                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 2">
+                <span class="tag-duration">06:25</span>
+            </a>
+            <div class="video-meta-box">
+                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-headline" style="text-decoration:none; color:#fff;">
+                    Morning Commute & Village Lifestyle Daily Vlog #42
+                </a>
+                <span class="video-channel-sub">The Bhaskar Vlog • 8.4K views</span>
+            </div>
+            <button class="btn-card-menu" onclick="openOptionsDrawer('wl-2', 'Morning Commute Vlog')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Video 3 -->
+        <div class="video-card-row" id="wl-3">
+            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-thumb-wrap">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 3">
+                <span class="tag-duration">05:42</span>
+            </a>
+            <div class="video-meta-box">
+                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-headline" style="text-decoration:none; color:#fff;">
+                    Chhattisgarhi Panthi Song • Special Cultural Video 2026
+                </a>
+                <span class="video-channel-sub">Charandas Bhaskar • 210K views</span>
+            </div>
+            <button class="btn-card-menu" onclick="openOptionsDrawer('wl-3', 'Chhattisgarhi Panthi Song')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Video 4 -->
+        <div class="video-card-row" id="wl-4">
+            <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="video-thumb-wrap">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400" alt="Video 4">
+                <span class="tag-duration">04:18</span>
+            </a>
+            <div class="video-meta-box">
+                <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="video-headline" style="text-decoration:none; color:#fff;">
+                    Hareli Festival Folk Song • Farm Life & Nature Melody
+                </a>
+                <span class="video-channel-sub">Charandas Bhaskar • 98K views</span>
+            </div>
+            <button class="btn-card-menu" onclick="openOptionsDrawer('wl-4', 'Hareli Festival Folk Song')">
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- 5. OPTIONS SHEET DRAWER -->
+    <div class="drawer-overlay" id="optionsDrawer" onclick="closeDrawerOnBackdrop(event, 'optionsDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="drawer-header-row">
+                <span class="drawer-title-txt" id="optionsDrawerTitle">Options</span>
+                <button class="drawer-close-btn" onclick="closeDrawer('optionsDrawer')">✕</button>
+            </div>
+            <button class="drawer-row-btn" onclick="removeWatchLaterVideo()" style="color:#ff4e4e;">
+                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Remove from Watch later</span>
+            </button>
+            <button class="drawer-row-btn" onclick="downloadVideo()">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span>Download video</span>
+            </button>
+            <button class="drawer-row-btn" onclick="shareVideo()">
+                <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                <span>Share</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="wlToast"></div>
+
+    <!-- 6. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        let currentActiveRowId = null;
+        let totalCount = 14;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            if (savedName) {
+                document.getElementById('plOwnerTxt').innerText = savedName;
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('wlToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function openOptionsDrawer(id, title) {
+            currentActiveRowId = id;
+            document.getElementById('optionsDrawerTitle').innerText = title;
+            document.getElementById('optionsDrawer').classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function removeWatchLaterVideo() {
+            if (currentActiveRowId) {
+                const target = document.getElementById(currentActiveRowId);
+                if (target) target.remove();
+                totalCount = Math.max(0, totalCount - 1);
+                document.getElementById('videoCountVal').innerText = totalCount;
+                showToast('Removed from Watch later');
+            }
+            closeDrawer('optionsDrawer');
+        }
+
+        function downloadVideo() {
+            closeDrawer('optionsDrawer');
+            showToast('Downloading video to offline storage...');
+        }
+
+        function shareVideo() {
+            closeDrawer('optionsDrawer');
+            if (navigator.share) {
+                navigator.share({ title: 'Watch Later - BTube', url: window.location.origin + '/pages/watch.html' }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.origin + '/pages/watch.html');
+                showToast('Link copied to clipboard');
+            }
+        }
+
+        function shuffleWatchLaterVideos() {
+            const container = document.getElementById('wlVideosList');
+            const items = Array.from(container.children);
+            for (let i = items.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                container.appendChild(items[j]);
+            }
+            showToast('Playlist shuffled');
+        }
+    </script>
+</body>
+</html>
