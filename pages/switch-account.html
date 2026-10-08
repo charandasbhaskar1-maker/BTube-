@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Switch Account - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .acc-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .btn-add-acc {
+            background: none;
+            border: none;
+            color: #3ea6ff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-add-acc svg {
+            width: 18px;
+            height: 18px;
+            fill: #3ea6ff;
+        }
+
+        /* 2. SECTION LABELS */
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #aaaaaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 16px 8px;
+        }
+
+        /* 3. ACCOUNTS LIST */
+        .account-list-feed {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .account-card-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid #161616;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .account-card-row:active {
+            background: #1c1c1c;
+        }
+
+        .acc-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .acc-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .acc-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .acc-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .acc-name-txt {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .acc-sub-txt {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .acc-check-icon {
+            width: 22px;
+            height: 22px;
+            fill: #3ea6ff;
+            flex-shrink: 0;
+            display: none;
+        }
+
+        .account-card-row.active .acc-check-icon {
+            display: block;
+        }
+
+        /* 4. UTILITY ACTIONS */
+        .util-action-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            color: #ffffff;
+            text-decoration: none;
+            border-bottom: 1px solid #161616;
+            cursor: pointer;
+        }
+
+        .util-action-row:active {
+            background: #1c1c1c;
+        }
+
+        .util-action-row svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .util-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 5. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 56px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #272727;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 3px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            background: #272727;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="acc-header">
+        <div class="header-left">
+            <a href="profile.html" class="btn-back">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </a>
+            <span class="header-title">Accounts</span>
+        </div>
+
+        <button class="btn-add-acc" onclick="showToast('Google Account sign-in ready')">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Add</span>
+        </button>
+    </header>
+
+    <!-- 2. SECTION: CHANNELS -->
+    <span class="section-label">Your Channels</span>
+
+    <main class="account-list-feed">
+
+        <!-- Channel 1: Primary Account -->
+        <div class="account-card-row active" id="acc-primary" onclick="selectAccount('Charandas Bhaskar', '@charandasbhaskar', 'acc-primary')">
+            <div class="acc-left-cluster">
+                <div class="acc-avatar" style="background:#e50914;">
+                    <span id="primaryInits">CB</span>
+                    <img id="primaryDpImg" alt="DP">
+                </div>
+                <div class="acc-info-box">
+                    <span class="acc-name-txt" id="primaryNameTxt">Charandas Bhaskar</span>
+                    <span class="acc-sub-txt" id="primaryHandleTxt">@charandasbhaskar • 245 subscribers</span>
+                </div>
+            </div>
+            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        </div>
+
+        <!-- Channel 2: The Bhaskar Vlog -->
+        <div class="account-card-row" id="acc-vlog" onclick="selectAccount('The Bhaskar Vlog', '@thebhaskarvlog', 'acc-vlog')">
+            <div class="acc-left-cluster">
+                <div class="acc-avatar" style="background:#f39c12;">
+                    <span>BV</span>
+                </div>
+                <div class="acc-info-box">
+                    <span class="acc-name-txt">The Bhaskar Vlog</span>
+                    <span class="acc-sub-txt">@thebhaskarvlog • Daily Lifestyle & Vlogs</span>
+                </div>
+            </div>
+            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        </div>
+
+        <!-- Channel 3: Dhun AI / Banjo Studio -->
+        <div class="account-card-row" id="acc-dhun" onclick="selectAccount('Dhun AI Studio', '@dhunai', 'acc-dhun')">
+            <div class="acc-left-cluster">
+                <div class="acc-avatar" style="background:#3ea6ff;">
+                    <span>DA</span>
+                </div>
+                <div class="acc-info-box">
+                    <span class="acc-name-txt">Dhun AI Studio</span>
+                    <span class="acc-sub-txt">@dhunai • Music & Banjo Tutorials</span>
+                </div>
+            </div>
+            <svg class="acc-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+        </div>
+
+    </main>
+
+    <!-- 3. SECTION: OTHER MODES -->
+    <span class="section-label" style="margin-top:10px;">More Options</span>
+
+    <div class="util-action-row" onclick="showToast('Incognito mode activated')">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-10 10 9.94 9.94 0 0 0 2.22 6.26l.48.58A9.97 9.97 0 0 0 12 22a9.97 9.97 0 0 0 7.3-3.16l.48-.58A9.94 9.94 0 0 0 22 12A10 10 0 0 0 12 2zm0 18a7.95 7.95 0 0 1-5.66-2.34l-.4-.46A7.95 7.95 0 0 1 4 12a8 8 0 1 1 16 0 7.95 7.95 0 0 1-1.94 5.2l-.4.46A7.95 7.95 0 0 1 12 20zm-4-8a2 2 0 1 0 2-2 2 2 0 0 0-2 2zm8 0a2 2 0 1 0 2-2 2 2 0 0 0-2 2z"/></svg>
+        <span class="util-text">Turn on Incognito</span>
+    </div>
+
+    <div class="util-action-row" onclick="showToast('Manage accounts via device settings')">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        <span class="util-text">Manage accounts on this device</span>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="accToast"></div>
+
+    <!-- 4. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('btube_channel_name');
+            const savedHandle = localStorage.getItem('btube_channel_handle');
+            const savedDp = localStorage.getItem('btube_channel_dp');
+
+            if (savedName) {
+                document.getElementById('primaryNameTxt').innerText = savedName;
+                const parts = savedName.trim().split(' ');
+                let inits = parts[0][0];
+                if (parts.length > 1) inits += parts[1][0];
+                document.getElementById('primaryInits').innerText = inits.toUpperCase();
+                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            }
+
+            if (savedHandle) {
+                document.getElementById('primaryHandleTxt').innerText = `${savedHandle} • 245 subscribers`;
+            }
+
+            if (savedDp) {
+                const img = document.getElementById('primaryDpImg');
+                img.src = savedDp;
+                img.style.display = 'block';
+                document.getElementById('primaryInits').style.display = 'none';
+            }
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById('accToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function selectAccount(name, handle, elId) {
+            document.querySelectorAll('.account-card-row').forEach(r => r.classList.remove('active'));
+            document.getElementById(elId).classList.add('active');
+
+            // Save active switch
+            localStorage.setItem('btube_channel_name', name);
+            localStorage.setItem('btube_channel_handle', handle);
+
+            showToast(`Switched to ${name}`);
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 800);
+        }
+    </script>
+</body>
+</html>
