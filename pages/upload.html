@@ -2,264 +2,170 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Create - BTube</title>
-
+    <title>Upload - BTube</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:40px; }
+        .up-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
+        .header-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
+        .btn-back svg { width:22px; height:22px; fill:#fff; }
+        .btn-publish { background:#e50914; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:700; font-size:13px; cursor:pointer; }
+        .btn-publish:disabled { opacity:0.5; }
+        
+        .form-wrap { padding:16px; display:flex; flex-direction:column; gap:18px; max-width:600px; margin:0 auto; }
+        .file-drop-area { width:100%; border:2px dashed #333; border-radius:12px; padding:24px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:#141414; cursor:pointer; text-align:center; }
+        .file-drop-area.active { border-color:#e50914; background:#1f1414; }
+        .file-drop-icon svg { width:42px; height:42px; fill:#e50914; }
 
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 70px;
-        }
+        .type-toggle-row { display:flex; background:#1a1a1a; padding:4px; border-radius:10px; gap:4px; }
+        .toggle-btn { flex:1; background:none; border:none; color:#aaa; padding:10px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
+        .toggle-btn.active { background:#e50914; color:#fff; }
 
-        /* TOP HEADER */
-        .hub-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .btn-close {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .btn-close svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        .hub-title {
-            font-size: 19px;
-            font-weight: 700;
-        }
-
-        /* TILES LIST */
-        .hub-tiles-wrap {
-            display: flex;
-            flex-direction: column;
-            padding: 20px 16px;
-            gap: 14px;
-        }
-
-        .create-tile-link {
-            background: #1c1c1c;
-            border: 1px solid #282828;
-            border-radius: 14px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            text-decoration: none;
-            color: #ffffff;
-            transition: background 0.15s, transform 0.1s;
-        }
-
-        .create-tile-link:active {
-            background: #262626;
-            transform: scale(0.98);
-        }
-
-        .tile-icon-bubble {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .tile-icon-bubble svg {
-            width: 24px;
-            height: 24px;
-            fill: #ffffff;
-        }
-
-        .tile-meta-col {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .tile-main-title {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .tile-sub-text {
-            font-size: 12px;
-            color: #aaaaaa;
-        }
-
-        /* BOTTOM NAV */
-        .bottom-nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 56px;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #222222;
-            z-index: 1000;
-        }
-
-        .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: #aaaaaa;
-            text-decoration: none;
-            gap: 3px;
-        }
-
-        .nav-tab-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-plus-circle {
-            background: #e50914;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
+        .input-group { display:flex; flex-direction:column; gap:6px; }
+        .input-group label { font-size:12px; color:#aaa; font-weight:600; }
+        .input-group input, .input-group textarea, .input-group select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:14px; outline:none; }
+        .input-group input:focus, .input-group textarea:focus { border-color:#e50914; }
     </style>
 </head>
 <body>
 
-    <!-- Top Header -->
-    <header class="hub-header">
-        <a href="../frontend/index.html" class="btn-close">
-            <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </a>
-        <span class="hub-title">Create</span>
+    <header class="up-header">
+        <div class="header-left">
+            <button class="btn-back" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span style="font-size:17px; font-weight:700;">Upload Content</span>
+        </div>
+        <button class="btn-publish" id="publishBtn" onclick="handleUpload()">Upload</button>
     </header>
 
-    <!-- 4 Clear Navigation Links -->
-    <main class="hub-tiles-wrap">
-        
-        <!-- 1. Create a Short -->
-        <a href="upload-short.html" class="create-tile-link">
-            <div class="tile-icon-bubble" style="background:#e50914;">
-                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            </div>
-            <div class="tile-meta-col">
-                <strong class="tile-main-title">Create a Short</strong>
-                <span class="tile-sub-text">Share a quick vertical video up to 60s</span>
-            </div>
-        </a>
+    <div class="form-wrap">
+        <!-- Type Selection Toggle -->
+        <div class="type-toggle-row">
+            <button type="button" class="toggle-btn active" id="btnTypeVideo" onclick="setType('video')">Long Video</button>
+            <button type="button" class="toggle-btn" id="btnTypeShort" onclick="setType('short')">Short (9:16)</button>
+        </div>
 
-        <!-- 2. Upload a video -->
-        <a href="upload-video.html" class="create-tile-link">
-            <div class="tile-icon-bubble" style="background:#272727;">
+        <!-- File Select Box -->
+        <div class="file-drop-area" id="dropArea" onclick="document.getElementById('videoFileInput').click()">
+            <div class="file-drop-icon">
                 <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
             </div>
-            <div class="tile-meta-col">
-                <strong class="tile-main-title">Upload a video</strong>
-                <span class="tile-sub-text">Publish full songs, banjo tutorials or vlogs</span>
-            </div>
-        </a>
+            <div style="font-size:14px; font-weight:600;" id="fileChosenLabel">Tap to select video file</div>
+            <span style="font-size:11px; color:#888;">MP4, WebM or MOV up to 1GB</span>
+            <input type="file" id="videoFileInput" accept="video/*" style="display:none;" onchange="onFileSelected(event)">
+        </div>
 
-        <!-- 3. Go Live -->
-        <a href="go-live.html" class="create-tile-link">
-            <div class="tile-icon-bubble" style="background:#272727;">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-            </div>
-            <div class="tile-meta-col">
-                <strong class="tile-main-title">Go Live</strong>
-                <span class="tile-sub-text">Broadcast live to your audience</span>
-            </div>
-        </a>
+        <div class="input-group">
+            <label>Title</label>
+            <input type="text" id="videoTitleInput" placeholder="Add title (e.g. Mungeli folk music)">
+        </div>
 
-        <!-- 4. Create a post -->
-        <a href="create-post.html" class="create-tile-link">
-            <div class="tile-icon-bubble" style="background:#272727;">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-            </div>
-            <div class="tile-meta-col">
-                <strong class="tile-main-title">Create a post</strong>
-                <span class="tile-sub-text">Publish polls, images or text updates to subscribers</span>
-            </div>
-        </a>
+        <div class="input-group">
+            <label>Description</label>
+            <textarea id="videoDescInput" rows="3" placeholder="Tell viewers about your video..."></textarea>
+        </div>
 
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-plus-circle">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
-            <span>You</span>
-        </a>
-    </nav>
+        <div class="input-group">
+            <label>Visibility</label>
+            <select id="videoVisibilityInput">
+                <option value="Public">Public (Anyone can view)</option>
+                <option value="Unlisted">Unlisted (Anyone with link)</option>
+                <option value="Private">Private (Only you)</option>
+            </select>
+        </div>
+    </div>
 
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+        let selectedUploadType = 'video';
+        let selectedLocalFileUrl = null;
+
+        function setType(type) {
+            selectedUploadType = type;
+            document.getElementById('btnTypeVideo').classList.toggle('active', type === 'video');
+            document.getElementById('btnTypeShort').classList.toggle('active', type === 'short');
+            
+            const titleInput = document.getElementById('videoTitleInput');
+            if (type === 'short' && !titleInput.value.includes('#shorts')) {
+                titleInput.value = (titleInput.value.trim() + ' #shorts').trim();
             }
-        });
+        }
+
+        function onFileSelected(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileChosenLabel').innerText = file.name;
+                selectedLocalFileUrl = URL.createObjectURL(file);
+
+                // Auto-detect title
+                const baseName = file.name.replace(/\.[^/.]+$/, "");
+                const titleField = document.getElementById('videoTitleInput');
+                if (!titleField.value) {
+                    titleField.value = selectedUploadType === 'short' ? `${baseName} #shorts` : baseName;
+                }
+            }
+        }
+
+        function handleUpload() {
+            const title = document.getElementById('videoTitleInput').value.trim() || 'Untitled Video';
+            const desc = document.getElementById('videoDescInput').value.trim();
+            const vis = document.getElementById('videoVisibilityInput').value;
+            const btn = document.getElementById('publishBtn');
+
+            // Force detect if title contains #short or #shorts
+            const isShort = (selectedUploadType === 'short') || title.toLowerCase().includes('#short');
+
+            btn.disabled = true;
+            btn.innerText = 'Publishing...';
+
+            if (isShort) {
+                // Route directly to SHORTS collection
+                let shorts = JSON.parse(localStorage.getItem('btube_user_shorts') || '[]');
+                const newShort = {
+                    id: 'short_' + Date.now(),
+                    title: title,
+                    desc: desc,
+                    visibility: vis,
+                    views: 0,
+                    age: 'Just now',
+                    videoUrl: selectedLocalFileUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600',
+                    type: 'short'
+                };
+                shorts.unshift(newShort);
+                localStorage.setItem('btube_user_shorts', JSON.stringify(shorts));
+
+                setTimeout(() => {
+                    window.location.href = 'your-videos.html?tab=shorts';
+                }, 400);
+
+            } else {
+                // Route directly to VIDEOS collection
+                let videos = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
+                const newVideo = {
+                    id: 'vid_' + Date.now(),
+                    title: title,
+                    desc: desc,
+                    visibility: vis,
+                    views: 0,
+                    duration: '03:45',
+                    age: 'Just now',
+                    restriction: 'None',
+                    videoUrl: selectedLocalFileUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
+                    type: 'video'
+                };
+                videos.unshift(newVideo);
+                localStorage.setItem('btube_user_videos', JSON.stringify(videos));
+
+                setTimeout(() => {
+                    window.location.href = 'your-videos.html';
+                }, 400);
+            }
+        }
     </script>
 </body>
 </html>
