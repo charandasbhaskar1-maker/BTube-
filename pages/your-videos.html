@@ -196,6 +196,14 @@
             color: #888888;
         }
 
+        .meta-badges-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2px;
+            flex-wrap: wrap;
+        }
+
         .visibility-badge {
             display: inline-flex;
             align-items: center;
@@ -206,7 +214,6 @@
             background: rgba(46, 204, 113, 0.12);
             padding: 1px 6px;
             border-radius: 10px;
-            align-self: flex-start;
         }
 
         .visibility-badge.unlisted {
@@ -222,6 +229,28 @@
         .visibility-badge.scheduled {
             color: #3ea6ff;
             background: rgba(62, 166, 255, 0.12);
+        }
+
+        /* RESTRICTION / COPYRIGHT BADGES */
+        .restriction-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .restriction-tag.none {
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.12);
+        }
+
+        .restriction-tag.claim {
+            color: #f1c40f;
+            background: rgba(241, 196, 15, 0.15);
         }
 
         .btn-card-menu {
@@ -318,6 +347,71 @@
             fill: #ffffff;
         }
 
+        /* 5. OFFICIAL YT-STYLE "POTENTIAL LIMITATION" BOTTOM SHEET */
+        .claim-sheet-scrim {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 5000;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .claim-sheet-scrim.open {
+            display: flex;
+        }
+
+        .claim-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            padding: 20px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            animation: sheetSlideUp 0.22s ease-out;
+        }
+
+        @keyframes sheetSlideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .sheet-handle-bar {
+            width: 40px;
+            height: 4px;
+            background: #555555;
+            border-radius: 2px;
+            align-self: center;
+            margin-bottom: 2px;
+        }
+
+        .claim-title-head {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .claim-body-txt {
+            font-size: 13px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        .btn-view-claim-details {
+            background: #333333;
+            color: #ffffff;
+            border: 1px solid #444444;
+            padding: 12px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
         /* Empty State */
         .empty-placeholder {
             padding: 40px 16px;
@@ -352,7 +446,7 @@
             display: none;
         }
 
-        /* 5. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
@@ -433,7 +527,7 @@
     <!-- 3. STUDIO VIDEOS FEED -->
     <main class="studio-feed-wrap" id="videosListFeed">
 
-        <!-- Video 1 -->
+        <!-- Video 1: Clean & Monetized -->
         <div class="studio-video-row" id="vid-1" data-type="videos">
             <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="thumb-frame-box">
                 <img id="img-vid-1" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
@@ -443,7 +537,10 @@
                 <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-1">
                     Chhattisgarhi Panthi Song • Special Cultural Video 2026
                 </a>
-                <span class="visibility-badge" id="vis-vid-1">Public 🌐</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge" id="vis-vid-1">Public 🌐</span>
+                    <span class="restriction-tag none" onclick="showToast('No restrictions • 100% Monetizable')">✓ None</span>
+                </div>
                 <div class="video-stats-row">
                     <span>210K views</span>
                     <span>•</span>
@@ -455,7 +552,7 @@
             </button>
         </div>
 
-        <!-- Video 2 -->
+        <!-- Video 2: Claimed Content (Potential Limitation Dialog Trigger) -->
         <div class="studio-video-row" id="vid-2" data-type="videos">
             <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="thumb-frame-box">
                 <img id="img-vid-2" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
@@ -465,7 +562,10 @@
                 <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-2">
                     Typewriter Banjo with Magnetic Pickups Full Making Guide
                 </a>
-                <span class="visibility-badge" id="vis-vid-2">Public 🌐</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge" id="vis-vid-2">Public 🌐</span>
+                    <span class="restriction-tag claim" onclick="openPotentialLimitationDialog('Typewriter Banjo Guide', 'Dhun AI Traditional Waveform')">⚠️ Potential limitation</span>
+                </div>
                 <div class="video-stats-row">
                     <span>45K views</span>
                     <span>•</span>
@@ -477,7 +577,7 @@
             </button>
         </div>
 
-        <!-- Video 3 -->
+        <!-- Video 3: Clean -->
         <div class="studio-video-row" id="vid-3" data-type="videos">
             <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="thumb-frame-box">
                 <img id="img-vid-3" src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
@@ -487,7 +587,10 @@
                 <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-item-title" id="title-vid-3">
                     Morning Commute & Village Lifestyle Daily Vlog #42
                 </a>
-                <span class="visibility-badge" id="vis-vid-3">Public 🌐</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge" id="vis-vid-3">Public 🌐</span>
+                    <span class="restriction-tag none" onclick="showToast('No restrictions • 100% Monetizable')">✓ None</span>
+                </div>
                 <div class="video-stats-row">
                     <span>8.4K views</span>
                     <span>•</span>
@@ -499,7 +602,7 @@
             </button>
         </div>
 
-        <!-- Video 4 -->
+        <!-- Video 4: Unlisted & Clean -->
         <div class="studio-video-row" id="vid-4" data-type="videos">
             <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="thumb-frame-box">
                 <img id="img-vid-4" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400" alt="Video 4">
@@ -509,7 +612,10 @@
                 <a href="watch.html?title=Hareli+Folk+Song+Agricultural+Celebration&channel=Charandas+Bhaskar" class="video-item-title" id="title-vid-4">
                     Hareli Festival Folk Song • Farm Life & Nature Melody
                 </a>
-                <span class="visibility-badge unlisted" id="vis-vid-4">Unlisted 🔗</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge unlisted" id="vis-vid-4">Unlisted 🔗</span>
+                    <span class="restriction-tag none" onclick="showToast('No restrictions')">✓ None</span>
+                </div>
                 <div class="video-stats-row">
                     <span>98K views</span>
                     <span>•</span>
@@ -531,7 +637,10 @@
                 <a href="shorts.html" class="video-item-title" id="title-short-row-1">
                     Electronic Banjo Solo with magnetic pickups! 🪕 #Chhattisgarhi
                 </a>
-                <span class="visibility-badge" id="vis-short-row-1">Public 🌐</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge" id="vis-short-row-1">Public 🌐</span>
+                    <span class="restriction-tag none">✓ None</span>
+                </div>
                 <div class="video-stats-row">
                     <span>18.4K views</span>
                     <span>•</span>
@@ -553,7 +662,10 @@
                 <a href="shorts.html" class="video-item-title" id="title-short-row-2">
                     Mungeli morning quiet road vlog 🌅 Shandar subah!
                 </a>
-                <span class="visibility-badge" id="vis-short-row-2">Public 🌐</span>
+                <div class="meta-badges-row">
+                    <span class="visibility-badge" id="vis-short-row-2">Public 🌐</span>
+                    <span class="restriction-tag none">✓ None</span>
+                </div>
                 <div class="video-stats-row">
                     <span>9.2K views</span>
                     <span>•</span>
@@ -574,7 +686,7 @@
 
     </main>
 
-    <!-- 4. STUDIO OPTIONS DRAWER (INTEGRATED WITH EDIT-VIDEO.HTML) -->
+    <!-- 4. STUDIO OPTIONS DRAWER (ACTIONS) -->
     <div class="drawer-overlay" id="studioOptionsDrawer" onclick="closeDrawerOnBackdrop(event, 'studioOptionsDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
@@ -582,7 +694,6 @@
                 <button class="drawer-close-btn" onclick="closeDrawer('studioOptionsDrawer')">✕</button>
             </div>
             
-            <!-- Direct link to edit-video.html -->
             <button class="drawer-row-btn" onclick="redirectToEditor()">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 <span>Edit video details</span>
@@ -605,10 +716,22 @@
         </div>
     </div>
 
+    <!-- 5. OFFICIAL YT-STYLE "POTENTIAL LIMITATION" BOTTOM SHEET (SCREENSHOT MATCH) -->
+    <div class="claim-sheet-scrim" id="claimScrim" onclick="if(event.target.id==='claimScrim') closeClaimSheet()">
+        <div class="claim-sheet-card">
+            <div class="sheet-handle-bar"></div>
+            <h3 class="claim-title-head">This video has a potential limitation</h3>
+            <p class="claim-body-txt">
+                Claimed content was found in this video. This doesn't affect the video at the moment, but if you start earning from BTube, it can have an impact on your earnings.
+            </p>
+            <div class="btn-view-claim-details" onclick="viewClaimDetails()">View details</div>
+        </div>
+    </div>
+
     <!-- Toast Bubble -->
     <div class="toast-pop" id="yvToast"></div>
 
-    <!-- 5. BOTTOM NAVIGATION -->
+    <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -635,6 +758,7 @@
     <script>
         let currentTargetVidId = null;
         let currentTargetMode = 'video';
+        let activeClaimData = { title: '', match: '' };
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedName = localStorage.getItem('btube_channel_name');
@@ -674,6 +798,21 @@
             t.innerText = msg;
             t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        // ================= CLAIM / POTENTIAL LIMITATION HANDLERS =================
+        function openPotentialLimitationDialog(title, match) {
+            activeClaimData = { title, match };
+            document.getElementById('claimScrim').classList.add('open');
+        }
+
+        function closeClaimSheet() {
+            document.getElementById('claimScrim').classList.remove('open');
+        }
+
+        function viewClaimDetails() {
+            closeClaimSheet();
+            alert(`Claim Details:\n\n• Video: ${activeClaimData.title}\n• Matched Content: ${activeClaimData.match}\n• Claim Type: Content ID Audio Match\n• Impact on Video: Public & playable\n• Impact on Monetization: Ad revenue transferred to copyright owner`);
         }
 
         function switchContentTab(tab, btn) {
@@ -716,15 +855,12 @@
             if (e.target.id === id) closeDrawer(id);
         }
 
-        // REDIRECT TO FULL EDIT-VIDEO.HTML PAGE
         function redirectToEditor() {
             closeDrawer('studioOptionsDrawer');
             const titleElem = document.getElementById('title-' + currentTargetVidId);
             const visElem = document.getElementById('vis-' + currentTargetVidId);
             const titleVal = titleElem ? encodeURIComponent(titleElem.innerText.trim()) : '';
             const visVal = visElem ? encodeURIComponent(visElem.innerText.trim()) : '';
-
-            // Open the new professional video editing page
             window.location.href = `edit-video.html?title=${titleVal}&vis=${visVal}&mode=${currentTargetMode}`;
         }
 
