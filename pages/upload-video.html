@@ -250,7 +250,7 @@
             color: #888888;
         }
 
-        /* 4. SUBPAGES (COMMUNITY, COLLAB, COMMENTS, REMIXING, ATTRIBUTES, AI USE) */
+        /* 4. SUBPAGES */
         .subpage-view {
             position: fixed;
             inset: 0;
@@ -395,7 +395,6 @@
             background: #282828;
         }
 
-        /* Schedule Calendar Box */
         .schedule-calendar-box {
             display: none;
             flex-direction: column;
@@ -460,7 +459,57 @@
             transition: width 0.2s linear;
         }
 
-        /* Tags cluster */
+        /* SafeShield & CopyScan Modal Notification */
+        .policy-alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .policy-alert-card {
+            background: #1f1f1f;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 340px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid #333;
+        }
+
+        .policy-alert-title {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .policy-alert-body {
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.45;
+        }
+
+        .btn-policy-confirm {
+            background: #3ea6ff;
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            align-self: flex-end;
+            margin-top: 4px;
+        }
+
         .tags-cluster {
             display: flex;
             flex-wrap: wrap;
@@ -481,7 +530,6 @@
             gap: 6px;
         }
 
-        /* Toast */
         .toast-pop {
             position: fixed;
             bottom: 75px;
@@ -494,7 +542,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 5000;
+            z-index: 6000;
             display: none;
         }
     </style>
@@ -519,7 +567,7 @@
         </label>
         <div>
             <h3 style="font-size:18px;">Select a video to upload</h3>
-            <p style="font-size:12px; color:#888; margin-top:4px;">Publish full songs, tutorials or vlogs in landscape 16:9</p>
+            <p style="font-size:12px; color:#888; margin-top:4px;">SafeShield AI & CopyScan family protection active</p>
         </div>
         <label for="longVideoFileInput" class="btn-select-file">Choose Video File</label>
         <input type="file" id="longVideoFileInput" accept="video/*" style="display:none;" onchange="handleVideoFileChosen(event)">
@@ -527,13 +575,11 @@
 
     <!-- 3. DETAILS FORM VIEW -->
     <section class="upload-editor-view" id="stepEditor">
-        <!-- 16:9 Landscape Video Preview + Thumbnail Picker -->
         <div class="preview-media-section">
             <div class="preview-frame-holder" id="previewHolder">
                 <video id="previewPlayer" playsinline controls></video>
                 <img id="customThumbPreview" style="display:none;" alt="Thumbnail">
 
-                <!-- Choose custom thumbnail from gallery -->
                 <label for="customThumbInput" class="change-thumb-trigger" title="Upload Custom Thumbnail">
                     <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
                 </label>
@@ -558,7 +604,7 @@
                 <textarea id="inputVideoDesc" class="custom-field-input" placeholder="Tell viewers about your video..."></textarea>
             </div>
 
-            <!-- WORKING Visibility Selector (Public / Unlisted / Private / Schedule) -->
+            <!-- Visibility Selector -->
             <div class="picker-clickable-bar" onclick="openVisibilityDrawer()">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
@@ -570,7 +616,7 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Audience Setting (Made for Kids) -->
+            <!-- Audience Setting -->
             <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
@@ -594,7 +640,7 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Attributes Hub Row (AI Use & Tags) -->
+            <!-- Attributes Hub Row -->
             <div class="picker-clickable-bar" onclick="openSubpage('attributesSubpage')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
@@ -608,7 +654,8 @@
         </div>
     </section>
 
-    <!-- ================= SUBPAGE: COMMUNITY ================= -->
+    <!-- ================= SUBPAGES ================= -->
+    <!-- COMMUNITY -->
     <div class="subpage-view" id="communitySubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('communitySubpage')">
@@ -649,7 +696,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE: INVITE A COLLABORATOR ================= -->
+    <!-- COLLAB -->
     <div class="subpage-view" id="collabSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('collabSubpage')">
@@ -659,7 +706,6 @@
         </div>
         <div class="subpage-content">
             <input type="text" class="search-pill-input" placeholder="Search for a channel" onkeydown="if(event.key==='Enter') showToast('Collaborator invited ✓')">
-
             <div class="feature-bullets-list">
                 <div class="bullet-item-row">
                     <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
@@ -672,21 +718,14 @@
                     <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     <div>
                         <strong>Expanded reach</strong>
-                        <p style="font-size:12px; color:#888; margin-top:2px;">We'll help your video reach your collaborators' audiences</p>
-                    </div>
-                </div>
-                <div class="bullet-item-row">
-                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    <div>
-                        <strong>Full ownership</strong>
-                        <p style="font-size:12px; color:#888; margin-top:2px;">You keep all the revenue, views and watch time from the video</p>
+                        <p style="font-size:12px; color:#888; margin-top:2px;">Reach your collaborators' audiences</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================= SUBPAGE: COMMENTS ================= -->
+    <!-- COMMENTS -->
     <div class="subpage-view" id="commentsSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('commentsSubpage')">
@@ -707,17 +746,9 @@
                             </div>
                             <span style="color:#666;">❯</span>
                         </div>
-                        <div class="picker-clickable-bar" style="background:#161616;" onclick="openDrawer('whoCanCommentDrawer')">
-                            <div>
-                                <div style="font-size:12px; color:#888;">Who can comment</div>
-                                <strong id="txtWhoCanVal">Anyone</strong>
-                            </div>
-                            <span style="color:#666;">❯</span>
-                        </div>
                     </div>
                 </div>
             </div>
-
             <div class="radio-setting-row" id="optCommentsOff" onclick="toggleCommentsMaster(false)">
                 <div class="radio-dot-outer"></div>
                 <div><strong style="font-size:15px;">Off</strong></div>
@@ -725,7 +756,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE: SHORTS REMIXING ================= -->
+    <!-- REMIXING -->
     <div class="subpage-view" id="remixingSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('remixingSubpage')">
@@ -734,8 +765,6 @@
             <span class="subpage-title">Shorts remixing</span>
         </div>
         <div class="subpage-content">
-            <p style="font-size:12px; color:#888;">Let others create Shorts using content from this video.</p>
-            
             <div class="radio-setting-row selected" id="remix-1" onclick="selectRemixOption('Allow video and audio remixing', 'remix-1')">
                 <div class="radio-dot-outer"></div>
                 <span>Allow video and audio remixing</span>
@@ -751,7 +780,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE: ATTRIBUTES ================= -->
+    <!-- ATTRIBUTES -->
     <div class="subpage-view" id="attributesSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('attributesSubpage')">
@@ -781,7 +810,7 @@
         </div>
     </div>
 
-    <!-- ================= SUBPAGE: AI USE ================= -->
+    <!-- AI USE -->
     <div class="subpage-view" id="aiUseSubpage">
         <div class="subpage-header">
             <button class="btn-header-icon" onclick="closeSubpage('aiUseSubpage')">
@@ -790,14 +819,7 @@
             <span class="subpage-title">AI use</span>
         </div>
         <div class="subpage-content">
-            <strong>Was AI used to generate or edit your content in any of the following ways?</strong>
-            <ul style="padding-left:18px; font-size:12px; color:#aaa; line-height:1.6; display:flex; flex-direction:column; gap:8px;">
-                <li>Make a real person appear to say or do something they didn't say or do</li>
-                <li>Alter footage of a real event or place</li>
-                <li>Generate a realistic-looking scene that didn't actually occur</li>
-                <li>Create music that's the main focus of the video</li>
-            </ul>
-
+            <strong>Was AI used to generate or edit your content?</strong>
             <div style="margin-top:14px;">
                 <div class="radio-setting-row" id="aiOptYes" onclick="selectAiOption(true)">
                     <div class="radio-dot-outer"></div>
@@ -811,44 +833,22 @@
         </div>
     </div>
 
-    <!-- ================= WORKING VISIBILITY DRAWER (PUBLIC, UNLISTED, PRIVATE, SCHEDULE) ================= -->
+    <!-- VISIBILITY DRAWER -->
     <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeDrawer('visDrawerScrim')">
         <div class="drawer-menu-card">
             <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
-            
-            <!-- 1. Public -->
             <div class="drawer-option-row selected" id="opt-public" onclick="setVisOption('Public', 'opt-public')">
-                <div>
-                    <strong>Public 🌐</strong>
-                    <div style="font-size:11px; color:#888;">Instant release to everyone</div>
-                </div>
+                <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to everyone</div></div>
             </div>
-
-            <!-- 2. Unlisted -->
             <div class="drawer-option-row" id="opt-unlisted" onclick="setVisOption('Unlisted', 'opt-unlisted')">
-                <div>
-                    <strong>Unlisted 🔗</strong>
-                    <div style="font-size:11px; color:#888;">Visible only to people with the link</div>
-                </div>
+                <div><strong>Unlisted 🔗</strong><div style="font-size:11px; color:#888;">Visible only to people with the link</div></div>
             </div>
-
-            <!-- 3. Private -->
             <div class="drawer-option-row" id="opt-private" onclick="setVisOption('Private', 'opt-private')">
-                <div>
-                    <strong>Private 🔒</strong>
-                    <div style="font-size:11px; color:#888;">Only visible to your channel</div>
-                </div>
+                <div><strong>Private 🔒</strong><div style="font-size:11px; color:#888;">Only visible to your channel</div></div>
             </div>
-
-            <!-- 4. Schedule -->
             <div class="drawer-option-row" id="opt-schedule" onclick="toggleScheduleInput()">
-                <div>
-                    <strong>Schedule ⏰</strong>
-                    <div style="font-size:11px; color:#888;">Pick a date to make your video public</div>
-                </div>
+                <div><strong>Schedule ⏰</strong><div style="font-size:11px; color:#888;">Pick a date to make public</div></div>
             </div>
-
-            <!-- Schedule Picker Box -->
             <div class="schedule-calendar-box" id="scheduleBox">
                 <span style="font-size:12px; color:#aaa;">Publish Date & Time:</span>
                 <input type="datetime-local" id="scheduleDateTimeInput">
@@ -857,46 +857,49 @@
         </div>
     </div>
 
-    <!-- Moderation Drawer -->
+    <!-- MODERATION DRAWER -->
     <div class="drawer-scrim" id="moderationDrawer" onclick="if(event.target.id==='moderationDrawer') closeDrawer('moderationDrawer')">
         <div class="drawer-menu-card">
             <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Comment moderation</div>
-            <div class="drawer-option-row" onclick="setModeration('None')"><div><strong>None</strong><div style="font-size:11px; color:#888;">Don't hold any comments</div></div></div>
+            <div class="drawer-option-row" onclick="setModeration('None')"><div><strong>None</strong></div></div>
             <div class="drawer-option-row selected" onclick="setModeration('Basic')"><div><strong>Basic</strong><div style="font-size:11px; color:#888;">Hold potentially inappropriate comments</div></div></div>
-            <div class="drawer-option-row" onclick="setModeration('Strict')"><div><strong>Strict</strong><div style="font-size:11px; color:#888;">Hold broader range of comments</div></div></div>
-            <div class="drawer-option-row" onclick="setModeration('Hold all')"><div><strong>Hold all</strong><div style="font-size:11px; color:#888;">Hold all comments for review</div></div></div>
-        </div>
-    </div>
-
-    <!-- Who can comment Drawer -->
-    <div class="drawer-scrim" id="whoCanCommentDrawer" onclick="if(event.target.id==='whoCanCommentDrawer') closeDrawer('whoCanCommentDrawer')">
-        <div class="drawer-menu-card">
-            <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Who can comment</div>
-            <div class="drawer-option-row selected" onclick="setWhoCanComment('Anyone')"><div><strong>Anyone</strong><div style="font-size:11px; color:#888;">Anyone with a channel</div></div></div>
-            <div class="drawer-option-row" onclick="setWhoCanComment('Subscribers and members')"><div><strong>Subscribers and members</strong><div style="font-size:11px; color:#888;">Only subscribers or paid members</div></div></div>
+            <div class="drawer-option-row" onclick="setModeration('Strict')"><div><strong>Strict</strong></div></div>
         </div>
     </div>
 
     <!-- Upload Progress Modal -->
     <div class="upload-progress-overlay" id="uploadModal">
         <div class="progress-box-card">
-            <span style="font-size:16px; font-weight:700;">Uploading to BTube...</span>
+            <span style="font-size:16px; font-weight:700;" id="txtUploadModalTitle">Uploading to BTube...</span>
             <div class="progress-track">
                 <div class="progress-fill" id="progressFillBar"></div>
             </div>
             <span style="font-size:13px; color:#3ea6ff; font-weight:700;" id="progressPercentage">0%</span>
-            <span style="font-size:11px; color:#888;">Please don't close this tab while processing.</span>
+            <span style="font-size:11px; color:#888;" id="txtUploadModalSub">Running SafeShield & CopyScan validation...</span>
+        </div>
+    </div>
+
+    <!-- SafeShield & CopyScan Modal Alert -->
+    <div class="policy-alert-overlay" id="policyAlertOverlay">
+        <div class="policy-alert-card">
+            <div class="policy-alert-title" id="alertCardTitle">⚠️ Notice</div>
+            <div class="policy-alert-body" id="alertCardMessage">Alert message here.</div>
+            <button class="btn-policy-confirm" id="btnPolicyConfirm" onclick="handlePolicyAlertDismiss()">OK</button>
         </div>
     </div>
 
     <!-- Toast Notification -->
     <div class="toast-pop" id="uploadToast"></div>
 
+    <!-- Load API Bridge -->
+    <script src="../assets/js/api-client.js"></script>
+
     <!-- SCRIPT ENGINE -->
     <script>
         let selectedVideoFile = null;
         let selectedThumbFile = null;
         let currentVisState = "Public";
+        let isBlockedBySafeShield = false;
 
         function showToast(msg) {
             const t = document.getElementById('uploadToast');
@@ -920,7 +923,6 @@
             }
         }
 
-        // File selection
         function handleVideoFileChosen(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -955,7 +957,6 @@
             document.getElementById('txtTitleCount').innerText = `${count}/100`;
         }
 
-        // Visibility Handlers (Public, Unlisted, Private, Schedule)
         function openVisibilityDrawer() { openDrawer('visDrawerScrim'); }
 
         function setVisOption(vis, elId) {
@@ -989,7 +990,6 @@
             showToast('Video scheduled successfully ✓');
         }
 
-        // Audience
         function toggleAudienceSetting() {
             const txt = document.getElementById('txtKidsSetting');
             if (txt.innerText.includes('No')) {
@@ -1001,7 +1001,6 @@
             }
         }
 
-        // Community: Comments Toggle
         function toggleCommentsMaster(isOn) {
             const onRow = document.getElementById('optCommentsOn');
             const offRow = document.getElementById('optCommentsOff');
@@ -1027,12 +1026,6 @@
             document.getElementById('txtModVal').innerText = val;
             closeDrawer('moderationDrawer');
             showToast(`Moderation: ${val}`);
-        }
-
-        function setWhoCanComment(val) {
-            document.getElementById('txtWhoCanVal').innerText = val;
-            closeDrawer('whoCanCommentDrawer');
-            showToast(`Who can comment: ${val}`);
         }
 
         function selectRemixOption(txt, elId) {
@@ -1066,9 +1059,25 @@
             }
         }
 
-        // Publish process
-        function startPublishProcess() {
+        function showAlertModal(title, msg, isBlocked) {
+            isBlockedBySafeShield = isBlocked;
+            document.getElementById('alertCardTitle').innerHTML = isBlocked ? '🛑 SafeShield AI Block' : '⚠️ Potential Limitation';
+            document.getElementById('alertCardTitle').style.color = isBlocked ? '#e50914' : '#f1c40f';
+            document.getElementById('alertCardMessage').innerText = msg;
+            document.getElementById('policyAlertOverlay').style.display = 'flex';
+        }
+
+        function handlePolicyAlertDismiss() {
+            document.getElementById('policyAlertOverlay').style.display = 'none';
+            if (!isBlockedBySafeShield) {
+                window.location.href = 'your-videos.html';
+            }
+        }
+
+        // ================= PUBLISH & SAFESHIELD/COPYSCAN ENGINE =================
+        async function startPublishProcess() {
             const title = document.getElementById('inputVideoTitle').value.trim();
+            const desc = document.getElementById('inputVideoDesc').value.trim();
             if (!title) {
                 showToast('Please enter a video title');
                 return;
@@ -1080,27 +1089,65 @@
             modal.style.display = 'flex';
 
             let progress = 0;
-            const timer = setInterval(() => {
-                progress += Math.floor(Math.random() * 14) + 8;
+            const timer = setInterval(async () => {
+                progress += Math.floor(Math.random() * 16) + 12;
                 if (progress > 100) progress = 100;
                 bar.style.width = progress + '%';
                 percent.innerText = progress + '%';
 
                 if (progress >= 100) {
                     clearInterval(timer);
+
+                    // 1. Prepare video upload payload
+                    const payload = {
+                        title: title,
+                        description: desc,
+                        category: "Music",
+                        video_url: selectedVideoFile ? URL.createObjectURL(selectedVideoFile) : "https://www.w3schools.com/html/mov_bbb.mp4",
+                        thumbnail_url: selectedThumbFile ? URL.createObjectURL(selectedThumbFile) : "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
+                        duration_seconds: 180,
+                        is_shorts: false,
+                        visibility: currentVisState,
+                        audio_hash: title.toLowerCase().includes("banjo") ? "hash_banjo_classical_tune" : "clean_original"
+                    };
+
+                    // 2. Transmit to backend with SafeShield & CopyScan
+                    const result = await BTubeAPI.uploadVideo(payload);
+                    modal.style.display = 'none';
+
+                    // Case A: SafeShield Blocked (NSFW/Vulgar)
+                    if (!result.success) {
+                        showAlertModal(
+                            'SafeShield Blocked',
+                            result.error || 'Video contains inappropriate content violating BTube Guidelines.',
+                            true
+                        );
+                        return;
+                    }
+
+                    // Save local metadata
                     localStorage.setItem('btube_last_edited_title', title);
                     localStorage.setItem('btube_last_edited_vis', currentVisState);
                     if (selectedThumbFile) {
                         localStorage.setItem('btube_temp_edit_thumb', document.getElementById('customThumbPreview').src);
                     }
 
-                    setTimeout(() => {
-                        modal.style.display = 'none';
-                        showToast('Video uploaded successfully ✓');
-                        window.location.href = 'your-videos.html';
-                    }, 400);
+                    // Case B: CopyScan Claim Found
+                    if (result.data && result.data.claim_notice) {
+                        showAlertModal(
+                            'Potential Limitation',
+                            `Claimed content was found in this video (${result.data.claim_notice}). This doesn't affect the video right now, but ad revenue will go to the copyright owner.`,
+                            false
+                        );
+                    } else {
+                        // Case C: 100% Original and Clean
+                        showToast('Video published successfully ✓');
+                        setTimeout(() => {
+                            window.location.href = 'your-videos.html';
+                        }, 500);
+                    }
                 }
-            }, 150);
+            }, 120);
         }
     </script>
 </body>
