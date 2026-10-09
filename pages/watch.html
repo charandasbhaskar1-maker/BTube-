@@ -6,23 +6,25 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>Watch - BTube</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
         
-        /* Video Container */
-        .video-viewport { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:500; }
-        video { width:100%; height:100%; object-fit:contain; background:#000; }
+        .player-box { width:100%; aspect-ratio:16/9; background:#000; position:relative; }
+        video { width:100%; height:100%; object-fit:contain; }
+        
+        .play-overlay-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); z-index:10; cursor:pointer; }
+        .play-circle { width:58px; height:58px; border-radius:50%; background:rgba(229,9,20,0.9); display:flex; align-items:center; justify-content:center; }
+        .play-circle svg { width:28px; height:28px; fill:#fff; margin-left:3px; }
 
         .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
         .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
         .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
 
-        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; scrollbar-width:none; }
-        .action-tray::-webkit-scrollbar { display:none; }
+        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; }
         .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
         .act-pill svg { width:16px; height:16px; fill:#fff; }
 
-        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; margin-top:4px; }
+        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; }
         .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
         .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
         .btn-sub { background:#fff; color:#000; border:none; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
@@ -30,19 +32,21 @@
 </head>
 <body>
 
-    <!-- 1. Video Player Element -->
-    <div class="video-viewport">
-        <video id="mainVideoPlayer" controls playsinline preload="auto">
-            <source id="videoSourceTag" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-            Your browser does not support HTML5 video.
+    <div class="player-box">
+        <video id="vidPlayer" controls playsinline preload="auto">
+            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
         </video>
+        <div class="play-overlay-btn" id="playOverlay" onclick="startPlay()">
+            <div class="play-circle">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+        </div>
     </div>
 
-    <!-- 2. Details & Controls -->
     <div class="watch-details">
-        <h1 class="video-headline" id="watchTitle">Chhattisgarhi Panthi Song Special</h1>
+        <h1 class="video-headline" id="vidTitle">Chhattisgarhi Panthi Song Special</h1>
         <div class="video-meta-row">
-            <span id="watchMeta">210K views • 2 weeks ago</span>
+            <span>210K views • 2 weeks ago</span>
             <span>• #Chhattisgarhi #BTube</span>
         </div>
 
@@ -50,104 +54,56 @@
             <a href="channel.html" class="channel-info">
                 <div class="avatar-c">CB</div>
                 <div>
-                    <div style="font-size:14px; font-weight:700;" id="channelName">Charandas Bhaskar</div>
+                    <div style="font-size:14px; font-weight:700;">Charandas Bhaskar</div>
                     <div style="font-size:11px; color:#aaa;">245 subscribers</div>
                 </div>
             </a>
-            <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
+            <button class="btn-sub" id="btnSub" onclick="toggleSub()">Subscribe</button>
         </div>
 
         <div class="action-tray">
-            <button class="act-pill" id="likeBtn" onclick="toggleLike()">
+            <button class="act-pill" onclick="this.style.color='#e50914'">
                 <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                <span id="likeCount">12K</span>
+                <span>12K</span>
             </button>
             <button class="act-pill">
                 <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
                 <span>Share</span>
             </button>
-            <button class="act-pill">
-                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                <span>Download</span>
-            </button>
         </div>
     </div>
 
     <script>
-        const FALLBACK_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        const player = document.getElementById('vidPlayer');
+        const overlay = document.getElementById('playOverlay');
+
+        function startPlay() {
+            overlay.style.display = 'none';
+            player.play();
+        }
+
+        player.onplay = () => { overlay.style.display = 'none'; };
+        player.onpause = () => { overlay.style.display = 'flex'; };
 
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
-            const vidId = params.get('id');
-            const paramTitle = params.get('title');
-            const paramUrl = params.get('videoUrl');
+            const t = params.get('title');
+            if (t) document.getElementById('vidTitle').innerText = decodeURIComponent(t);
 
-            const player = document.getElementById('mainVideoPlayer');
-            const source = document.getElementById('videoSourceTag');
-
-            // 1. Title Sync
-            if (paramTitle) {
-                document.getElementById('watchTitle').innerText = decodeURIComponent(paramTitle);
-            }
-
-            // 2. Stream Resolution (URL Param -> LocalStorage -> High Speed CDN)
-            let chosenStream = paramUrl ? decodeURIComponent(paramUrl) : null;
-
-            if (!chosenStream && vidId) {
-                try {
-                    const raw = localStorage.getItem('btube_user_videos');
-                    if (raw) {
-                        const list = JSON.parse(raw);
-                        const item = list.find(v => v.id === vidId);
-                        if (item && item.videoUrl) chosenStream = item.videoUrl;
-                        if (item && item.title) document.getElementById('watchTitle').innerText = item.title;
-                    }
-                } catch(e) {}
-            }
-
-            if (!chosenStream) {
-                chosenStream = FALLBACK_STREAM;
-            }
-
-            // 3. Assign & Force Play
-            source.src = chosenStream;
-            player.load();
-
-            // Mobile Browser User Gesture Handling
-            const playPromise = player.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // Mobile audio restrictions ke fallback ke liye muted play
-                    player.muted = true;
-                    player.play();
-                });
-            }
-
-            // User screen touch par audio un-mute & play guarantee
-            document.body.addEventListener('touchstart', () => {
-                if (player.paused) {
-                    player.play();
-                }
-            }, { once: true });
+            // Auto-try play
+            player.play().then(() => {
+                overlay.style.display = 'none';
+            }).catch(() => {
+                // If browser blocks audio autoplay, keep overlay visible for 1-tap start
+                overlay.style.display = 'flex';
+            });
         });
 
         function toggleSub() {
-            const b = document.getElementById('btnSubscribe');
-            if (b.innerText === 'Subscribe') {
-                b.innerText = 'Subscribed';
-                b.style.background = '#333';
-                b.style.color = '#fff';
-            } else {
-                b.innerText = 'Subscribe';
-                b.style.background = '#fff';
-                b.style.color = '#000';
-            }
-        }
-
-        function toggleLike() {
-            const btn = document.getElementById('likeBtn');
-            const icon = btn.querySelector('svg');
-            icon.style.fill = icon.style.fill === 'rgb(229, 9, 20)' ? '#fff' : '#e50914';
+            const b = document.getElementById('btnSub');
+            b.innerText = (b.innerText === 'Subscribe') ? 'Subscribed' : 'Subscribe';
+            b.style.background = (b.innerText === 'Subscribed') ? '#333' : '#fff';
+            b.style.color = (b.innerText === 'Subscribed') ? '#fff' : '#000';
         }
     </script>
 </body>
