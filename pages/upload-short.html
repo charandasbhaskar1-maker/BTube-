@@ -640,243 +640,433 @@
     <script src="../assets/js/api-client.js"></script>
 
     <!-- SCRIPT ENGINE -->
-    <script>
-        let selectedShortFile = null;
-        let selectedCoverFile = null;
-        let currentVisState = "Public";
-        let isBlockedBySafeShield = false;
+<script>
+'use strict';
 
-        function showToast(msg) {
-            const t = document.getElementById('shortToast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
+let selectedShortFile = null;
+let selectedCoverFile = null;
+let currentVisState = "Public";
+let isBlockedBySafeShield = false;
+let shortObjectUrl = null;
+let coverObjectUrl = null;
+let currentSchedule = null;
+
+const SHORTS_KEY = 'btube_user_shorts';
+const VIDEOS_KEY = 'btube_user_videos';
+const DB_NAME = 'btube_media_db';
+const DB_VERSION = 1;
+const STORE_NAME = 'media';
+
+function showToast(msg) {
+    const t = document.getElementById('shortToast');
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => {
+        t.style.display = 'none';
+    }, 2500);
+}
+
+function openDrawer(id) {
+    document.getElementById(id)?.classList.add('open');
+}
+
+function closeDrawer(id) {
+    document.getElementById(id)?.classList.remove('open');
+}
+
+function handleHeaderBack() {
+    if (document.getElementById('stepEditor').style.display === 'flex') {
+        if (confirm('Discard Short? All progress will be lost.')) {
+            releasePreviewUrls();
+            window.location.reload();
+        }
+    } else {
+        window.location.href = 'upload-video.html';
+    }
+}
+
+function releasePreviewUrls() {
+    if (shortObjectUrl) URL.revokeObjectURL(shortObjectUrl);
+    if (coverObjectUrl) URL.revokeObjectURL(coverObjectUrl);
+    shortObjectUrl = null;
+    coverObjectUrl = null;
+}
+
+function getCollection(key) {
+    try {
+        const value = JSON.parse(localStorage.getItem(key) || '[]');
+        return Array.isArray(value) ? value : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCollection(key, list) {
+    localStorage.setItem(key, JSON.stringify(list));
+}
+
+function openMediaDB() {
+    return new Promise((resolve, reject) => {
+        if (!('indexedDB' in window)) {
+            reject(new Error('इस ब्राउज़र में IndexedDB उपलब्ध नहीं है।'));
+            return;
         }
 
-        function openDrawer(id) { document.getElementById(id).classList.add('open'); }
-        function closeDrawer(id) { document.getElementById(id).classList.remove('open'); }
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-        function handleHeaderBack() {
-            if (document.getElementById('stepEditor').style.display === 'flex') {
-                if (confirm('Discard Short? All progress will be lost.')) {
-                    window.location.reload();
-                }
-            } else {
-                window.location.href = 'upload.html';
+        request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            }
+        };
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(
+            request.error || new Error('Media database नहीं खुला।')
+        );
+    });
+}
+
+async function saveMedia(id, file) {
+    const db = await openMediaDB();
+
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+
+        tx.objectStore(STORE_NAME).put({
+            id,
+            blob: file,
+            name: file.name,
+            type: file.type,
+            savedAt: Date.now()
+        });
+
+        tx.oncomplete = () => {
+            db.close();
+            resolve(id);
+        };
+
+        tx.onerror = () => {
+            const error = tx.error;
+            db.close();
+            reject(error || new Error('वीडियो सेव नहीं हुआ।'));
+        };
+
+        tx.onabort = () => {
+            const error = tx.error;
+            db.close();
+            reject(error || new Error('वीडियो सेव करना रद्द हुआ।'));
+        };
+    });
+}
+
+function handleShortFileChosen(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('video/')) {
+        showToast('कृपया वीडियो फ़ाइल चुनें।');
+        e.target.value = '';
+        return;
+    }
+
+    selectedShortFile = file;
+
+    releasePreviewUrls();
+    shortObjectUrl = URL.createObjectURL(file);
+
+    const player = document.getElementById('previewPlayer');
+    player.src = shortObjectUrl;
+    player.style.display = 'block';
+    player.load();
+
+    document.getElementById('customCoverPreview').style.display = 'none';
+    document.getElementById('inputShortTitle').value =
+        file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ') + ' #Shorts';
+
+    document.getElementById('stepPicker').style.display = 'none';
+    document.getElementById('stepEditor').style.display = 'flex';
+    document.getElementById('btnPublish').style.display = 'block';
+
+    updateTitleCount();
+
+    player.onloadedmetadata = () => {
+        if (Number.isFinite(player.duration)) {
+            if (player.duration > 60) {
+                showToast('Short का वीडियो 60 सेकंड से अधिक है।');
             }
         }
+    };
+}
 
-        function handleShortFileChosen(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+function handleCoverSelect(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
 
-            selectedShortFile = file;
-            const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") + " #Shorts";
-            document.getElementById('inputShortTitle').value = rawName;
-            updateTitleCount();
+    if (!file.type.startsWith('image/')) {
+        showToast('कृपया इमेज फ़ाइल चुनें।');
+        return;
+    }
 
-            const player = document.getElementById('previewPlayer');
-            player.src = URL.createObjectURL(file);
+    selectedCoverFile = file;
 
-            document.getElementById('stepPicker').style.display = 'none';
-            document.getElementById('stepEditor').style.display = 'flex';
-            document.getElementById('btnPublish').style.display = 'block';
+    if (coverObjectUrl) URL.revokeObjectURL(coverObjectUrl);
+    coverObjectUrl = URL.createObjectURL(file);
+
+    const cover = document.getElementById('customCoverPreview');
+    cover.src = coverObjectUrl;
+    cover.style.display = 'block';
+
+    document.getElementById('previewPlayer').style.display = 'none';
+    showToast('Short cover updated ✓');
+}
+
+function updateTitleCount() {
+    const input = document.getElementById('inputShortTitle');
+    document.getElementById('txtTitleCount').textContent =
+        `${input.value.length}/100`;
+}
+
+function setVisOption(vis, elId) {
+    document.querySelectorAll('#visDrawerScrim .drawer-option-row')
+        .forEach(row => row.classList.remove('selected'));
+
+    document.getElementById(elId).classList.add('selected');
+    document.getElementById('scheduleBox').style.display = 'none';
+
+    currentVisState = vis;
+    currentSchedule = null;
+    document.getElementById('txtVisValue').textContent = vis;
+
+    closeDrawer('visDrawerScrim');
+    showToast(`Visibility set to ${vis}`);
+}
+
+function toggleScheduleInput() {
+    const box = document.getElementById('scheduleBox');
+    box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+}
+
+function applyScheduleSetting() {
+    const value = document.getElementById('scheduleDateTimeInput').value;
+
+    if (!value || new Date(value).getTime() <= Date.now()) {
+        showToast('भविष्य की तारीख और समय चुनें।');
+        return;
+    }
+
+    currentVisState = 'Scheduled';
+    currentSchedule = new Date(value).toISOString();
+
+    document.getElementById('txtVisValue').textContent =
+        'Scheduled ⏰ (' + new Date(value).toLocaleString() + ')';
+
+    closeDrawer('visDrawerScrim');
+    showToast('Schedule सेव हो गया।');
+}
+
+function toggleAudienceSetting() {
+    const txt = document.getElementById('txtKidsSetting');
+
+    if (txt.textContent.includes('No')) {
+        txt.textContent = 'Yes, made for kids';
+        txt.style.color = '#3ea6ff';
+    } else {
+        txt.textContent = "No, it's not made for kids";
+        txt.style.color = '#aaa';
+    }
+}
+
+function setRemixOption(txt) {
+    document.getElementById('txtRemixValue').textContent = txt;
+
+    document.querySelectorAll('#remixDrawer .drawer-option-row')
+        .forEach(row => row.classList.remove('selected'));
+
+    closeDrawer('remixDrawer');
+    showToast('Remixing preference updated');
+}
+
+function handleTagKey(e) {
+    if (e.key !== 'Enter' && e.key !== ',') return;
+
+    e.preventDefault();
+
+    const input = e.target;
+    const value = input.value.trim().replace(/^#/, '').replace(/,/g, '');
+
+    if (!value) return;
+
+    const wrap = document.getElementById('tagsClusterWrap');
+    const existing = [...wrap.querySelectorAll('.tag-pill-item span:first-child')]
+        .map(el => el.textContent.toLowerCase());
+
+    if (existing.includes('#' + value.toLowerCase())) {
+        input.value = '';
+        return;
+    }
+
+    const pill = document.createElement('div');
+    pill.className = 'tag-pill-item';
+
+    const label = document.createElement('span');
+    label.textContent = '#' + value;
+
+    const remove = document.createElement('span');
+    remove.textContent = '×';
+    remove.style.cursor = 'pointer';
+    remove.onclick = () => pill.remove();
+
+    pill.append(label, remove);
+    wrap.appendChild(pill);
+    input.value = '';
+}
+
+function showAlertModal(title, msg, isBlocked) {
+    isBlockedBySafeShield = isBlocked;
+
+    document.getElementById('alertCardTitle').textContent = title;
+    document.getElementById('alertCardTitle').style.color =
+        isBlocked ? '#e50914' : '#f1c40f';
+
+    document.getElementById('alertCardMessage').textContent = msg;
+    document.getElementById('policyAlertOverlay').style.display = 'flex';
+}
+
+function handlePolicyAlertDismiss() {
+    document.getElementById('policyAlertOverlay').style.display = 'none';
+
+    if (!isBlockedBySafeShield) {
+        window.location.href = 'your-videos.html';
+    }
+}
+
+function getDuration(player) {
+    return Number.isFinite(player.duration) ? Math.round(player.duration) : 0;
+}
+
+function getTags() {
+    return [...document.querySelectorAll(
+        '#tagsClusterWrap .tag-pill-item span:first-child'
+    )].map(el => el.textContent.replace(/^#/, '').trim()).filter(Boolean);
+}
+
+async function startPublishProcess() {
+    const button = document.getElementById('btnPublish');
+    const title = document.getElementById('inputShortTitle').value.trim();
+
+    if (!selectedShortFile) {
+        showToast('पहले वीडियो चुनें।');
+        return;
+    }
+
+    if (!title) {
+        showToast('Short का टाइटल लिखें।');
+        return;
+    }
+
+    if (currentVisState === 'Scheduled' && !currentSchedule) {
+        showToast('Schedule की तारीख चुनें।');
+        return;
+    }
+
+    button.disabled = true;
+
+    const modal = document.getElementById('uploadModal');
+    const bar = document.getElementById('progressFillBar');
+    const percent = document.getElementById('progressPercentage');
+    const sub = document.getElementById('txtUploadModalSub');
+
+    modal.style.display = 'flex';
+    bar.style.width = '10%';
+    percent.textContent = '10%';
+    sub.textContent = 'वीडियो को इस डिवाइस में सेव किया जा रहा है…';
+
+    try {
+        const id = 'short_' + (
+            window.crypto && crypto.randomUUID
+                ? crypto.randomUUID()
+                : Date.now() + '_' + Math.random().toString(36).slice(2)
+        );
+
+        // Video file को IndexedDB में रखें; blob URL को स्थायी URL न मानें।
+        await saveMedia(id, selectedShortFile);
+
+        bar.style.width = '65%';
+        percent.textContent = '65%';
+        sub.textContent = 'Short की जानकारी सेव की जा रही है…';
+
+        const player = document.getElementById('previewPlayer');
+        const coverPreview = document.getElementById('customCoverPreview');
+
+        let duration = getDuration(player);
+
+        const shortRecord = {
+            id,
+            type: 'short',
+            is_shorts: true,
+            title,
+            description: '#Shorts #BTube',
+            category: 'Shorts',
+            visibility: currentVisState,
+            scheduledAt: currentSchedule,
+            videoUrl: '',
+            mediaId: id,
+            thumbnail: selectedCoverFile ? '' : '',
+            thumbnailMediaId: null,
+            duration,
+            duration_seconds: duration,
+            views: '0',
+            age: 'Just now',
+            uploadedAt: new Date().toISOString(),
+            audience: document.getElementById('txtKidsSetting')
+                .textContent.includes('Yes') ? 'kids' : 'general',
+            remix: document.getElementById('txtRemixValue').textContent,
+            tags: getTags()
+        };
+
+        if (selectedCoverFile) {
+            const coverId = id + '_cover';
+            await saveMedia(coverId, selectedCoverFile);
+            shortRecord.thumbnailMediaId = coverId;
+        } else if (coverPreview.src && coverPreview.style.display !== 'none') {
+            shortRecord.thumbnail = coverPreview.src;
         }
 
-        function handleCoverSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // Shorts collection में ही सेव करें।
+        const shorts = getCollection(SHORTS_KEY);
+        shorts.unshift(shortRecord);
+        saveCollection(SHORTS_KEY, shorts);
 
-            selectedCoverFile = file;
-            const coverImg = document.getElementById('customCoverPreview');
-            coverImg.src = URL.createObjectURL(file);
-            coverImg.style.display = 'block';
-            document.getElementById('previewPlayer').style.display = 'none';
-            showToast('Short cover updated ✓');
-        }
+        // पुराने upload code में Shorts गलत तरीके से videos list में जाते थे।
+        // उस collection में नया Short जानबूझकर नहीं जोड़ना है।
 
-        function updateTitleCount() {
-            const count = document.getElementById('inputShortTitle').value.length;
-            document.getElementById('txtTitleCount').innerText = `${count}/100`;
-        }
+        bar.style.width = '100%';
+        percent.textContent = '100%';
+        sub.textContent = 'Short सफलतापूर्वक सेव हो गया।';
 
-        function setVisOption(vis, elId) {
-            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
-            document.getElementById(elId).classList.add('selected');
-            document.getElementById('scheduleBox').style.display = 'none';
+        showToast('Short सेव हो गया ✓');
 
-            currentVisState = vis;
-            document.getElementById('txtVisValue').innerText = vis;
-            closeDrawer('visDrawerScrim');
-            showToast(`Visibility set to ${vis}`);
-        }
+        setTimeout(() => {
+            releasePreviewUrls();
+            window.location.href = 'your-videos.html';
+        }, 600);
 
-        function toggleScheduleInput() {
-            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
-            document.getElementById('opt-schedule').classList.add('selected');
-            const box = document.getElementById('scheduleBox');
-            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        }
+    } catch (error) {
+        console.error('BTube Short save error:', error);
 
-        function applyScheduleSetting() {
-            const dt = document.getElementById('scheduleDateTimeInput').value;
-            if (!dt) {
-                showToast('Please pick a date and time');
-                return;
-            }
-            const dateObj = new Date(dt);
-            currentVisState = "Scheduled";
-            document.getElementById('txtVisValue').innerText = `Scheduled ⏰ (${dateObj.toLocaleDateString()})`;
-            closeDrawer('visDrawerScrim');
-            showToast('Short scheduled successfully ✓');
-        }
+        modal.style.display = 'none';
+        button.disabled = false;
 
-        function toggleAudienceSetting() {
-            const txt = document.getElementById('txtKidsSetting');
-            if (txt.innerText.includes('No')) {
-                txt.innerText = 'Yes, made for kids';
-                txt.style.color = '#3ea6ff';
-            } else {
-                txt.innerText = "No, it's not made for kids";
-                txt.style.color = '#aaa';
-            }
-        }
-
-        function setRemixOption(txt) {
-            document.getElementById('txtRemixValue').innerText = txt;
-            closeDrawer('remixDrawer');
-            showToast('Remixing preference updated');
-        }
-
-        function handleTagKey(e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const val = e.target.value.trim().replace(/^#/, '').replace(/,/g, '');
-                if (val) {
-                    const wrap = document.getElementById('tagsClusterWrap');
-                    const pill = document.createElement('div');
-                    pill.className = 'tag-pill-item';
-                    pill.innerHTML = `<span>#${val}</span><span onclick="this.parentElement.remove()">×</span>`;
-                    wrap.appendChild(pill);
-                    e.target.value = '';
-                }
-            }
-        }
-
-        function showAlertModal(title, msg, isBlocked) {
-            isBlockedBySafeShield = isBlocked;
-            document.getElementById('alertCardTitle').innerHTML = isBlocked ? '🛑 SafeShield AI Block' : '⚠️ Potential Limitation';
-            document.getElementById('alertCardTitle').style.color = isBlocked ? '#e50914' : '#f1c40f';
-            document.getElementById('alertCardMessage').innerText = msg;
-            document.getElementById('policyAlertOverlay').style.display = 'flex';
-        }
-
-        function handlePolicyAlertDismiss() {
-            document.getElementById('policyAlertOverlay').style.display = 'none';
-            if (!isBlockedBySafeShield) {
-                window.location.href = 'your-videos.html';
-            }
-        }
-
-        // ================= FAST YOUTUBE-STYLE CHUNKED STREAMING PUBLISH PIPELINE =================
-        async function startPublishProcess() {
-            const title = document.getElementById('inputShortTitle').value.trim();
-            if (!title) {
-                showToast('Please enter a caption for your Short');
-                return;
-            }
-
-            const modal = document.getElementById('uploadModal');
-            const bar = document.getElementById('progressFillBar');
-            const percent = document.getElementById('progressPercentage');
-            const subText = document.getElementById('txtUploadModalSub');
-
-            modal.style.display = 'flex';
-            subText.innerText = 'Streaming short chunks to server...';
-
-            try {
-                if (selectedShortFile) {
-                    // Fast 2MB chunk slicing
-                    const CHUNK_SIZE = 2 * 1024 * 1024;
-                    const totalChunks = Math.ceil(selectedShortFile.size / CHUNK_SIZE);
-
-                    for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
-                        const start = chunkIdx * CHUNK_SIZE;
-                        const end = Math.min(start + CHUNK_SIZE, selectedShortFile.size);
-                        const chunk = selectedShortFile.slice(start, end);
-
-                        // Real progress calculation up to 85%
-                        const currentPct = Math.round(((chunkIdx + 1) / totalChunks) * 85);
-                        bar.style.width = currentPct + '%';
-                        percent.innerText = currentPct + '%';
-
-                        if (window.BTubeAPI && typeof fetch === 'function') {
-                            await fetch(`${window.location.origin}/api/videos/upload-chunk`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-Chunk-Index': chunkIdx,
-                                    'X-Total-Chunks': totalChunks,
-                                    'X-Is-Short': 'true',
-                                    'X-Video-Title': encodeURIComponent(title)
-                                },
-                                body: chunk
-                            }).catch(() => {});
-                        }
-                    }
-                }
-
-                // Background AI Scan handoff (85% -> 100%)
-                subText.innerText = 'Running SafeShield & CopyScan checks...';
-                bar.style.width = '100%';
-                percent.innerText = '100%';
-
-                const payload = {
-                    title: title,
-                    description: "#Shorts #BTube",
-                    category: "Shorts",
-                    video_url: selectedShortFile ? URL.createObjectURL(selectedShortFile) : "https://www.w3schools.com/html/mov_bbb.mp4",
-                    thumbnail_url: selectedCoverFile ? URL.createObjectURL(selectedCoverFile) : "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400",
-                    duration_seconds: 45,
-                    is_shorts: true,
-                    visibility: currentVisState,
-                    audio_hash: title.toLowerCase().includes("banjo") ? "hash_banjo_classical_tune" : "clean_original"
-                };
-
-                const result = await BTubeAPI.uploadVideo(payload);
-                modal.style.display = 'none';
-
-                // SafeShield Block
-                if (!result.success) {
-                    showAlertModal('SafeShield Blocked', result.error || 'Short contains inappropriate content violating BTube Guidelines.', true);
-                    return;
-                }
-
-                // Store metadata locally
-                localStorage.setItem('btube_last_edited_title', title);
-                localStorage.setItem('btube_last_edited_vis', currentVisState);
-
-                // CopyScan Claim Notice
-                if (result.data && result.data.claim_notice) {
-                    showAlertModal(
-                        'Potential Limitation',
-                        `Claimed content was found in this Short (${result.data.claim_notice}). This doesn't affect visibility, but ad revenue goes to the copyright owner.`,
-                        false
-                    );
-                } else {
-                    showToast('Short uploaded successfully ✓');
-                    setTimeout(() => {
-                        window.location.href = 'your-videos.html';
-                    }, 400);
-                }
-
-            } catch (err) {
-                modal.style.display = 'none';
-                showToast('Short saved to local feed ✓');
-                setTimeout(() => {
-                    window.location.href = 'your-videos.html';
-                }, 400);
-            }
-        }
-    </script>
+        showToast(
+            error && error.name === 'QuotaExceededError'
+                ? 'डिवाइस की स्टोरेज भर गई है।'
+                : 'Short सेव नहीं हुआ। दोबारा कोशिश करें।'
+        );
+    }
+}
+</script>
 </body>
 </html>
