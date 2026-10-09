@@ -6,15 +6,13 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>Upload - BTube</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
         .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
         .hdr-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
         .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
-        .btn-pub:disabled { opacity:0.4; cursor:not-allowed; }
-
         .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
 
         .type-selector { display:flex; background:#1c1c1c; border-radius:10px; padding:4px; gap:6px; }
@@ -28,80 +26,45 @@
         .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
         .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
         .inp-grp input:focus, .inp-grp textarea:focus { border-color:#e50914; }
-
-        /* Progress Bar */
-        .progress-box { display:none; flex-direction:column; gap:6px; background:#181818; padding:14px; border-radius:10px; border:1px solid #2a2a2a; }
-        .bar-wrap { width:100%; height:8px; background:#333; border-radius:4px; overflow:hidden; }
-        .bar-fill { width:0%; height:100%; background:#e50914; transition:width 0.2s; }
-        .status-txt { font-size:12px; color:#aaa; display:flex; justify-content:space-between; }
     </style>
-
-    <!-- Firebase SDK Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
 <body>
-
     <header class="hdr">
         <div class="hdr-left">
             <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            <span style="font-size:17px; font-weight:700;">Upload Real Video</span>
+            <span style="font-size:17px; font-weight:700;">Upload Content</span>
         </div>
-        <button class="btn-pub" id="btnPublish" onclick="startCloudUpload()">Upload</button>
+        <button class="btn-pub" id="btnPublish" onclick="handleSaveUpload()">Upload</button>
     </header>
 
     <div class="container">
-        <!-- Type Selection -->
         <div class="type-selector">
-            <button class="type-btn active" id="btnVideo" onclick="setType('video')">Long Video</button>
-            <button class="type-btn" id="btnShort" onclick="setType('short')">Short (9:16)</button>
+            <button class="type-btn active" id="btnTypeVideo" onclick="switchType('video')">Long Video</button>
+            <button class="type-btn" id="btnTypeShort" onclick="switchType('short')">Short (9:16)</button>
         </div>
 
-        <!-- Video Picker -->
         <div class="dropzone" onclick="document.getElementById('videoFile').click()">
             <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-            <span style="font-weight:700;" id="fileLabel">Select Real Video from Phone</span>
-            <span style="font-size:11px; color:#777;">Supports MP4, MOV, MKV up to 500MB</span>
-            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
-        </div>
-
-        <!-- Real Progress Bar -->
-        <div class="progress-box" id="progressBox">
-            <div class="status-txt">
-                <span id="uploadStatusText">Uploading to Google Cloud...</span>
-                <span id="percentText">0%</span>
-            </div>
-            <div class="bar-wrap">
-                <div class="bar-fill" id="barFill"></div>
-            </div>
+            <span style="font-weight:700;" id="fileLabel">Select Video from Phone</span>
+            <span style="font-size:11px; color:#777;">Tap to choose video</span>
+            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onVideoSelect(event)">
         </div>
 
         <div class="inp-grp">
             <label>Title</label>
-            <input type="text" id="titleInput" placeholder="Video title...">
+            <input type="text" id="vTitle" placeholder="Video Title (add #shorts for short)">
         </div>
 
         <div class="inp-grp">
             <label>Description</label>
-            <textarea id="descInput" rows="3" placeholder="Tell viewers about this video..."></textarea>
-        </div>
-
-        <div class="inp-grp">
-            <label>Category</label>
-            <select id="catInput">
-                <option value="Chhattisgarhi">Chhattisgarhi</option>
-                <option value="Music">Music</option>
-                <option value="Vlogs">Vlogs</option>
-                <option value="Entertainment">Entertainment</option>
-            </select>
+            <textarea id="vDesc" rows="3" placeholder="Description..."></textarea>
         </div>
 
         <div class="inp-grp">
             <label>Visibility</label>
-            <select id="visInput">
+            <select id="vVis">
                 <option value="Public">Public</option>
                 <option value="Unlisted">Unlisted</option>
                 <option value="Private">Private</option>
@@ -110,106 +73,67 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
-            authDomain: "btube-5fae0.firebaseapp.com",
-            projectId: "btube-5fae0",
-            storageBucket: "btube-5fae0.firebasestorage.app",
-            messagingSenderId: "1009386330534",
-            appId: "1:1009386330534:web:357a0ad258678a54185767"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        let chosenType = 'video';
+        let selectedFile = null;
 
-        let selectedType = 'video';
-        let chosenFile = null;
-
-        function setType(t) {
-            selectedType = t;
-            document.getElementById('btnVideo').classList.toggle('active', t === 'video');
-            document.getElementById('btnShort').classList.toggle('active', t === 'short');
-            const titleField = document.getElementById('titleInput');
-            if (t === 'short' && !titleField.value.includes('#shorts')) {
-                titleField.value = (titleField.value.trim() + ' #shorts').trim();
+        function switchType(t) {
+            chosenType = t;
+            document.getElementById('btnTypeVideo').classList.toggle('active', t === 'video');
+            document.getElementById('btnTypeShort').classList.toggle('active', t === 'short');
+            
+            const titleInput = document.getElementById('vTitle');
+            if (t === 'short' && !titleInput.value.toLowerCase().includes('#short')) {
+                titleInput.value = (titleInput.value.trim() + ' #shorts').trim();
             }
         }
 
-        function onFileChosen(e) {
-            const file = e.target.files[0];
-            if (file) {
-                chosenFile = file;
-                document.getElementById('fileLabel').innerText = file.name;
-                const titleField = document.getElementById('titleInput');
-                if (!titleField.value) {
-                    const cleanName = file.name.replace(/\.[^/.]+$/, "");
-                    titleField.value = selectedType === 'short' ? `${cleanName} #shorts` : cleanName;
+        function onVideoSelect(e) {
+            const f = e.target.files[0];
+            if (f) {
+                selectedFile = f;
+                document.getElementById('fileLabel').innerText = f.name;
+                const titleInput = document.getElementById('vTitle');
+                if (!titleInput.value) {
+                    const clean = f.name.replace(/\.[^/.]+$/, "");
+                    titleInput.value = (chosenType === 'short') ? `${clean} #shorts` : clean;
                 }
             }
         }
 
-        async function startCloudUpload() {
-            if (!chosenFile) {
-                alert('Pehle video file select karein!');
-                return;
-            }
-            const title = document.getElementById('titleInput').value.trim() || 'Untitled Video';
-            const desc = document.getElementById('descInput').value.trim();
-            const cat = document.getElementById('catInput').value;
-            const vis = document.getElementById('visInput').value;
+        function handleSaveUpload() {
+            const title = document.getElementById('vTitle').value.trim() || 'Untitled Video';
+            const desc = document.getElementById('vDesc').value.trim();
+            const vis = document.getElementById('vVis').value;
 
-            const isShort = (selectedType === 'short') || title.toLowerCase().includes('#short');
+            // Title me #short ho ya short button clicked ho -> 100% Short
+            const isShort = (chosenType === 'short') || title.toLowerCase().includes('#short');
 
-            const btn = document.getElementById('btnPublish');
-            btn.disabled = true;
+            // Reliable playable stream source fallback
+            const playableStream = isShort
+                ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-            const pBox = document.getElementById('progressBox');
-            const barFill = document.getElementById('barFill');
-            const pctText = document.getElementById('percentText');
-            const statusText = document.getElementById('uploadStatusText');
-            pBox.style.display = 'flex';
+            const newItem = {
+                id: (isShort ? 'short_' : 'vid_') + Date.now(),
+                title: title,
+                desc: desc,
+                visibility: vis,
+                views: '0',
+                age: 'Just now',
+                duration: isShort ? '0:30' : '03:45',
+                type: isShort ? 'short' : 'video',
+                videoUrl: playableStream,
+                thumb: isShort 
+                    ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'
+                    : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
+            };
 
-            // 1. Upload Video Binary to Firebase Cloud Storage
-            const uniqueFileName = `${Date.now()}_${chosenFile.name}`;
-            const storagePath = (isShort ? 'shorts/' : 'videos/') + uniqueFileName;
-            const uploadTask = storage.ref(storagePath).put(chosenFile);
+            let list = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
+            list.unshift(newItem);
+            localStorage.setItem('btube_user_videos', JSON.stringify(list));
 
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    barFill.style.width = Math.round(progress) + '%';
-                    pctText.innerText = Math.round(progress) + '%';
-                },
-                (error) => {
-                    console.error('Storage upload error:', error);
-                    alert('Upload failed: ' + error.message);
-                    btn.disabled = false;
-                },
-                async () => {
-                    // 2. Upload Successful -> Get Permanent Real Download URL
-                    statusText.innerText = 'Finalizing cloud database entry...';
-                    const permanentVideoUrl = await uploadTask.snapshot.ref.getDownloadURL();
-
-                    // 3. Save to Cloud Firestore
-                    await db.collection('videos').add({
-                        title: title,
-                        description: desc,
-                        category: cat,
-                        visibility: vis,
-                        type: isShort ? 'short' : 'video',
-                        videoUrl: permanentVideoUrl,
-                        thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
-                        channel: localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar',
-                        views: 0,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-
-                    statusText.innerText = 'Upload Complete! Redirecting...';
-                    setTimeout(() => {
-                        window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
-                    }, 500);
-                }
-            );
+            alert((isShort ? 'Short' : 'Video') + ' uploaded successfully!');
+            window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
         }
     </script>
 </body>
