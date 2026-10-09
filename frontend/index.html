@@ -8,11 +8,63 @@
     <title>BTube</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- PWA Setup (Root Manifest & Fullscreen Mode) -->
+    <!-- PWA Setup -->
     <link rel="manifest" href="../manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
+
+    <style>
+        .feed-loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+            color: #aaa;
+            font-size: 13px;
+            gap: 10px;
+        }
+        .empty-feed-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+            gap: 12px;
+            color: #888888;
+        }
+        .empty-feed-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #1c1c1c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .empty-feed-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: #e50914;
+        }
+        .btn-first-upload {
+            background: #e50914;
+            color: #ffffff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-top: 6px;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,18 +81,12 @@
         </a>
 
         <div class="bt-header-icons">
-            <!-- Cast Page Link -->
             <a href="../pages/cast.html" class="header-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </a>
-
-            <!-- Notifications Page Link -->
             <a href="../pages/notifications.html" class="header-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span class="badge-counter">3</span>
             </a>
-
-            <!-- Search Page Link -->
             <a href="../pages/search.html" class="header-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </a>
@@ -56,108 +102,35 @@
         <button class="cat-pill" onclick="filterFeed('Tech', this)">Tech</button>
     </nav>
 
-    <!-- 3. MAIN VIDEO FEED -->
+    <!-- 3. REAL VIDEO & SHORTS FEED AREA -->
     <main class="video-stream-feed" id="videoFeedArea">
 
-        <!-- Dynamic Slot for User Uploaded Video -->
-        <article class="feed-video-card" id="userUploadedVideoCard" data-cat="Music Chhattisgarhi All" style="display:none;">
-            <a href="../pages/watch.html" id="userUploadedLink" class="video-thumb-frame">
-                <img id="userUploadedThumb" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Video">
-                <span class="duration-tag">03:15</span>
-            </a>
-            <div class="video-details-row">
-                <a href="../pages/channel.html" class="creator-circle-avatar" id="userUploadedAvatar" style="background:#e50914; text-decoration:none;">CB</a>
-                <div class="details-column">
-                    <a href="../pages/watch.html" id="userUploadedTitle" class="card-title-text" style="text-decoration:none; color:#fff;">
-                        Uploaded Video Title
-                    </a>
-                    <span class="card-meta-text" id="userUploadedMeta">Charandas Bhaskar • 1 view • Just now</span>
-                </div>
-            </div>
-        </article>
+        <!-- Realtime Loader -->
+        <div class="feed-loading-spinner" id="feedLoading">
+            <span>Loading videos from Cloud Firestore...</span>
+        </div>
 
-        <!-- Card 1 -->
-        <article class="feed-video-card" data-cat="Chhattisgarhi Music">
-            <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="video-thumb-frame">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Video">
-                <span class="duration-tag">05:42</span>
-            </a>
-            <div class="video-details-row">
-                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#e50914; text-decoration:none;">CB</a>
-                <div class="details-column">
-                    <a href="../pages/watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="card-title-text" style="text-decoration:none; color:#fff;">
-                        Chhattisgarhi Panthi Song • Special Cultural Video 2026
-                    </a>
-                    <span class="card-meta-text">Charandas Bhaskar • 210K views • 2 weeks ago</span>
-                </div>
-            </div>
-        </article>
-
-        <!-- Shorts Shelf -->
-        <section class="shorts-shelf" id="shortsContainer">
+        <!-- Real Shorts Shelf (Dynamic from Firebase) -->
+        <section class="shorts-shelf" id="shortsContainer" style="display:none;">
             <div class="shorts-shelf-title">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
                 <span>Shorts</span>
             </div>
-
-            <div class="shorts-slider">
-                <a href="../pages/shorts.html" class="short-box-card">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600" alt="Short 1">
-                    <div class="short-box-overlay">
-                        <span class="short-box-title">Panthi dholak beat practice! 🔥</span>
-                        <span class="short-box-views">142K views</span>
-                    </div>
-                </a>
-                <a href="../pages/shorts.html" class="short-box-card">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600" alt="Short 2">
-                    <div class="short-box-overlay">
-                        <span class="short-box-title">Typewriter Banjo electric test ⚡</span>
-                        <span class="short-box-views">88K views</span>
-                    </div>
-                </a>
-                <a href="../pages/shorts.html" class="short-box-card">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600" alt="Short 3">
-                    <div class="short-box-overlay">
-                        <span class="short-box-title">Early morning village vibe 🌾</span>
-                        <span class="short-box-views">210K views</span>
-                    </div>
-                </a>
-            </div>
+            <div class="shorts-slider" id="dynamicShortsSlider"></div>
         </section>
 
-        <!-- Card 2 -->
-        <article class="feed-video-card" data-cat="Tech Music">
-            <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="video-thumb-frame">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Video">
-                <span class="duration-tag">14:10</span>
-            </a>
-            <div class="video-details-row">
-                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#3ea6ff; text-decoration:none;">DH</a>
-                <div class="details-column">
-                    <a href="../pages/watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="card-title-text" style="text-decoration:none; color:#fff;">
-                        Typewriter Banjo with Magnetic Pickups Full Making Guide
-                    </a>
-                    <span class="card-meta-text">Dhun AI • 45K views • 1 day ago</span>
-                </div>
-            </div>
-        </article>
+        <!-- Real Long Videos List -->
+        <div id="dynamicVideosContainer"></div>
 
-        <!-- Card 3 -->
-        <article class="feed-video-card" data-cat="Vlogs">
-            <a href="../pages/watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="video-thumb-frame">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Video">
-                <span class="duration-tag">06:25</span>
-            </a>
-            <div class="video-details-row">
-                <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#2ecc71; text-decoration:none;">BV</a>
-                <div class="details-column">
-                    <a href="../pages/watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="card-title-text" style="text-decoration:none; color:#fff;">
-                        Morning Commute & Village Lifestyle Daily Vlog #42
-                    </a>
-                    <span class="card-meta-text">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
-                </div>
+        <!-- Empty State (Only if Cloud Database has 0 videos) -->
+        <div class="empty-feed-state" id="emptyStateBox">
+            <div class="empty-feed-icon">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
             </div>
-        </article>
+            <h3 style="color:#ffffff; font-size:16px;">No Real Videos Yet</h3>
+            <p style="font-size:12px;">All dummy videos have been removed. Upload real videos to your Firebase cloud!</p>
+            <a href="../pages/upload.html" class="btn-first-upload">+ Upload Video</a>
+        </div>
 
     </main>
 
@@ -184,12 +157,11 @@
         </a>
     </nav>
 
-    <!-- API Client & Engine -->
-    <script src="../assets/js/api-client.js"></script>
-
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            // 1. Sync User Avatar Initials
+        let allRealFeedItems = [];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Channel Avatar Initial Sync
             const savedName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
             const parts = savedName.trim().split(' ');
             let inits = parts[0][0];
@@ -197,35 +169,93 @@
             const bottomNavInits = document.getElementById('bottomNavInits');
             if (bottomNavInits) bottomNavInits.innerText = inits.toUpperCase();
 
-            // 2. Show uploaded video at top of feed if public
-            const lastUploadedTitle = localStorage.getItem('btube_last_edited_title');
-            const lastUploadedVis = localStorage.getItem('btube_last_edited_vis') || 'Public';
-            const lastUploadedThumb = localStorage.getItem('btube_temp_edit_thumb');
-
-            if (lastUploadedTitle && lastUploadedVis === 'Public') {
-                const uploadCard = document.getElementById('userUploadedVideoCard');
-                if (uploadCard) {
-                    uploadCard.style.display = 'flex';
-                    document.getElementById('userUploadedTitle').innerText = lastUploadedTitle;
-                    document.getElementById('userUploadedMeta').innerText = `${savedName} • 1 view • Just now`;
-                    document.getElementById('userUploadedAvatar').innerText = inits.toUpperCase();
-                    if (lastUploadedThumb) {
-                        document.getElementById('userUploadedThumb').src = lastUploadedThumb;
-                    }
-                    const watchUrl = `../pages/watch.html?title=${encodeURIComponent(lastUploadedTitle)}&channel=${encodeURIComponent(savedName)}`;
-                    document.getElementById('userUploadedLink').href = watchUrl;
-                    document.getElementById('userUploadedTitle').href = watchUrl;
-                }
-            }
+            // Fetch Real Videos from Firebase
+            await loadFirebaseRealFeed();
         });
+
+        async function loadFirebaseRealFeed() {
+            const loading = document.getElementById('feedLoading');
+            const vContainer = document.getElementById('dynamicVideosContainer');
+            const sShelf = document.getElementById('shortsContainer');
+            const sSlider = document.getElementById('dynamicShortsSlider');
+            const emptyBox = document.getElementById('emptyStateBox');
+
+            try {
+                // Fetch directly via window.BTubeAPI from Firestore
+                allRealFeedItems = await window.BTubeAPI.getFeed('all');
+                loading.style.display = 'none';
+
+                if (!allRealFeedItems || allRealFeedItems.length === 0) {
+                    emptyBox.style.display = 'flex';
+                    return;
+                }
+
+                emptyBox.style.display = 'none';
+                vContainer.innerHTML = '';
+                sSlider.innerHTML = '';
+
+                const realLongVideos = allRealFeedItems.filter(i => (i.type || 'video') === 'video');
+                const realShorts = allRealFeedItems.filter(i => (i.type || 'video') === 'short');
+
+                // 1. Render Real Shorts Shelf
+                if (realShorts.length > 0) {
+                    sShelf.style.display = 'block';
+                    realShorts.forEach(s => {
+                        const card = document.createElement('a');
+                        card.className = 'short-card';
+                        card.href = `../pages/shorts.html?id=${s.id}`;
+                        card.innerHTML = `
+                            <img src="${s.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600'}" alt="${s.title}">
+                            <div class="short-card-overlay">
+                                <span class="short-card-title">${s.title}</span>
+                                <span class="short-card-views">${s.views || 0} views</span>
+                            </div>
+                        `;
+                        sSlider.appendChild(card);
+                    });
+                } else {
+                    sShelf.style.display = 'none';
+                }
+
+                // 2. Render Real Long Videos
+                realLongVideos.forEach(v => {
+                    if (v.visibility === 'Private') return;
+
+                    const chName = v.channel || 'Charandas Bhaskar';
+                    const chInits = chName.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
+                    const watchUrl = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}&title=${encodeURIComponent(v.title || '')}&channel=${encodeURIComponent(chName)}`;
+
+                    const videoCard = document.createElement('article');
+                    videoCard.className = 'feed-video-card';
+                    videoCard.setAttribute('data-cat', `All ${v.category || 'Chhattisgarhi Music'}`);
+                    videoCard.innerHTML = `
+                        <a href="${watchUrl}" class="video-thumb-frame">
+                            <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}" alt="${v.title}">
+                            <span class="duration-tag">${v.duration || '03:15'}</span>
+                        </a>
+                        <div class="video-details-row">
+                            <a href="../pages/channel.html" class="creator-circle-avatar" style="background:#e50914; text-decoration:none;">${chInits}</a>
+                            <div class="details-column">
+                                <a href="${watchUrl}" class="card-title-text" style="text-decoration:none; color:#fff;">
+                                    ${v.title}
+                                </a>
+                                <span class="card-meta-text">${chName} • ${v.views || 0} views • Realtime</span>
+                            </div>
+                        </div>
+                    `;
+                    vContainer.appendChild(videoCard);
+                });
+
+            } catch (err) {
+                loading.innerText = 'Failed to load cloud feed. Please check connection.';
+            }
+        }
 
         function filterFeed(cat, btn) {
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
 
             const cards = document.querySelectorAll('.feed-video-card');
-            const shorts = document.getElementById('shortsContainer');
-
             cards.forEach(card => {
                 const itemCat = card.getAttribute('data-cat') || '';
                 if (cat === 'All' || itemCat.toLowerCase().includes(cat.toLowerCase())) {
@@ -233,19 +263,6 @@
                 } else {
                     card.style.display = 'none';
                 }
-            });
-
-            if (shorts) {
-                shorts.style.display = (cat === 'All' || cat === 'Music') ? 'flex' : 'none';
-            }
-        }
-
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('../sw.js')
-                    .then(reg => console.log('BTube Service Worker Registered'))
-                    .catch(err => console.log('Service Worker Failed', err));
             });
         }
     </script>
