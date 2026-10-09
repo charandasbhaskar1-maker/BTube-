@@ -9,101 +9,163 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
         
-        .player-box { width:100%; aspect-ratio:16/9; background:#000; position:relative; }
+        .video-box { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:100; }
         video { width:100%; height:100%; object-fit:contain; }
-        
-        .play-overlay-btn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3); z-index:10; cursor:pointer; }
-        .play-circle { width:58px; height:58px; border-radius:50%; background:rgba(229,9,20,0.9); display:flex; align-items:center; justify-content:center; }
-        .play-circle svg { width:28px; height:28px; fill:#fff; margin-left:3px; }
 
-        .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
-        .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
-        .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
+        .details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+        .title { font-size:16px; font-weight:700; line-height:1.35; }
+        .meta { font-size:12px; color:#aaa; display:flex; gap:8px; }
 
-        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; }
-        .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
-        .act-pill svg { width:16px; height:16px; fill:#fff; }
+        .ch-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; }
+        .ch-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
+        .avatar { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+        .sub-btn { background:#fff; color:#000; border:none; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
 
-        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; }
-        .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
-        .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
-        .btn-sub { background:#fff; color:#000; border:none; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
+        .actions { display:flex; gap:10px; overflow-x:auto; padding:4px 0; }
+        .pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
+        .pill svg { width:16px; height:16px; fill:#fff; }
+
+        /* Comments Section */
+        .comments-box { margin-top:10px; background:#181818; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+        .comment-inp-row { display:flex; gap:8px; }
+        .comment-inp-row input { flex:1; background:#0f0f0f; border:1px solid #333; border-radius:18px; padding:8px 14px; color:#fff; font-size:13px; outline:none; }
+        .comment-inp-row button { background:#e50914; color:#fff; border:none; padding:8px 14px; border-radius:18px; font-weight:700; font-size:12px; cursor:pointer; }
+        .comment-item { display:flex; gap:10px; font-size:12px; padding:6px 0; border-bottom:1px solid #222; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-    <div class="player-box">
-        <video id="vidPlayer" controls playsinline preload="auto">
-            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+    <div class="video-box">
+        <video id="player" controls playsinline autoplay preload="auto">
+            Your browser does not support video.
         </video>
-        <div class="play-overlay-btn" id="playOverlay" onclick="startPlay()">
-            <div class="play-circle">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-        </div>
     </div>
 
-    <div class="watch-details">
-        <h1 class="video-headline" id="vidTitle">Chhattisgarhi Panthi Song Special</h1>
-        <div class="video-meta-row">
-            <span>210K views • 2 weeks ago</span>
-            <span>• #Chhattisgarhi #BTube</span>
+    <div class="details">
+        <h1 class="title" id="vTitle">Loading Real Video...</h1>
+        <div class="meta">
+            <span id="vViews">0 views</span> • <span id="vAge">Cloud Realtime</span>
         </div>
 
-        <div class="channel-strip">
-            <a href="channel.html" class="channel-info">
-                <div class="avatar-c">CB</div>
+        <div class="ch-row">
+            <a href="channel.html" class="ch-info">
+                <div class="avatar" id="chAvatar">CB</div>
                 <div>
-                    <div style="font-size:14px; font-weight:700;">Charandas Bhaskar</div>
-                    <div style="font-size:11px; color:#aaa;">245 subscribers</div>
+                    <div style="font-weight:700; font-size:14px;" id="chName">Charandas Bhaskar</div>
+                    <div style="font-size:11px; color:#aaa;">Official Creator</div>
                 </div>
             </a>
-            <button class="btn-sub" id="btnSub" onclick="toggleSub()">Subscribe</button>
+            <button class="sub-btn" id="subBtn" onclick="toggleSub()">Subscribe</button>
         </div>
 
-        <div class="action-tray">
-            <button class="act-pill" onclick="this.style.color='#e50914'">
+        <div class="actions">
+            <button class="pill" id="likeBtn" onclick="toggleLike()">
                 <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                <span>12K</span>
+                <span id="likeCount">Like</span>
             </button>
-            <button class="act-pill">
+            <button class="pill">
                 <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
                 <span>Share</span>
             </button>
         </div>
+
+        <!-- Real Comments -->
+        <div class="comments-box">
+            <div style="font-weight:700; font-size:13px;">Comments</div>
+            <div class="comment-inp-row">
+                <input type="text" id="commentText" placeholder="Add a public comment...">
+                <button onclick="postComment()">Post</button>
+            </div>
+            <div id="commentsList">
+                <div style="font-size:12px; color:#777;">Be the first to comment!</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const player = document.getElementById('vidPlayer');
-        const overlay = document.getElementById('playOverlay');
+        const firebaseConfig = {
+            apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
+            authDomain: "btube-5fae0.firebaseapp.com",
+            projectId: "btube-5fae0",
+            storageBucket: "btube-5fae0.firebasestorage.app",
+            messagingSenderId: "1009386330534",
+            appId: "1:1009386330534:web:357a0ad258678a54185767"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        function startPlay() {
-            overlay.style.display = 'none';
-            player.play();
-        }
+        const params = new URLSearchParams(window.location.search);
+        const docId = params.get('id');
 
-        player.onplay = () => { overlay.style.display = 'none'; };
-        player.onpause = () => { overlay.style.display = 'flex'; };
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (!docId) return;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const t = params.get('title');
-            if (t) document.getElementById('vidTitle').innerText = decodeURIComponent(t);
+            const doc = await db.collection('videos').doc(docId).get();
+            if (doc.exists) {
+                const data = doc.data();
+                document.getElementById('vTitle').innerText = data.title;
+                document.getElementById('chName').innerText = data.channel || 'Charandas Bhaskar';
+                document.getElementById('vViews').innerText = `${data.views || 0} views`;
 
-            // Auto-try play
-            player.play().then(() => {
-                overlay.style.display = 'none';
-            }).catch(() => {
-                // If browser blocks audio autoplay, keep overlay visible for 1-tap start
-                overlay.style.display = 'flex';
-            });
+                const player = document.getElementById('player');
+                player.src = data.videoUrl;
+                player.load();
+                player.play().catch(() => {
+                    player.muted = true;
+                    player.play();
+                });
+
+                // Increment real views on cloud
+                db.collection('videos').doc(docId).update({
+                    views: firebase.firestore.FieldValue.increment(1)
+                });
+
+                loadComments();
+            }
         });
 
+        async function loadComments() {
+            const snap = await db.collection('videos').doc(docId).collection('comments').orderBy('createdAt', 'desc').get();
+            const list = document.getElementById('commentsList');
+            if (snap.empty) return;
+            list.innerHTML = '';
+            snap.forEach(c => {
+                const item = c.data();
+                const div = document.createElement('div');
+                div.className = 'comment-item';
+                div.innerHTML = `<strong>${item.user || 'User'}:</strong> <span>${item.text}</span>`;
+                list.appendChild(div);
+            });
+        }
+
+        async function postComment() {
+            const input = document.getElementById('commentText');
+            const txt = input.value.trim();
+            if (!txt) return;
+            await db.collection('videos').doc(docId).collection('comments').add({
+                user: 'Charandas Bhaskar',
+                text: txt,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            input.value = '';
+            loadComments();
+        }
+
         function toggleSub() {
-            const b = document.getElementById('btnSub');
-            b.innerText = (b.innerText === 'Subscribe') ? 'Subscribed' : 'Subscribe';
-            b.style.background = (b.innerText === 'Subscribed') ? '#333' : '#fff';
-            b.style.color = (b.innerText === 'Subscribed') ? '#fff' : '#000';
+            const b = document.getElementById('subBtn');
+            b.innerText = b.innerText === 'Subscribe' ? 'Subscribed' : 'Subscribe';
+            b.style.background = b.innerText === 'Subscribed' ? '#333' : '#fff';
+            b.style.color = b.innerText === 'Subscribed' ? '#fff' : '#000';
+        }
+
+        function toggleLike() {
+            const btn = document.getElementById('likeBtn');
+            const svg = btn.querySelector('svg');
+            svg.style.fill = svg.style.fill === 'rgb(229, 9, 20)' ? '#fff' : '#e50914';
         }
     </script>
 </body>
