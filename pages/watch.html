@@ -577,17 +577,17 @@
 </head>
 <body>
 
-    <!-- 1. VIDEO PLAYER -->
+    <!-- 1. VIDEO PLAYER (Linked to Range-Header Streaming Engine) -->
     <div class="player-container">
         <video id="mainVideoPlayer" controls autoplay playsinline poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4">
+            <source id="videoPlayerSrc" src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4">
         </video>
     </div>
 
     <!-- 2. VIDEO INFO & ACTIONS -->
     <section class="video-meta-section">
         <h1 class="video-title" id="pageVideoTitle">Chhattisgarhi Panthi Song • Special Cultural Video 2026</h1>
-        <div class="video-views-row">210K views • 2 weeks ago • #BTube #Culture</div>
+        <div class="video-views-row" id="pageViewsRow">210K views • 2 weeks ago • #BTube #Culture</div>
 
         <!-- Channel Row with Subscribe & Bell Icon -->
         <div class="channel-action-row">
@@ -603,7 +603,6 @@
             <div class="sub-wrap-btn is-subscribed" id="subWrapBtn">
                 <button class="btn-sub-text" id="subBtnText" onclick="handleSubscribeClick()">Subscribed</button>
                 <button class="btn-sub-bell" id="bellIconBtn" onclick="openBellMenu()">
-                    <!-- All Notifications Ringing Bell Icon -->
                     <svg id="bellSvg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                 </button>
             </div>
@@ -650,13 +649,13 @@
         </div>
         <div class="comments-snippet">
             <div style="width:22px; height:22px; border-radius:50%; background:#3ea6ff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">R</div>
-            <span>Jay Satnam bhaiya! Bahut sughar geet he...</span>
+            <span id="cmtPreviewSnippet">Jay Satnam bhaiya! Bahut sughar geet he...</span>
         </div>
     </div>
 
     <!-- 3. RECOMMENDED LIST -->
-    <div class="rec-feed">
-        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="rec-card">
+    <div class="rec-feed" id="recFeedContainer">
+        <a href="watch.html?id=rec_banjo&title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="rec-card">
             <div class="rec-thumb">
                 <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Rec 1">
                 <span class="duration-tag">14:10</span>
@@ -670,7 +669,7 @@
             </div>
         </a>
 
-        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="rec-card">
+        <a href="watch.html?id=rec_vlog&title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="rec-card">
             <div class="rec-thumb">
                 <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Rec 2">
                 <span class="duration-tag">06:25</span>
@@ -755,30 +754,76 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-link">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div id="bottomNavInits" style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
             <span>You</span>
         </a>
     </nav>
 
+    <!-- Load BTube API Client -->
+    <script src="../assets/js/api-client.js"></script>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // 1. Dynamic Title & Channel Initials (CB)
         const params = new URLSearchParams(window.location.search);
-        if (params.get('title')) {
-            document.getElementById('pageVideoTitle').innerText = params.get('title');
-        }
-        if (params.get('channel')) {
-            const chName = params.get('channel');
-            document.getElementById('pageChannelName').innerText = chName;
-            
-            // Extract First letter of first word and second word (e.g. Charandas Bhaskar -> CB)
-            const words = chName.trim().split(' ');
-            let initials = words[0][0];
-            if (words.length > 1) initials += words[1][0];
-            document.getElementById('pageChannelAvatar').innerText = initials.toUpperCase();
+        const currentVideoId = params.get('id') || 'vid-1';
+        let accumulatedWatchSeconds = 0;
+        let lastReportedTime = 0;
+
+        // 1. Initialize Player & Dynamic Streaming
+        window.addEventListener('DOMContentLoaded', () => {
+            if (params.get('title')) {
+                document.getElementById('pageVideoTitle').innerText = params.get('title');
+            }
+            if (params.get('channel')) {
+                const chName = params.get('channel');
+                document.getElementById('pageChannelName').innerText = chName;
+                const words = chName.trim().split(' ');
+                let inits = words[0][0];
+                if (words.length > 1) inits += words[1][0];
+                document.getElementById('pageChannelAvatar').innerText = inits.toUpperCase();
+            }
+
+            // Sync User avatar initials
+            const savedName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
+            const navInits = document.getElementById('bottomNavInits');
+            if (navInits) {
+                const p = savedName.trim().split(' ');
+                let i = p[0][0];
+                if (p.length > 1) i += p[1][0];
+                navInits.innerText = i.toUpperCase();
+            }
+
+            // Hook HTTP 206 Range-Streamer if video ID exists on backend
+            if (params.get('stream') === 'true') {
+                const player = document.getElementById('mainVideoPlayer');
+                player.src = `${window.location.origin}/api/videos/${currentVideoId}/stream`;
+            }
+
+            // Setup Real Watch-Time Reporting
+            setupWatchTimeTracker();
+        });
+
+        // 2. Watch Time & BPP Tracker
+        function setupWatchTimeTracker() {
+            const player = document.getElementById('mainVideoPlayer');
+            player.addEventListener('timeupdate', () => {
+                const currentTime = Math.floor(player.currentTime);
+                if (currentTime > lastReportedTime) {
+                    accumulatedWatchSeconds += (currentTime - lastReportedTime);
+                    lastReportedTime = currentTime;
+
+                    // Report watch time to backend every 15 seconds to credit BPP watch hours
+                    if (accumulatedWatchSeconds >= 15) {
+                        if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
+                            window.BTubeAPI.recordView(currentVideoId, accumulatedWatchSeconds);
+                        }
+                        accumulatedWatchSeconds = 0;
+                    }
+                }
+            });
         }
 
-        // 2. Toast display
+        // 3. Toast display
         function showToast(msg) {
             const toast = document.getElementById('toastMsg');
             toast.innerText = msg;
@@ -786,7 +831,7 @@
             setTimeout(() => { toast.style.display = 'none'; }, 2000);
         }
 
-        // 3. Subscribe & Bell Logic
+        // 4. Subscribe & Bell Logic
         let isSubscribed = true;
 
         function handleSubscribeClick() {
@@ -825,11 +870,11 @@
             showToast('Subscription removed');
         }
 
-        // 4. Like / Dislike Toggle
+        // 5. Like / Dislike Toggle with Backend Sync
         let isLiked = false;
         let isDisliked = false;
 
-        function handleLike() {
+        async function handleLike() {
             const likeBtn = document.getElementById('likeBtn');
             const dislikeBtn = document.getElementById('dislikeBtn');
             const likeCount = document.getElementById('likeCount');
@@ -840,6 +885,9 @@
                 likeBtn.classList.add('active');
                 dislikeBtn.classList.remove('active');
                 likeCount.innerText = '12.1K';
+
+                // Hit backend like counter
+                fetch(`${window.location.origin}/api/videos/${currentVideoId}/like`, { method: 'POST' }).catch(() => {});
             } else {
                 isLiked = false;
                 likeBtn.classList.remove('active');
@@ -864,7 +912,7 @@
             }
         }
 
-        // 5. Download Progress
+        // 6. Download Progress
         let isDownloaded = false;
         function handleDownload() {
             if (isDownloaded) return;
@@ -877,7 +925,7 @@
             }, 1000);
         }
 
-        // 6. Expandable Description
+        // 7. Expandable Description
         let isDescExpanded = false;
         function toggleDesc() {
             const desc = document.getElementById('descContent');
@@ -887,7 +935,7 @@
             toggle.innerText = isDescExpanded ? 'Show less' : '...more';
         }
 
-        // 7. Comments Slide Sheet
+        // 8. Comments Slide Sheet & SafeShield Filter
         function openCommentsSheet() {
             document.getElementById('commentsModal').classList.add('open');
         }
@@ -900,10 +948,26 @@
             if (e.key === 'Enter') postComment();
         }
 
-        function postComment() {
+        async function postComment() {
             const input = document.getElementById('newCommentInput');
             const text = input.value.trim();
             if (!text) return;
+
+            // SafeShield Profanity / Abusive Language Check
+            const VULGAR_TEST = ["porn", "xxx", "sex", "gandi", "harami", "ashleel"];
+            const isAbusive = VULGAR_TEST.some(w => text.toLowerCase().includes(w));
+
+            if (isAbusive) {
+                showToast('Comment blocked by SafeShield 🛑');
+                return;
+            }
+
+            // Sync with backend comments API if online
+            fetch(`${window.location.origin}/api/videos/${currentVideoId}/comment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment_text: text })
+            }).catch(() => {});
 
             const container = document.getElementById('commentsContainer');
             const newRow = document.createElement('div');
@@ -922,10 +986,11 @@
             const sheetCmtTotal = document.getElementById('sheetCmtTotal');
             cmtLabel.innerText = '483';
             sheetCmtTotal.innerText = '483';
+            document.getElementById('cmtPreviewSnippet').innerText = text;
             showToast('Comment added');
         }
 
-        // 8. Share
+        // 9. Share
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
