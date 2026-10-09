@@ -6,54 +6,35 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>Your videos - BTube</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
         .yv-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
         .header-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .header-icons { display:flex; align-items:center; gap:18px; }
-        .header-icons svg { width:20px; height:20px; fill:#fff; }
-
+        
         .tabs-tray { display:flex; border-bottom:1px solid #222; padding:0 16px; }
-        .tab-btn { background:none; border:none; color:#aaa; padding:12px 14px; font-size:14px; font-weight:700; cursor:pointer; position:relative; }
+        .tab-btn { background:none; border:none; color:#aaa; padding:12px 14px; font-size:14px; font-weight:700; cursor:pointer; }
         .tab-btn.active { color:#fff; border-bottom:2px solid #fff; }
 
-        .video-list { display:flex; flex-direction:column; min-height:300px; }
+        .video-list { display:flex; flex-direction:column; }
         .video-row-item { display:flex; gap:12px; padding:12px 16px; border-bottom:1px solid #1a1a1a; cursor:pointer; }
         .thumb-box { width:120px; height:68px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
+        .thumb-box.is-short { width:55px; height:85px; }
         .thumb-box img { width:100%; height:100%; object-fit:cover; }
         .dur-badge { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.8); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
 
         .meta-box { flex:1; display:flex; flex-direction:column; justify-content:space-between; min-width:0; }
         .title-text { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-        .badges-row { display:flex; align-items:center; gap:6px; margin:4px 0; font-size:11px; font-weight:700; flex-wrap:wrap; }
-        .badge-vis.public { color:#2ecc71; }
-        .badge-vis.unlisted { color:#f39c12; }
-        .badge-vis.private { color:#aaa; }
-        .badge-rest.none { color:#2ecc71; }
+        .badges-row { display:flex; align-items:center; gap:6px; margin:4px 0; font-size:11px; font-weight:700; }
+        .badge-vis { color:#2ecc71; }
         .stats-sub { font-size:11px; color:#888; }
-        .btn-more-dots { background:none; border:none; color:#aaa; padding:4px; cursor:pointer; display:flex; }
-        .btn-more-dots svg { width:18px; height:18px; fill:#aaa; }
 
-        /* Drawer */
-        .drawer-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; z-index:2000; align-items:flex-end; }
-        .drawer-sheet { width:100%; background:#1c1c1c; border-top-left-radius:18px; border-top-right-radius:18px; padding:18px; display:flex; flex-direction:column; gap:16px; }
-        .drawer-option { display:flex; align-items:center; gap:14px; padding:10px 0; color:#fff; text-decoration:none; font-size:14px; font-weight:600; background:none; border:none; cursor:pointer; width:100%; text-align:left; }
-        .drawer-option svg { width:22px; height:22px; fill:#fff; }
-
-        /* Bottom Nav */
         .bottom-nav-bar { position:fixed; bottom:0; left:0; width:100%; height:54px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
         .nav-tab-item { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:3px; }
         .nav-tab-item.active { color:#fff; font-weight:700; }
         .nav-tab-item svg { width:22px; height:22px; fill:currentColor; }
-        .loading-state { padding:40px; text-align:center; color:#888; font-size:13px; }
     </style>
-
-    <!-- Firebase SDK Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
     <header class="yv-header">
@@ -63,174 +44,103 @@
             </button>
             <span style="font-size:18px; font-weight:700;">Your videos</span>
         </div>
-        <div class="header-icons">
-            <a href="upload.html" style="text-decoration:none; color:#fff; display:flex;">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            </a>
-        </div>
+        <a href="upload.html" style="color:#fff; text-decoration:none;">
+            <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:#fff;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
     </header>
 
     <div class="tabs-tray">
-        <button class="tab-btn active" id="tabVideosBtn" onclick="switchMainTab('video')">Videos (<span id="countVideos">0</span>)</button>
-        <button class="tab-btn" id="tabShortsBtn" onclick="switchMainTab('short')">Shorts (<span id="countShorts">0</span>)</button>
+        <button class="tab-btn active" id="btnTabVideos" onclick="setTab('videos')">Videos (<span id="cVideos">0</span>)</button>
+        <button class="tab-btn" id="btnTabShorts" onclick="setTab('shorts')">Shorts (<span id="cShorts">0</span>)</button>
         <button class="tab-btn">Live (0)</button>
     </div>
 
-    <div class="video-list" id="videosListContainer">
-        <div class="loading-state">Connecting to Firebase Cloud...</div>
-    </div>
+    <div class="video-list" id="listContainer"></div>
 
-    <!-- Actions Drawer Modal -->
-    <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer(event)">
-        <div class="drawer-sheet" onclick="event.stopPropagation()">
-            <div style="font-weight:700; font-size:14px; color:#aaa; border-bottom:1px solid #282828; padding-bottom:8px;" id="drawerVideoTitle">Video Actions</div>
-            <button class="drawer-option" onclick="goToEdit()">
-                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                <span>Edit video details</span>
-            </button>
-            <button class="drawer-option" onclick="playSelectedVideo()">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                <span>Play on Watch page</span>
-            </button>
-            <button class="drawer-option" onclick="deleteVideoAction()" style="color:#e50914;">
-                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                <span>Delete from Cloud</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Bottom Nav -->
     <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-tab-item" style="color:#e50914;">
-            <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Create</span>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subscriptions</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div>
-            <span>You</span>
-        </a>
+        <a href="../frontend/index.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-tab-item" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-tab-item active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
     </nav>
 
     <script>
-        let currentTabMode = 'video';
-        let allItems = [];
-        let activeSelectedId = null;
+        let currentTab = 'videos';
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            await loadFirestoreData();
-        });
-
-        async function loadFirestoreData() {
-            const container = document.getElementById('videosListContainer');
-            try {
-                allItems = await window.BTubeAPI.getFeed('all');
-
-                const videos = allItems.filter(i => (i.type || 'video') === 'video');
-                const shorts = allItems.filter(i => (i.type || 'video') === 'short');
-
-                document.getElementById('countVideos').innerText = videos.length;
-                document.getElementById('countShorts').innerText = shorts.length;
-
-                renderList();
-            } catch (e) {
-                container.innerHTML = `<div class="loading-state">Failed to load from Cloud. Check internet connection.</div>`;
+        // Master Dataset (Self-correcting)
+        function getMasterData() {
+            let list = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
+            if (list.length === 0) {
+                list = [
+                    { id: 'v1', title: 'Chhattisgarhi song maya ke rang', duration: '05:42', views: '210K', age: '2 weeks ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800' },
+                    { id: 'v2', title: 'Typewriter Banjo with Magnetic Pickups Full...', duration: '14:10', views: '45K', age: '1 month ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800' },
+                    { id: 'v3', title: 'Morning Commute & Village Lifestyle Daily...', duration: '06:25', views: '8.4K', age: '3 days ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800' },
+                    { id: 'v4', title: 'Hareli Festival Folk Song • Farm Life & Nature...', duration: '04:18', views: '98K', age: '1 week ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', thumb: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800' },
+                    { id: 's1', title: 'Electronic Banjo Solo with magnetic pickups! 🎸 #shorts', duration: '0:45', views: '18.4K', age: '5 days ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600' },
+                    { id: 's2', title: 'Mungeli morning quiet road vlog 🌅 #shorts', duration: '0:32', views: '9.2K', age: '1 week ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600' }
+                ];
+                localStorage.setItem('btube_user_videos', JSON.stringify(list));
             }
+            return list;
         }
 
-        function switchMainTab(mode) {
-            currentTabMode = mode;
-            document.getElementById('tabVideosBtn').classList.toggle('active', mode === 'video');
-            document.getElementById('tabShortsBtn').classList.toggle('active', mode === 'short');
-            renderList();
+        function isItemShort(item) {
+            return (item.type === 'short') || (item.title && item.title.toLowerCase().includes('#short'));
         }
 
-        function renderList() {
-            const container = document.getElementById('videosListContainer');
+        function render() {
+            const data = getMasterData();
+            const container = document.getElementById('listContainer');
             container.innerHTML = '';
 
-            const list = allItems.filter(i => (i.type || 'video') === currentTabMode);
+            const longList = data.filter(i => !isItemShort(i));
+            const shortList = data.filter(i => isItemShort(i));
 
-            if (list.length === 0) {
-                container.innerHTML = `<div class="loading-state">No ${currentTabMode}s found in Cloud database.</div>`;
-                return;
-            }
+            document.getElementById('cVideos').innerText = longList.length;
+            document.getElementById('cShorts').innerText = shortList.length;
 
-            list.forEach(v => {
-                const isShort = (v.type === 'short');
+            const activeList = (currentTab === 'videos') ? longList : shortList;
+
+            activeList.forEach(item => {
+                const isShort = isItemShort(item);
                 const row = document.createElement('div');
                 row.className = 'video-row-item';
+                row.onclick = () => {
+                    if (isShort) {
+                        window.location.href = `shorts.html?id=${item.id}`;
+                    } else {
+                        window.location.href = `watch.html?id=${item.id}&title=${encodeURIComponent(item.title)}`;
+                    }
+                };
+
                 row.innerHTML = `
-                    <div class="thumb-box" style="${isShort ? 'width:56px; height:84px;' : ''}" onclick="openItemPlayer('${v.id}')">
-                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}" alt="${v.title}">
-                        ${!isShort ? `<span class="dur-badge">${v.duration || '03:15'}</span>` : ''}
+                    <div class="thumb-box ${isShort ? 'is-short' : ''}">
+                        <img src="${item.thumb}">
+                        ${!isShort ? `<span class="dur-badge">${item.duration || '03:20'}</span>` : ''}
                     </div>
-                    <div class="meta-box" onclick="openItemPlayer('${v.id}')">
-                        <div class="title-text">${v.title}</div>
-                        <div class="badges-row">
-                            <span class="badge-vis public">🌐 ${v.visibility || 'Public'}</span>
-                            <span class="badge-rest none">✓ None</span>
-                        </div>
-                        <div class="stats-sub">${v.views || 0} views • Cloud Realtime</div>
+                    <div class="meta-box">
+                        <div class="title-text">${item.title}</div>
+                        <div class="badges-row"><span class="badge-vis">🌐 Public</span></div>
+                        <div class="stats-sub">${item.views || '0'} views • ${item.age || 'Just now'}</div>
                     </div>
-                    <button class="btn-more-dots" onclick="openDrawer(event, '${v.id}', '${v.title.replace(/'/g, "\\'")}')">
-                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </button>
                 `;
                 container.appendChild(row);
             });
         }
 
-        function openItemPlayer(id) {
-            const item = allItems.find(i => i.id === id);
-            if (!item) return;
-            if (item.type === 'short') {
-                window.location.href = `shorts.html?id=${item.id}`;
-            } else {
-                window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl)}`;
-            }
+        function setTab(tab) {
+            currentTab = tab;
+            document.getElementById('btnTabVideos').classList.toggle('active', tab === 'videos');
+            document.getElementById('btnTabShorts').classList.toggle('active', tab === 'shorts');
+            render();
         }
 
-        function openDrawer(e, id, title) {
-            e.stopPropagation();
-            activeSelectedId = id;
-            document.getElementById('drawerVideoTitle').innerText = title;
-            document.getElementById('drawerBackdrop').style.display = 'flex';
-        }
-
-        function closeDrawer(e) {
-            document.getElementById('drawerBackdrop').style.display = 'none';
-        }
-
-        function goToEdit() {
-            if (activeSelectedId) {
-                window.location.href = `edit-video.html?id=${activeSelectedId}`;
-            }
-        }
-
-        function playSelectedVideo() {
-            if (activeSelectedId) {
-                openItemPlayer(activeSelectedId);
-            }
-        }
-
-        async function deleteVideoAction() {
-            if (!confirm('Are you sure you want to permanently delete this video from Firebase?')) return;
-            await window.BTubeAPI.deleteVideo(activeSelectedId);
-            closeDrawer();
-            await loadFirestoreData();
-        }
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('tab') === 'shorts') setTab('shorts');
+            else render();
+        });
     </script>
 </body>
 </html>
