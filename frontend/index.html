@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <!-- 1. TOP HEADER (Har button new page link hai) -->
+    <!-- 1. TOP HEADER -->
     <header class="bt-header">
         <a href="index.html" class="bt-brand">
             <svg viewBox="0 0 32 24" class="bt-logo-svg">
@@ -47,7 +47,7 @@
         </div>
     </header>
 
-    <!-- 2. CATEGORY CHIPS (Page reload ya client-side filter dono ready) -->
+    <!-- 2. CATEGORY CHIPS -->
     <nav class="category-tray">
         <button class="cat-pill active" onclick="filterFeed('All', this)">All</button>
         <button class="cat-pill" onclick="filterFeed('Music', this)">Music</button>
@@ -58,6 +58,23 @@
 
     <!-- 3. MAIN VIDEO FEED -->
     <main class="video-stream-feed" id="videoFeedArea">
+
+        <!-- Dynamic Slot for User Uploaded Video -->
+        <article class="feed-video-card" id="userUploadedVideoCard" data-cat="Music Chhattisgarhi All" style="display:none;">
+            <a href="../pages/watch.html" id="userUploadedLink" class="video-thumb-frame">
+                <img id="userUploadedThumb" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Video">
+                <span class="duration-tag">03:15</span>
+            </a>
+            <div class="video-details-row">
+                <a href="../pages/channel.html" class="creator-circle-avatar" id="userUploadedAvatar" style="background:#e50914; text-decoration:none;">CB</a>
+                <div class="details-column">
+                    <a href="../pages/watch.html" id="userUploadedTitle" class="card-title-text" style="text-decoration:none; color:#fff;">
+                        Uploaded Video Title
+                    </a>
+                    <span class="card-meta-text" id="userUploadedMeta">Charandas Bhaskar • 1 view • Just now</span>
+                </div>
+            </div>
+        </article>
 
         <!-- Card 1 -->
         <article class="feed-video-card" data-cat="Chhattisgarhi Music">
@@ -144,7 +161,7 @@
 
     </main>
 
-    <!-- 4. BOTTOM NAVIGATION BAR (Sabhi new page links) -->
+    <!-- 4. BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav-bar">
         <a href="index.html" class="nav-tab-item active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -162,12 +179,46 @@
             <span>Subscriptions</span>
         </a>
         <a href="../pages/profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div id="bottomNavInits" style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
             <span>You</span>
         </a>
     </nav>
 
+    <!-- API Client & Engine -->
+    <script src="../assets/js/api-client.js"></script>
+
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. Sync User Avatar Initials
+            const savedName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
+            const parts = savedName.trim().split(' ');
+            let inits = parts[0][0];
+            if (parts.length > 1) inits += parts[1][0];
+            const bottomNavInits = document.getElementById('bottomNavInits');
+            if (bottomNavInits) bottomNavInits.innerText = inits.toUpperCase();
+
+            // 2. Show uploaded video at top of feed if public
+            const lastUploadedTitle = localStorage.getItem('btube_last_edited_title');
+            const lastUploadedVis = localStorage.getItem('btube_last_edited_vis') || 'Public';
+            const lastUploadedThumb = localStorage.getItem('btube_temp_edit_thumb');
+
+            if (lastUploadedTitle && lastUploadedVis === 'Public') {
+                const uploadCard = document.getElementById('userUploadedVideoCard');
+                if (uploadCard) {
+                    uploadCard.style.display = 'flex';
+                    document.getElementById('userUploadedTitle').innerText = lastUploadedTitle;
+                    document.getElementById('userUploadedMeta').innerText = `${savedName} • 1 view • Just now`;
+                    document.getElementById('userUploadedAvatar').innerText = inits.toUpperCase();
+                    if (lastUploadedThumb) {
+                        document.getElementById('userUploadedThumb').src = lastUploadedThumb;
+                    }
+                    const watchUrl = `../pages/watch.html?title=${encodeURIComponent(lastUploadedTitle)}&channel=${encodeURIComponent(savedName)}`;
+                    document.getElementById('userUploadedLink').href = watchUrl;
+                    document.getElementById('userUploadedTitle').href = watchUrl;
+                }
+            }
+        });
+
         function filterFeed(cat, btn) {
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
             btn.classList.add('active');
@@ -176,8 +227,8 @@
             const shorts = document.getElementById('shortsContainer');
 
             cards.forEach(card => {
-                const itemCat = card.getAttribute('data-cat');
-                if (cat === 'All' || itemCat.includes(cat)) {
+                const itemCat = card.getAttribute('data-cat') || '';
+                if (cat === 'All' || itemCat.toLowerCase().includes(cat.toLowerCase())) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
