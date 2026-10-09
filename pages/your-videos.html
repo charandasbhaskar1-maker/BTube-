@@ -68,67 +68,57 @@
     <script>
         let currentTab = 'videos';
 
-        // Auto clean & sort logic
-        function getSanitizedData() {
-            let list = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
+        function checkIsShort(item) {
+            return (item.type === 'short') || (item.title && item.title.toLowerCase().includes('#short'));
+        }
 
-            // Default fallback agar storage khali ho
-            if (!list || list.length === 0) {
+        function loadItems() {
+            let list = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
+            if (list.length === 0) {
                 list = [
-                    { id: 'v1', title: 'Chhattisgarhi song maya ke rang', duration: '05:42', views: '210K', age: '2 weeks ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800' },
-                    { id: 'v2', title: 'Typewriter Banjo with Magnetic Pickups Full...', duration: '14:10', views: '45K', age: '1 month ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800' },
-                    { id: 'v3', title: 'Morning Commute & Village Lifestyle Daily...', duration: '06:25', views: '8.4K', age: '3 days ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800' },
-                    { id: 'v4', title: 'Hareli Festival Folk Song • Farm Life & Nature...', duration: '04:18', views: '98K', age: '1 week ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', thumb: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800' },
-                    { id: 's1', title: 'Electronic Banjo Solo with magnetic pickups! 🎸 #shorts', duration: '0:45', views: '18.4K', age: '5 days ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600' },
-                    { id: 's2', title: 'Mungeli morning quiet road vlog 🌅 #shorts', duration: '0:32', views: '9.2K', age: '1 week ago', stream: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600' }
+                    { id: 'v1', title: 'Chhattisgarhi folk melody - Special', duration: '05:42', views: '210K', age: '2 weeks ago', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800', type: 'video' },
+                    { id: 's1', title: 'Banjo Solo Beat! #shorts', duration: '0:30', views: '45K', age: '3 days ago', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600', type: 'short' }
                 ];
                 localStorage.setItem('btube_user_videos', JSON.stringify(list));
             }
-
             return list;
         }
 
-        // Strict detector: agar title mein #short hai toh wo 100% short hai
-        function isShortVideo(item) {
-            if (item.type === 'short') return true;
-            if (item.title && item.title.toLowerCase().includes('#short')) return true;
-            return false;
-        }
-
         function render() {
-            const data = getSanitizedData();
+            const data = loadItems();
             const container = document.getElementById('listContainer');
             container.innerHTML = '';
 
-            // Dono categories ko alag divide karein
-            const longVideos = data.filter(i => !isShortVideo(i));
-            const shortVideos = data.filter(i => isShortVideo(i));
+            const longList = data.filter(i => !checkIsShort(i));
+            const shortList = data.filter(i => checkIsShort(i));
 
-            document.getElementById('cVideos').innerText = longVideos.length;
-            document.getElementById('cShorts').innerText = shortVideos.length;
+            document.getElementById('cVideos').innerText = longList.length;
+            document.getElementById('cShorts').innerText = shortList.length;
 
-            const activeList = (currentTab === 'videos') ? longVideos : shortVideos;
+            const activeList = (currentTab === 'videos') ? longList : shortList;
 
             activeList.forEach(item => {
-                const shortItem = isShortVideo(item);
+                const isShort = checkIsShort(item);
                 const row = document.createElement('div');
                 row.className = 'video-row-item';
+                
                 row.onclick = () => {
-                    if (shortItem) {
-                        window.location.href = `shorts.html?id=${item.id}`;
+                    const finalUrl = item.videoUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+                    if (isShort) {
+                        window.location.href = `shorts.html?id=${item.id}&videoUrl=${encodeURIComponent(finalUrl)}`;
                     } else {
-                        window.location.href = `watch.html?id=${item.id}&title=${encodeURIComponent(item.title)}`;
+                        window.location.href = `watch.html?id=${item.id}&title=${encodeURIComponent(item.title)}&videoUrl=${encodeURIComponent(finalUrl)}`;
                     }
                 };
 
                 row.innerHTML = `
-                    <div class="thumb-box ${shortItem ? 'is-short' : ''}">
-                        <img src="${item.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
-                        ${!shortItem ? `<span class="dur-badge">${item.duration || '03:20'}</span>` : ''}
+                    <div class="thumb-box ${isShort ? 'is-short' : ''}">
+                        <img src="${item.thumb}">
+                        ${!isShort ? `<span class="dur-badge">${item.duration || '03:45'}</span>` : ''}
                     </div>
                     <div class="meta-box">
                         <div class="title-text">${item.title}</div>
-                        <div class="badges-row"><span class="badge-vis">🌐 Public</span></div>
+                        <div class="badges-row"><span class="badge-vis">🌐 ${item.visibility || 'Public'}</span></div>
                         <div class="stats-sub">${item.views || '0'} views • ${item.age || 'Just now'}</div>
                     </div>
                 `;
