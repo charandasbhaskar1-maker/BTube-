@@ -8,15 +8,20 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        
+        /* Video Container */
         .video-viewport { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:500; }
-        video { width:100%; height:100%; object-fit:contain; }
+        video { width:100%; height:100%; object-fit:contain; background:#000; }
+
         .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
         .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
         .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
+
         .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; scrollbar-width:none; }
         .action-tray::-webkit-scrollbar { display:none; }
         .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
         .act-pill svg { width:16px; height:16px; fill:#fff; }
+
         .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; margin-top:4px; }
         .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
         .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
@@ -24,15 +29,18 @@
     </style>
 </head>
 <body>
+
+    <!-- 1. Video Player Element -->
     <div class="video-viewport">
-        <video id="mainVideoPlayer" controls autoplay playsinline poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
-            <source id="videoSource" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-            Your browser does not support video playback.
+        <video id="mainVideoPlayer" controls playsinline preload="auto">
+            <source id="videoSourceTag" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
         </video>
     </div>
 
+    <!-- 2. Details & Controls -->
     <div class="watch-details">
-        <h1 class="video-headline" id="watchTitle">Chhattisgarhi song maya ke rang</h1>
+        <h1 class="video-headline" id="watchTitle">Chhattisgarhi Panthi Song Special</h1>
         <div class="video-meta-row">
             <span id="watchMeta">210K views • 2 weeks ago</span>
             <span>• #Chhattisgarhi #BTube</span>
@@ -40,19 +48,19 @@
 
         <div class="channel-strip">
             <a href="channel.html" class="channel-info">
-                <div class="avatar-c" id="channelAvatar">CB</div>
+                <div class="avatar-c">CB</div>
                 <div>
                     <div style="font-size:14px; font-weight:700;" id="channelName">Charandas Bhaskar</div>
-                    <div style="font-size:11px; color:#aaa;">1.25K subscribers</div>
+                    <div style="font-size:11px; color:#aaa;">245 subscribers</div>
                 </div>
             </a>
             <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
         </div>
 
         <div class="action-tray">
-            <button class="act-pill" onclick="likeVideo(this)">
+            <button class="act-pill" id="likeBtn" onclick="toggleLike()">
                 <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                <span id="likeCount">18K</span>
+                <span id="likeCount">12K</span>
             </button>
             <button class="act-pill">
                 <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
@@ -65,36 +73,62 @@
         </div>
     </div>
 
-    <!-- API Client Integration -->
-    <script src="../assets/js/api-client.js"></script>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const titleParam = params.get('title');
-        const channelParam = params.get('channel');
-        const videoUrlParam = params.get('videoUrl');
+        const FALLBACK_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
         window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const vidId = params.get('id');
+            const paramTitle = params.get('title');
+            const paramUrl = params.get('videoUrl');
+
             const player = document.getElementById('mainVideoPlayer');
-            const source = document.getElementById('videoSource');
+            const source = document.getElementById('videoSourceTag');
 
-            if (titleParam) {
-                document.getElementById('watchTitle').innerText = decodeURIComponent(titleParam);
-            }
-            if (channelParam) {
-                document.getElementById('channelName').innerText = decodeURIComponent(channelParam);
+            // 1. Title Sync
+            if (paramTitle) {
+                document.getElementById('watchTitle').innerText = decodeURIComponent(paramTitle);
             }
 
-            // Set playable video stream
-            if (videoUrlParam) {
-                source.src = decodeURIComponent(videoUrlParam);
-                player.load();
-                player.play().catch(() => {});
+            // 2. Stream Resolution (URL Param -> LocalStorage -> High Speed CDN)
+            let chosenStream = paramUrl ? decodeURIComponent(paramUrl) : null;
+
+            if (!chosenStream && vidId) {
+                try {
+                    const raw = localStorage.getItem('btube_user_videos');
+                    if (raw) {
+                        const list = JSON.parse(raw);
+                        const item = list.find(v => v.id === vidId);
+                        if (item && item.videoUrl) chosenStream = item.videoUrl;
+                        if (item && item.title) document.getElementById('watchTitle').innerText = item.title;
+                    }
+                } catch(e) {}
             }
 
-            // Accumulate watch time in BPP
-            if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
-                window.BTubeAPI.recordView(params.get('id') || 'vid_1', 30);
+            if (!chosenStream) {
+                chosenStream = FALLBACK_STREAM;
             }
+
+            // 3. Assign & Force Play
+            source.src = chosenStream;
+            player.load();
+
+            // Mobile Browser User Gesture Handling
+            const playPromise = player.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Mobile audio restrictions ke fallback ke liye muted play
+                    player.muted = true;
+                    player.play();
+                });
+            }
+
+            // User screen touch par audio un-mute & play guarantee
+            document.body.addEventListener('touchstart', () => {
+                if (player.paused) {
+                    player.play();
+                }
+            }, { once: true });
         });
 
         function toggleSub() {
@@ -110,10 +144,10 @@
             }
         }
 
-        function likeVideo(btn) {
-            btn.style.color = '#e50914';
-            btn.querySelector('svg').style.fill = '#e50914';
-            document.getElementById('likeCount').innerText = '19K';
+        function toggleLike() {
+            const btn = document.getElementById('likeBtn');
+            const icon = btn.querySelector('svg');
+            icon.style.fill = icon.style.fill === 'rgb(229, 9, 20)' ? '#fff' : '#e50914';
         }
     </script>
 </body>
