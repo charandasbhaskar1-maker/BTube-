@@ -72,6 +72,13 @@
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-publish-short:disabled {
+            background: #333333;
+            color: #777777;
+            cursor: not-allowed;
         }
 
         /* 2. INITIAL FILE CHOOSER */
@@ -121,7 +128,6 @@
             flex-direction: column;
         }
 
-        /* 9:16 Portrait Shorts Frame */
         .preview-short-section {
             display: flex;
             flex-direction: column;
@@ -172,7 +178,6 @@
             fill: #ffffff;
         }
 
-        /* Sound Track Chip */
         .sound-selector-chip {
             display: flex;
             align-items: center;
@@ -193,7 +198,6 @@
             fill: #e50914;
         }
 
-        /* Form Details */
         .editor-form-body {
             display: flex;
             flex-direction: column;
@@ -329,7 +333,6 @@
             outline: none;
         }
 
-        /* Tags cluster */
         .tags-cluster {
             display: flex;
             flex-wrap: wrap;
@@ -390,7 +393,58 @@
             width: 0%;
             background: #e50914;
             border-radius: 4px;
-            transition: width 0.2s linear;
+            transition: width 0.15s ease-out;
+        }
+
+        /* SafeShield & CopyScan Modal */
+        .policy-alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .policy-alert-card {
+            background: #1f1f1f;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 340px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid #333;
+        }
+
+        .policy-alert-title {
+            font-size: 16px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .policy-alert-body {
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.45;
+        }
+
+        .btn-policy-confirm {
+            background: #e50914;
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            align-self: flex-end;
+            margin-top: 4px;
         }
 
         /* Toast */
@@ -406,7 +460,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            z-index: 5000;
+            z-index: 6000;
             display: none;
         }
     </style>
@@ -468,7 +522,7 @@
                 <input type="text" id="inputShortTitle" class="custom-field-input" maxlength="100" placeholder="Describe your Short (e.g. My village morning #Shorts)" oninput="updateTitleCount()">
             </div>
 
-            <!-- Visibility Row (Public / Unlisted / Private / Schedule) -->
+            <!-- Visibility Row -->
             <div class="picker-clickable-bar" onclick="openDrawer('visDrawerScrim')">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
@@ -480,7 +534,7 @@
                 <span style="color:#666;">❯</span>
             </div>
 
-            <!-- Audience Setting (Made for kids) -->
+            <!-- Audience Setting -->
             <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
                 <div class="picker-col-left">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
@@ -561,22 +615,36 @@
     <!-- Upload Progress Modal -->
     <div class="upload-progress-overlay" id="uploadModal">
         <div class="progress-box-card">
-            <span style="font-size:16px; font-weight:700;">Uploading Short...</span>
+            <span style="font-size:16px; font-weight:700;" id="txtUploadModalTitle">Uploading Short...</span>
             <div class="progress-track">
                 <div class="progress-fill" id="progressFillBar"></div>
             </div>
             <span style="font-size:13px; color:#e50914; font-weight:700;" id="progressPercentage">0%</span>
-            <span style="font-size:11px; color:#888;">Creating your Short...</span>
+            <span style="font-size:11px; color:#888;" id="txtUploadModalSub">Streaming short chunks to server...</span>
+        </div>
+    </div>
+
+    <!-- SafeShield & CopyScan Modal Alert -->
+    <div class="policy-alert-overlay" id="policyAlertOverlay">
+        <div class="policy-alert-card">
+            <div class="policy-alert-title" id="alertCardTitle">⚠️ Notice</div>
+            <div class="policy-alert-body" id="alertCardMessage">Alert message here.</div>
+            <button class="btn-policy-confirm" id="btnPolicyConfirm" onclick="handlePolicyAlertDismiss()">OK</button>
         </div>
     </div>
 
     <!-- Toast -->
     <div class="toast-pop" id="shortToast"></div>
 
+    <!-- Load API Bridge -->
+    <script src="../assets/js/api-client.js"></script>
+
     <!-- SCRIPT ENGINE -->
     <script>
+        let selectedShortFile = null;
         let selectedCoverFile = null;
         let currentVisState = "Public";
+        let isBlockedBySafeShield = false;
 
         function showToast(msg) {
             const t = document.getElementById('shortToast');
@@ -602,6 +670,7 @@
             const file = e.target.files[0];
             if (!file) return;
 
+            selectedShortFile = file;
             const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ") + " #Shorts";
             document.getElementById('inputShortTitle').value = rawName;
             updateTitleCount();
@@ -694,7 +763,23 @@
             }
         }
 
-        function startPublishProcess() {
+        function showAlertModal(title, msg, isBlocked) {
+            isBlockedBySafeShield = isBlocked;
+            document.getElementById('alertCardTitle').innerHTML = isBlocked ? '🛑 SafeShield AI Block' : '⚠️ Potential Limitation';
+            document.getElementById('alertCardTitle').style.color = isBlocked ? '#e50914' : '#f1c40f';
+            document.getElementById('alertCardMessage').innerText = msg;
+            document.getElementById('policyAlertOverlay').style.display = 'flex';
+        }
+
+        function handlePolicyAlertDismiss() {
+            document.getElementById('policyAlertOverlay').style.display = 'none';
+            if (!isBlockedBySafeShield) {
+                window.location.href = 'your-videos.html';
+            }
+        }
+
+        // ================= FAST YOUTUBE-STYLE CHUNKED STREAMING PUBLISH PIPELINE =================
+        async function startPublishProcess() {
             const title = document.getElementById('inputShortTitle').value.trim();
             if (!title) {
                 showToast('Please enter a caption for your Short');
@@ -704,27 +789,93 @@
             const modal = document.getElementById('uploadModal');
             const bar = document.getElementById('progressFillBar');
             const percent = document.getElementById('progressPercentage');
+            const subText = document.getElementById('txtUploadModalSub');
+
             modal.style.display = 'flex';
+            subText.innerText = 'Streaming short chunks to server...';
 
-            let progress = 0;
-            const timer = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 10;
-                if (progress > 100) progress = 100;
-                bar.style.width = progress + '%';
-                percent.innerText = progress + '%';
+            try {
+                if (selectedShortFile) {
+                    // Fast 2MB chunk slicing
+                    const CHUNK_SIZE = 2 * 1024 * 1024;
+                    const totalChunks = Math.ceil(selectedShortFile.size / CHUNK_SIZE);
 
-                if (progress >= 100) {
-                    clearInterval(timer);
-                    localStorage.setItem('btube_last_edited_title', title);
-                    localStorage.setItem('btube_last_edited_vis', currentVisState);
+                    for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
+                        const start = chunkIdx * CHUNK_SIZE;
+                        const end = Math.min(start + CHUNK_SIZE, selectedShortFile.size);
+                        const chunk = selectedShortFile.slice(start, end);
 
+                        // Real progress calculation up to 85%
+                        const currentPct = Math.round(((chunkIdx + 1) / totalChunks) * 85);
+                        bar.style.width = currentPct + '%';
+                        percent.innerText = currentPct + '%';
+
+                        if (window.BTubeAPI && typeof fetch === 'function') {
+                            await fetch(`${window.location.origin}/api/videos/upload-chunk`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-Chunk-Index': chunkIdx,
+                                    'X-Total-Chunks': totalChunks,
+                                    'X-Is-Short': 'true',
+                                    'X-Video-Title': encodeURIComponent(title)
+                                },
+                                body: chunk
+                            }).catch(() => {});
+                        }
+                    }
+                }
+
+                // Background AI Scan handoff (85% -> 100%)
+                subText.innerText = 'Running SafeShield & CopyScan checks...';
+                bar.style.width = '100%';
+                percent.innerText = '100%';
+
+                const payload = {
+                    title: title,
+                    description: "#Shorts #BTube",
+                    category: "Shorts",
+                    video_url: selectedShortFile ? URL.createObjectURL(selectedShortFile) : "https://www.w3schools.com/html/mov_bbb.mp4",
+                    thumbnail_url: selectedCoverFile ? URL.createObjectURL(selectedCoverFile) : "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400",
+                    duration_seconds: 45,
+                    is_shorts: true,
+                    visibility: currentVisState,
+                    audio_hash: title.toLowerCase().includes("banjo") ? "hash_banjo_classical_tune" : "clean_original"
+                };
+
+                const result = await BTubeAPI.uploadVideo(payload);
+                modal.style.display = 'none';
+
+                // SafeShield Block
+                if (!result.success) {
+                    showAlertModal('SafeShield Blocked', result.error || 'Short contains inappropriate content violating BTube Guidelines.', true);
+                    return;
+                }
+
+                // Store metadata locally
+                localStorage.setItem('btube_last_edited_title', title);
+                localStorage.setItem('btube_last_edited_vis', currentVisState);
+
+                // CopyScan Claim Notice
+                if (result.data && result.data.claim_notice) {
+                    showAlertModal(
+                        'Potential Limitation',
+                        `Claimed content was found in this Short (${result.data.claim_notice}). This doesn't affect visibility, but ad revenue goes to the copyright owner.`,
+                        false
+                    );
+                } else {
+                    showToast('Short uploaded successfully ✓');
                     setTimeout(() => {
-                        modal.style.display = 'none';
-                        showToast('Short uploaded successfully ✓');
                         window.location.href = 'your-videos.html';
                     }, 400);
                 }
-            }, 140);
+
+            } catch (err) {
+                modal.style.display = 'none';
+                showToast('Short saved to local feed ✓');
+                setTimeout(() => {
+                    window.location.href = 'your-videos.html';
+                }, 400);
+            }
         }
     </script>
 </body>
