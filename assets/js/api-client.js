@@ -1,150 +1,95 @@
-/**
- * BTube Central API Client & Bridge
- * Connects Frontend UI with FastAPI Backend, SafeShield AI, CopyScan & BPP Monetization.
- */
+// BTube Firebase Cloud Engine & State Manager
+const firebaseConfig = {
+  apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
+  authDomain: "btube-5fae0.firebaseapp.com",
+  projectId: "btube-5fae0",
+  storageBucket: "btube-5fae0.firebasestorage.app",
+  messagingSenderId: "1009386330534",
+  appId: "1:1009386330534:web:357a0ad258678a54185767",
+  measurementId: "G-1FP3E5G3VZ"
+};
 
-const API_BASE_URL = window.location.origin.includes("localhost") 
-    ? "http://127.0.0.1:8000" 
-    : window.location.origin;
+// Initialize Firebase SDK
+if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-const BTubeAPI = {
-    // 1. Get Auth Token
-    getAuthToken() {
-        return localStorage.getItem("btube_token") || "mock_dev_token";
+const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
+
+window.BTubeAPI = {
+    // 1. Fetch All Videos & Shorts from Firestore
+    async getFeed(type = 'all') {
+        if (!db) return [];
+        try {
+            let ref = db.collection('videos').orderBy('createdAt', 'desc');
+            const snap = await ref.get();
+            let items = [];
+            snap.forEach(doc => {
+                items.push({ id: doc.id, ...doc.data() });
+            });
+
+            if (type === 'all') return items;
+            return items.filter(item => (item.type || 'video').toLowerCase() === type.toLowerCase());
+        } catch (err) {
+            console.warn('Firestore fetch failed, using offline fallback', err);
+            return [];
+        }
     },
 
-    // 2. Fetch Viral Ranked Feed (Homepage & Categories)
-    async getHomeFeed(category = "All") {
+    // 2. Fetch Single Video By Document ID
+    async getVideoById(docId) {
+        if (!db || !docId) return null;
         try {
-            const url = category && category !== "All" 
-                ? `${API_BASE_URL}/api/videos/feed?category=${encodeURIComponent(category)}`
-                : `${API_BASE_URL}/api/videos/feed`;
-
-            const res = await fetch(url);
-            if (!res.ok) throw new Error("Feed network error");
-            return await res.json();
+            const doc = await db.collection('videos').doc(docId).get();
+            if (doc.exists) {
+                return { id: doc.id, ...doc.data() };
+            }
+            return null;
         } catch (err) {
-            console.warn("Using offline feed cache.");
+            console.error('Error fetching doc:', err);
             return null;
         }
     },
 
-    // 3. Upload Video with SafeShield & CopyScan Audit
-    async uploadVideo(videoPayload) {
-        try {
-            const token = this.getAuthToken();
-            const res = await fetch(`${API_BASE_URL}/api/videos/upload`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(videoPayload)
-            });
-
-            const data = await res.json();
-            if (!res.ok) {
-                return {
-                    success: false,
-                    error: data.detail || "Video upload failed due to policy guidelines."
-                };
-            }
-
-            return {
-                success: true,
-                data: data
-            };
-        } catch (err) {
-            // Local fallback simulation if running purely client-side
-            const isNsfw = ["sex", "xxx", "porn", "gandi", "adult"].some(w => 
-                (videoPayload.title + " " + (videoPayload.description || "")).toLowerCase().includes(w)
-            );
-
-            if (isNsfw) {
-                return {
-                    success: false,
-                    error: "SafeShield Block: Video contains adult/vulgar content violating BTube Community Standards."
-                };
-            }
-
-            const hasClaim = videoPayload.title.toLowerCase().includes("banjo");
-            return {
-                success: true,
-                data: {
-                    status: "success",
-                    video_id: "local_" + Date.now(),
-                    safeshield: "Clean",
-                    copyscan: hasClaim ? "Claimed" : "Original",
-                    claim_notice: hasClaim ? "Audio matched with 'Dhun AI Waveform'. Revenue redirected." : null,
-                    is_monetized: !hasClaim
-                }
-            };
-        }
+    // 3. Upload New Video / Short to Cloud
+    async uploadVideo(videoData) {
+        if (!db) throw new Error('Firestore not initialized');
+        const docRef = await db.collection('videos').add({
+            title: videoData.title || 'Untitled Video',
+            description: videoData.description || '',
+            type: videoData.type || 'video', // 'video' or 'short'
+            videoUrl: videoData.videoUrl,
+            thumb: videoData.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
+            channel: videoData.channel || 'Charandas Bhaskar',
+            views: 0,
+            visibility: videoData.visibility || 'Public',
+            duration: videoData.duration || '03:15',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        return docRef.id;
     },
 
-    // 4. Record View & Credit Watch Hours
-    async recordView(videoId, watchSeconds = 30) {
-        try {
-            await fetch(`${API_BASE_URL}/api/videos/${videoId}/view?watch_seconds=${watchSeconds}`, {
-                method: "POST"
-            });
-        } catch (err) {
-            // Offline local progress
-            let currentHours = parseFloat(localStorage.getItem("btube_watch_hours") || "1240.5");
-            currentHours += (watchSeconds / 3600);
-            localStorage.setItem("btube_watch_hours", currentHours.toFixed(2));
-        }
+    // 4. Update / Edit Video
+    async updateVideo(docId, updateData) {
+        if (!db || !docId) return false;
+        await db.collection('videos').doc(docId).update(updateData);
+        return true;
     },
 
-    // 5. Toggle Like
-    async toggleLike(videoId) {
-        try {
-            const res = await fetch(`${API_BASE_URL}/api/videos/${videoId}/like`, {
-                method: "POST"
-            });
-            return await res.json();
-        } catch (err) {
-            return { likes_count: 1 };
-        }
+    // 5. Delete Video
+    async deleteVideo(docId) {
+        if (!db || !docId) return false;
+        await db.collection('videos').doc(docId).delete();
+        return true;
     },
 
-    // 6. Post Comment with SafeShield Profanity Verification
-    async postComment(videoId, commentText) {
+    // 6. View Counter Increment
+    async recordView(docId) {
+        if (!db || !docId) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/videos/${videoId}/comment`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ comment_text: commentText })
+            await db.collection('videos').doc(docId).update({
+                views: firebase.firestore.FieldValue.increment(1)
             });
-
-            const data = await res.json();
-            if (!res.ok) {
-                return { success: false, error: data.detail };
-            }
-            return { success: true, data: data };
-        } catch (err) {
-            return { success: true, data: { comment_text: commentText } };
-        }
-    },
-
-    // 7. Get Channel Monetization & BPP Metrics
-    async getMonetizationStatus() {
-        try {
-            const token = this.getAuthToken();
-            const res = await fetch(`${API_BASE_URL}/api/monetization/status`, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-            return await res.json();
-        } catch (err) {
-            return {
-                subscribers: 1250,
-                watch_hours: parseFloat(localStorage.getItem("btube_watch_hours") || "4120.5"),
-                shorts_views_90d: 11200000,
-                is_eligible: true,
-                payout_upi: "charandas@upi"
-            };
-        }
+        } catch(e) {}
     }
 };
-
-window.BTubeAPI = BTubeAPI;
