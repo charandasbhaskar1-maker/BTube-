@@ -131,7 +131,7 @@
             cursor: pointer;
         }
 
-        /* Gradient scrims for readability */
+        /* Gradient scrims */
         .scrim-top {
             position: absolute;
             top: 0;
@@ -154,7 +154,7 @@
             z-index: 5;
         }
 
-        /* Play / Pause Animated Icon Overlay */
+        /* Play / Pause Indicator */
         .play-indicator-overlay {
             position: absolute;
             width: 64px;
@@ -586,7 +586,7 @@
     <!-- 2. SHORTS VERTICAL VIEWPORT -->
     <main class="shorts-scroller" id="shortsViewport">
 
-        <!-- SHORT 1: The Bhaskar Vlog - Mungeli Morning Road -->
+        <!-- SHORT 1 -->
         <section class="short-slide" id="short-1" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800');">
             <video class="short-media-video" loop playsinline autoplay muted poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" onclick="togglePlayPause(this)">
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
@@ -599,9 +599,8 @@
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
 
-            <!-- Action Rail -->
             <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 9200)">
+                <button class="rail-btn-unit" onclick="handleLike(this, 'short-1', 9200)">
                     <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                     </div>
@@ -634,7 +633,6 @@
                 </div>
             </div>
 
-            <!-- Creator Information -->
             <div class="shorts-meta-box">
                 <div class="creator-title-row">
                     <div class="creator-pfp" style="background:#f39c12;">BV</div>
@@ -649,7 +647,7 @@
             </div>
         </section>
 
-        <!-- SHORT 2: Dhun AI Studio - Typewriter Banjo Solo -->
+        <!-- SHORT 2 -->
         <section class="short-slide" id="short-2" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800');">
             <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" onclick="togglePlayPause(this)">
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
@@ -662,9 +660,8 @@
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
 
-            <!-- Action Rail -->
             <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 18400)">
+                <button class="rail-btn-unit" onclick="handleLike(this, 'short-2', 18400)">
                     <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                     </div>
@@ -697,7 +694,6 @@
                 </div>
             </div>
 
-            <!-- Creator Information -->
             <div class="shorts-meta-box">
                 <div class="creator-title-row">
                     <div class="creator-pfp" style="background:#3ea6ff;">DA</div>
@@ -712,7 +708,7 @@
             </div>
         </section>
 
-        <!-- SHORT 3: Cultural Panthi Geet Special -->
+        <!-- SHORT 3 -->
         <section class="short-slide" id="short-3" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800');">
             <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" onclick="togglePlayPause(this)">
                 <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4" type="video/mp4">
@@ -725,9 +721,8 @@
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
 
-            <!-- Action Rail -->
             <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 32100)">
+                <button class="rail-btn-unit" onclick="handleLike(this, 'short-3', 32100)">
                     <div class="rail-btn-bubble">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                     </div>
@@ -760,7 +755,6 @@
                 </div>
             </div>
 
-            <!-- Creator Information -->
             <div class="shorts-meta-box">
                 <div class="creator-title-row">
                     <div class="creator-pfp" style="background:#e50914;">CB</div>
@@ -836,12 +830,16 @@
         </a>
     </nav>
 
-    <!-- 5. INTERACTION LOGIC ENGINE -->
+    <!-- Load BTube API Client -->
+    <script src="../assets/js/api-client.js"></script>
+
+    <!-- 5. INTERACTION LOGIC & BACKEND METRICS SYNC -->
     <script>
         let currentShortId = 'short-1';
         let currentShortCommentsCount = 118;
+        let shortViewTimer = null;
 
-        // Dynamic 100dvh Calculation for Android/iOS Screen Resizing
+        // Dynamic 100dvh calculation
         function resetAppHeight() {
             document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
         }
@@ -857,7 +855,7 @@
                 document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
             }
 
-            // IntersectionObserver for auto-playing active video
+            // Auto-play active short & track 90-day BPP views
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const video = entry.target.querySelector('video');
@@ -865,6 +863,15 @@
                         if (entry.isIntersecting) {
                             currentShortId = entry.target.id;
                             video.play().catch(() => {});
+
+                            // If user stays 3+ seconds, report view to BPP backend
+                            clearTimeout(shortViewTimer);
+                            shortViewTimer = setTimeout(() => {
+                                if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
+                                    window.BTubeAPI.recordView(currentShortId, 15);
+                                }
+                            }, 3000);
+
                         } else {
                             video.pause();
                         }
@@ -882,7 +889,6 @@
             setTimeout(() => { toast.style.display = 'none'; }, 2000);
         }
 
-        // Tap on screen: Play / Pause toggle
         function togglePlayPause(video) {
             const slide = video.closest('.short-slide');
             const overlay = slide.querySelector('.play-indicator-overlay');
@@ -903,25 +909,26 @@
             setTimeout(() => { overlay.classList.remove('show'); }, 600);
         }
 
-        // Working Like button with counter update
-        function handleLike(btn, baseCount) {
+        // Like button with backend hit
+        function handleLike(btn, shortId, baseCount) {
             const isLiked = btn.classList.toggle('liked');
             const counter = btn.querySelector('.rail-counter-txt');
             
-            // Uncheck dislike if liked
             const dislikeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(2)');
             if (dislikeBtn) dislikeBtn.classList.remove('disliked');
 
             if (isLiked) {
                 counter.innerText = (baseCount + 1).toLocaleString();
                 showToast('Added to Liked videos ❤️');
+
+                // Hit backend like route
+                fetch(`${window.location.origin}/api/videos/${shortId}/like`, { method: 'POST' }).catch(() => {});
             } else {
                 counter.innerText = (baseCount).toLocaleString();
                 showToast('Removed from Liked videos');
             }
         }
 
-        // Working Dislike button
         function handleDislike(btn) {
             const isDisliked = btn.classList.toggle('disliked');
             const likeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(1)');
@@ -931,7 +938,6 @@
             showToast(isDisliked ? 'Disliked' : 'Dislike removed');
         }
 
-        // Working Subscribe toggle
         function handleSubscribe(btn) {
             const isSub = btn.classList.toggle('subscribed');
             if (isSub) {
@@ -943,7 +949,6 @@
             }
         }
 
-        // Working Share action
         function handleShare() {
             if (navigator.share) {
                 navigator.share({
@@ -956,7 +961,6 @@
             }
         }
 
-        // Working Comments Sheet
         function openCommentsSheet(shortId, count) {
             currentShortId = shortId;
             currentShortCommentsCount = count;
@@ -973,11 +977,25 @@
             if (e.target.id === 'commentsDrawerScrim') closeCommentsSheet();
         }
 
-        // Submit Live Comment
+        // Submit comment with SafeShield Scan
         function submitLiveComment() {
             const input = document.getElementById('liveCommentField');
             const txt = input.value.trim();
             if (!txt) return;
+
+            // SafeShield Profanity Filter
+            const VULGAR_TEST = ["porn", "xxx", "sex", "gandi", "harami", "ashleel"];
+            if (VULGAR_TEST.some(w => txt.toLowerCase().includes(w))) {
+                showToast('Comment blocked by SafeShield 🛑');
+                return;
+            }
+
+            // Sync with backend comments API
+            fetch(`${window.location.origin}/api/videos/${currentShortId}/comment`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ comment_text: txt })
+            }).catch(() => {});
 
             const feed = document.getElementById('liveCommentsList');
             const newComment = document.createElement('div');
@@ -996,7 +1014,6 @@
             feed.prepend(newComment);
             input.value = '';
 
-            // Update Counts
             currentShortCommentsCount++;
             document.getElementById('commentsDrawerHeaderTitle').innerText = `Comments • ${currentShortCommentsCount}`;
             const targetCounter = document.getElementById(`comment-count-${currentShortId}`);
