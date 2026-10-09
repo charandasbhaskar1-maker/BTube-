@@ -6,165 +6,210 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>Upload - BTube</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:40px; }
-        .up-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
-        .header-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
+        .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
+        .hdr-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .btn-publish { background:#e50914; color:#fff; border:none; padding:8px 20px; border-radius:20px; font-weight:700; font-size:13px; cursor:pointer; }
-        .btn-publish:disabled { opacity:0.5; }
-        
-        .form-wrap { padding:16px; display:flex; flex-direction:column; gap:18px; max-width:600px; margin:0 auto; }
-        .file-drop-area { width:100%; border:2px dashed #333; border-radius:12px; padding:24px 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:#141414; cursor:pointer; text-align:center; }
-        .file-drop-area.active { border-color:#e50914; background:#1f1414; }
-        .file-drop-icon svg { width:42px; height:42px; fill:#e50914; }
+        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
+        .btn-pub:disabled { opacity:0.4; cursor:not-allowed; }
 
-        .type-toggle-row { display:flex; background:#1a1a1a; padding:4px; border-radius:10px; gap:4px; }
-        .toggle-btn { flex:1; background:none; border:none; color:#aaa; padding:10px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; }
-        .toggle-btn.active { background:#e50914; color:#fff; }
+        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
 
-        .input-group { display:flex; flex-direction:column; gap:6px; }
-        .input-group label { font-size:12px; color:#aaa; font-weight:600; }
-        .input-group input, .input-group textarea, .input-group select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:14px; outline:none; }
-        .input-group input:focus, .input-group textarea:focus { border-color:#e50914; }
+        .type-selector { display:flex; background:#1c1c1c; border-radius:10px; padding:4px; gap:6px; }
+        .type-btn { flex:1; background:none; border:none; color:#888; padding:10px; font-weight:700; font-size:13px; border-radius:8px; cursor:pointer; }
+        .type-btn.active { background:#e50914; color:#fff; }
+
+        .dropzone { border:2px dashed #333; border-radius:12px; padding:26px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .dropzone svg { width:40px; height:40px; fill:#e50914; }
+
+        .inp-grp { display:flex; flex-direction:column; gap:6px; }
+        .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
+        .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
+        .inp-grp input:focus, .inp-grp textarea:focus { border-color:#e50914; }
+
+        /* Progress Bar */
+        .progress-box { display:none; flex-direction:column; gap:6px; background:#181818; padding:14px; border-radius:10px; border:1px solid #2a2a2a; }
+        .bar-wrap { width:100%; height:8px; background:#333; border-radius:4px; overflow:hidden; }
+        .bar-fill { width:0%; height:100%; background:#e50914; transition:width 0.2s; }
+        .status-txt { font-size:12px; color:#aaa; display:flex; justify-content:space-between; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 </head>
 <body>
 
-    <header class="up-header">
-        <div class="header-left">
+    <header class="hdr">
+        <div class="hdr-left">
             <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            <span style="font-size:17px; font-weight:700;">Upload Content</span>
+            <span style="font-size:17px; font-weight:700;">Upload Real Video</span>
         </div>
-        <button class="btn-publish" id="publishBtn" onclick="handleUpload()">Upload</button>
+        <button class="btn-pub" id="btnPublish" onclick="startCloudUpload()">Upload</button>
     </header>
 
-    <div class="form-wrap">
-        <!-- Type Selection Toggle -->
-        <div class="type-toggle-row">
-            <button type="button" class="toggle-btn active" id="btnTypeVideo" onclick="setType('video')">Long Video</button>
-            <button type="button" class="toggle-btn" id="btnTypeShort" onclick="setType('short')">Short (9:16)</button>
+    <div class="container">
+        <!-- Type Selection -->
+        <div class="type-selector">
+            <button class="type-btn active" id="btnVideo" onclick="setType('video')">Long Video</button>
+            <button class="type-btn" id="btnShort" onclick="setType('short')">Short (9:16)</button>
         </div>
 
-        <!-- File Select Box -->
-        <div class="file-drop-area" id="dropArea" onclick="document.getElementById('videoFileInput').click()">
-            <div class="file-drop-icon">
-                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+        <!-- Video Picker -->
+        <div class="dropzone" onclick="document.getElementById('videoFile').click()">
+            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+            <span style="font-weight:700;" id="fileLabel">Select Real Video from Phone</span>
+            <span style="font-size:11px; color:#777;">Supports MP4, MOV, MKV up to 500MB</span>
+            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
+        </div>
+
+        <!-- Real Progress Bar -->
+        <div class="progress-box" id="progressBox">
+            <div class="status-txt">
+                <span id="uploadStatusText">Uploading to Google Cloud...</span>
+                <span id="percentText">0%</span>
             </div>
-            <div style="font-size:14px; font-weight:600;" id="fileChosenLabel">Tap to select video file</div>
-            <span style="font-size:11px; color:#888;">MP4, WebM or MOV up to 1GB</span>
-            <input type="file" id="videoFileInput" accept="video/*" style="display:none;" onchange="onFileSelected(event)">
+            <div class="bar-wrap">
+                <div class="bar-fill" id="barFill"></div>
+            </div>
         </div>
 
-        <div class="input-group">
+        <div class="inp-grp">
             <label>Title</label>
-            <input type="text" id="videoTitleInput" placeholder="Add title (e.g. Mungeli folk music)">
+            <input type="text" id="titleInput" placeholder="Video title...">
         </div>
 
-        <div class="input-group">
+        <div class="inp-grp">
             <label>Description</label>
-            <textarea id="videoDescInput" rows="3" placeholder="Tell viewers about your video..."></textarea>
+            <textarea id="descInput" rows="3" placeholder="Tell viewers about this video..."></textarea>
         </div>
 
-        <div class="input-group">
+        <div class="inp-grp">
+            <label>Category</label>
+            <select id="catInput">
+                <option value="Chhattisgarhi">Chhattisgarhi</option>
+                <option value="Music">Music</option>
+                <option value="Vlogs">Vlogs</option>
+                <option value="Entertainment">Entertainment</option>
+            </select>
+        </div>
+
+        <div class="inp-grp">
             <label>Visibility</label>
-            <select id="videoVisibilityInput">
-                <option value="Public">Public (Anyone can view)</option>
-                <option value="Unlisted">Unlisted (Anyone with link)</option>
-                <option value="Private">Private (Only you)</option>
+            <select id="visInput">
+                <option value="Public">Public</option>
+                <option value="Unlisted">Unlisted</option>
+                <option value="Private">Private</option>
             </select>
         </div>
     </div>
 
     <script>
-        let selectedUploadType = 'video';
-        let selectedLocalFileUrl = null;
+        const firebaseConfig = {
+            apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
+            authDomain: "btube-5fae0.firebaseapp.com",
+            projectId: "btube-5fae0",
+            storageBucket: "btube-5fae0.firebasestorage.app",
+            messagingSenderId: "1009386330534",
+            appId: "1:1009386330534:web:357a0ad258678a54185767"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        function setType(type) {
-            selectedUploadType = type;
-            document.getElementById('btnTypeVideo').classList.toggle('active', type === 'video');
-            document.getElementById('btnTypeShort').classList.toggle('active', type === 'short');
-            
-            const titleInput = document.getElementById('videoTitleInput');
-            if (type === 'short' && !titleInput.value.includes('#shorts')) {
-                titleInput.value = (titleInput.value.trim() + ' #shorts').trim();
+        let selectedType = 'video';
+        let chosenFile = null;
+
+        function setType(t) {
+            selectedType = t;
+            document.getElementById('btnVideo').classList.toggle('active', t === 'video');
+            document.getElementById('btnShort').classList.toggle('active', t === 'short');
+            const titleField = document.getElementById('titleInput');
+            if (t === 'short' && !titleField.value.includes('#shorts')) {
+                titleField.value = (titleField.value.trim() + ' #shorts').trim();
             }
         }
 
-        function onFileSelected(e) {
+        function onFileChosen(e) {
             const file = e.target.files[0];
             if (file) {
-                document.getElementById('fileChosenLabel').innerText = file.name;
-                selectedLocalFileUrl = URL.createObjectURL(file);
-
-                // Auto-detect title
-                const baseName = file.name.replace(/\.[^/.]+$/, "");
-                const titleField = document.getElementById('videoTitleInput');
+                chosenFile = file;
+                document.getElementById('fileLabel').innerText = file.name;
+                const titleField = document.getElementById('titleInput');
                 if (!titleField.value) {
-                    titleField.value = selectedUploadType === 'short' ? `${baseName} #shorts` : baseName;
+                    const cleanName = file.name.replace(/\.[^/.]+$/, "");
+                    titleField.value = selectedType === 'short' ? `${cleanName} #shorts` : cleanName;
                 }
             }
         }
 
-        function handleUpload() {
-            const title = document.getElementById('videoTitleInput').value.trim() || 'Untitled Video';
-            const desc = document.getElementById('videoDescInput').value.trim();
-            const vis = document.getElementById('videoVisibilityInput').value;
-            const btn = document.getElementById('publishBtn');
-
-            // Force detect if title contains #short or #shorts
-            const isShort = (selectedUploadType === 'short') || title.toLowerCase().includes('#short');
-
-            btn.disabled = true;
-            btn.innerText = 'Publishing...';
-
-            if (isShort) {
-                // Route directly to SHORTS collection
-                let shorts = JSON.parse(localStorage.getItem('btube_user_shorts') || '[]');
-                const newShort = {
-                    id: 'short_' + Date.now(),
-                    title: title,
-                    desc: desc,
-                    visibility: vis,
-                    views: 0,
-                    age: 'Just now',
-                    videoUrl: selectedLocalFileUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600',
-                    type: 'short'
-                };
-                shorts.unshift(newShort);
-                localStorage.setItem('btube_user_shorts', JSON.stringify(shorts));
-
-                setTimeout(() => {
-                    window.location.href = 'your-videos.html?tab=shorts';
-                }, 400);
-
-            } else {
-                // Route directly to VIDEOS collection
-                let videos = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
-                const newVideo = {
-                    id: 'vid_' + Date.now(),
-                    title: title,
-                    desc: desc,
-                    visibility: vis,
-                    views: 0,
-                    duration: '03:45',
-                    age: 'Just now',
-                    restriction: 'None',
-                    videoUrl: selectedLocalFileUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
-                    type: 'video'
-                };
-                videos.unshift(newVideo);
-                localStorage.setItem('btube_user_videos', JSON.stringify(videos));
-
-                setTimeout(() => {
-                    window.location.href = 'your-videos.html';
-                }, 400);
+        async function startCloudUpload() {
+            if (!chosenFile) {
+                alert('Pehle video file select karein!');
+                return;
             }
+            const title = document.getElementById('titleInput').value.trim() || 'Untitled Video';
+            const desc = document.getElementById('descInput').value.trim();
+            const cat = document.getElementById('catInput').value;
+            const vis = document.getElementById('visInput').value;
+
+            const isShort = (selectedType === 'short') || title.toLowerCase().includes('#short');
+
+            const btn = document.getElementById('btnPublish');
+            btn.disabled = true;
+
+            const pBox = document.getElementById('progressBox');
+            const barFill = document.getElementById('barFill');
+            const pctText = document.getElementById('percentText');
+            const statusText = document.getElementById('uploadStatusText');
+            pBox.style.display = 'flex';
+
+            // 1. Upload Video Binary to Firebase Cloud Storage
+            const uniqueFileName = `${Date.now()}_${chosenFile.name}`;
+            const storagePath = (isShort ? 'shorts/' : 'videos/') + uniqueFileName;
+            const uploadTask = storage.ref(storagePath).put(chosenFile);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    barFill.style.width = Math.round(progress) + '%';
+                    pctText.innerText = Math.round(progress) + '%';
+                },
+                (error) => {
+                    console.error('Storage upload error:', error);
+                    alert('Upload failed: ' + error.message);
+                    btn.disabled = false;
+                },
+                async () => {
+                    // 2. Upload Successful -> Get Permanent Real Download URL
+                    statusText.innerText = 'Finalizing cloud database entry...';
+                    const permanentVideoUrl = await uploadTask.snapshot.ref.getDownloadURL();
+
+                    // 3. Save to Cloud Firestore
+                    await db.collection('videos').add({
+                        title: title,
+                        description: desc,
+                        category: cat,
+                        visibility: vis,
+                        type: isShort ? 'short' : 'video',
+                        videoUrl: permanentVideoUrl,
+                        thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
+                        channel: localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar',
+                        views: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    statusText.innerText = 'Upload Complete! Redirecting...';
+                    setTimeout(() => {
+                        window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
+                    }, 500);
+                }
+            );
         }
     </script>
 </body>
