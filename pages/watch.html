@@ -2,1002 +2,118 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
     <title>Watch - BTube</title>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            padding-bottom: 75px;
-            overflow-x: hidden;
-        }
-
-        /* 1. VIDEO PLAYER */
-        .player-container {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000000;
-            z-index: 1000;
-        }
-
-        .player-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
-        /* 2. META INFO */
-        .video-meta-section {
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .video-title {
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.35;
-        }
-
-        .video-views-row {
-            font-size: 12px;
-            color: #aaaaaa;
-        }
-
-        /* 3. CHANNEL ROW & SUBSCRIBE + BELL */
-        .channel-action-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 4px;
-        }
-
-        .channel-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        .channel-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #e50914;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 13px;
-        }
-
-        .channel-names {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .channel-title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .sub-count {
-            font-size: 11px;
-            color: #aaaaaa;
-        }
-
-        /* Subscribe & Bell Container */
-        .sub-wrap-btn {
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            color: #0f0f0f;
-            border-radius: 20px;
-            overflow: hidden;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.2s ease;
-        }
-
-        .sub-wrap-btn.is-subscribed {
-            background: #272727;
-            color: #ffffff;
-        }
-
-        .btn-sub-text {
-            background: none;
-            border: none;
-            color: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 8px 14px;
-            cursor: pointer;
-        }
-
-        .btn-sub-bell {
-            background: none;
-            border: none;
-            color: inherit;
-            padding: 8px 12px 8px 4px;
-            display: none;
-            align-items: center;
-            cursor: pointer;
-            border-left: 1px solid rgba(255,255,255,0.15);
-        }
-
-        .btn-sub-bell svg {
-            width: 17px;
-            height: 17px;
-            fill: currentColor;
-        }
-
-        .sub-wrap-btn.is-subscribed .btn-sub-bell {
-            display: flex;
-        }
-
-        /* 4. ACTIONS BAR */
-        .actions-pill-strip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 0 4px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .actions-pill-strip::-webkit-scrollbar {
-            display: none;
-        }
-
-        .like-dislike-group {
-            display: flex;
-            align-items: center;
-            background: #272727;
-            border-radius: 18px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .like-btn, .dislike-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            padding: 7px 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .dislike-btn {
-            border-left: 1px solid #383838;
-            padding-left: 10px;
-        }
-
-        .like-btn svg, .dislike-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: #ffffff;
-        }
-
-        .like-btn.active svg {
-            fill: #3ea6ff;
-        }
-        .dislike-btn.active svg {
-            fill: #ff4e4e;
-        }
-
-        .pill-action-btn {
-            background: #272727;
-            border: none;
-            color: #ffffff;
-            padding: 7px 14px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .pill-action-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: #ffffff;
-        }
-
-        /* 5. EXPANDABLE DESCRIPTION */
-        .desc-block {
-            background: #212121;
-            padding: 10px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            line-height: 1.45;
-            color: #e0e0e0;
-            cursor: pointer;
-        }
-
-        .desc-text.collapsed {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .desc-more-toggle {
-            font-weight: 700;
-            color: #ffffff;
-            margin-top: 4px;
-            display: block;
-        }
-
-        /* 6. COMMENTS PREVIEW */
-        .comments-card-teaser {
-            background: #212121;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 6px 16px 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .comments-card-teaser:active {
-            background: #2a2a2a;
-        }
-
-        .comments-head-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .comments-snippet {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #cccccc;
-        }
-
-        /* 7. SLIDE-UP COMMENTS BOTTOM SHEET */
-        .comments-sheet-modal {
-            position: fixed;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 70vh;
-            background: #181818;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.8);
-            transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .comments-sheet-modal.open {
-            bottom: 0;
-        }
-
-        .sheet-top-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            border-bottom: 1px solid #282828;
-        }
-
-        .sheet-title-text {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .sheet-close-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 0 4px;
-        }
-
-        .sheet-comment-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .user-comment-row {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .user-cmt-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #3ea6ff;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-
-        .user-cmt-body {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            font-size: 12px;
-        }
-
-        .cmt-author {
-            color: #aaaaaa;
-            font-size: 11px;
-        }
-
-        .cmt-text {
-            color: #ffffff;
-            line-height: 1.35;
-        }
-
-        .sheet-input-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-top: 1px solid #282828;
-            background: #181818;
-        }
-
-        .sheet-input-box input {
-            flex: 1;
-            background: #282828;
-            border: none;
-            outline: none;
-            padding: 10px 14px;
-            border-radius: 20px;
-            color: #ffffff;
-            font-size: 13px;
-        }
-
-        .sheet-input-box button {
-            background: #ff0000;
-            border: none;
-            color: #ffffff;
-            padding: 8px 14px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        /* 8. BELL POPUP DIALOG */
-        .bell-dialog-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: none;
-            align-items: flex-end;
-            z-index: 2500;
-        }
-
-        .bell-dialog-overlay.open {
-            display: flex;
-        }
-
-        .bell-options-card {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 16px 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bell-opt-row {
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            color: #ffffff;
-            background: none;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: left;
-        }
-
-        .bell-opt-row:active {
-            background: #2b2b2b;
-        }
-
-        .bell-opt-row svg {
-            width: 20px;
-            height: 20px;
-            fill: #ffffff;
-        }
-
-        /* Toast notification */
-        .toast-bubble {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #333;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 3000;
-            display: none;
-        }
-
-        /* 9. RECOMMENDED FEED */
-        .rec-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding-top: 6px;
-        }
-
-        .rec-card {
-            display: flex;
-            flex-direction: column;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        .rec-thumb {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #1c1c1c;
-            position: relative;
-        }
-
-        .rec-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .duration-tag {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background: rgba(0,0,0,0.85);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .rec-meta {
-            display: flex;
-            padding: 10px 16px;
-            gap: 12px;
-        }
-
-        .rec-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-
-        .rec-texts {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .rec-title {
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.35;
-        }
-
-        .rec-sub {
-            font-size: 11px;
-            color: #aaaaaa;
-        }
-
-        /* 10. BOTTOM NAVIGATION */
-        .bottom-nav-fixed {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 56px;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #272727;
-            z-index: 1000;
-        }
-
-        .nav-link {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: #aaaaaa;
-            text-decoration: none;
-            gap: 3px;
-        }
-
-        .nav-link svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        .video-viewport { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:500; }
+        video { width:100%; height:100%; object-fit:contain; }
+        .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+        .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
+        .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
+        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; scrollbar-width:none; }
+        .action-tray::-webkit-scrollbar { display:none; }
+        .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
+        .act-pill svg { width:16px; height:16px; fill:#fff; }
+        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; margin-top:4px; }
+        .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
+        .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+        .btn-sub { background:#fff; color:#000; border:none; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
     </style>
 </head>
 <body>
-
-    <!-- 1. VIDEO PLAYER (Linked to Range-Header Streaming Engine) -->
-    <div class="player-container">
+    <div class="video-viewport">
         <video id="mainVideoPlayer" controls autoplay playsinline poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
-            <source id="videoPlayerSrc" src="https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4" type="video/mp4">
+            <source id="videoSource" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+            Your browser does not support video playback.
         </video>
     </div>
 
-    <!-- 2. VIDEO INFO & ACTIONS -->
-    <section class="video-meta-section">
-        <h1 class="video-title" id="pageVideoTitle">Chhattisgarhi Panthi Song • Special Cultural Video 2026</h1>
-        <div class="video-views-row" id="pageViewsRow">210K views • 2 weeks ago • #BTube #Culture</div>
+    <div class="watch-details">
+        <h1 class="video-headline" id="watchTitle">Chhattisgarhi song maya ke rang</h1>
+        <div class="video-meta-row">
+            <span id="watchMeta">210K views • 2 weeks ago</span>
+            <span>• #Chhattisgarhi #BTube</span>
+        </div>
 
-        <!-- Channel Row with Subscribe & Bell Icon -->
-        <div class="channel-action-row">
-            <a href="channel.html" class="channel-left">
-                <div class="channel-avatar" id="pageChannelAvatar">CB</div>
-                <div class="channel-names">
-                    <span class="channel-title" id="pageChannelName">Charandas Bhaskar</span>
-                    <span class="sub-count" id="subCountLabel">245 subscribers</span>
+        <div class="channel-strip">
+            <a href="channel.html" class="channel-info">
+                <div class="avatar-c" id="channelAvatar">CB</div>
+                <div>
+                    <div style="font-size:14px; font-weight:700;" id="channelName">Charandas Bhaskar</div>
+                    <div style="font-size:11px; color:#aaa;">1.25K subscribers</div>
                 </div>
             </a>
-
-            <!-- Subscribed + Bell Group -->
-            <div class="sub-wrap-btn is-subscribed" id="subWrapBtn">
-                <button class="btn-sub-text" id="subBtnText" onclick="handleSubscribeClick()">Subscribed</button>
-                <button class="btn-sub-bell" id="bellIconBtn" onclick="openBellMenu()">
-                    <svg id="bellSvg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                </button>
-            </div>
+            <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
         </div>
 
-        <!-- Action Buttons (Like / Dislike / Share / Download) -->
-        <div class="actions-pill-strip">
-            <div class="like-dislike-group">
-                <button class="like-btn" id="likeBtn" onclick="handleLike()">
-                    <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                    <span id="likeCount">12K</span>
-                </button>
-                <button class="dislike-btn" id="dislikeBtn" onclick="handleDislike()">
-                    <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-                </button>
-            </div>
-
-            <button class="pill-action-btn" onclick="shareVideo()">
-                <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+        <div class="action-tray">
+            <button class="act-pill" onclick="likeVideo(this)">
+                <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                <span id="likeCount">18K</span>
+            </button>
+            <button class="act-pill">
+                <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
                 <span>Share</span>
             </button>
-
-            <button class="pill-action-btn" id="downloadBtn" onclick="handleDownload()">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                <span id="downloadText">Download</span>
-            </button>
-        </div>
-
-        <!-- Description Box -->
-        <div class="desc-block" onclick="toggleDesc()">
-            <div class="desc-text collapsed" id="descContent">
-                <b>210K views • Oct 7, 2026</b><br>
-                Official cultural Panthi song performed live with traditional instruments. Dedicated to Guru Ghasidas Baba ji teachings of Satnam and unity. Recorded live in Chhattisgarh.
-            </div>
-            <span class="desc-more-toggle" id="descToggleTxt">...more</span>
-        </div>
-    </section>
-
-    <!-- Comments Teaser -->
-    <div class="comments-card-teaser" onclick="openCommentsSheet()">
-        <div class="comments-head-row">
-            <span>Comments</span>
-            <span style="color:#aaa; font-weight:400;" id="cmtCount">482</span>
-        </div>
-        <div class="comments-snippet">
-            <div style="width:22px; height:22px; border-radius:50%; background:#3ea6ff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">R</div>
-            <span id="cmtPreviewSnippet">Jay Satnam bhaiya! Bahut sughar geet he...</span>
-        </div>
-    </div>
-
-    <!-- 3. RECOMMENDED LIST -->
-    <div class="rec-feed" id="recFeedContainer">
-        <a href="watch.html?id=rec_banjo&title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="rec-card">
-            <div class="rec-thumb">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Rec 1">
-                <span class="duration-tag">14:10</span>
-            </div>
-            <div class="rec-meta">
-                <div class="rec-avatar" style="background:#3ea6ff;">DH</div>
-                <div class="rec-texts">
-                    <span class="rec-title">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
-                    <span class="rec-sub">Dhun AI • 45K views • 1 day ago</span>
-                </div>
-            </div>
-        </a>
-
-        <a href="watch.html?id=rec_vlog&title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="rec-card">
-            <div class="rec-thumb">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Rec 2">
-                <span class="duration-tag">06:25</span>
-            </div>
-            <div class="rec-meta">
-                <div class="rec-avatar" style="background:#2ecc71;">BV</div>
-                <div class="rec-texts">
-                    <span class="rec-title">Morning Commute & Village Lifestyle Daily Vlog #42</span>
-                    <span class="rec-sub">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
-                </div>
-            </div>
-        </a>
-    </div>
-
-    <!-- 4. COMMENTS BOTTOM SHEET -->
-    <div class="comments-sheet-modal" id="commentsModal">
-        <div class="sheet-top-header">
-            <span class="sheet-title-text">Comments <span id="sheetCmtTotal">482</span></span>
-            <button class="sheet-close-btn" onclick="closeCommentsSheet()">✕</button>
-        </div>
-
-        <div class="sheet-comment-list" id="commentsContainer">
-            <div class="user-comment-row">
-                <div class="user-cmt-avatar">R</div>
-                <div class="user-cmt-body">
-                    <span class="cmt-author">@ramesh_kumar • 2 hours ago</span>
-                    <span class="cmt-text">Jay Satnam bhaiya! Bahut sughar geet he, aawaz ek number! 🔥</span>
-                </div>
-            </div>
-            <div class="user-comment-row">
-                <div class="user-cmt-avatar" style="background:#e50914;">S</div>
-                <div class="user-cmt-body">
-                    <span class="cmt-author">@suresh_vlogs • 5 hours ago</span>
-                    <span class="cmt-text">Nice music and traditional mandli. Keep uploading!</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="sheet-input-box">
-            <input type="text" id="newCommentInput" placeholder="Add a comment on BTube..." onkeypress="handleEnterComment(event)">
-            <button onclick="postComment()">Send</button>
-        </div>
-    </div>
-
-    <!-- 5. BELL MENU MODAL -->
-    <div class="bell-dialog-overlay" id="bellOverlay" onclick="closeBellMenu(event)">
-        <div class="bell-options-card">
-            <button class="bell-opt-row" onclick="selectBell('All')">
-                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span>All notifications</span>
-            </button>
-            <button class="bell-opt-row" onclick="selectBell('Personalized')">
-                <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <span>Personalized</span>
-            </button>
-            <button class="bell-opt-row" onclick="unsubscribeChannel()" style="color:#ff4e4e;">
-                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>
-                <span>Unsubscribe</span>
+            <button class="act-pill">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                <span>Download</span>
             </button>
         </div>
     </div>
 
-    <!-- Small Toast Bubble -->
-    <div class="toast-bubble" id="toastMsg"></div>
-
-    <!-- 6. BOTTOM NAVIGATION -->
-    <nav class="bottom-nav-fixed">
-        <a href="../frontend/index.html" class="nav-link">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-link">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-link">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Create</span>
-        </a>
-        <a href="subscriptions.html" class="nav-link">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
-        </a>
-        <a href="profile.html" class="nav-link">
-            <div id="bottomNavInits" style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
-            <span>You</span>
-        </a>
-    </nav>
-
-    <!-- Load BTube API Client -->
+    <!-- API Client Integration -->
     <script src="../assets/js/api-client.js"></script>
-
-    <!-- JAVASCRIPT LOGIC -->
     <script>
         const params = new URLSearchParams(window.location.search);
-        const currentVideoId = params.get('id') || 'vid-1';
-        let accumulatedWatchSeconds = 0;
-        let lastReportedTime = 0;
+        const titleParam = params.get('title');
+        const channelParam = params.get('channel');
+        const videoUrlParam = params.get('videoUrl');
 
-        // 1. Initialize Player & Dynamic Streaming
         window.addEventListener('DOMContentLoaded', () => {
-            if (params.get('title')) {
-                document.getElementById('pageVideoTitle').innerText = params.get('title');
+            const player = document.getElementById('mainVideoPlayer');
+            const source = document.getElementById('videoSource');
+
+            if (titleParam) {
+                document.getElementById('watchTitle').innerText = decodeURIComponent(titleParam);
             }
-            if (params.get('channel')) {
-                const chName = params.get('channel');
-                document.getElementById('pageChannelName').innerText = chName;
-                const words = chName.trim().split(' ');
-                let inits = words[0][0];
-                if (words.length > 1) inits += words[1][0];
-                document.getElementById('pageChannelAvatar').innerText = inits.toUpperCase();
+            if (channelParam) {
+                document.getElementById('channelName').innerText = decodeURIComponent(channelParam);
             }
 
-            // Sync User avatar initials
-            const savedName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
-            const navInits = document.getElementById('bottomNavInits');
-            if (navInits) {
-                const p = savedName.trim().split(' ');
-                let i = p[0][0];
-                if (p.length > 1) i += p[1][0];
-                navInits.innerText = i.toUpperCase();
+            // Set playable video stream
+            if (videoUrlParam) {
+                source.src = decodeURIComponent(videoUrlParam);
+                player.load();
+                player.play().catch(() => {});
             }
 
-            // Hook HTTP 206 Range-Streamer if video ID exists on backend
-            if (params.get('stream') === 'true') {
-                const player = document.getElementById('mainVideoPlayer');
-                player.src = `${window.location.origin}/api/videos/${currentVideoId}/stream`;
+            // Accumulate watch time in BPP
+            if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
+                window.BTubeAPI.recordView(params.get('id') || 'vid_1', 30);
             }
-
-            // Setup Real Watch-Time Reporting
-            setupWatchTimeTracker();
         });
 
-        // 2. Watch Time & BPP Tracker
-        function setupWatchTimeTracker() {
-            const player = document.getElementById('mainVideoPlayer');
-            player.addEventListener('timeupdate', () => {
-                const currentTime = Math.floor(player.currentTime);
-                if (currentTime > lastReportedTime) {
-                    accumulatedWatchSeconds += (currentTime - lastReportedTime);
-                    lastReportedTime = currentTime;
-
-                    // Report watch time to backend every 15 seconds to credit BPP watch hours
-                    if (accumulatedWatchSeconds >= 15) {
-                        if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
-                            window.BTubeAPI.recordView(currentVideoId, accumulatedWatchSeconds);
-                        }
-                        accumulatedWatchSeconds = 0;
-                    }
-                }
-            });
-        }
-
-        // 3. Toast display
-        function showToast(msg) {
-            const toast = document.getElementById('toastMsg');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
-        }
-
-        // 4. Subscribe & Bell Logic
-        let isSubscribed = true;
-
-        function handleSubscribeClick() {
-            if (!isSubscribed) {
-                isSubscribed = true;
-                document.getElementById('subWrapBtn').classList.add('is-subscribed');
-                document.getElementById('subBtnText').innerText = 'Subscribed';
-                document.getElementById('subCountLabel').innerText = '246 subscribers';
-                showToast('Subscription added');
+        function toggleSub() {
+            const b = document.getElementById('btnSubscribe');
+            if (b.innerText === 'Subscribe') {
+                b.innerText = 'Subscribed';
+                b.style.background = '#333';
+                b.style.color = '#fff';
             } else {
-                openBellMenu();
+                b.innerText = 'Subscribe';
+                b.style.background = '#fff';
+                b.style.color = '#000';
             }
         }
 
-        function openBellMenu() {
-            document.getElementById('bellOverlay').classList.add('open');
-        }
-
-        function closeBellMenu(e) {
-            if (e.target.id === 'bellOverlay') {
-                document.getElementById('bellOverlay').classList.remove('open');
-            }
-        }
-
-        function selectBell(type) {
-            document.getElementById('bellOverlay').classList.remove('open');
-            showToast(`Notifications: ${type}`);
-        }
-
-        function unsubscribeChannel() {
-            isSubscribed = false;
-            document.getElementById('subWrapBtn').classList.remove('is-subscribed');
-            document.getElementById('subBtnText').innerText = 'Subscribe';
-            document.getElementById('subCountLabel').innerText = '245 subscribers';
-            document.getElementById('bellOverlay').classList.remove('open');
-            showToast('Subscription removed');
-        }
-
-        // 5. Like / Dislike Toggle with Backend Sync
-        let isLiked = false;
-        let isDisliked = false;
-
-        async function handleLike() {
-            const likeBtn = document.getElementById('likeBtn');
-            const dislikeBtn = document.getElementById('dislikeBtn');
-            const likeCount = document.getElementById('likeCount');
-
-            if (!isLiked) {
-                isLiked = true;
-                isDisliked = false;
-                likeBtn.classList.add('active');
-                dislikeBtn.classList.remove('active');
-                likeCount.innerText = '12.1K';
-
-                // Hit backend like counter
-                fetch(`${window.location.origin}/api/videos/${currentVideoId}/like`, { method: 'POST' }).catch(() => {});
-            } else {
-                isLiked = false;
-                likeBtn.classList.remove('active');
-                likeCount.innerText = '12K';
-            }
-        }
-
-        function handleDislike() {
-            const likeBtn = document.getElementById('likeBtn');
-            const dislikeBtn = document.getElementById('dislikeBtn');
-            const likeCount = document.getElementById('likeCount');
-
-            if (!isDisliked) {
-                isDisliked = true;
-                isLiked = false;
-                dislikeBtn.classList.add('active');
-                likeBtn.classList.remove('active');
-                likeCount.innerText = '12K';
-            } else {
-                isDisliked = false;
-                dislikeBtn.classList.remove('active');
-            }
-        }
-
-        // 6. Download Progress
-        let isDownloaded = false;
-        function handleDownload() {
-            if (isDownloaded) return;
-            const textSpan = document.getElementById('downloadText');
-            textSpan.innerText = 'Downloading...';
-            setTimeout(() => {
-                textSpan.innerText = 'Downloaded ✓';
-                isDownloaded = true;
-                showToast('Video saved offline');
-            }, 1000);
-        }
-
-        // 7. Expandable Description
-        let isDescExpanded = false;
-        function toggleDesc() {
-            const desc = document.getElementById('descContent');
-            const toggle = document.getElementById('descToggleTxt');
-            isDescExpanded = !isDescExpanded;
-            desc.classList.toggle('collapsed', !isDescExpanded);
-            toggle.innerText = isDescExpanded ? 'Show less' : '...more';
-        }
-
-        // 8. Comments Slide Sheet & SafeShield Filter
-        function openCommentsSheet() {
-            document.getElementById('commentsModal').classList.add('open');
-        }
-
-        function closeCommentsSheet() {
-            document.getElementById('commentsModal').classList.remove('open');
-        }
-
-        function handleEnterComment(e) {
-            if (e.key === 'Enter') postComment();
-        }
-
-        async function postComment() {
-            const input = document.getElementById('newCommentInput');
-            const text = input.value.trim();
-            if (!text) return;
-
-            // SafeShield Profanity / Abusive Language Check
-            const VULGAR_TEST = ["porn", "xxx", "sex", "gandi", "harami", "ashleel"];
-            const isAbusive = VULGAR_TEST.some(w => text.toLowerCase().includes(w));
-
-            if (isAbusive) {
-                showToast('Comment blocked by SafeShield 🛑');
-                return;
-            }
-
-            // Sync with backend comments API if online
-            fetch(`${window.location.origin}/api/videos/${currentVideoId}/comment`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment_text: text })
-            }).catch(() => {});
-
-            const container = document.getElementById('commentsContainer');
-            const newRow = document.createElement('div');
-            newRow.className = 'user-comment-row';
-            newRow.innerHTML = `
-                <div class="user-cmt-avatar" style="background:#e50914;">CB</div>
-                <div class="user-cmt-body">
-                    <span class="cmt-author">@charandas_bhaskar • Just now</span>
-                    <span class="cmt-text">${text}</span>
-                </div>
-            `;
-            container.prepend(newRow);
-            input.value = '';
-
-            const cmtLabel = document.getElementById('cmtCount');
-            const sheetCmtTotal = document.getElementById('sheetCmtTotal');
-            cmtLabel.innerText = '483';
-            sheetCmtTotal.innerText = '483';
-            document.getElementById('cmtPreviewSnippet').innerText = text;
-            showToast('Comment added');
-        }
-
-        // 9. Share
-        function shareVideo() {
-            if (navigator.share) {
-                navigator.share({ title: document.title, url: window.location.href }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                showToast('Link copied to clipboard');
-            }
+        function likeVideo(btn) {
+            btn.style.color = '#e50914';
+            btn.querySelector('svg').style.fill = '#e50914';
+            document.getElementById('likeCount').innerText = '19K';
         }
     </script>
 </body>
