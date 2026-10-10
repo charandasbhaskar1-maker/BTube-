@@ -1,8 +1,10 @@
-const CACHE_NAME = 'btube-v2';
+javascript
+const CACHE_NAME = 'btube-v3';
 
-// BTube ke core offline assets
 const ASSETS_TO_CACHE = [
   './',
+  './index.html',
+  './manifest.json',
   './frontend/index.html',
   './frontend/style.css',
   './frontend/app.js',
@@ -12,79 +14,114 @@ const ASSETS_TO_CACHE = [
   './pages/upload.html',
   './pages/upload-video.html',
   './pages/upload-short.html',
-  './pages/your-videos.html',
-  './manifest.json'
+  './pages/your-videos.html'
 ];
 
-// Install Event
-self.addEventListener('install', (event) => {
+// Service Worker install
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS_TO_CACHE))
+      .catch(error => {
+        console.error('BTube cache install error:', error);
+      })
   );
+
   self.skipWaiting();
 });
 
-// Activate Event (Old Cache Cleanup)
-self.addEventListener('activate', (event) => {
+// पुराने कैश हटाएँ
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key.startsWith('btube-') &&
+                         key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch Event
-self.addEventListener('fetch', (event) => {
-  const requestUrl = new URL(event.request.url);
+// नेटवर्क और कैश से पेज लोड करना
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
 
-  // 1. Video files aur Range streaming requests ko Service Worker se bypass karein
+  // केवल GET requests संभालें
+  if (request.method !== 'GET') return;
+
+  // Firebase और अन्य बाहरी साइटों को कैश न करें
+  if (url.origin !== self.location.origin) return;
+
+  // वीडियो स्ट्रीमिंग और Range requests को सीधे नेटवर्क से चलाएँ
   if (
-    requestUrl.pathname.includes('/api/videos/') ||
-    requestUrl.pathname.endsWith('.mp4') ||
-    requestUrl.pathname.endsWith('.webm') ||
-    event.request.headers.get('range')
+    url.pathname.includes('/api/videos/') ||
+    /\.(mp4|webm|mov|m4v)$/i.test(url.pathname) ||
+    request.headers.has('range')
   ) {
-    return; // Direct network fetch hone de
+    return;
   }
 
-  // 2. Static Assets ke liye Cache First / Network Fallback
+  // HTML पेज: पहले नेटवर्क, फिर ऑफलाइन होने पर कैश
+  const isHTML =
+    request.mode === 'navigate' ||
+    request.destination === 'document' ||
+    url.pathname.endsWith('.html') ||
+    url.pathname.endsWith('/');
+
+  if (isHTML) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME)
+              .then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+
+          if (cached) return cached;
+
+          return new Response(
+            'BTube खोलने के लिए इंटरनेट कनेक्शन आवश्यक है।',
+            {
+              status: 503,
+              headers: {
+                'Content-Type': 'text/plain; charset=utf-8'
+              }
+            }
+          );
+        })
+    );
+
+    return;
+  }
+
+  // CSS, JavaScript और अन्य स्थिर फाइलें
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
+    caches.match(request).then(async cached => {
+      const networkPromise = fetch(request).then(response => {
+        if (response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(request, copy));
+        }
+        return response;
+      });
+
+      // उपलब्ध कैश तुरंत दें और नेटवर्क से अपडेट करें।
+      // अगली बार नया संस्करण इस्तेमाल होगा।
+      if (cached) {
+        event.waitUntil(networkPromise.catch(() => {}));
+        return cached;
       }
 
-      return fetch(event.request)
-        .then((networkResponse) => {
-          // Valid response ko cache me update karein (sirf GET requests)
-          if (
-            networkResponse &&
-            networkResponse.status === 200 &&
-            event.request.method === 'GET' &&
-            !requestUrl.protocol.startsWith('chrome-extension')
-          ) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          // Offline hone par navigation request par index.html dikhayein
-          if (event.request.mode === 'navigate') {
-            return caches.match('./frontend/index.html');
-          }
-        });
+      return networkPromise;
     })
   );
 });
