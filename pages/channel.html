@@ -9,48 +9,66 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
-        /* Top Header */
-        .ch-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1a1a1a; }
+        .ch-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; }
         .hdr-left { display:flex; align-items:center; gap:16px; }
         .btn-icon { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
         .btn-icon svg { width:22px; height:22px; fill:#fff; }
-        .hdr-title { font-size:17px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px; }
-        .hdr-right { display:flex; align-items:center; gap:16px; }
+        .hdr-title { font-size:18px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .hdr-right { display:flex; align-items:center; gap:18px; }
 
-        /* Channel Banner */
+        /* Banner */
         .channel-banner { width:100%; aspect-ratio:16/5; background:#222; overflow:hidden; position:relative; }
         .channel-banner img { width:100%; height:100%; object-fit:cover; }
-        .btn-edit-banner { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.65); border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
-        .btn-edit-banner svg { width:16px; height:16px; fill:#fff; }
+        .btn-edit-banner { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.7); border:none; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .btn-edit-banner svg { width:17px; height:17px; fill:#fff; }
 
-        /* Channel Info Hero */
-        .channel-hero { padding:14px 16px; display:flex; flex-direction:column; gap:12px; }
+        /* Profile Block */
+        .channel-hero { padding:14px 16px 8px; display:flex; flex-direction:column; gap:10px; }
         .hero-top-row { display:flex; gap:14px; align-items:center; }
-        .ch-avatar-lg { width:68px; height:68px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; overflow:hidden; flex-shrink:0; }
+        .ch-avatar-lg { width:72px; height:72px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; color:#fff; overflow:hidden; flex-shrink:0; }
         .ch-avatar-lg img { width:100%; height:100%; object-fit:cover; }
         
         .ch-names { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
-        .ch-title { font-size:20px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .ch-sub-meta { font-size:12px; color:#aaa; }
-        .ch-bio { font-size:12px; color:#888; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; margin-top:2px; }
+        .ch-title { font-size:22px; font-weight:800; }
+        .ch-handle { font-size:13px; color:#aaa; font-weight:500; }
+        
+        .ch-sub-badge-row { display:flex; align-items:center; gap:6px; margin-top:2px; font-size:12px; color:#aaa; cursor:pointer; }
+        .sub-bubbles { display:flex; align-items:center; }
+        .sub-bubble-img { width:16px; height:16px; border-radius:50%; border:1.5px solid #0f0f0f; margin-left:-5px; object-fit:cover; background:#444; }
+        .sub-bubble-img:first-child { margin-left:0; }
 
-        /* Action Buttons */
-        .action-row { display:flex; gap:8px; }
-        .btn-ch-action { flex:1; background:#fff; color:#000; border:none; padding:10px; border-radius:22px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
-        .btn-ch-action.owner { background:#222; color:#fff; border:1px solid #333; }
-        .btn-ch-action.subscribed { background:#222; color:#aaa; }
+        .ch-bio-row { font-size:12px; color:#aaa; line-height:1.4; display:flex; align-items:center; gap:4px; margin-top:2px; cursor:pointer; }
+        .ch-bio-text { overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; color:#ccc; }
+        .bio-more { color:#fff; font-weight:700; flex-shrink:0; }
 
-        /* Tabs Navigation Bar */
-        .tabs-bar { display:flex; border-bottom:1px solid #222; padding:0 8px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
+        /* Action Buttons Grid */
+        .btn-actions-grid { display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+        .btn-row-2 { display:flex; gap:8px; }
+        .btn-yt { flex:1; background:#222; color:#fff; border:none; padding:9px 12px; border-radius:20px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; }
+        .btn-yt:active { background:#333; }
+        .btn-yt svg { width:18px; height:18px; fill:#fff; }
+
+        /* Tabs Bar */
+        .tabs-bar { display:flex; border-bottom:1px solid #222; padding:0 8px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; margin-top:6px; }
         .tabs-bar::-webkit-scrollbar { display:none; }
         .tab-item { padding:12px 14px; font-size:14px; font-weight:700; color:#aaa; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; }
         .tab-item.active { color:#fff; border-bottom-color:#fff; }
 
-        /* Tab Content Panes */
+        /* Panes */
         .tab-pane { display:none; padding:12px 0; }
         .tab-pane.active { display:block; }
 
-        /* Video List (Home / Videos Tab) */
+        /* For You Horizontal Shelf */
+        .shelf-header { font-size:17px; font-weight:800; padding:0 16px 10px; }
+        .for-you-carousel { display:flex; gap:12px; overflow-x:auto; padding:0 16px 16px; scrollbar-width:none; }
+        .for-you-carousel::-webkit-scrollbar { display:none; }
+        .fy-card { width:220px; flex-shrink:0; display:flex; flex-direction:column; gap:6px; cursor:pointer; }
+        .fy-thumb { width:100%; aspect-ratio:16/9; border-radius:10px; overflow:hidden; background:#222; position:relative; }
+        .fy-thumb img { width:100%; height:100%; object-fit:cover; }
+        .fy-dur { position:absolute; bottom:6px; right:6px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:1px 5px; border-radius:4px; display:flex; align-items:center; gap:3px; }
+        .fy-title { font-size:13px; font-weight:700; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+
+        /* Videos List */
         .video-feed-list { display:flex; flex-direction:column; gap:14px; }
         .v-item { display:flex; gap:12px; padding:0 16px; cursor:pointer; }
         .v-thumb { width:130px; aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
@@ -61,15 +79,15 @@
         .v-title { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .v-meta { font-size:11px; color:#888; }
 
-        /* Shorts Grid (Shorts Tab) */
+        /* Shorts Grid */
         .shorts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; padding:0 12px; }
         .s-card { aspect-ratio:9/16; border-radius:8px; overflow:hidden; position:relative; background:#222; cursor:pointer; }
         .s-card img { width:100%; height:100%; object-fit:cover; }
-        .s-info { position:absolute; bottom:0; left:0; right:0; padding:8px 6px; background:linear-gradient(transparent, rgba(0,0,0,0.85)); display:flex; flex-direction:column; gap:2px; }
+        .s-info { position:absolute; bottom:0; left:0; right:0; padding:8px 6px; background:linear-gradient(transparent, rgba(0,0,0,0.9)); display:flex; flex-direction:column; gap:2px; }
         .s-title { font-size:11px; font-weight:700; line-height:1.2; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .s-views { font-size:10px; color:#aaa; }
 
-        /* Playlists Grid (Playlists Tab) */
+        /* Playlists List */
         .pl-channel-list { display:flex; flex-direction:column; gap:12px; }
         .pl-ch-row { display:flex; gap:12px; padding:0 16px; cursor:pointer; align-items:center; }
         .pl-ch-thumb { width:120px; aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
@@ -77,7 +95,7 @@
         .pl-ch-badge { position:absolute; bottom:0; right:0; top:0; width:40%; background:rgba(0,0,0,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:11px; font-weight:800; }
         .pl-ch-badge svg { width:14px; height:14px; fill:#fff; margin-bottom:2px; }
 
-        .empty-channel { text-align:center; padding:50px 20px; color:#777; font-size:13px; }
+        .empty-channel { text-align:center; padding:40px 20px; color:#777; font-size:13px; }
         .empty-channel a { display:inline-block; margin-top:12px; background:#e50914; color:#fff; padding:9px 20px; border-radius:20px; text-decoration:none; font-weight:700; font-size:13px; }
 
         /* Bottom Nav */
@@ -94,7 +112,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="ch-header">
         <div class="hdr-left">
             <button class="btn-icon" onclick="window.history.back()">
@@ -103,19 +120,19 @@
             <span class="hdr-title" id="hdrChannelName">Channel</span>
         </div>
         <div class="hdr-right">
-            <button class="btn-icon" onclick="alert('Searching channel...')">
+            <button class="btn-icon" onclick="alert('Search within channel')">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
             <button class="btn-icon" onclick="shareChannel()">
-                <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- Banner with Edit Option -->
+    <!-- Banner -->
     <div class="channel-banner">
         <img id="chBannerImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200" alt="Banner">
-        <button class="btn-edit-banner" id="btnEditBanner" onclick="changeBannerPrompt()" title="Edit Banner">
+        <button class="btn-edit-banner" onclick="editBannerPrompt()">
             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         </button>
     </div>
@@ -126,49 +143,95 @@
             <div class="ch-avatar-lg" id="chAvatar">BT</div>
             <div class="ch-names">
                 <div class="ch-title" id="chMainTitle">Channel Name</div>
-                <div class="ch-sub-meta" id="chHandleMeta">@handle • 0 subscribers • 0 videos</div>
-                <div class="ch-bio" id="chBio">Welcome to my official BTube channel!</div>
+                <div class="ch-handle" id="chHandle">@handle</div>
+                
+                <div class="ch-sub-badge-row" onclick="alert('View subscriber list')">
+                    <div class="sub-bubbles">
+                        <img class="sub-bubble-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=50">
+                        <img class="sub-bubble-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=50">
+                        <img class="sub-bubble-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=50">
+                    </div>
+                    <span id="subCountText">2.19K subscribers</span>
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </div>
             </div>
         </div>
-        <div class="action-row">
-            <button class="btn-ch-action owner" id="btnMainAction" onclick="handleMainAction()">Manage videos</button>
+
+        <!-- Bio Description with ...more -->
+        <div class="ch-bio-row" onclick="openBioPrompt()">
+            <span class="ch-bio-text" id="chBio">लोक संस्कृति, भक्ति और परंपराओं को संजोने और नई पीढ़ी तक पहुँचाने का एक प्रयास है।</span>
+            <span class="bio-more">...more</span>
+        </div>
+
+        <!-- Analytics, Edit channel, Community buttons -->
+        <div class="btn-actions-grid">
+            <div class="btn-row-2">
+                <button class="btn-yt" onclick="window.location.href='your-videos.html'">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                    <span>Analytics</span>
+                </button>
+                <button class="btn-yt" onclick="editChannelDetailsPrompt()">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    <span>Edit channel</span>
+                </button>
+            </div>
+            <button class="btn-yt" style="width:100%;" onclick="switchTab('community')">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                <span>Community</span>
+            </button>
         </div>
     </div>
 
-    <!-- Working Tabs Navigation -->
+    <!-- Full Tabs Bar -->
     <div class="tabs-bar">
         <div class="tab-item active" onclick="switchTab('home')">Home</div>
         <div class="tab-item" onclick="switchTab('videos')">Videos</div>
         <div class="tab-item" onclick="switchTab('shorts')">Shorts</div>
+        <div class="tab-item" onclick="switchTab('live')">Live</div>
         <div class="tab-item" onclick="switchTab('playlists')">Playlists</div>
+        <div class="tab-item" onclick="switchTab('community')">Community</div>
     </div>
 
-    <!-- TAB 1: HOME PANE -->
+    <!-- 1. HOME PANE -->
     <div class="tab-pane active" id="pane-home">
-        <div style="padding:0 16px 8px; font-size:14px; font-weight:800; color:#fff;">Uploads</div>
-        <div class="video-feed-list" id="homeFeedList">
-            <div class="empty-channel">Loading videos...</div>
+        <!-- For you shelf -->
+        <div class="shelf-header">For you</div>
+        <div class="for-you-carousel" id="forYouCarousel">
+            <!-- Dynamic / Featured cards -->
         </div>
+
+        <div style="padding:10px 16px 8px; font-size:16px; font-weight:800; color:#fff;">Uploads</div>
+        <div class="video-feed-list" id="homeFeedList"></div>
     </div>
 
-    <!-- TAB 2: VIDEOS PANE -->
+    <!-- 2. VIDEOS PANE -->
     <div class="tab-pane" id="pane-videos">
-        <div class="video-feed-list" id="videosOnlyList">
-            <div class="empty-channel">Loading regular videos...</div>
-        </div>
+        <div class="video-feed-list" id="videosOnlyList"></div>
     </div>
 
-    <!-- TAB 3: SHORTS PANE -->
+    <!-- 3. SHORTS PANE -->
     <div class="tab-pane" id="pane-shorts">
-        <div class="shorts-grid" id="shortsGridList">
-            <!-- Shorts Grid Cards -->
+        <div class="shorts-grid" id="shortsGridList"></div>
+    </div>
+
+    <!-- 4. LIVE PANE -->
+    <div class="tab-pane" id="pane-live">
+        <div class="empty-channel">
+            <p>No past live streams available.</p>
+            <a href="upload.html">Go live on BTube</a>
         </div>
     </div>
 
-    <!-- TAB 4: PLAYLISTS PANE -->
+    <!-- 5. PLAYLISTS PANE -->
     <div class="tab-pane" id="pane-playlists">
-        <div class="pl-channel-list" id="playlistsPaneList">
-            <!-- Playlists rows -->
+        <div class="pl-channel-list" id="playlistsPaneList"></div>
+    </div>
+
+    <!-- 6. COMMUNITY PANE -->
+    <div class="tab-pane" id="pane-community">
+        <div class="empty-channel">
+            <p>Share updates, images, and polls with your viewers.</p>
+            <a href="javascript:void(0)" onclick="promptPost()">+ Create post</a>
         </div>
     </div>
 
@@ -183,26 +246,24 @@
 
     <script>
         let currentChannel = null;
-        let isOwner = true;
-        let channelVideos = [];
-        let channelShorts = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
             const authUser = window.BTubeAPI.getAuthUser();
             const activeCh = await window.BTubeAPI.getActiveChannel();
 
-            // Channel resolution
             const chName = activeCh ? activeCh.name : (authUser ? authUser.name : 'BTube Official');
             const chHandle = activeCh ? activeCh.handle : '@btube';
             const chAvatar = activeCh ? activeCh.avatar : (authUser ? authUser.photo : '');
             const chBanner = activeCh?.banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200';
+            const chBio = activeCh?.bio || 'लोक संस्कृति, भक्ति और परंपराओं को संजोने और नई पीढ़ी तक पहुँचाने का एक प्रयास है।';
 
-            currentChannel = { name: chName, handle: chHandle, avatar: chAvatar, banner: chBanner, id: activeCh?.id };
+            currentChannel = { id: activeCh?.id, name: chName, handle: chHandle, avatar: chAvatar, banner: chBanner, bio: chBio };
 
-            // Apply Basic Info
             document.getElementById('chMainTitle').innerText = chName;
             document.getElementById('hdrChannelName').innerText = chName;
+            document.getElementById('chHandle').innerText = chHandle;
             document.getElementById('chBannerImg').src = chBanner;
+            document.getElementById('chBio').innerText = chBio;
 
             const avEl = document.getElementById('chAvatar');
             const navAv = document.getElementById('navAvatar');
@@ -215,48 +276,66 @@
                 navAv.innerText = init;
             }
 
-            // Fetch Videos for this specific channel
             const allItems = await window.BTubeAPI.getFeed('all');
             const myItems = allItems.filter(v => v.channelId === activeCh?.id || v.channel === chName);
+            const videosOnly = myItems.filter(i => (i.type || 'video').toLowerCase() === 'video');
+            const shortsOnly = myItems.filter(i => (i.type || 'video').toLowerCase() === 'short');
 
-            channelVideos = myItems.filter(i => (i.type || 'video').toLowerCase() === 'video');
-            channelShorts = myItems.filter(i => (i.type || 'video').toLowerCase() === 'short');
-
-            document.getElementById('chHandleMeta').innerText = `${chHandle} • 0 subscribers • ${myItems.length} videos`;
-
-            // Render all panes
-            renderHomePane(myItems);
-            renderVideosPane(channelVideos);
-            renderShortsPane(channelShorts);
-            renderPlaylistsPane();
+            renderForYouShelf(myItems);
+            renderVideosFeed('homeFeedList', myItems);
+            renderVideosFeed('videosOnlyList', videosOnly);
+            renderShortsGrid(shortsOnly);
+            renderPlaylists();
         });
 
-        // Tab Switching Logic
-        function switchTab(tabName) {
+        function switchTab(name) {
             const tabs = document.querySelectorAll('.tab-item');
             const panes = document.querySelectorAll('.tab-pane');
-
             tabs.forEach(t => t.classList.remove('active'));
             panes.forEach(p => p.classList.remove('active'));
 
-            const targetPane = document.getElementById(`pane-${tabName}`);
-            if (targetPane) targetPane.classList.add('active');
+            const p = document.getElementById(`pane-${name}`);
+            if (p) p.classList.add('active');
 
-            const index = ['home', 'videos', 'shorts', 'playlists'].indexOf(tabName);
-            if (index !== -1 && tabs[index]) {
-                tabs[index].classList.add('active');
-            }
+            const tabNames = ['home', 'videos', 'shorts', 'live', 'playlists', 'community'];
+            const idx = tabNames.indexOf(name);
+            if (idx !== -1 && tabs[idx]) tabs[idx].classList.add('active');
         }
 
-        // 1. Render Home Pane
-        function renderHomePane(items) {
-            const box = document.getElementById('homeFeedList');
-            box.innerHTML = '';
+        function renderForYouShelf(items) {
+            const row = document.getElementById('forYouCarousel');
+            row.innerHTML = '';
+            const list = items.length > 0 ? items : [
+                {
+                    id: 'fy_01',
+                    title: 'BTube Special Feature • Watch Now',
+                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
+                    duration: '04:09'
+                }
+            ];
 
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'fy-card';
+                card.onclick = () => window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl || '')}`;
+                card.innerHTML = `
+                    <div class="fy-thumb">
+                        <img src="${item.thumb}">
+                        <div class="fy-dur">▶ ${item.duration || '04:09'}</div>
+                    </div>
+                    <div class="fy-title">${item.title}</div>
+                `;
+                row.appendChild(card);
+            });
+        }
+
+        function renderVideosFeed(elementId, items) {
+            const box = document.getElementById(elementId);
+            box.innerHTML = '';
             if (items.length === 0) {
                 box.innerHTML = `
                     <div class="empty-channel">
-                        <p>No videos uploaded on this channel yet.</p>
+                        <p>No videos uploaded yet.</p>
                         <a href="upload.html">+ Upload a video</a>
                     </div>
                 `;
@@ -264,42 +343,28 @@
             }
 
             items.forEach(v => {
-                box.appendChild(createVideoRow(v));
-            });
-        }
-
-        // 2. Render Videos Only Pane
-        function renderVideosPane(videos) {
-            const box = document.getElementById('videosOnlyList');
-            box.innerHTML = '';
-
-            if (videos.length === 0) {
-                box.innerHTML = `
-                    <div class="empty-channel">
-                        <p>No regular videos uploaded yet.</p>
-                        <a href="upload.html?type=video">+ Upload regular video</a>
+                const row = document.createElement('div');
+                row.className = 'v-item';
+                row.onclick = () => window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                row.innerHTML = `
+                    <div class="v-thumb">
+                        <img src="${v.thumb}">
+                        <span class="v-dur">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="v-info">
+                        <div class="v-title">${v.title}</div>
+                        <div class="v-meta">${v.views || 0} views • ${v.type || 'video'}</div>
                     </div>
                 `;
-                return;
-            }
-
-            videos.forEach(v => {
-                box.appendChild(createVideoRow(v));
+                box.appendChild(row);
             });
         }
 
-        // 3. Render Shorts Grid Pane
-        function renderShortsPane(shorts) {
+        function renderShortsGrid(shorts) {
             const grid = document.getElementById('shortsGridList');
             grid.innerHTML = '';
-
             if (shorts.length === 0) {
-                grid.innerHTML = `
-                    <div class="empty-channel" style="grid-column: 1 / -1;">
-                        <p>No shorts uploaded yet.</p>
-                        <a href="upload.html?type=short">+ Create a Short</a>
-                    </div>
-                `;
+                grid.innerHTML = `<div class="empty-channel" style="grid-column:1/-1;"><p>No shorts uploaded yet.</p><a href="upload.html?type=short">+ Create Short</a></div>`;
                 return;
             }
 
@@ -308,7 +373,7 @@
                 card.className = 's-card';
                 card.onclick = () => window.location.href = `shorts.html?id=${s.id}`;
                 card.innerHTML = `
-                    <img src="${s.thumb || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'}">
+                    <img src="${s.thumb}">
                     <div class="s-info">
                         <div class="s-title">${s.title}</div>
                         <div class="s-views">${s.views || 0} views</div>
@@ -318,44 +383,21 @@
             });
         }
 
-        // 4. Render Playlists Pane
-        function renderPlaylistsPane() {
+        function renderPlaylists() {
             const list = document.getElementById('playlistsPaneList');
             const customPlaylists = JSON.parse(localStorage.getItem('btube_custom_playlists') || '[]');
-
             list.innerHTML = `
-                <!-- Liked Videos -->
                 <div class="pl-ch-row" onclick="window.location.href='liked-videos.html'">
                     <div class="pl-ch-thumb">
                         <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600">
-                        <div class="pl-ch-badge">
-                            <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                            <span>Auto</span>
-                        </div>
+                        <div class="pl-ch-badge"><svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg><span>Auto</span></div>
                     </div>
                     <div>
                         <div style="font-size:14px; font-weight:700;">Liked videos</div>
                         <div style="font-size:12px; color:#888;">Auto playlist • Private</div>
                     </div>
                 </div>
-
-                <!-- Watch Later -->
-                <div class="pl-ch-row" onclick="window.location.href='watch-later.html'">
-                    <div class="pl-ch-thumb">
-                        <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
-                        <div class="pl-ch-badge">
-                            <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                            <span>Auto</span>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="font-size:14px; font-weight:700;">Watch later</div>
-                        <div style="font-size:12px; color:#888;">Save for later • Private</div>
-                    </div>
-                </div>
             `;
-
-            // Custom playlists
             customPlaylists.forEach(p => {
                 const row = document.createElement('div');
                 row.className = 'pl-ch-row';
@@ -363,10 +405,7 @@
                 row.innerHTML = `
                     <div class="pl-ch-thumb">
                         <img src="${p.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
-                        <div class="pl-ch-badge">
-                            <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                            <span>${p.count || 0}</span>
-                        </div>
+                        <div class="pl-ch-badge"><svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg><span>${p.count || 0}</span></div>
                     </div>
                     <div>
                         <div style="font-size:14px; font-weight:700;">${p.title}</div>
@@ -377,51 +416,55 @@
             });
         }
 
-        function createVideoRow(v) {
-            const row = document.createElement('div');
-            row.className = 'v-item';
-            row.onclick = () => window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
-            row.innerHTML = `
-                <div class="v-thumb">
-                    <img src="${v.thumb}">
-                    <span class="v-dur">${v.duration || '03:45'}</span>
-                </div>
-                <div class="v-info">
-                    <div class="v-title">${v.title}</div>
-                    <div class="v-meta">${v.views || 0} views • ${v.type || 'video'}</div>
-                </div>
-            `;
-            return row;
-        }
-
-        function handleMainAction() {
-            window.location.href = 'your-videos.html';
-        }
-
-        function changeBannerPrompt() {
-            const newUrl = prompt("Enter new Channel Banner Image URL:", document.getElementById('chBannerImg').src);
-            if (newUrl && newUrl.trim()) {
-                document.getElementById('chBannerImg').src = newUrl.trim();
-                if (currentChannel && currentChannel.id) {
-                    const u = window.BTubeAPI.getAuthUser();
-                    let list = JSON.parse(localStorage.getItem('btube_channels_' + u.uid) || '[]');
-                    const ch = list.find(c => c.id === currentChannel.id);
-                    if (ch) {
-                        ch.banner = newUrl.trim();
-                        localStorage.setItem('btube_channels_' + u.uid, JSON.stringify(list));
-                    }
-                }
-                alert("Banner updated successfully!");
+        function editBannerPrompt() {
+            const newBanner = prompt("Enter banner image URL:", document.getElementById('chBannerImg').src);
+            if (newBanner && newBanner.trim()) {
+                document.getElementById('chBannerImg').src = newBanner.trim();
+                saveChannelField('banner', newBanner.trim());
             }
         }
 
+        function editChannelDetailsPrompt() {
+            const newName = prompt("Channel Name:", currentChannel.name);
+            if (newName && newName.trim()) {
+                const newHandle = prompt("Channel Handle:", currentChannel.handle);
+                saveChannelField('name', newName.trim());
+                if (newHandle) saveChannelField('handle', newHandle.trim());
+                window.location.reload();
+            }
+        }
+
+        function openBioPrompt() {
+            const newBio = prompt("Channel Description (About):", document.getElementById('chBio').innerText);
+            if (newBio && newBio.trim()) {
+                document.getElementById('chBio').innerText = newBio.trim();
+                saveChannelField('bio', newBio.trim());
+            }
+        }
+
+        function saveChannelField(field, value) {
+            const u = window.BTubeAPI.getAuthUser();
+            if (!u) return;
+            let list = JSON.parse(localStorage.getItem('btube_channels_' + u.uid) || '[]');
+            const activeId = localStorage.getItem('btube_active_channel_id_' + u.uid);
+            const ch = list.find(c => c.id === activeId) || list[0];
+            if (ch) {
+                ch[field] = value;
+                localStorage.setItem('btube_channels_' + u.uid, JSON.stringify(list));
+            }
+        }
+
+        function promptPost() {
+            const post = prompt("Write something for your community:");
+            if (post) alert("Post published to community!");
+        }
+
         function shareChannel() {
-            const url = window.location.href;
             if (navigator.share) {
-                navigator.share({ title: currentChannel.name, url: url });
+                navigator.share({ title: currentChannel.name, url: window.location.href });
             } else {
-                navigator.clipboard.writeText(url);
-                alert("Channel link copied to clipboard!");
+                navigator.clipboard.writeText(window.location.href);
+                alert("Channel link copied!");
             }
         }
     </script>
