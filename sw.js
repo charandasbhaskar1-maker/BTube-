@@ -1,4 +1,3 @@
-javascript
 const CACHE_NAME = 'btube-v3';
 
 const ASSETS_TO_CACHE = [
