@@ -285,7 +285,7 @@
             cursor: pointer;
         }
 
-        /* 6. BOTTOM TOOLBAR (MEDIA ATTACHMENT DOCK) */
+        /* 6. BOTTOM TOOLBAR */
         .post-toolbar-dock {
             display: flex;
             align-items: center;
@@ -374,7 +374,6 @@
             outline: none;
         }
 
-        /* Toast */
         .toast-pop {
             position: fixed;
             bottom: 75px;
@@ -391,26 +390,29 @@
             display: none;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <!-- 1. TOP HEADER -->
     <header class="post-header">
         <div class="header-left">
-            <a href="upload.html" class="btn-header-back">
+            <button class="btn-header-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </a>
+            </button>
             <span class="header-title-txt">Create post</span>
         </div>
         <button class="btn-publish-post" id="btnPublish" onclick="publishPost()">Post</button>
     </header>
 
-    <!-- 2. CREATOR INFO & VISIBILITY -->
     <section class="creator-info-row">
         <div class="creator-meta-left">
-            <div class="creator-avatar-bubble" id="creatorAvatarInits">CB</div>
+            <div class="creator-avatar-bubble" id="creatorAvatarInits">BT</div>
             <div class="creator-names-col">
-                <span class="creator-display-name" id="creatorDisplayName">Charandas Bhaskar</span>
+                <span class="creator-display-name" id="creatorDisplayName">My Channel</span>
                 <div class="vis-badge-pill" onclick="openVisibilityDrawer()">
                     <span id="txtVisPill">Public 🌐</span>
                 </div>
@@ -418,18 +420,14 @@
         </div>
     </section>
 
-    <!-- 3. COMPOSER MAIN BODY -->
     <main class="post-body-container">
-        <!-- Text content input -->
         <textarea id="postTextInput" class="post-text-input" placeholder="Give a shoutout to your subscribers or share what's on your mind..."></textarea>
 
-        <!-- Image Preview Card -->
         <div class="image-preview-card" id="imagePreviewCard">
             <img id="attachedPostImg" src="" alt="Post Attachment">
             <button class="btn-remove-image" onclick="removeAttachedImage()">✕</button>
         </div>
 
-        <!-- Interactive Poll Card -->
         <section class="poll-composer-card" id="pollComposerCard">
             <div class="poll-card-header">
                 <span>Community Poll</span>
@@ -447,23 +445,19 @@
         </section>
     </main>
 
-    <!-- 4. BOTTOM MEDIA TOOLBAR -->
     <footer class="post-toolbar-dock">
-        <!-- Attach Image -->
         <label for="postImageUploadInput" class="tool-dock-btn">
             <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
             <span>Image</span>
         </label>
         <input type="file" id="postImageUploadInput" accept="image/*" style="display:none;" onchange="handleImageAttached(event)">
 
-        <!-- Add Poll -->
         <button type="button" class="tool-dock-btn" onclick="openPollCard()">
             <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
             <span>Poll</span>
         </button>
     </footer>
 
-    <!-- 5. VISIBILITY DRAWER -->
     <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeDrawer('visDrawerScrim')">
         <div class="drawer-menu-card">
             <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Post Visibility</div>
@@ -481,22 +475,27 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div class="toast-pop" id="postToast"></div>
 
-    <!-- SCRIPT ENGINE -->
     <script>
         let attachedImageBase64 = null;
         let isPollActive = false;
+        let activeChannel = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                document.getElementById('creatorDisplayName').innerText = savedName;
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('creatorAvatarInits').innerText = inits.toUpperCase();
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            activeChannel = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
+
+            const name = activeChannel?.name || authUser?.name || 'My Channel';
+            const avatar = activeChannel?.avatar || authUser?.photo;
+
+            document.getElementById('creatorDisplayName').innerText = name;
+            const bubble = document.getElementById('creatorAvatarInits');
+
+            if (avatar) {
+                bubble.innerHTML = `<img src="${avatar}">`;
+            } else {
+                bubble.innerText = name.substring(0, 2).toUpperCase();
             }
         });
 
@@ -510,7 +509,6 @@
         function openDrawer(id) { document.getElementById(id).classList.add('open'); }
         function closeDrawer(id) { document.getElementById(id).classList.remove('open'); }
 
-        // Visibility
         function openVisibilityDrawer() { openDrawer('visDrawerScrim'); }
 
         function setVis(txt, elId) {
@@ -541,7 +539,6 @@
             showToast('Post scheduled successfully ✓');
         }
 
-        // Image Attachment
         function handleImageAttached(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -563,7 +560,6 @@
             document.getElementById('postImageUploadInput').value = '';
         }
 
-        // Poll Logic
         function openPollCard() {
             isPollActive = true;
             document.getElementById('pollComposerCard').style.display = 'flex';
@@ -592,7 +588,6 @@
             list.appendChild(row);
         }
 
-        // Publish Post
         function publishPost() {
             const text = document.getElementById('postTextInput').value.trim();
             if (!text && !attachedImageBase64 && !isPollActive) {
@@ -600,12 +595,32 @@
                 return;
             }
 
-            // Save recent community post into localStorage
-            localStorage.setItem('btube_last_community_post', text || 'New post');
+            // Gather poll options if poll is active
+            let pollOptions = [];
+            if (isPollActive) {
+                const inputs = document.querySelectorAll('#pollInputsList .poll-option-box');
+                inputs.forEach(inp => {
+                    if (inp.value.trim()) pollOptions.push(inp.value.trim());
+                });
+            }
+
+            const chId = activeChannel ? activeChannel.id : 'default_ch';
+            const commKey = `btube_comm_${chId}`;
+            const posts = JSON.parse(localStorage.getItem(commKey) || '[]');
+
+            posts.unshift({
+                id: 'post_' + Date.now(),
+                text: text,
+                image: attachedImageBase64 || null,
+                poll: pollOptions.length > 0 ? pollOptions : null,
+                time: 'Just now'
+            });
+
+            localStorage.setItem(commKey, JSON.stringify(posts));
 
             showToast('Published to Community tab ✓');
             setTimeout(() => {
-                window.location.href = 'channel.html';
+                window.location.href = `channel.html?id=${chId}`;
             }, 600);
         }
     </script>
