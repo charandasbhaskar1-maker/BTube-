@@ -1,1072 +1,277 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0f0f0f">
-    <title>Create Short - BTube</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            padding-bottom: 75px;
-            overflow-x: hidden;
-        }
-
-        /* 1. TOP HEADER */
-        .short-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn-header-back {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-header-back svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        .header-title-txt {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .btn-publish-short {
-            background: #e50914;
-            color: #ffffff;
-            border: none;
-            padding: 7px 18px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .btn-publish-short:disabled {
-            background: #333333;
-            color: #777777;
-            cursor: not-allowed;
-        }
-
-        /* 2. INITIAL FILE CHOOSER */
-        .pick-short-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 70vh;
-            padding: 24px;
-            text-align: center;
-            gap: 16px;
-        }
-
-        .pick-short-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(229, 9, 20, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #e50914;
-            cursor: pointer;
-        }
-
-        .pick-short-circle svg {
-            width: 36px;
-            height: 36px;
-            fill: #e50914;
-        }
-
-        .btn-select-short {
-            background: #e50914;
-            color: #ffffff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 24px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        /* 3. DETAILS FORM VIEW */
-        .upload-editor-view {
-            display: none;
-            flex-direction: column;
-        }
-
-        .preview-short-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
-            background: #141414;
-            border-bottom: 1px solid #222222;
-            position: relative;
-        }
-
-        .shorts-frame-box {
-            width: 170px;
-            aspect-ratio: 9 / 16;
-            background: #000;
-            border-radius: 14px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #333333;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-        }
-
-        .shorts-frame-box video,
-        .shorts-frame-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .change-cover-trigger {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .change-cover-trigger svg {
-            width: 16px;
-            height: 16px;
-            fill: #ffffff;
-        }
-
-        .sound-selector-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #252525;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 10px;
-            cursor: pointer;
-            border: 1px solid #383838;
-        }
-
-        .sound-selector-chip svg {
-            width: 16px;
-            height: 16px;
-            fill: #e50914;
-        }
-
-        .editor-form-body {
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            gap: 16px;
-        }
-
-        .input-group-unit {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .label-counter-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            color: #aaaaaa;
-            text-transform: uppercase;
-        }
-
-        .custom-field-input {
-            width: 100%;
-            background: #181818;
-            border: 1px solid #2a2a2a;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .custom-field-input:focus {
-            border-color: #e50914;
-        }
-
-        .picker-clickable-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            background: #181818;
-            border: 1px solid #262626;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .picker-clickable-bar:active {
-            background: #202020;
-        }
-
-        .picker-col-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .picker-col-left svg {
-            width: 20px;
-            height: 20px;
-            fill: #aaaaaa;
-        }
-
-        .picker-col-left strong {
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        .picker-col-left .sub-meta {
-            font-size: 12px;
-            color: #888888;
-        }
-
-        /* 4. DRAWERS (VISIBILITY & REMIXING) */
-        .drawer-scrim {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.65);
-            z-index: 3000;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-scrim.open {
-            display: flex;
-        }
-
-        .drawer-menu-card {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 18px 16px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .drawer-option-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .drawer-option-row.selected {
-            background: #282828;
-        }
-
-        .schedule-calendar-box {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            background: #181818;
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid #333333;
-            margin-top: 6px;
-        }
-
-        .schedule-calendar-box input {
-            background: #252525;
-            border: 1px solid #444;
-            color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .tags-cluster {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .tag-pill-item {
-            background: #252525;
-            color: #e50914;
-            border: 1px solid #333333;
-            border-radius: 16px;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Upload Progress Modal */
-        .upload-progress-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 4000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .progress-box-card {
-            width: 100%;
-            max-width: 320px;
-            background: #202020;
-            border-radius: 16px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            border: 1px solid #333333;
-            text-align: center;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: #333333;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #e50914;
-            border-radius: 4px;
-            transition: width 0.15s ease-out;
-        }
-
-        /* SafeShield & CopyScan Modal */
-        .policy-alert-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .policy-alert-card {
-            background: #1f1f1f;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 340px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            border: 1px solid #333;
-        }
-
-        .policy-alert-title {
-            font-size: 16px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .policy-alert-body {
-            font-size: 13px;
-            color: #ccc;
-            line-height: 1.45;
-        }
-
-        .btn-policy-confirm {
-            background: #e50914;
-            color: #ffffff;
-            border: none;
-            padding: 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            align-self: flex-end;
-            margin-top: 4px;
-        }
-
-        /* Toast */
-        .toast-pop {
-            position: fixed;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 6000;
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f0f0f">
+  <title>Upload Short - BTube</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin: 0; background: #0f0f0f; color: #fff; }
+    header {
+      height: 58px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 16px;
+      border-bottom: 1px solid #292929; position: sticky;
+      top: 0; background: #0f0f0f; z-index: 2;
+    }
+    button, .pick {
+      border: 0; border-radius: 22px; padding: 11px 17px;
+      font-weight: bold; cursor: pointer;
+    }
+    .red { background: #e50914; color: white; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    main { max-width: 520px; margin: auto; padding: 20px 16px 40px; }
+    .pick {
+      display: block; text-align: center; border: 1px dashed #e50914;
+      background: #1a1a1a; padding: 28px 12px; margin-bottom: 18px;
+    }
+    .preview {
+      width: 190px; aspect-ratio: 9/16; margin: 0 auto 22px;
+      background: #050505; border-radius: 14px; overflow: hidden;
+    }
+    video { width: 100%; height: 100%; object-fit: contain; }
+    label.field-label { display:block; margin: 18px 0 8px; color:#ddd; }
+    input, textarea, select {
+      width: 100%; padding: 13px; border-radius: 9px;
+      border: 1px solid #363636; background: #191919;
+      color: white; font-size: 15px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .hint { color: #999; font-size: 13px; line-height: 1.5; }
+    .status {
+      margin-top: 18px; padding: 14px; background: #1c1c1c;
+      border-radius: 10px; white-space: pre-wrap; overflow-wrap: anywhere;
+      display: none;
+    }
+    .upload-btn { width: 100%; margin-top: 22px; font-size: 15px; }
+    .bar { height: 5px; background: #333; margin-top: 14px; overflow: hidden; display:none; }
+    .bar span {
+      display:block; width:35%; height:100%; background:#e50914;
+      animation: move 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes move { from { transform:translateX(-20%); } to { transform:translateX(190%); } }
+    a { color: #ff6068; }
+  </style>
 </head>
 <body>
+  <header>
+    <button onclick="history.length > 1 ? history.back() : location.href='../frontend/index.html'"
+      style="background:#242424;color:white">← वापस</button>
+    <strong>Create Short</strong>
+    <span style="color:#aaa;font-size:12px">BTube</span>
+  </header>
 
-    <!-- 1. TOP HEADER -->
-    <header class="short-header">
-        <div class="header-left">
-            <button class="btn-header-back" onclick="handleHeaderBack()">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-            <span class="header-title-txt">Details (Short)</span>
-        </div>
-        <button class="btn-publish-short" id="btnPublish" style="display:none;" onclick="startPublishProcess()">Upload Short</button>
-    </header>
+  <main>
+    <h2>अपना Short अपलोड करें</h2>
+    <p class="hint">वीडियो Firebase Cloud में अपलोड होगा। Short अधिकतम 60 सेकंड का होना चाहिए।</p>
 
-    <!-- 2. INITIAL FILE CHOOSER -->
-    <main class="pick-short-wrap" id="stepPicker">
-        <label for="shortVideoFileInput" class="pick-short-circle">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-        </label>
-        <div>
-            <h3 style="font-size:18px;">Select a vertical video</h3>
-            <p style="font-size:12px; color:#888; margin-top:4px;">Upload vertical short clip up to 60 seconds (9:16)</p>
-        </div>
-        <label for="shortVideoFileInput" class="btn-select-short">Choose Short Video</label>
-        <input type="file" id="shortVideoFileInput" accept="video/*" style="display:none;" onchange="handleShortFileChosen(event)">
-    </main>
+    <label class="pick" for="videoFile">
+      <strong>＋ वीडियो चुनें</strong><br>
+      <span class="hint">अपने फोन से वीडियो चुनने के लिए टैप करें</span>
+    </label>
+    <input id="videoFile" type="file" accept="video/*" hidden>
 
-    <!-- 3. DETAILS FORM VIEW -->
-    <section class="upload-editor-view" id="stepEditor">
-        <!-- 9:16 Portrait Preview + Cover Picker -->
-        <div class="preview-short-section">
-            <div class="shorts-frame-box" id="previewHolder">
-                <video id="previewPlayer" playsinline controls loop></video>
-                <img id="customCoverPreview" style="display:none;" alt="Short Cover">
-
-                <label for="customCoverInput" class="change-cover-trigger" title="Select Cover Frame">
-                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                </label>
-                <input type="file" id="customCoverInput" accept="image/*" style="display:none;" onchange="handleCoverSelect(event)">
-            </div>
-            
-            <!-- Sound Track selector -->
-            <div class="sound-selector-chip" onclick="showToast('Audio track: Original Sound ✓')">
-                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                <span id="txtSoundTitle">Original sound</span>
-            </div>
-        </div>
-
-        <div class="editor-form-body">
-            <!-- Caption / Title with #Shorts -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar">
-                    <span>Caption your Short</span>
-                    <span id="txtTitleCount">0/100</span>
-                </div>
-                <input type="text" id="inputShortTitle" class="custom-field-input" maxlength="100" placeholder="Describe your Short (e.g. My village morning #Shorts)" oninput="updateTitleCount()">
-            </div>
-
-            <!-- Visibility Row -->
-            <div class="picker-clickable-bar" onclick="openDrawer('visDrawerScrim')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    <div>
-                        <strong>Visibility</strong>
-                        <div class="sub-meta" id="txtVisValue">Public</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Audience Setting -->
-            <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                    <div>
-                        <strong>Audience</strong>
-                        <div class="sub-meta" id="txtKidsSetting">No, it's not made for kids</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Shorts Remixing Row -->
-            <div class="picker-clickable-bar" onclick="openDrawer('remixDrawer')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-                    <div>
-                        <strong>Shorts remixing</strong>
-                        <div class="sub-meta" id="txtRemixValue">Allow video and audio remixing</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Tags -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar">
-                    <span>Tags</span>
-                    <span style="color:#666;">Press Enter</span>
-                </div>
-                <input type="text" id="shortTagInput" class="custom-field-input" placeholder="Add tags e.g. viral, comedy, music" onkeydown="handleTagKey(event)">
-                <div class="tags-cluster" id="tagsClusterWrap">
-                    <div class="tag-pill-item"><span>#Shorts</span><span onclick="this.parentElement.remove()">×</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. VISIBILITY DRAWER -->
-    <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeDrawer('visDrawerScrim')">
-        <div class="drawer-menu-card">
-            <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
-            <div class="drawer-option-row selected" id="opt-public" onclick="setVisOption('Public', 'opt-public')">
-                <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to Shorts feed</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-unlisted" onclick="setVisOption('Unlisted', 'opt-unlisted')">
-                <div><strong>Unlisted 🔗</strong><div style="font-size:11px; color:#888;">Visible only with link</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-private" onclick="setVisOption('Private', 'opt-private')">
-                <div><strong>Private 🔒</strong><div style="font-size:11px; color:#888;">Only you can watch</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-schedule" onclick="toggleScheduleInput()">
-                <div><strong>Schedule ⏰</strong><div style="font-size:11px; color:#888;">Publish at a specific time</div></div>
-            </div>
-            <div class="schedule-calendar-box" id="scheduleBox">
-                <span style="font-size:12px; color:#aaa;">Publish Date & Time:</span>
-                <input type="datetime-local" id="scheduleDateTimeInput">
-                <button type="button" class="btn-publish-short" style="margin-top:6px;" onclick="applyScheduleSetting()">Set Schedule</button>
-            </div>
-        </div>
+    <div class="preview">
+      <video id="preview" controls playsinline style="display:none"></video>
     </div>
+    <div id="videoInfo" class="hint"></div>
 
-    <!-- 5. REMIXING DRAWER -->
-    <div class="drawer-scrim" id="remixDrawer" onclick="if(event.target.id==='remixDrawer') closeDrawer('remixDrawer')">
-        <div class="drawer-menu-card">
-            <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Shorts remixing</div>
-            <div class="drawer-option-row selected" onclick="setRemixOption('Allow video and audio remixing')">
-                <div><strong>Allow video and audio</strong><div style="font-size:11px; color:#888;">Creators can remix all elements</div></div>
-            </div>
-            <div class="drawer-option-row" onclick="setRemixOption('Allow only audio remixing')">
-                <div><strong>Allow only audio</strong><div style="font-size:11px; color:#888;">Only audio track can be remixed</div></div>
-            </div>
-            <div class="drawer-option-row" onclick="setRemixOption('Don\'t allow remixing')">
-                <div><strong>Don't allow remixing</strong><div style="font-size:11px; color:#888;">No remixing allowed</div></div>
-            </div>
-        </div>
-    </div>
+    <label class="field-label" for="title">Short का टाइटल *</label>
+    <input id="title" maxlength="100" placeholder="अपने Short का टाइटल लिखें">
 
-    <!-- Upload Progress Modal -->
-    <div class="upload-progress-overlay" id="uploadModal">
-        <div class="progress-box-card">
-            <span style="font-size:16px; font-weight:700;" id="txtUploadModalTitle">Uploading Short...</span>
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFillBar"></div>
-            </div>
-            <span style="font-size:13px; color:#e50914; font-weight:700;" id="progressPercentage">0%</span>
-            <span style="font-size:11px; color:#888;" id="txtUploadModalSub">Streaming short chunks to server...</span>
-        </div>
-    </div>
+    <label class="field-label" for="description">विवरण</label>
+    <textarea id="description" maxlength="3000" placeholder="वीडियो के बारे में लिखें"></textarea>
 
-    <!-- SafeShield & CopyScan Modal Alert -->
-    <div class="policy-alert-overlay" id="policyAlertOverlay">
-        <div class="policy-alert-card">
-            <div class="policy-alert-title" id="alertCardTitle">⚠️ Notice</div>
-            <div class="policy-alert-body" id="alertCardMessage">Alert message here.</div>
-            <button class="btn-policy-confirm" id="btnPolicyConfirm" onclick="handlePolicyAlertDismiss()">OK</button>
-        </div>
-    </div>
+    <label class="field-label" for="visibility">Visibility</label>
+    <select id="visibility">
+      <option value="Public">Public — सभी देख सकते हैं</option>
+      <option value="Unlisted">Unlisted — लिंक से देख सकते हैं</option>
+      <option value="Private">Private — निजी</option>
+    </select>
 
-    <!-- Toast -->
-    <div class="toast-pop" id="shortToast"></div>
+    <p class="hint">अपलोड करने के लिए अपने BTube खाते में लॉगिन होना आवश्यक है। फिलहाल यह पेज वीडियो और उसकी बुनियादी जानकारी सेव करता है। कवर इमेज, टैग और शेड्यूल अपलोड इस संस्करण में शामिल नहीं हैं।</p>
 
-    <!-- Load API Bridge -->
-    <script src="../assets/js/api-client.js"></script>
+    <button id="uploadBtn" class="red upload-btn" disabled>Upload Short</button>
+    <div class="bar" id="progress"><span></span></div>
+    <div class="status" id="status"></div>
+    <p><a href="shorts.html">Shorts देखें</a> · <a href="your-videos.html">मेरे वीडियो</a></p>
+  </main>
 
-    <!-- SCRIPT ENGINE -->
-<script>
-'use strict';
+  <!-- Firebase SDK: api-client.js से पहले लोड करना जरूरी है -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="../assets/js/api-client.js"></script>
 
-let selectedShortFile = null;
-let selectedCoverFile = null;
-let currentVisState = "Public";
-let isBlockedBySafeShield = false;
-let shortObjectUrl = null;
-let coverObjectUrl = null;
-let currentSchedule = null;
+  <script>
+  'use strict';
 
-const SHORTS_KEY = 'btube_user_shorts';
-const VIDEOS_KEY = 'btube_user_videos';
-const DB_NAME = 'btube_media_db';
-const DB_VERSION = 1;
-const STORE_NAME = 'media';
+  const fileInput = document.getElementById('videoFile');
+  const preview = document.getElementById('preview');
+  const titleInput = document.getElementById('title');
+  const descriptionInput = document.getElementById('description');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const statusBox = document.getElementById('status');
+  const progress = document.getElementById('progress');
+  const videoInfo = document.getElementById('videoInfo');
 
-function showToast(msg) {
-    const t = document.getElementById('shortToast');
-    t.textContent = msg;
-    t.style.display = 'block';
-    clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => {
-        t.style.display = 'none';
-    }, 2500);
-}
+  let selectedFile = null;
+  let previewUrl = null;
+  let videoDuration = 0;
+  let loggedInUser = null;
+  let metadataReady = false;
+  let busy = false;
 
-function openDrawer(id) {
-    document.getElementById(id)?.classList.add('open');
-}
+  function showStatus(message, isError = false) {
+    statusBox.style.display = 'block';
+    statusBox.style.color = isError ? '#ff7777' : '#eeeeee';
+    statusBox.textContent = message;
+  }
 
-function closeDrawer(id) {
-    document.getElementById(id)?.classList.remove('open');
-}
+  function updateButton() {
+    uploadBtn.disabled = busy || !loggedInUser || !selectedFile ||
+      !metadataReady || !titleInput.value.trim();
+  }
 
-function handleHeaderBack() {
-    if (document.getElementById('stepEditor').style.display === 'flex') {
-        if (confirm('Discard Short? All progress will be lost.')) {
-            releasePreviewUrls();
-            window.location.reload();
-        }
-    } else {
-        window.location.href = 'upload-video.html';
-    }
-}
-
-function releasePreviewUrls() {
-    if (shortObjectUrl) URL.revokeObjectURL(shortObjectUrl);
-    if (coverObjectUrl) URL.revokeObjectURL(coverObjectUrl);
-    shortObjectUrl = null;
-    coverObjectUrl = null;
-}
-
-function getCollection(key) {
-    try {
-        const value = JSON.parse(localStorage.getItem(key) || '[]');
-        return Array.isArray(value) ? value : [];
-    } catch {
-        return [];
-    }
-}
-
-function saveCollection(key, list) {
-    localStorage.setItem(key, JSON.stringify(list));
-}
-
-function openMediaDB() {
-    return new Promise((resolve, reject) => {
-        if (!('indexedDB' in window)) {
-            reject(new Error('इस ब्राउज़र में IndexedDB उपलब्ध नहीं है।'));
-            return;
-        }
-
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = () => {
-            const db = request.result;
-            if (!db.objectStoreNames.contains(STORE_NAME)) {
-                db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-            }
-        };
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(
-            request.error || new Error('Media database नहीं खुला।')
-        );
+  if (!window.firebase || !firebase.auth || !firebase.storage) {
+    showStatus('Firebase SDK लोड नहीं हुआ। इंटरनेट कनेक्शन और SDK scripts जाँचें।', true);
+  } else {
+    firebase.auth().onAuthStateChanged(user => {
+      loggedInUser = user || null;
+      if (!user) {
+        showStatus('अपलोड करने से पहले लॉगिन करें।');
+      } else {
+        showStatus('लॉगिन सफल। वीडियो चुनकर अपलोड कर सकते हैं।');
+      }
+      updateButton();
     });
-}
+  }
 
-async function saveMedia(id, file) {
-    const db = await openMediaDB();
-
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-
-        tx.objectStore(STORE_NAME).put({
-            id,
-            blob: file,
-            name: file.name,
-            type: file.type,
-            savedAt: Date.now()
-        });
-
-        tx.oncomplete = () => {
-            db.close();
-            resolve(id);
-        };
-
-        tx.onerror = () => {
-            const error = tx.error;
-            db.close();
-            reject(error || new Error('वीडियो सेव नहीं हुआ।'));
-        };
-
-        tx.onabort = () => {
-            const error = tx.error;
-            db.close();
-            reject(error || new Error('वीडियो सेव करना रद्द हुआ।'));
-        };
-    });
-}
-
-function handleShortFileChosen(e) {
-    const file = e.target.files && e.target.files[0];
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
     if (!file) return;
 
     if (!file.type.startsWith('video/')) {
-        showToast('कृपया वीडियो फ़ाइल चुनें।');
-        e.target.value = '';
-        return;
+      showStatus('कृपया सही वीडियो फ़ाइल चुनें।', true);
+      fileInput.value = '';
+      return;
     }
 
-    selectedShortFile = file;
+    // पुराने वीडियो का preview URL रिलीज करें।
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(file);
 
-    releasePreviewUrls();
-    shortObjectUrl = URL.createObjectURL(file);
+    selectedFile = file;
+    metadataReady = false;
+    videoDuration = 0;
 
-    const player = document.getElementById('previewPlayer');
-    player.src = shortObjectUrl;
-    player.style.display = 'block';
-    player.load();
+    preview.src = previewUrl;
+    preview.style.display = 'block';
+    preview.load();
 
-    document.getElementById('customCoverPreview').style.display = 'none';
-    document.getElementById('inputShortTitle').value =
-        file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ') + ' #Shorts';
+    titleInput.value = file.name.replace(/\.[^.]+$/, '')
+      .replace(/[-_]/g, ' ').slice(0, 100);
 
-    document.getElementById('stepPicker').style.display = 'none';
-    document.getElementById('stepEditor').style.display = 'flex';
-    document.getElementById('btnPublish').style.display = 'block';
+    videoInfo.textContent = 'वीडियो की अवधि जाँची जा रही है…';
+    showStatus('वीडियो चुना गया। अवधि की जाँच जारी है।');
+    updateButton();
 
-    updateTitleCount();
+    preview.onloadedmetadata = () => {
+      videoDuration = preview.duration;
+      const isPortrait = preview.videoHeight >= preview.videoWidth;
+      const durationOK = Number.isFinite(videoDuration) && videoDuration > 0 &&
+        videoDuration <= 60;
 
-    player.onloadedmetadata = () => {
-        if (Number.isFinite(player.duration)) {
-            if (player.duration > 60) {
-                showToast('Short का वीडियो 60 सेकंड से अधिक है।');
-            }
-        }
+      videoInfo.textContent =
+        `अवधि: ${Math.round(videoDuration)} सेकंड · ` +
+        `आकार: ${preview.videoWidth} × ${preview.videoHeight}` +
+        (isPortrait ? ' · Portrait' : ' · Landscape');
+
+      if (!durationOK) {
+        metadataReady = false;
+        showStatus('यह वीडियो 60 सेकंड से अधिक है या इसकी अवधि पढ़ी नहीं जा सकी। छोटा वीडियो चुनें।', true);
+      } else if (!isPortrait) {
+        metadataReady = false;
+        showStatus('कृपया Portrait/Vertical वीडियो चुनें।', true);
+      } else {
+        metadataReady = true;
+        showStatus('वीडियो तैयार है। अब Upload Short दबाएँ।');
+      }
+      updateButton();
     };
-}
 
-function handleCoverSelect(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+    preview.onerror = () => {
+      metadataReady = false;
+      showStatus('इस वीडियो की जानकारी नहीं पढ़ी जा सकी। दूसरी वीडियो फ़ाइल आज़माएँ।', true);
+      updateButton();
+    };
+  });
 
-    if (!file.type.startsWith('image/')) {
-        showToast('कृपया इमेज फ़ाइल चुनें।');
-        return;
-    }
+  titleInput.addEventListener('input', updateButton);
 
-    selectedCoverFile = file;
+  uploadBtn.addEventListener('click', async () => {
+    if (busy || !loggedInUser || !selectedFile || !metadataReady) return;
 
-    if (coverObjectUrl) URL.revokeObjectURL(coverObjectUrl);
-    coverObjectUrl = URL.createObjectURL(file);
-
-    const cover = document.getElementById('customCoverPreview');
-    cover.src = coverObjectUrl;
-    cover.style.display = 'block';
-
-    document.getElementById('previewPlayer').style.display = 'none';
-    showToast('Short cover updated ✓');
-}
-
-function updateTitleCount() {
-    const input = document.getElementById('inputShortTitle');
-    document.getElementById('txtTitleCount').textContent =
-        `${input.value.length}/100`;
-}
-
-function setVisOption(vis, elId) {
-    document.querySelectorAll('#visDrawerScrim .drawer-option-row')
-        .forEach(row => row.classList.remove('selected'));
-
-    document.getElementById(elId).classList.add('selected');
-    document.getElementById('scheduleBox').style.display = 'none';
-
-    currentVisState = vis;
-    currentSchedule = null;
-    document.getElementById('txtVisValue').textContent = vis;
-
-    closeDrawer('visDrawerScrim');
-    showToast(`Visibility set to ${vis}`);
-}
-
-function toggleScheduleInput() {
-    const box = document.getElementById('scheduleBox');
-    box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
-}
-
-function applyScheduleSetting() {
-    const value = document.getElementById('scheduleDateTimeInput').value;
-
-    if (!value || new Date(value).getTime() <= Date.now()) {
-        showToast('भविष्य की तारीख और समय चुनें।');
-        return;
-    }
-
-    currentVisState = 'Scheduled';
-    currentSchedule = new Date(value).toISOString();
-
-    document.getElementById('txtVisValue').textContent =
-        'Scheduled ⏰ (' + new Date(value).toLocaleString() + ')';
-
-    closeDrawer('visDrawerScrim');
-    showToast('Schedule सेव हो गया।');
-}
-
-function toggleAudienceSetting() {
-    const txt = document.getElementById('txtKidsSetting');
-
-    if (txt.textContent.includes('No')) {
-        txt.textContent = 'Yes, made for kids';
-        txt.style.color = '#3ea6ff';
-    } else {
-        txt.textContent = "No, it's not made for kids";
-        txt.style.color = '#aaa';
-    }
-}
-
-function setRemixOption(txt) {
-    document.getElementById('txtRemixValue').textContent = txt;
-
-    document.querySelectorAll('#remixDrawer .drawer-option-row')
-        .forEach(row => row.classList.remove('selected'));
-
-    closeDrawer('remixDrawer');
-    showToast('Remixing preference updated');
-}
-
-function handleTagKey(e) {
-    if (e.key !== 'Enter' && e.key !== ',') return;
-
-    e.preventDefault();
-
-    const input = e.target;
-    const value = input.value.trim().replace(/^#/, '').replace(/,/g, '');
-
-    if (!value) return;
-
-    const wrap = document.getElementById('tagsClusterWrap');
-    const existing = [...wrap.querySelectorAll('.tag-pill-item span:first-child')]
-        .map(el => el.textContent.toLowerCase());
-
-    if (existing.includes('#' + value.toLowerCase())) {
-        input.value = '';
-        return;
-    }
-
-    const pill = document.createElement('div');
-    pill.className = 'tag-pill-item';
-
-    const label = document.createElement('span');
-    label.textContent = '#' + value;
-
-    const remove = document.createElement('span');
-    remove.textContent = '×';
-    remove.style.cursor = 'pointer';
-    remove.onclick = () => pill.remove();
-
-    pill.append(label, remove);
-    wrap.appendChild(pill);
-    input.value = '';
-}
-
-function showAlertModal(title, msg, isBlocked) {
-    isBlockedBySafeShield = isBlocked;
-
-    document.getElementById('alertCardTitle').textContent = title;
-    document.getElementById('alertCardTitle').style.color =
-        isBlocked ? '#e50914' : '#f1c40f';
-
-    document.getElementById('alertCardMessage').textContent = msg;
-    document.getElementById('policyAlertOverlay').style.display = 'flex';
-}
-
-function handlePolicyAlertDismiss() {
-    document.getElementById('policyAlertOverlay').style.display = 'none';
-
-    if (!isBlockedBySafeShield) {
-        window.location.href = 'your-videos.html';
-    }
-}
-
-function getDuration(player) {
-    return Number.isFinite(player.duration) ? Math.round(player.duration) : 0;
-}
-
-function getTags() {
-    return [...document.querySelectorAll(
-        '#tagsClusterWrap .tag-pill-item span:first-child'
-    )].map(el => el.textContent.replace(/^#/, '').trim()).filter(Boolean);
-}
-
-async function startPublishProcess() {
-    const button = document.getElementById('btnPublish');
-    const title = document.getElementById('inputShortTitle').value.trim();
-
-    if (!selectedShortFile) {
-        showToast('पहले वीडियो चुनें।');
-        return;
-    }
-
+    const title = titleInput.value.trim();
     if (!title) {
-        showToast('Short का टाइटल लिखें।');
-        return;
+      showStatus('कृपया Short का टाइटल लिखें।', true);
+      return;
     }
 
-    if (currentVisState === 'Scheduled' && !currentSchedule) {
-        showToast('Schedule की तारीख चुनें।');
-        return;
+    if (!window.BTubeAPI || typeof BTubeAPI.uploadVideo !== 'function') {
+      showStatus('BTube API उपलब्ध नहीं है। assets/js/api-client.js की जाँच करें।', true);
+      return;
     }
 
-    button.disabled = true;
-
-    const modal = document.getElementById('uploadModal');
-    const bar = document.getElementById('progressFillBar');
-    const percent = document.getElementById('progressPercentage');
-    const sub = document.getElementById('txtUploadModalSub');
-
-    modal.style.display = 'flex';
-    bar.style.width = '10%';
-    percent.textContent = '10%';
-    sub.textContent = 'वीडियो को इस डिवाइस में सेव किया जा रहा है…';
+    busy = true;
+    updateButton();
+    progress.style.display = 'block';
+    showStatus('Firebase Storage पर वीडियो अपलोड हो रहा है। फ़ाइल के आकार और इंटरनेट की गति के अनुसार समय लग सकता है।');
 
     try {
-        const id = 'short_' + (
-            window.crypto && crypto.randomUUID
-                ? crypto.randomUUID()
-                : Date.now() + '_' + Math.random().toString(36).slice(2)
-        );
+      const result = await BTubeAPI.uploadVideo({
+        file: selectedFile,
+        title,
+        description: descriptionInput.value.trim(),
+        type: 'short',
+        thumb: '',
+        channel: loggedInUser.displayName || loggedInUser.email || 'BTube Creator',
+        visibility: document.getElementById('visibility').value
+      });
 
-        // Video file को IndexedDB में रखें; blob URL को स्थायी URL न मानें।
-        await saveMedia(id, selectedShortFile);
+      if (!result || !result.id) {
+        throw new Error('वीडियो अपलोड की पुष्टि नहीं मिली।');
+      }
 
-        bar.style.width = '65%';
-        percent.textContent = '65%';
-        sub.textContent = 'Short की जानकारी सेव की जा रही है…';
+      showStatus('Short अपलोड हो गया! अब आपके वीडियो पेज पर भेज रहे हैं।');
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
 
-        const player = document.getElementById('previewPlayer');
-        const coverPreview = document.getElementById('customCoverPreview');
-
-        let duration = getDuration(player);
-
-        const shortRecord = {
-            id,
-            type: 'short',
-            is_shorts: true,
-            title,
-            description: '#Shorts #BTube',
-            category: 'Shorts',
-            visibility: currentVisState,
-            scheduledAt: currentSchedule,
-            videoUrl: '',
-            mediaId: id,
-            thumbnail: selectedCoverFile ? '' : '',
-            thumbnailMediaId: null,
-            duration,
-            duration_seconds: duration,
-            views: '0',
-            age: 'Just now',
-            uploadedAt: new Date().toISOString(),
-            audience: document.getElementById('txtKidsSetting')
-                .textContent.includes('Yes') ? 'kids' : 'general',
-            remix: document.getElementById('txtRemixValue').textContent,
-            tags: getTags()
-        };
-
-        if (selectedCoverFile) {
-            const coverId = id + '_cover';
-            await saveMedia(coverId, selectedCoverFile);
-            shortRecord.thumbnailMediaId = coverId;
-        } else if (coverPreview.src && coverPreview.style.display !== 'none') {
-            shortRecord.thumbnail = coverPreview.src;
-        }
-
-        // Shorts collection में ही सेव करें।
-        const shorts = getCollection(SHORTS_KEY);
-        shorts.unshift(shortRecord);
-        saveCollection(SHORTS_KEY, shorts);
-
-        // पुराने upload code में Shorts गलत तरीके से videos list में जाते थे।
-        // उस collection में नया Short जानबूझकर नहीं जोड़ना है।
-
-        bar.style.width = '100%';
-        percent.textContent = '100%';
-        sub.textContent = 'Short सफलतापूर्वक सेव हो गया।';
-
-        showToast('Short सेव हो गया ✓');
-
-        setTimeout(() => {
-            releasePreviewUrls();
-            window.location.href = 'your-videos.html';
-        }, 600);
-
+      setTimeout(() => {
+        location.href = 'your-videos.html';
+      }, 1000);
     } catch (error) {
-        console.error('BTube Short save error:', error);
+      console.error('Short upload error:', error);
+      let message = error && error.message ? error.message : 'अज्ञात त्रुटि';
 
-        modal.style.display = 'none';
-        button.disabled = false;
+      if (/permission|unauthorized|unauthenticated/i.test(message)) {
+        message += '\nFirebase Authentication और Storage/Firestore Security Rules जाँचें।';
+      } else if (/billing|quota|storage bucket|bucket/i.test(message)) {
+        message += '\nFirebase Storage bucket और प्रोजेक्ट की Storage स्थिति जाँचें।';
+      }
 
-        showToast(
-            error && error.name === 'QuotaExceededError'
-                ? 'डिवाइस की स्टोरेज भर गई है।'
-                : 'Short सेव नहीं हुआ। दोबारा कोशिश करें।'
-        );
+      showStatus('Short अपलोड नहीं हुआ:\n' + message, true);
+    } finally {
+      busy = false;
+      progress.style.display = 'none';
+      updateButton();
     }
-}
-</script>
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+  });
+  </script>
 </body>
 </html>
