@@ -16,7 +16,7 @@
         .logo-icon { width:28px; height:20px; background:#e50914; border-radius:6px; display:flex; align-items:center; justify-content:center; }
         .logo-icon svg { width:14px; height:14px; fill:#fff; }
         .hdr-actions { display:flex; align-items:center; gap:16px; }
-        .btn-hdr { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .btn-hdr { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; text-decoration:none; }
         .btn-hdr svg { width:22px; height:22px; fill:#fff; }
         .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
         .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
@@ -44,7 +44,7 @@
 
         /* Bottom Nav */
         .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
-        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; cursor:pointer; }
         .nav-btn.active { color:#fff; font-weight:700; }
         .nav-btn svg { width:22px; height:22px; fill:currentColor; }
     </style>
@@ -65,10 +65,10 @@
             <span>BTube</span>
         </a>
         <div class="hdr-actions">
-            <a href="pages/notifications.html" class="btn-hdr">
+            <a href="../pages/notifications.html" class="btn-hdr">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
             </a>
-            <div class="user-chip-avatar" id="topNavAvatar" onclick="goToPage('pages/profile.html')">
+            <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='../pages/profile.html'">
                 BT
             </div>
         </div>
@@ -84,37 +84,31 @@
     <!-- Feed Container -->
     <main class="video-feed" id="mainVideoFeed"></main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (Direct ../pages/ linking) -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-btn active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
-        <a href="javascript:void(0)" onclick="goToPage('pages/shorts.html')" class="nav-btn">
+        <a href="../pages/shorts.html" class="nav-btn">
             <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             <span>Shorts</span>
         </a>
-        <a href="javascript:void(0)" onclick="goToPage('pages/upload.html')" class="nav-btn" style="color:#e50914;">
+        <a href="../pages/upload.html" class="nav-btn" style="color:#e50914;">
             <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Create</span>
         </a>
-        <a href="javascript:void(0)" onclick="goToPage('pages/subscriptions.html')" class="nav-btn">
+        <a href="../pages/subscriptions.html" class="nav-btn">
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subscriptions</span>
         </a>
-        <a href="javascript:void(0)" onclick="goToPage('pages/profile.html')" class="nav-btn">
+        <a href="../pages/profile.html" class="nav-btn">
             <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;" id="bottomNavAvatar">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <script>
-        // Universal Navigation Helper (Paths ko automatically resolve karega)
-        function goToPage(targetPath) {
-            // Check if 'pages/' folder is in the same directory or parent
-            window.location.href = targetPath;
-        }
-
         let currentFilter = 'all';
         let allCloudVideos = [];
 
@@ -142,9 +136,9 @@
 
         function openVideo(vidId, videoUrl, isShort) {
             if (isShort) {
-                goToPage(`pages/shorts.html?id=${encodeURIComponent(vidId)}`);
+                window.location.href = `../pages/shorts.html?id=${encodeURIComponent(vidId)}`;
             } else {
-                goToPage(`pages/watch.html?id=${encodeURIComponent(vidId)}&videoUrl=${encodeURIComponent(videoUrl || '')}`);
+                window.location.href = `../pages/watch.html?id=${encodeURIComponent(vidId)}&videoUrl=${encodeURIComponent(videoUrl || '')}`;
             }
         }
 
