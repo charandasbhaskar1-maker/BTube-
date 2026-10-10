@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Help and feedback - BTube</title>
+    <title>Help - BTube</title>
 
     <style>
         * {
@@ -178,7 +178,7 @@
             background: #3ea6ff;
             color: #0f0f0f;
             border: none;
-            padding: 10px 16px;
+            padding: 10px 18px;
             border-radius: 20px;
             font-size: 13px;
             font-weight: 700;
@@ -186,7 +186,7 @@
             align-self: flex-start;
         }
 
-        /* 5. FEEDBACK MODAL SHEET */
+        /* 5. ARTICLE DETAIL MODAL */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -210,13 +210,15 @@
             flex-direction: column;
             gap: 14px;
             box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .sheet-top-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #2d2d2d;
         }
 
@@ -231,6 +233,22 @@
             color: #aaaaaa;
             font-size: 20px;
             cursor: pointer;
+        }
+
+        .article-content-body {
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.55;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .article-content-body ul {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .feedback-textarea {
@@ -302,12 +320,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -318,7 +336,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -328,31 +346,32 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="help-header">
-        <a href="settings.html" class="btn-back">
+        <button class="btn-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <span class="header-title">Help</span>
     </header>
 
@@ -369,7 +388,7 @@
         <div class="help-section">
             <span class="section-label">Popular Articles</span>
 
-            <div class="help-item-row" data-topic="streaming video buffer" onclick="showToast('Fix: Check internet or switch quality to 480p')">
+            <div class="help-item-row" data-topic="streaming video buffer quality lag" onclick="openArticleModal('playback')">
                 <div class="row-left">
                     <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                     <span class="row-text">Troubleshoot video playback issues</span>
@@ -379,7 +398,7 @@
                 </div>
             </div>
 
-            <div class="help-item-row" data-topic="download storage offline" onclick="showToast('Open Downloads tab to manage offline files')">
+            <div class="help-item-row" data-topic="download storage offline remove" onclick="openArticleModal('downloads')">
                 <div class="row-left">
                     <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     <span class="row-text">Manage offline download storage</span>
@@ -389,7 +408,7 @@
                 </div>
             </div>
 
-            <div class="help-item-row" data-topic="edit profile dp banner name" onclick="showToast('Go to Channel Settings to change DP and Banner')">
+            <div class="help-item-row" data-topic="edit profile dp banner name handle" onclick="openArticleModal('channel')">
                 <div class="row-left">
                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                     <span class="row-text">Change channel profile photo & banner</span>
@@ -399,7 +418,7 @@
                 </div>
             </div>
 
-            <div class="help-item-row" data-topic="history clear pause" onclick="showToast('History can be cleared in History page options')">
+            <div class="help-item-row" data-topic="history clear pause delete recent" onclick="openArticleModal('history')">
                 <div class="row-left">
                     <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
                     <span class="row-text">Clear or pause watch history</span>
@@ -418,20 +437,31 @@
         </div>
     </main>
 
-    <!-- 5. FEEDBACK MODAL SHEET -->
-    <div class="drawer-overlay" id="feedbackDrawer" onclick="closeDrawerOnBackdrop(event)">
+    <!-- 5. ARTICLE DETAILS SHEET -->
+    <div class="drawer-overlay" id="articleDrawer" onclick="closeDrawerOnBackdrop(event, 'articleDrawer')">
+        <div class="feedback-sheet-card">
+            <div class="sheet-top-row">
+                <span class="sheet-title" id="articleTitle">Help Guide</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('articleDrawer')">✕</button>
+            </div>
+            <div class="article-content-body" id="articleBody"></div>
+        </div>
+    </div>
+
+    <!-- 6. FEEDBACK MODAL SHEET -->
+    <div class="drawer-overlay" id="feedbackDrawer" onclick="closeDrawerOnBackdrop(event, 'feedbackDrawer')">
         <div class="feedback-sheet-card">
             <div class="sheet-top-row">
                 <span class="sheet-title">Send feedback to BTube</span>
-                <button class="sheet-close-btn" onclick="closeFeedbackDrawer()">✕</button>
+                <button class="sheet-close-btn" onclick="closeDrawer('feedbackDrawer')">✕</button>
             </div>
             <textarea id="feedbackText" class="feedback-textarea" placeholder="Have feedback? Tell us what is working or what needs improvement..."></textarea>
             <div class="log-toggle-row">
-                <span>Include system diagnostic logs</span>
-                <input type="checkbox" checked>
+                <span>Include diagnostic log details</span>
+                <input type="checkbox" id="includeLogs" checked>
             </div>
             <div class="sheet-btn-row">
-                <button class="sheet-btn cancel" onclick="closeFeedbackDrawer()">Cancel</button>
+                <button class="sheet-btn cancel" onclick="closeDrawer('feedbackDrawer')">Cancel</button>
                 <button class="sheet-btn send" onclick="submitFeedback()">Send</button>
             </div>
         </div>
@@ -440,7 +470,7 @@
     <!-- Toast Bubble -->
     <div class="toast-pop" id="helpToast"></div>
 
-    <!-- 6. BOTTOM NAVIGATION -->
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -458,20 +488,70 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- INTERACTION LOGIC -->
     <script>
+        const ARTICLES_DATA = {
+            playback: {
+                title: "Troubleshoot video playback issues",
+                body: `
+                    <p>If your video is buffering or lagging on BTube, follow these steps:</p>
+                    <ul>
+                        <li><strong>Check Connection:</strong> Ensure your Wi-Fi or mobile data has a stable speed.</li>
+                        <li><strong>Adjust Video Quality:</strong> Tap the Settings gear (⚙️) on the video player and choose a lower resolution (e.g., 480p or 720p).</li>
+                        <li><strong>Clear Cache:</strong> Pull down to refresh the feed on Home page to reload resources.</li>
+                        <li><strong>Update Browser/App:</strong> Ensure your mobile browser is up to date.</li>
+                    </ul>
+                `
+            },
+            downloads: {
+                title: "Manage offline download storage",
+                body: `
+                    <p>BTube allows saving videos for offline viewing using local device storage:</p>
+                    <ul>
+                        <li><strong>Download a Video:</strong> On any video player, tap the "Download" button to save it locally.</li>
+                        <li><strong>View Offline Videos:</strong> Open the "Downloads" section from your Profile ("You") tab.</li>
+                        <li><strong>Free Up Space:</strong> Tap the 3-dot menu (⋮) on any downloaded video card and select "Delete from downloads".</li>
+                    </ul>
+                `
+            },
+            channel: {
+                title: "Change channel profile photo & banner",
+                body: `
+                    <p>Customize your creator channel identity easily:</p>
+                    <ul>
+                        <li>Go to your Channel page and tap <strong>Edit channel</strong>.</li>
+                        <li>Tap the camera icon on your banner or profile circle.</li>
+                        <li>Select an image file or enter an image URL to update your profile visuals instantly.</li>
+                    </ul>
+                `
+            },
+            history: {
+                title: "Clear or pause watch history",
+                body: `
+                    <p>Control your privacy and recommendations:</p>
+                    <ul>
+                        <li>Navigate to your <strong>Profile ("You")</strong> page.</li>
+                        <li>Under <strong>History</strong>, tap "View all" to manage your watched list.</li>
+                        <li>Use the top options menu to clear all history or remove specific watched videos.</li>
+                    </ul>
+                `
+            }
+        };
+
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
             }
         });
 
@@ -487,12 +567,16 @@
             const rows = document.querySelectorAll('.help-item-row');
             rows.forEach(r => {
                 const text = (r.innerText + ' ' + (r.getAttribute('data-topic') || '')).toLowerCase();
-                if (text.includes(q)) {
-                    r.style.display = 'flex';
-                } else {
-                    r.style.display = 'none';
-                }
+                r.style.display = text.includes(q) ? 'flex' : 'none';
             });
+        }
+
+        function openArticleModal(key) {
+            const data = ARTICLES_DATA[key];
+            if (!data) return;
+            document.getElementById('articleTitle').innerText = data.title;
+            document.getElementById('articleBody').innerHTML = data.body;
+            document.getElementById('articleDrawer').classList.add('open');
         }
 
         function openFeedbackDrawer() {
@@ -500,12 +584,12 @@
             document.getElementById('feedbackText').focus();
         }
 
-        function closeFeedbackDrawer() {
-            document.getElementById('feedbackDrawer').classList.remove('open');
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
         }
 
-        function closeDrawerOnBackdrop(e) {
-            if (e.target.id === 'feedbackDrawer') closeFeedbackDrawer();
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
         }
 
         function submitFeedback() {
@@ -514,7 +598,17 @@
                 showToast('Please enter your feedback first');
                 return;
             }
-            closeFeedbackDrawer();
+
+            // Store in feedback queue
+            const feedbackList = JSON.parse(localStorage.getItem('btube_feedback_queue') || '[]');
+            feedbackList.push({
+                text: txt,
+                time: new Date().toISOString(),
+                includeLogs: document.getElementById('includeLogs').checked
+            });
+            localStorage.setItem('btube_feedback_queue', JSON.stringify(feedbackList));
+
+            closeDrawer('feedbackDrawer');
             document.getElementById('feedbackText').value = '';
             showToast('Thank you! Feedback submitted ✓');
         }
