@@ -8,192 +8,216 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
-
-        /* Top Bar */
-        .ch-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
-        .header-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
+        
+        .ch-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #222; }
+        .hdr-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .header-icons { display:flex; align-items:center; gap:18px; }
-        .header-icons svg { width:20px; height:20px; fill:#fff; }
 
-        /* Banner & Profile Info */
-        .channel-banner { width:100%; height:110px; background:linear-gradient(135deg, #2c1214 0%, #111 100%); object-fit:cover; }
-        .profile-section { padding:16px; display:flex; flex-direction:column; gap:12px; }
-        .avatar-wrap { display:flex; align-items:center; gap:16px; }
-        .main-avatar { width:68px; height:68px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; color:#fff; border:2px solid #0f0f0f; margin-top:-34px; }
-        .channel-name { font-size:20px; font-weight:800; }
-        .channel-handle { font-size:12px; color:#aaa; margin-top:2px; }
-        .channel-stats { font-size:12px; color:#aaa; margin-top:4px; }
+        /* Channel Banner & Profile */
+        .banner-box { width:100%; height:110px; background:linear-gradient(45deg, #1f1f1f, #2c0b0e); position:relative; }
+        .profile-section { padding:14px 16px; display:flex; flex-direction:column; gap:12px; }
+        .profile-row { display:flex; gap:14px; align-items:center; }
+        .avatar-lg { width:64px; height:64px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; border:2px solid #0f0f0f; margin-top:-32px; box-shadow:0 4px 10px rgba(0,0,0,0.5); }
+        
+        .info-col { flex:1; display:flex; flex-direction:column; gap:2px; }
+        .ch-title { font-size:18px; font-weight:800; }
+        .ch-handle { font-size:12px; color:#aaa; }
+        .ch-stats { font-size:12px; color:#888; }
 
-        /* Manage Buttons */
-        .channel-action-row { display:flex; gap:10px; margin-top:4px; }
-        .btn-action-pill { flex:1; background:#222; border:1px solid #333; border-radius:18px; padding:8px 0; text-align:center; font-size:12px; font-weight:700; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:6px; }
+        .btn-action-row { display:flex; gap:8px; margin-top:4px; }
+        .btn-pill { flex:1; background:#222; border:none; color:#fff; padding:8px 0; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer; text-align:center; text-decoration:none; }
+        .btn-pill.primary { background:#fff; color:#000; }
 
         /* Tabs */
-        .ch-tabs { display:flex; border-bottom:1px solid #222; overflow-x:auto; scrollbar-width:none; padding:0 8px; }
-        .ch-tabs::-webkit-scrollbar { display:none; }
-        .ch-tab { background:none; border:none; color:#aaa; padding:12px 14px; font-size:13px; font-weight:700; cursor:pointer; flex-shrink:0; position:relative; }
-        .ch-tab.active { color:#fff; border-bottom:2px solid #fff; }
+        .tabs-bar { display:flex; border-bottom:1px solid #222; overflow-x:auto; scrollbar-width:none; padding:0 8px; }
+        .tabs-bar::-webkit-scrollbar { display:none; }
+        .tab-item { background:none; border:none; color:#aaa; padding:12px 14px; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; }
+        .tab-item.active { color:#fff; border-bottom:2px solid #fff; }
 
-        /* Video Feed Grid */
-        .ch-videos-feed { display:flex; flex-direction:column; padding:12px 0; }
-        .feed-video-card { display:flex; flex-direction:column; margin-bottom:18px; text-decoration:none; color:#fff; }
-        .video-thumb-frame { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
-        .video-thumb-frame img { width:100%; height:100%; object-fit:cover; }
-        .dur-pill { position:absolute; bottom:6px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; }
-        .video-details-row { display:flex; gap:12px; padding:10px 16px 0; }
-        .details-column { flex:1; display:flex; flex-direction:column; gap:4px; }
-        .card-title-text { font-size:14px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-        .card-meta-text { font-size:12px; color:#aaa; }
+        /* Video List & Grid */
+        .content-area { padding:12px 0; min-height:200px; }
+        .v-card { display:flex; gap:12px; padding:10px 16px; border-bottom:1px solid #161616; cursor:pointer; }
+        .v-thumb { width:120px; height:68px; border-radius:8px; background:#222; overflow:hidden; position:relative; flex-shrink:0; }
+        .v-thumb img { width:100%; height:100%; object-fit:cover; }
+        .dur-tag { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.8); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
+        .v-info { flex:1; display:flex; flex-direction:column; justify-content:center; gap:4px; min-width:0; }
+        .v-name { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .v-meta { font-size:11px; color:#888; }
+
+        /* Shorts Grid */
+        .shorts-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; padding:8px 16px; }
+        .s-card { aspect-ratio:9/16; border-radius:8px; overflow:hidden; background:#222; position:relative; cursor:pointer; }
+        .s-card img { width:100%; height:100%; object-fit:cover; }
+        .s-title { position:absolute; bottom:6px; left:6px; right:6px; font-size:11px; font-weight:600; text-shadow:0 1px 4px rgba(0,0,0,0.8); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+        .empty-state { text-align:center; padding:50px 16px; color:#666; font-size:13px; }
 
         /* Bottom Nav */
-        .bottom-nav-bar { position:fixed; bottom:0; left:0; width:100%; height:54px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
-        .nav-tab-item { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:3px; }
-        .nav-tab-item.active { color:#fff; font-weight:700; }
-        .nav-tab-item svg { width:22px; height:22px; fill:currentColor; }
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:54px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-link { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:3px; }
+        .nav-link.active { color:#fff; font-weight:700; }
+        .nav-link svg { width:22px; height:22px; fill:currentColor; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <!-- Top Bar -->
     <header class="ch-header">
-        <div class="header-left">
+        <div class="hdr-left">
             <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            <span style="font-size:17px; font-weight:700;" id="topHeaderName">Charandas Bhaskar</span>
+            <span style="font-size:17px; font-weight:700;" id="topChannelTitle">Channel</span>
         </div>
-        <div class="header-icons">
-            <a href="search.html" style="display:flex; color:#fff;"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></a>
-            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        <div>
+            <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#fff;"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
         </div>
     </header>
 
-    <!-- Banner -->
-    <div class="channel-banner"></div>
+    <div class="banner-box"></div>
 
-    <!-- Profile Details -->
     <div class="profile-section">
-        <div class="avatar-wrap">
-            <div class="main-avatar" id="chAvatar">CB</div>
-            <div>
-                <h1 class="channel-name" id="chTitle">Charandas Bhaskar</h1>
-                <div class="channel-handle" id="chHandle">@charandasbhaskar • View channel</div>
-                <div class="channel-stats" id="chStats">1.25K subscribers • <span id="chVideoCount">4</span> videos</div>
+        <div class="profile-row">
+            <div class="avatar-lg" id="cAvatar">CB</div>
+            <div class="info-col">
+                <div class="ch-title" id="cName">Charandas Bhaskar</div>
+                <div class="ch-handle">@charandasbhaskar • Official Channel</div>
+                <div class="ch-stats"><span id="cSubCount">245</span> subscribers • <span id="cVidCount">0</span> videos</div>
             </div>
         </div>
 
-        <div class="channel-action-row">
-            <a href="manage-channel.html" class="btn-action-pill">Manage videos</a>
-            <a href="analytics.html" class="btn-action-pill">Analytics</a>
-            <a href="edit-channel.html" class="btn-action-pill" style="flex:none; width:40px;">
-                <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#fff;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            </a>
+        <div class="btn-action-row">
+            <button class="btn-pill primary" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
+            <a href="manage-channel.html" class="btn-pill">Manage Videos</a>
         </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <div class="ch-tabs">
-        <button class="ch-tab active" onclick="switchTab(this, 'all')">Home</button>
-        <button class="ch-tab" onclick="switchTab(this, 'videos')">Videos</button>
-        <button class="ch-tab" onclick="switchTab(this, 'shorts')">Shorts</button>
-        <button class="ch-tab" onclick="switchTab(this, 'playlists')">Playlists</button>
-        <button class="ch-tab" onclick="switchTab(this, 'community')">Community</button>
+    <!-- Category Tabs -->
+    <div class="tabs-bar">
+        <button class="tab-item active" id="tabVideos" onclick="switchTab('video')">Videos</button>
+        <button class="tab-item" id="tabShorts" onclick="switchTab('short')">Shorts</button>
+        <button class="tab-item" id="tabPlaylists" onclick="switchTab('playlists')">Playlists</button>
+        <button class="tab-item" id="tabAbout" onclick="switchTab('about')">About</button>
     </div>
 
-    <!-- Dynamic Video List -->
-    <div class="ch-videos-feed" id="channelVideosList"></div>
+    <div class="content-area" id="contentArea">
+        <div class="empty-state">Loading real channel videos...</div>
+    </div>
 
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-tab-item" style="color:#e50914;">
-            <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Create</span>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subscriptions</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div>
-            <span>You</span>
-        </a>
+    <!-- Navigation Bar -->
+    <nav class="bottom-nav">
+        <a href="../frontend/index.html" class="nav-link"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-link"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-link" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-link"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-link active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
     </nav>
 
     <script>
-        const defaultVideos = [
-            { id: 'vid_1', title: 'Chhattisgarhi song maya ke rang', duration: '05:42', views: '210K', age: '2 weeks ago', visibility: 'Public', thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-            { id: 'vid_2', title: 'Typewriter Banjo with Magnetic Pickups Full Making Guide', duration: '14:10', views: '45K', age: '1 month ago', visibility: 'Public', thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' },
-            { id: 'vid_3', title: 'Morning Commute & Village Lifestyle Daily Vlog #42', duration: '06:25', views: '8.4K', age: '3 days ago', visibility: 'Public', thumb: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
-            { id: 'vid_4', title: 'Hareli Festival Folk Song • Farm Life & Nature', duration: '04:18', views: '98K', age: '1 week ago', visibility: 'Unlisted', thumb: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800', videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' }
-        ];
+        let currentTab = 'video';
+        let channelVideos = [];
 
-        function getVideos() {
-            const raw = localStorage.getItem('btube_user_videos');
-            if (!raw) {
-                localStorage.setItem('btube_user_videos', JSON.stringify(defaultVideos));
-                return defaultVideos;
-            }
-            return JSON.parse(raw);
-        }
+        window.addEventListener('DOMContentLoaded', async () => {
+            const channelName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
+            document.getElementById('cName').innerText = channelName;
+            document.getElementById('topChannelTitle').innerText = channelName;
+            document.getElementById('cAvatar').innerText = channelName.substring(0,2).toUpperCase();
 
-        window.addEventListener('DOMContentLoaded', () => {
-            // Load Channel Name & Avatar
-            const savedName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
-            document.getElementById('topHeaderName').innerText = savedName;
-            document.getElementById('chTitle').innerText = savedName;
-
-            const parts = savedName.trim().split(' ');
-            let inits = parts[0][0];
-            if (parts.length > 1) inits += parts[1][0];
-            document.getElementById('chAvatar').innerText = inits.toUpperCase();
-
-            renderChannelFeed();
+            await loadRealChannelContent();
         });
 
-        function renderChannelFeed() {
-            const videos = getVideos();
-            const container = document.getElementById('channelVideosList');
-            document.getElementById('chVideoCount').innerText = videos.length;
-            container.innerHTML = '';
-
-            videos.forEach(v => {
-                // Public & Unlisted videos shown on channel
-                if (v.visibility === 'Private') return;
-
-                const watchUrl = `watch.html?id=${v.id}&title=${encodeURIComponent(v.title)}&videoUrl=${encodeURIComponent(v.videoUrl)}&channel=Charandas+Bhaskar`;
-
-                const card = document.createElement('a');
-                card.className = 'feed-video-card';
-                card.href = watchUrl;
-                card.innerHTML = `
-                    <div class="video-thumb-frame">
-                        <img src="${v.thumb}" alt="${v.title}">
-                        <span class="dur-pill">${v.duration || '05:00'}</span>
-                    </div>
-                    <div class="video-details-row">
-                        <div class="details-column">
-                            <h2 class="card-title-text">${v.title}</h2>
-                            <span class="card-meta-text">Charandas Bhaskar • ${v.views} views • ${v.age}</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+        async function loadRealChannelContent() {
+            // Fetch directly from Firestore Cloud
+            channelVideos = await window.BTubeAPI.getFeed('all');
+            
+            document.getElementById('cVidCount').innerText = channelVideos.length;
+            renderView();
         }
 
-        function switchTab(btn, tab) {
-            document.querySelectorAll('.ch-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active'));
+            if (tab === 'video') document.getElementById('tabVideos').classList.add('active');
+            if (tab === 'short') document.getElementById('tabShorts').classList.add('active');
+            if (tab === 'playlists') document.getElementById('tabPlaylists').classList.add('active');
+            if (tab === 'about') document.getElementById('tabAbout').classList.add('active');
+
+            renderView();
+        }
+
+        function renderView() {
+            const box = document.getElementById('contentArea');
+            box.innerHTML = '';
+
+            if (currentTab === 'video') {
+                const list = channelVideos.filter(v => (v.type || 'video') === 'video');
+                if (list.length === 0) {
+                    box.innerHTML = `<div class="empty-state">Is channel par abhi koi Long Video nahi hai.</div>`;
+                    return;
+                }
+                list.forEach(v => {
+                    const row = document.createElement('div');
+                    row.className = 'v-card';
+                    row.onclick = () => window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl)}`;
+                    row.innerHTML = `
+                        <div class="v-thumb">
+                            <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
+                            <span class="dur-tag">${v.duration || '03:45'}</span>
+                        </div>
+                        <div class="v-info">
+                            <div class="v-name">${v.title}</div>
+                            <div class="v-meta">${v.views || 0} views • Cloud Stream</div>
+                        </div>
+                    `;
+                    box.appendChild(row);
+                });
+            } else if (currentTab === 'short') {
+                const list = channelVideos.filter(v => (v.type || 'video') === 'short');
+                if (list.length === 0) {
+                    box.innerHTML = `<div class="empty-state">Is channel par abhi koi Short nahi hai.</div>`;
+                    return;
+                }
+                const grid = document.createElement('div');
+                grid.className = 'shorts-grid';
+                list.forEach(s => {
+                    const item = document.createElement('div');
+                    item.className = 's-card';
+                    item.onclick = () => window.location.href = `shorts.html?id=${s.id}`;
+                    item.innerHTML = `
+                        <img src="${s.thumb || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'}">
+                        <div class="s-title">${s.title}</div>
+                    `;
+                    grid.appendChild(item);
+                });
+                box.appendChild(grid);
+            } else if (currentTab === 'about') {
+                box.innerHTML = `
+                    <div style="padding:16px; font-size:13px; line-height:1.6; color:#ccc;">
+                        <strong>Description:</strong><br>
+                        Official cultural & entertainment channel on BTube. Real-time powered by Firebase Cloud Firestore.
+                    </div>
+                `;
+            } else {
+                box.innerHTML = `<div class="empty-state">Playlists abhi khali hain.</div>`;
+            }
+        }
+
+        function toggleSub() {
+            const btn = document.getElementById('btnSubscribe');
+            if (btn.innerText === 'Subscribe') {
+                btn.innerText = 'Subscribed';
+                btn.style.background = '#333';
+                btn.style.color = '#fff';
+            } else {
+                btn.innerText = 'Subscribe';
+                btn.style.background = '#fff';
+                btn.style.color = '#000';
+            }
         }
     </script>
 </body>
