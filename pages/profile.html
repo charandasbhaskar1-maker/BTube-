@@ -2,539 +2,102 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>You - BTube</title>
-
+    <title>Profile - BTube</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
 
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding-bottom: 75px;
-            overflow-x: hidden;
-        }
+        .profile-hdr { padding:24px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #1c1c1c; }
+        .avatar-box { width:68px; height:68px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; }
+        .u-info { display:flex; flex-direction:column; gap:4px; }
+        .u-name { font-size:18px; font-weight:800; }
+        .u-handle { font-size:12px; color:#aaa; }
 
-        /* 1. TOP HEADER */
-        .profile-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 16px;
-            gap: 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 1000;
-        }
+        .menu-grid { padding:14px 16px; display:flex; flex-direction:column; gap:4px; }
+        .menu-row { display:flex; align-items:center; justify-content:space-between; padding:14px 12px; background:#141414; border-radius:10px; text-decoration:none; color:#fff; font-size:14px; font-weight:600; }
+        .row-left { display:flex; align-items:center; gap:14px; }
+        .row-left svg { width:22px; height:22px; fill:#aaa; }
+        .menu-badge { background:#e50914; color:#fff; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:800; }
 
-        .header-icon-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .header-icon-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        /* 2. USER CHANNEL HERO */
-        .user-hero-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 16px 16px;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        .user-avatar-large {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: #e50914;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffffff;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .user-avatar-large img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .user-meta-details {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .user-name-title {
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .user-handle-sub {
-            font-size: 13px;
-            color: #aaaaaa;
-        }
-
-        .user-view-channel-link {
-            font-size: 12px;
-            color: #3ea6ff;
-            font-weight: 600;
-            margin-top: 2px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* 3. QUICK CHIPS STRIP */
-        .quick-actions-strip {
-            display: flex;
-            gap: 8px;
-            padding: 0 16px 16px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .quick-actions-strip::-webkit-scrollbar {
-            display: none;
-        }
-
-        .quick-pill-btn {
-            background: #272727;
-            color: #ffffff;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            border: 1px solid #333333;
-        }
-
-        .quick-pill-btn svg {
-            width: 16px;
-            height: 16px;
-            fill: #ffffff;
-        }
-
-        /* 4. BT STUDIO PROMO BANNER */
-        .bt-studio-card {
-            margin: 0 16px 16px;
-            background: linear-gradient(135deg, #1f1f1f 0%, #151515 100%);
-            border: 1px solid #2e2e2e;
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        .studio-card-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .studio-logo-bubble {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background: #e50914;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 16px;
-        }
-
-        .studio-meta strong {
-            font-size: 14px;
-            display: block;
-        }
-
-        .studio-meta span {
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        /* 5. HISTORY HORIZONTAL SHELF */
-        .shelf-head-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px 10px;
-        }
-
-        .shelf-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .shelf-view-all {
-            font-size: 12px;
-            color: #3ea6ff;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .history-cards-scroll {
-            display: flex;
-            gap: 12px;
-            padding: 0 16px 18px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .history-cards-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .history-item-unit {
-            width: 140px;
-            flex-shrink: 0;
-            text-decoration: none;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .history-thumb-holder {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            border-radius: 8px;
-            background: #202020;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .history-thumb-holder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .history-time-badge {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(0,0,0,0.8);
-            font-size: 10px;
-            padding: 1px 4px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-
-        .history-item-title {
-            font-size: 12px;
-            font-weight: 600;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        /* 6. SETTINGS & UTILITY ROWS */
-        .utility-list-group {
-            display: flex;
-            flex-direction: column;
-            border-top: 1px solid #1a1a1a;
-            margin-top: 4px;
-        }
-
-        .utility-row-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            text-decoration: none;
-            color: #ffffff;
-            transition: background 0.15s;
-        }
-
-        .utility-row-link:active {
-            background: #181818;
-        }
-
-        .row-left-content {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .row-left-content svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        .row-label-text {
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* 7. BOTTOM NAVIGATION */
-        .bottom-nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 56px;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #222222;
-            z-index: 1000;
-        }
-
-        .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: #aaaaaa;
-            text-decoration: none;
-            gap: 3px;
-        }
-
-        .nav-tab-item.active {
-            color: #ffffff;
-        }
-
-        .nav-tab-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
+        .nav-btn.active { color:#fff; font-weight:700; }
+        .nav-btn svg { width:22px; height:22px; fill:currentColor; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <!-- 1. TOP RIGHT UTILITY ICONS -->
-    <header class="profile-header">
-        <a href="cast.html" class="header-icon-btn" title="Cast to screen">
-            <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-        </a>
-        <a href="notifications.html" class="header-icon-btn" title="Notifications">
-            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-        </a>
-        <a href="search.html" class="header-icon-btn" title="Search">
-            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        </a>
+    <header class="profile-hdr">
+        <div class="avatar-box" id="avatarDisplay">CB</div>
+        <div class="u-info">
+            <div class="u-name" id="nameDisplay">Charandas Bhaskar</div>
+            <div class="u-handle">@charandasbhaskar • Creator Studio</div>
+            <span style="font-size:12px; color:#2ecc71;">● Cloud Firestore Live Connected</span>
+        </div>
     </header>
 
-    <!-- 2. USER CHANNEL HERO -->
-    <a href="channel.html" class="user-hero-card">
-        <div class="user-avatar-large" id="profileLargeAvatar">CB</div>
-        <div class="user-meta-details">
-            <h2 class="user-name-title" id="profileUserName">Charandas Bhaskar</h2>
-            <span class="user-handle-sub" id="profileUserHandle">@charandasbhaskar • View channel</span>
-            <div class="user-view-channel-link">
-                <span>Customize & manage channel</span>
-                <span>❯</span>
+    <div class="menu-grid">
+        <a href="channel.html" class="menu-row">
+            <div class="row-left">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                <span>View Channel</span>
             </div>
-        </div>
-    </a>
-
-    <!-- 3. QUICK CHIPS STRIP -->
-    <div class="quick-actions-strip">
-        <a href="switch-account.html" class="quick-pill-btn">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            <span>Switch account</span>
-        </a>
-        <a href="switch-account.html" class="quick-pill-btn">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5z"/></svg>
-            <span>Turn on Incognito</span>
-        </a>
-    </div>
-
-    <!-- 4. BT STUDIO PROMO BANNER (DIRECT LAUNCHER) -->
-    <a href="your-videos.html" class="bt-studio-card">
-        <div class="studio-card-left">
-            <div class="studio-logo-bubble">BT</div>
-            <div class="studio-meta">
-                <strong>BTube Studio</strong>
-                <span>Manage videos, comments & analytics</span>
-            </div>
-        </div>
-        <span style="color:#aaa;">❯</span>
-    </a>
-
-    <!-- 5. WATCH HISTORY SHELF -->
-    <div class="shelf-head-row">
-        <span class="shelf-title">History</span>
-        <a href="history.html" class="shelf-view-all">View all</a>
-    </div>
-
-    <div class="history-cards-scroll">
-        <a href="../watch.html" class="history-item-unit">
-            <div class="history-thumb-holder">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video">
-                <span class="history-time-badge">3:28</span>
-            </div>
-            <span class="history-item-title">Mor Maya Ke Chhaiya | Chhattisgarhi Folk Song</span>
+            <span>›</span>
         </a>
 
-        <a href="../watch.html" class="history-item-unit">
-            <div class="history-thumb-holder">
-                <img src="https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=300" alt="Video">
-                <span class="history-time-badge">14:09</span>
+        <a href="your-videos.html" class="menu-row">
+            <div class="row-left">
+                <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
+                <span>Your Videos & Studio</span>
             </div>
-            <span class="history-item-title">Girodpuri Dham Yatra | Guru Ghasidas Pavan Dham</span>
+            <span class="menu-badge" id="videoTotalCount">0</span>
         </a>
 
-        <a href="../watch.html" class="history-item-unit">
-            <div class="history-thumb-holder">
-                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=300" alt="Video">
-                <span class="history-time-badge">0:45</span>
+        <a href="upload.html" class="menu-row" style="border:1px solid #e50914;">
+            <div class="row-left">
+                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span style="color:#e50914;">Upload New Video / Short</span>
             </div>
-            <span class="history-item-title">Typewriter Electronic Banjo Sound Test #Shorts</span>
-        </a>
-    </div>
-
-    <!-- 6. UTILITY ROWS GROUP -->
-    <div class="utility-list-group">
-        
-        <!-- Your Videos -->
-        <a href="your-videos.html" class="utility-row-link">
-            <div class="row-left-content">
-                <svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-                <span class="row-label-text">Your videos</span>
-            </div>
-            <span style="color:#666;">❯</span>
+            <span>+</span>
         </a>
 
-        <!-- Playlists -->
-        <a href="playlists.html" class="utility-row-link">
-            <div class="row-left-content">
-                <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                <span class="row-label-text">Playlists</span>
+        <a href="analytics.html" class="menu-row">
+            <div class="row-left">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                <span>Analytics & Realtime Views</span>
             </div>
-            <span style="color:#666;">❯</span>
+            <span>›</span>
         </a>
 
-        <!-- Get Premium -->
-        <a href="premium.html" class="utility-row-link">
-            <div class="row-left-content">
-                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-                <span class="row-label-text">Get BTube Premium</span>
-            </div>
-            <span style="color:#666;">❯</span>
-        </a>
-
-        <!-- Help & feedback -->
-        <a href="help.html" class="utility-row-link">
-            <div class="row-left-content">
-                <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
-                <span class="row-label-text">Help and feedback</span>
-            </div>
-            <span style="color:#666;">❯</span>
-        </a>
-
-        <!-- Settings / Terms -->
-        <a href="terms.html" class="utility-row-link">
-            <div class="row-left-content">
+        <a href="settings.html" class="menu-row">
+            <div class="row-left">
                 <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span class="row-label-text">Terms & Policies</span>
+                <span>Settings</span>
             </div>
-            <span style="color:#666;">❯</span>
+            <span>›</span>
         </a>
-
     </div>
 
-    <!-- 7. BOTTOM NAVIGATION -->
-    <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-plus-circle">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
-            <span>You</span>
-        </a>
+    <!-- Navigation -->
+    <nav class="bottom-nav">
+        <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
     </nav>
 
-    <!-- SCRIPT LOGIC -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
-
-            if (savedName) {
-                document.getElementById('profileUserName').innerText = savedName;
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-                document.getElementById('profileLargeAvatar').innerText = inits.toUpperCase();
-            }
-
-            if (savedHandle) {
-                document.getElementById('profileUserHandle').innerText = `${savedHandle} • View channel`;
-            }
+        window.addEventListener('DOMContentLoaded', async () => {
+            const feed = await window.BTubeAPI.getFeed('all');
+            document.getElementById('videoTotalCount').innerText = feed.length;
         });
     </script>
 </body>
