@@ -26,7 +26,7 @@
 
         .pill-actions { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
         .pill-actions::-webkit-scrollbar { display:none; }
-        .pill-btn { background:#222; color:#fff; border:none; border-radius:18px; padding:8px 14px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; white-space:nowrap; text-decoration:none; cursor:pointer; }
+        .pill-btn { background:#222; color:#fff; border:none; border-radius:18px; padding:8px 14px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; white-space:nowrap; cursor:pointer; }
         .pill-btn svg { width:16px; height:16px; fill:#fff; }
 
         .studio-card { margin:10px 16px; background:#181818; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; border:1px solid #252525; }
@@ -56,16 +56,38 @@
         .acc-left svg { width:22px; height:22px; fill:#fff; }
         .badge-count { background:#222; color:#aaa; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700; }
 
-        /* YouTube Modal: Create Channel */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:3000; display:none; align-items:center; justify-content:center; padding:16px; }
+        /* YOUTUBE STYLE ACCOUNTS SWITCH SHEET */
+        .sheet-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:4000; display:none; align-items:flex-end; }
+        .sheet-backdrop.active { display:flex; }
+        .accounts-sheet { width:100%; background:#212121; border-top-left-radius:16px; border-top-right-radius:16px; padding:14px 0 24px; display:flex; flex-direction:column; animation:slideUp 0.2s ease-out; max-height:80vh; }
+        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+
+        .sheet-handle-bar { width:36px; height:4px; background:#444; border-radius:2px; margin:0 auto 12px; }
+        .sheet-header-title { padding:0 20px 12px; font-size:17px; font-weight:800; border-bottom:1px solid #2e2e2e; }
+        
+        .channels-scroll { overflow-y:auto; display:flex; flex-direction:column; max-height:45vh; }
+        .ch-select-item { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; cursor:pointer; }
+        .ch-select-item:active { background:#2c2c2c; }
+        .ch-left-info { display:flex; align-items:center; gap:14px; }
+        .ch-mini-avatar { width:42px; height:42px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; overflow:hidden; }
+        .ch-mini-avatar img { width:100%; height:100%; object-fit:cover; }
+        .ch-item-name { font-size:14px; font-weight:700; }
+        .ch-item-sub { font-size:11px; color:#aaa; }
+        .ch-check-icon { width:20px; height:20px; fill:#3ea6ff; display:none; }
+        .ch-select-item.selected .ch-check-icon { display:block; }
+
+        .sheet-footer-actions { border-top:1px solid #2e2e2e; padding-top:6px; margin-top:6px; }
+        .sheet-btn-action { display:flex; align-items:center; gap:16px; padding:12px 20px; color:#fff; font-size:14px; font-weight:600; cursor:pointer; }
+        .sheet-btn-action svg { width:22px; height:22px; fill:#fff; }
+
+        /* CREATE CHANNEL POPUP */
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:5000; display:none; align-items:center; justify-content:center; padding:16px; }
         .modal-overlay.active { display:flex; }
-        .channel-dialog { background:#212121; width:100%; max-width:380px; border-radius:16px; padding:22px 20px; display:flex; flex-direction:column; gap:16px; box-shadow:0 10px 30px rgba(0,0,0,0.8); }
+        .channel-dialog { background:#212121; width:100%; max-width:380px; border-radius:16px; padding:22px 20px; display:flex; flex-direction:column; gap:16px; }
         .dialog-title { font-size:18px; font-weight:800; text-align:center; }
-        .dialog-sub { font-size:12px; color:#aaa; text-align:center; margin-top:-8px; }
         .input-group { display:flex; flex-direction:column; gap:6px; }
         .input-group label { font-size:12px; color:#aaa; font-weight:600; }
         .input-group input { background:#141414; border:1px solid #333; border-radius:8px; padding:10px 12px; color:#fff; font-size:14px; outline:none; }
-        .input-group input:focus { border-color:#e50914; }
         .dialog-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:8px; }
         .btn-d-cancel { background:none; border:none; color:#aaa; font-weight:700; font-size:14px; padding:8px 14px; cursor:pointer; }
         .btn-d-create { background:#e50914; border:none; color:#fff; font-weight:700; font-size:14px; padding:9px 18px; border-radius:20px; cursor:pointer; }
@@ -104,7 +126,7 @@
                     <span class="display-name" id="userName">BTube User</span>
                 </div>
                 <div class="user-handle" id="userHandle">@handle • Channel</div>
-                <div class="link-view-channel" id="viewChannelLink" onclick="goToMyChannel()">
+                <div class="link-view-channel" onclick="goToChannel()">
                     <span id="channelLinkText">View channel</span>
                     <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
                 </div>
@@ -112,13 +134,13 @@
         </div>
 
         <div class="pill-actions">
-            <button class="pill-btn" onclick="handleAuthAction()" id="btnAuthSwitch">
+            <button class="pill-btn" onclick="openSwitchAccountSheet()">
                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                <span id="authBtnText">Switch account</span>
+                <span>Switch account</span>
             </button>
-            <button class="pill-btn" onclick="promptEditChannel()" id="btnEditChannel" style="display:none;">
-                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                <span>Edit channel</span>
+            <button class="pill-btn" onclick="openCreateModal()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add channel</span>
             </button>
         </div>
     </div>
@@ -129,7 +151,7 @@
             <div class="studio-logo">BT</div>
             <div class="studio-text">
                 <span class="studio-title">BTube Studio</span>
-                <span class="studio-sub">Manage your videos & analytics</span>
+                <span class="studio-sub">Manage your active channel videos</span>
             </div>
         </div>
         <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
@@ -199,30 +221,47 @@
         </a>
     </div>
 
-    <!-- CREATE CHANNEL POPUP (Exact YouTube Style) -->
+    <!-- YOUTUBE MULTI-CHANNEL SWITCH SHEET -->
+    <div class="sheet-backdrop" id="switchSheetBackdrop" onclick="closeSwitchSheet(event)">
+        <div class="accounts-sheet">
+            <div class="sheet-handle-bar"></div>
+            <div class="sheet-header-title">Accounts</div>
+            
+            <div class="channels-scroll" id="channelsListContainer">
+                <!-- Dynamically injected channels -->
+            </div>
+
+            <div class="sheet-footer-actions">
+                <div class="sheet-btn-action" onclick="openCreateModal()">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <span>Create a new channel</span>
+                </div>
+                <div class="sheet-btn-action" onclick="handleSignOut()">
+                    <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                    <span>Sign out</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE CHANNEL POPUP -->
     <div class="modal-overlay" id="createChannelModal">
         <div class="channel-dialog">
             <div class="dialog-title">Create channel</div>
-            <div class="dialog-sub">How you'll appear on BTube</div>
             
             <div class="input-group">
-                <label>Name</label>
-                <input type="text" id="inpChName" placeholder="Channel name">
+                <label>Channel Name</label>
+                <input type="text" id="inpChName" placeholder="e.g. Karan Vlogs">
             </div>
 
             <div class="input-group">
                 <label>Handle</label>
-                <input type="text" id="inpChHandle" placeholder="@handle">
-            </div>
-
-            <div class="input-group">
-                <label>Banner Image URL (Optional)</label>
-                <input type="text" id="inpChBanner" placeholder="Banner image URL">
+                <input type="text" id="inpChHandle" placeholder="@karanvlogs">
             </div>
 
             <div class="dialog-actions">
-                <button class="btn-d-cancel" onclick="closeChannelModal()">Cancel</button>
-                <button class="btn-d-create" onclick="submitCreateChannel()">Create channel</button>
+                <button class="btn-d-cancel" onclick="closeCreateModal()">Cancel</button>
+                <button class="btn-d-create" onclick="submitCreateChannel()">Create</button>
             </div>
         </div>
     </div>
@@ -237,67 +276,45 @@
     </nav>
 
     <script>
-        let currentUser = null;
-        let currentChannel = null;
+        let authUser = null;
+        let activeChannel = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
-            currentUser = window.BTubeAPI.getAuthUser();
+            authUser = window.BTubeAPI.getAuthUser();
 
-            const nameEl = document.getElementById('userName');
-            const handleEl = document.getElementById('userHandle');
-            const avatarEl = document.getElementById('userAvatar');
-            const navAvatar = document.getElementById('bottomNavAvatar');
-            const authText = document.getElementById('authBtnText');
-            const btnEdit = document.getElementById('btnEditChannel');
-            const channelLinkText = document.getElementById('channelLinkText');
-
-            if (currentUser) {
-                authText.innerText = 'Switch account';
-                
-                // Fetch actual channel data
-                currentChannel = await window.BTubeAPI.getUserChannel();
-
-                if (!currentChannel || !currentChannel.hasChannel) {
-                    // YouTube Flow: User logged in hai par abhi channel nahi banaya
-                    nameEl.innerText = currentUser.name;
-                    handleEl.innerText = 'No channel yet';
-                    channelLinkText.innerText = 'Create channel';
-                    btnEdit.style.display = 'none';
-
-                    // Avatar
-                    if (currentUser.photo) {
-                        avatarEl.innerHTML = `<img src="${currentUser.photo}">`;
-                        navAvatar.innerHTML = `<img src="${currentUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-                    }
-                    
-                    // Show Create Channel dialogue on first login
-                    openChannelModal();
-                } else {
-                    // Channel bana hua hai -> Har jagah wahi display hoga
-                    applyChannelUI(currentChannel);
-                    btnEdit.style.display = 'flex';
-                }
-
-                // Count this channel's uploaded videos
-                const feed = await window.BTubeAPI.getFeed('all');
-                const myVids = feed.filter(v => v.userId === currentUser.uid);
-                document.getElementById('vidCountBadge').innerText = myVids.length;
-
-            } else {
-                nameEl.innerText = 'Guest User';
-                handleEl.innerText = 'Sign in to create your channel';
-                avatarEl.innerText = '?';
-                navAvatar.innerText = '?';
-                authText.innerText = 'Sign in';
-                channelLinkText.innerText = 'Sign in to view';
-                btnEdit.style.display = 'none';
+            if (!authUser) {
+                // Not Logged In
+                document.getElementById('userName').innerText = 'Guest User';
+                document.getElementById('userHandle').innerText = 'Sign in to access BTube';
+                document.getElementById('channelLinkText').innerText = 'Sign in';
+                return;
             }
+
+            // Get Channels
+            let channels = await window.BTubeAPI.getAllUserChannels();
+
+            // Auto-create default primary channel if 0 channels exist
+            if (channels.length === 0) {
+                const defCh = await window.BTubeAPI.createNewChannel({
+                    name: authUser.name,
+                    handle: '@' + authUser.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
+                    avatar: authUser.photo || ''
+                });
+                channels = [defCh];
+            }
+
+            activeChannel = await window.BTubeAPI.getActiveChannel();
+            applyChannelUI(activeChannel);
+
+            // Fetch video count for this specific active channel
+            const feed = await window.BTubeAPI.getFeed('all');
+            const myVideos = feed.filter(v => v.channelId === activeChannel.id || v.channel === activeChannel.name);
+            document.getElementById('vidCountBadge').innerText = myVideos.length;
         });
 
         function applyChannelUI(ch) {
             document.getElementById('userName').innerText = ch.name;
             document.getElementById('userHandle').innerText = `${ch.handle} • Channel`;
-            document.getElementById('channelLinkText').innerText = 'View channel';
 
             const av = document.getElementById('userAvatar');
             const navAv = document.getElementById('bottomNavAvatar');
@@ -306,74 +323,98 @@
                 av.innerHTML = `<img src="${ch.avatar}">`;
                 navAv.innerHTML = `<img src="${ch.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
             } else {
-                const initials = ch.name.substring(0, 2).toUpperCase();
-                av.innerText = initials;
-                navAv.innerText = initials;
+                const init = ch.name.substring(0, 2).toUpperCase();
+                av.innerText = init;
+                navAv.innerText = init;
             }
         }
 
-        function goToMyChannel() {
-            if (!currentUser) {
-                handleAuthAction();
+        async function openSwitchAccountSheet() {
+            if (!authUser) {
+                window.BTubeAPI.signInWithGoogle().then(u => {
+                    if (u) window.location.reload();
+                });
                 return;
             }
-            if (!currentChannel || !currentChannel.hasChannel) {
-                openChannelModal();
-            } else {
-                window.location.href = `channel.html?uid=${currentUser.uid}`;
+
+            const channels = await window.BTubeAPI.getAllUserChannels();
+            const container = document.getElementById('channelsListContainer');
+            container.innerHTML = '';
+
+            channels.forEach(ch => {
+                const isSelected = activeChannel && (activeChannel.id === ch.id);
+                const row = document.createElement('div');
+                row.className = `ch-select-item ${isSelected ? 'selected' : ''}`;
+                row.onclick = () => selectChannel(ch.id);
+
+                row.innerHTML = `
+                    <div class="ch-left-info">
+                        <div class="ch-mini-avatar">
+                            ${ch.avatar ? `<img src="${ch.avatar}">` : ch.name.substring(0,2).toUpperCase()}
+                        </div>
+                        <div>
+                            <div class="ch-item-name">${ch.name}</div>
+                            <div class="ch-item-sub">${ch.handle} • ${ch.subscribers || 0} subscribers</div>
+                        </div>
+                    </div>
+                    <svg class="ch-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById('switchSheetBackdrop').classList.add('active');
+        }
+
+        function closeSwitchSheet(e) {
+            if (!e || e.target.id === 'switchSheetBackdrop') {
+                document.getElementById('switchSheetBackdrop').classList.remove('active');
             }
         }
 
-        function openChannelModal() {
-            const modal = document.getElementById('createChannelModal');
-            const defaultName = currentUser?.name || '';
-            document.getElementById('inpChName').value = defaultName;
-            document.getElementById('inpChHandle').value = '@' + defaultName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            modal.classList.add('active');
+        function selectChannel(chId) {
+            window.BTubeAPI.setActiveChannel(chId);
+            document.getElementById('switchSheetBackdrop').classList.remove('active');
+            window.location.reload();
         }
 
-        function closeChannelModal() {
+        function openCreateModal() {
+            document.getElementById('switchSheetBackdrop').classList.remove('active');
+            document.getElementById('createChannelModal').classList.add('active');
+        }
+
+        function closeCreateModal() {
             document.getElementById('createChannelModal').classList.remove('active');
         }
 
         async function submitCreateChannel() {
             const name = document.getElementById('inpChName').value.trim();
-            let handle = document.getElementById('inpChHandle').value.trim();
-            const banner = document.getElementById('inpChBanner').value.trim();
+            const handle = document.getElementById('inpChHandle').value.trim();
 
             if (!name) {
-                alert('Please enter a channel name!');
+                alert("Please enter channel name!");
                 return;
             }
-            if (!handle.startsWith('@')) handle = '@' + handle;
 
-            const newChannel = await window.BTubeAPI.saveUserChannel({
+            await window.BTubeAPI.createNewChannel({
                 name: name,
-                handle: handle,
-                banner: banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200',
-                avatar: currentUser?.photo || ''
+                handle: handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''))
             });
 
-            currentChannel = newChannel;
-            applyChannelUI(newChannel);
-            closeChannelModal();
-            document.getElementById('btnEditChannel').style.display = 'flex';
-            alert(`Congratulations! Channel "${name}" created successfully!`);
+            closeCreateModal();
+            window.location.reload();
         }
 
-        function promptEditChannel() {
-            openChannelModal();
+        function goToChannel() {
+            if (!authUser) {
+                openSwitchAccountSheet();
+                return;
+            }
+            window.location.href = `channel.html?id=${activeChannel?.id}`;
         }
 
-        function handleAuthAction() {
-            if (currentUser) {
-                if (confirm("Kya aap account switch ya sign out karna chahte hain?")) {
-                    window.BTubeAPI.signOut();
-                }
-            } else {
-                window.BTubeAPI.signInWithGoogle().then(u => {
-                    if (u) window.location.reload();
-                });
+        function handleSignOut() {
+            if (confirm("Sign out of BTube?")) {
+                window.BTubeAPI.signOut();
             }
         }
     </script>
