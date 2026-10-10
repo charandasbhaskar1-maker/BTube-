@@ -7,220 +7,195 @@
     <title>BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:60px; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
-        /* Premium Top App Header */
-        .app-header { height:54px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1c1c1c; }
-        
-        /* Realistic BTube 3D Curved Logo */
-        .brand-logo-wrap { display:flex; align-items:center; gap:6px; text-decoration:none; color:#fff; }
-        .btube-badge { 
-            width:34px; height:24px; 
-            background:linear-gradient(135deg, #ff1a1a 0%, #b30006 100%); 
-            border-radius:8px; 
-            display:flex; align-items:center; justify-content:center; 
-            box-shadow:0 3px 10px rgba(229,9,20,0.5), inset 0 1px 1px rgba(255,255,255,0.4); 
-            position:relative; 
-        }
-        .btube-badge span { font-size:15px; font-weight:900; color:#fff; font-family:"Arial Black", Impact, sans-serif; letter-spacing:-0.5px; text-shadow:0 1px 2px rgba(0,0,0,0.4); }
-        .brand-text { font-size:20px; font-weight:800; letter-spacing:-0.8px; font-family:-apple-system, BlinkMacSystemFont, sans-serif; }
-        .brand-text span { color:#ff2222; }
+        /* Top Header */
+        .app-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1c1c1c; }
+        .logo-box { display:flex; align-items:center; gap:6px; text-decoration:none; color:#fff; font-size:19px; font-weight:800; letter-spacing:-0.5px; }
+        .logo-icon { width:28px; height:20px; background:#e50914; border-radius:6px; display:flex; align-items:center; justify-content:center; }
+        .logo-icon svg { width:14px; height:14px; fill:#fff; }
+        .hdr-actions { display:flex; align-items:center; gap:16px; }
+        .btn-hdr { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .btn-hdr svg { width:22px; height:22px; fill:#fff; }
+        .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
+        .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
 
-        .header-icons-tray { display:flex; align-items:center; gap:16px; }
-        .hdr-icon-btn { background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; text-decoration:none; position:relative; }
-        .hdr-icon-btn svg { width:22px; height:22px; fill:#fff; }
-        .notif-dot { position:absolute; top:-2px; right:-2px; width:8px; height:8px; background:#e50914; border-radius:50%; border:1px solid #0f0f0f; }
-
-        .ch-avatar-top { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg, #e50914, #8b0000); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.5); }
-
-        /* Chips Bar */
-        .chips-bar { display:flex; gap:8px; padding:10px 14px; overflow-x:auto; scrollbar-width:none; position:sticky; top:54px; background:#0f0f0f; z-index:90; }
-        .chips-bar::-webkit-scrollbar { display:none; }
-        .chip { background:#222; border:none; color:#fff; padding:7px 14px; border-radius:8px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer; }
+        /* Category Filter Chips */
+        .category-bar { display:flex; gap:8px; padding:10px 16px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
+        .category-bar::-webkit-scrollbar { display:none; }
+        .chip { background:#222; color:#fff; border:none; padding:7px 14px; border-radius:18px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer; }
         .chip.active { background:#fff; color:#000; }
 
         /* Video Feed */
-        .feed-container { display:flex; flex-direction:column; gap:18px; }
+        .video-feed { display:flex; flex-direction:column; gap:20px; padding-top:6px; }
         .video-card { display:flex; flex-direction:column; cursor:pointer; }
-        .thumb-box { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
-        .thumb-box img { width:100%; height:100%; object-fit:cover; }
-        .duration-badge { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; }
+        .thumb-wrapper { width:100%; aspect-ratio:16/9; background:#222; position:relative; overflow:hidden; }
+        .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
+        .badge-time { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; }
 
-        .video-meta { display:flex; gap:12px; padding:12px 14px; }
-        .avatar-v { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg, #e50914, #7a0000); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; }
-        .meta-col { display:flex; flex-direction:column; gap:3px; flex:1; min-width:0; }
-        .v-title { font-size:14px; font-weight:600; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .v-sub { font-size:12px; color:#aaa; }
+        .details-wrapper { display:flex; gap:12px; padding:12px 16px 0; align-items:flex-start; }
+        .channel-avatar { width:38px; height:38px; border-radius:50%; background:#333; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+        .channel-avatar img { width:100%; height:100%; object-fit:cover; }
+        .meta-col { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
+        .video-title { font-size:14px; font-weight:700; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .video-sub-meta { font-size:12px; color:#aaa; }
 
-        /* Shorts Shelf */
-        .shorts-shelf { padding:14px 14px; border-top:1px solid #1c1c1c; border-bottom:1px solid #1c1c1c; display:flex; flex-direction:column; gap:12px; }
-        .shelf-title { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; }
-        .shelf-title svg { width:20px; height:20px; fill:#e50914; }
-        .shorts-row { display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; }
-        .shorts-row::-webkit-scrollbar { display:none; }
-        .short-thumb-card { width:140px; aspect-ratio:9/16; border-radius:10px; background:#222; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; }
-        .short-thumb-card img { width:100%; height:100%; object-fit:cover; }
-        .short-label { position:absolute; bottom:8px; left:8px; right:8px; font-size:11px; font-weight:700; line-height:1.2; text-shadow:0 1px 4px rgba(0,0,0,0.9); }
-
-        /* YouTube Standard Bottom Bar */
-        .bottom-nav-bar { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        /* Bottom Nav */
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
         .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
         .nav-btn.active { color:#fff; font-weight:700; }
         .nav-btn svg { width:22px; height:22px; fill:currentColor; }
-
-        .empty-placeholder { text-align:center; padding:70px 20px; color:#777; font-size:14px; }
     </style>
 
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <!-- Header With Realistic BTube Logo & Notification Bell -->
+    <!-- Header -->
     <header class="app-header">
-        <a href="index.html" class="brand-logo-wrap">
-            <div class="btube-badge">
-                <span>B</span>
+        <a href="index.html" class="logo-box">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
-            <div class="brand-text">B<span>Tube</span></div>
+            <span>BTube</span>
         </a>
-
-        <div class="header-icons-tray">
-            <!-- Cast Icon -->
-            <button class="hdr-icon-btn" title="Cast Screen" onclick="alert('Searching for BTube Cast Devices...')">
+        <div class="hdr-actions">
+            <button class="btn-hdr" onclick="alert('Cast to screen')">
                 <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </button>
-
-            <!-- Notification Bell Icon -->
-            <a href="../pages/notifications.html" class="hdr-icon-btn" title="Notifications">
+            <a href="../pages/notifications.html" class="btn-hdr">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-                <div class="notif-dot"></div>
             </a>
-
-            <!-- Search Icon -->
-            <a href="../pages/search.html" class="hdr-icon-btn" title="Search">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </a>
-
-            <!-- Profile Avatar -->
-            <a href="../pages/channel.html" style="text-decoration:none;">
-                <div class="ch-avatar-top">BT</div>
-            </a>
+            <button class="btn-hdr" onclick="alert('Search BTube')">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </button>
+            <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='../pages/profile.html'">
+                BT
+            </div>
         </div>
     </header>
 
     <!-- Filter Chips -->
-    <div class="chips-bar">
-        <button class="chip active" onclick="filterCategory('All', this)">All</button>
-        <button class="chip" onclick="filterCategory('Features', this)">BTube Features</button>
-        <button class="chip" onclick="filterCategory('Policy', this)">Policy & Guidelines</button>
-        <button class="chip" onclick="filterCategory('Chhattisgarhi', this)">Chhattisgarhi</button>
-        <button class="chip" onclick="filterCategory('Music', this)">Music</button>
-        <button class="chip" onclick="filterCategory('Vlogs', this)">Vlogs</button>
+    <div class="category-bar">
+        <button class="chip active">All</button>
+        <button class="chip">BTube Features</button>
+        <button class="chip">Policy & Guidelines</button>
+        <button class="chip">Music</button>
+        <button class="chip">Live</button>
     </div>
 
-    <!-- Feed Container -->
-    <main class="feed-container" id="feedContainer">
-        <div class="empty-placeholder">Connecting to Firestore Cloud...</div>
+    <!-- Video Feed Container (Instant Render) -->
+    <main class="video-feed" id="mainVideoFeed">
+        <!-- Videos will be injected here instantly -->
     </main>
 
-    <!-- Bottom Nav -->
-    <nav class="bottom-nav-bar">
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
         <a href="index.html" class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
         <a href="../pages/shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="../pages/upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="../pages/subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="../pages/profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
+        <a href="../pages/profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;" id="bottomNavAvatar">BT</div><span>You</span></a>
     </nav>
 
     <script>
-        let allVideos = [];
-        let allShorts = [];
+        // Fallback default videos (screen par kabhi bhi hang nahi hoga)
+        const DEFAULT_VIDEOS = [
+            {
+                id: "def_01",
+                title: "Welcome to BTube Platform - High Performance PWA Video Experience",
+                channel: "BTube Official",
+                avatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
+                thumb: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                duration: "04:15",
+                views: "1.2K views • 2 hours ago"
+            },
+            {
+                id: "def_02",
+                title: "Create and Manage Multiple Channels on BTube Official Guide",
+                channel: "BTube Creator Studio",
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200",
+                thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800",
+                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                duration: "03:30",
+                views: "3.5K views • 1 day ago"
+            }
+        ];
 
         window.addEventListener('DOMContentLoaded', async () => {
-            const feed = await window.BTubeAPI.getFeed('all');
-            allVideos = feed.filter(i => (i.type || 'video') === 'video');
-            allShorts = feed.filter(i => (i.type || 'video') === 'short');
+            // 1. Sync User Avatar immediately
+            syncUserHeader();
 
-            renderFeed(allVideos);
+            // 2. Render default videos instantly so screen is never blank
+            renderVideos(DEFAULT_VIDEOS);
+
+            // 3. Background fetch from Firestore if API client is available
+            if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
+                try {
+                    const dynamicFeed = await window.BTubeAPI.getFeed('video');
+                    if (dynamicFeed && dynamicFeed.length > 0) {
+                        renderVideos(dynamicFeed);
+                    }
+                } catch (e) {
+                    console.log('Using default feed offline:', e);
+                }
+            }
         });
 
-        function filterCategory(cat, el) {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
+        function syncUserHeader() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const topAv = document.getElementById('topNavAvatar');
+            const botAv = document.getElementById('bottomNavAvatar');
 
-            if (cat === 'All') {
-                renderFeed(allVideos);
-            } else {
-                const filtered = allVideos.filter(v => v.category === cat || (v.title && v.title.toLowerCase().includes(cat.toLowerCase())));
-                renderFeed(filtered);
+            if (authUser) {
+                const photo = authUser.photo || '';
+                const initial = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+
+                if (photo) {
+                    topAv.innerHTML = `<img src="${photo}">`;
+                    botAv.innerHTML = `<img src="${photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    topAv.innerText = initial;
+                    botAv.innerText = initial;
+                }
             }
         }
 
-        function renderFeed(videos) {
-            const container = document.getElementById('feedContainer');
-            container.innerHTML = '';
+        function renderVideos(items) {
+            const feed = document.getElementById('mainVideoFeed');
+            feed.innerHTML = '';
 
-            if (videos.length === 0 && allShorts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-placeholder">
-                        <h3 style="margin-bottom:8px;">BTube Channel par pehla official video daalein</h3>
-                        <p style="font-size:12px; margin-bottom:20px;">BTube Features aur Policy ki video upload karein!</p>
-                        <a href="../pages/upload.html" style="background:#e50914; color:#fff; padding:10px 22px; border-radius:20px; text-decoration:none; font-weight:700;">+ Upload Official Video</a>
-                    </div>
-                `;
-                return;
-            }
-
-            // Shorts Shelf
-            if (allShorts.length > 0) {
-                const shelf = document.createElement('div');
-                shelf.className = 'shorts-shelf';
-                shelf.innerHTML = `
-                    <div class="shelf-title">
-                        <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-                        <span>Shorts</span>
-                    </div>
-                    <div class="shorts-row" id="shortsRow"></div>
-                `;
-                container.appendChild(shelf);
-
-                const row = shelf.querySelector('#shortsRow');
-                allShorts.slice(0, 6).forEach(s => {
-                    const card = document.createElement('div');
-                    card.className = 'short-thumb-card';
-                    card.onclick = () => window.location.href = `../pages/shorts.html?id=${s.id}`;
-                    card.innerHTML = `
-                        <img src="${s.thumb || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'}">
-                        <div class="short-label">${s.title || s.name || 'BTube Short'}</div>
-                    `;
-                    row.appendChild(card);
-                });
-            }
-
-            // Long Videos
-            videos.forEach(v => {
-                const safeTitle = v.title || v.name || 'BTube Official Video';
-                const safeChannel = v.channel || 'BTube';
-                const card = document.createElement('div');
+            items.forEach(v => {
+                const card = document.createElement('article');
                 card.className = 'video-card';
-                card.onclick = () => window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                card.onclick = () => {
+                    window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                };
+
+                const avatarSrc = v.channelAvatar || v.avatar || '';
+                const channelInitial = (v.channel || 'BT').substring(0, 2).toUpperCase();
+
                 card.innerHTML = `
-                    <div class="thumb-box">
-                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
-                        <span class="duration-badge">${v.duration || '03:45'}</span>
+                    <div class="thumb-wrapper">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}" alt="${v.title}">
+                        <span class="badge-time">${v.duration || '03:45'}</span>
                     </div>
-                    <div class="video-meta">
-                        <div class="avatar-v">${safeChannel.substring(0,2).toUpperCase()}</div>
+                    <div class="details-wrapper">
+                        <div class="channel-avatar">
+                            ${avatarSrc ? `<img src="${avatarSrc}">` : channelInitial}
+                        </div>
                         <div class="meta-col">
-                            <div class="v-title">${safeTitle}</div>
-                            <div class="v-sub">${safeChannel} • ${v.views || 0} views • Cloud Stream</div>
+                            <h3 class="video-title">${v.title || 'Untitled Video'}</h3>
+                            <div class="video-sub-meta">${v.channel || 'BTube Official'} • ${v.views || '1.2K views'}</div>
                         </div>
                     </div>
                 `;
-                container.appendChild(card);
+                feed.appendChild(card);
             });
         }
     </script>
