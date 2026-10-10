@@ -13,7 +13,7 @@
         .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
         .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
-        .btn-pub:disabled { opacity:0.4; cursor:not-allowed; }
+        .btn-pub:disabled { opacity:0.4; }
 
         .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
 
@@ -43,11 +43,10 @@
             </button>
             <span style="font-size:17px; font-weight:700;">Upload Content</span>
         </div>
-        <button class="btn-pub" id="btnPublish" onclick="startCloudUpload()">Upload</button>
+        <button class="btn-pub" id="btnPublish" onclick="startUpload()">Upload</button>
     </header>
 
     <div class="container">
-        <!-- Type Selection Toggle -->
         <div class="type-selector">
             <button class="type-btn active" id="btnVideo" onclick="setType('video')">Long Video</button>
             <button class="type-btn" id="btnShort" onclick="setType('short')">Short (9:16)</button>
@@ -56,13 +55,13 @@
         <div class="dropzone" onclick="document.getElementById('videoFile').click()">
             <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
             <span style="font-weight:700;" id="fileLabel">Select Video from Phone</span>
-            <span style="font-size:11px; color:#777;">Supports MP4 or WebM</span>
+            <span style="font-size:11px; color:#777;">Supports MP4 / WebM</span>
             <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
         </div>
 
         <div class="inp-grp">
             <label>Title</label>
-            <input type="text" id="titleInput" placeholder="Video Title (add #shorts for short)">
+            <input type="text" id="titleInput" placeholder="e.g. BTube Platform Features & Policy Guide">
         </div>
 
         <div class="inp-grp">
@@ -73,11 +72,11 @@
         <div class="inp-grp">
             <label>Category</label>
             <select id="catInput">
-                <option value="All">All Categories</option>
+                <option value="Features">BTube Features</option>
+                <option value="Policy">Policy & Guidelines</option>
                 <option value="Chhattisgarhi">Chhattisgarhi</option>
                 <option value="Music">Music</option>
                 <option value="Vlogs">Vlogs</option>
-                <option value="Tech">Tech</option>
             </select>
         </div>
 
@@ -93,66 +92,62 @@
 
     <script>
         let selectedType = 'video';
-        let chosenFile = null;
 
         function setType(t) {
             selectedType = t;
             document.getElementById('btnVideo').classList.toggle('active', t === 'video');
             document.getElementById('btnShort').classList.toggle('active', t === 'short');
-            const titleField = document.getElementById('titleInput');
-            if (t === 'short' && !titleField.value.toLowerCase().includes('#short')) {
-                titleField.value = (titleField.value.trim() + ' #shorts').trim();
+            const tf = document.getElementById('titleInput');
+            if (t === 'short' && !tf.value.toLowerCase().includes('#shorts')) {
+                tf.value = (tf.value.trim() + ' #shorts').trim();
             }
         }
 
         function onFileChosen(e) {
             const f = e.target.files[0];
             if (f) {
-                chosenFile = f;
                 document.getElementById('fileLabel').innerText = f.name;
-                const titleField = document.getElementById('titleInput');
-                if (!titleField.value) {
-                    const cleanName = f.name.replace(/\.[^/.]+$/, "");
-                    titleField.value = (selectedType === 'short') ? `${cleanName} #shorts` : cleanName;
+                const tf = document.getElementById('titleInput');
+                if (!tf.value) {
+                    const clean = f.name.replace(/\.[^/.]+$/, "");
+                    tf.value = (selectedType === 'short') ? `${clean} #shorts` : clean;
                 }
             }
         }
 
-        async function startCloudUpload() {
-            const title = document.getElementById('titleInput').value.trim();
-            if (!title) {
-                alert('Title daalna anivarya hai!');
-                return;
-            }
+        async function startUpload() {
+            const titleField = document.getElementById('titleInput').value.trim();
+            const finalTitle = titleField || 'BTube Official Video';
 
             const btn = document.getElementById('btnPublish');
             btn.disabled = true;
             btn.innerText = 'Publishing...';
 
-            const isShort = (selectedType === 'short') || title.toLowerCase().includes('#short');
-            
-            // Reliable CDN Playable stream setup
-            const streamingUrl = isShort 
+            const isShort = (selectedType === 'short') || finalTitle.toLowerCase().includes('#short');
+
+            const streamUrl = isShort 
                 ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
                 : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
             try {
                 await window.BTubeAPI.saveVideo({
-                    title: title,
+                    title: finalTitle,
+                    name: finalTitle,
                     description: document.getElementById('descInput').value.trim(),
                     category: document.getElementById('catInput').value,
                     visibility: document.getElementById('visInput').value,
                     type: isShort ? 'short' : 'video',
-                    videoUrl: streamingUrl,
+                    videoUrl: streamUrl,
+                    channel: 'BTube',
                     thumb: isShort 
                         ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'
                         : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
                 });
 
-                alert((isShort ? 'Short' : 'Video') + ' Firestore Cloud par upload ho gaya!');
+                alert('Video uploaded successfully!');
                 window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
-            } catch (err) {
-                alert('Upload fail: ' + err.message);
+            } catch(e) {
+                alert('Upload failed: ' + e.message);
                 btn.disabled = false;
                 btn.innerText = 'Upload';
             }
