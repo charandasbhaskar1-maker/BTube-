@@ -1,5 +1,23 @@
+# FastAPI Core & ASGI Server
 fastapi>=0.110.0
-uvicorn>=0.28.0
+uvicorn[standard]>=0.28.0
+
+# Data Validation & Email Types
 pydantic>=2.6.0
 pydantic[email]>=2.6.0
 python-multipart>=0.0.9
+
+# Database & ORM
+sqlalchemy>=2.0.28
+psycopg2-binary>=2.9.9
+
+# Authentication, Passwords & JWT
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt==4.0.1
+
+# Google OAuth Token Verification
+google-auth>=2.28.0
+
+# Computer Vision & SafeShield (Optional frame analysis fallback)
+opencv-python-headless>=4.9.0.80
