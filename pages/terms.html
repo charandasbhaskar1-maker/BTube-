@@ -16,10 +16,14 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: #0f0f0f;
             color: #ffffff;
-            padding-bottom: 80px;
+            padding-bottom: 75px;
             overflow-x: hidden;
             line-height: 1.5;
         }
@@ -147,6 +151,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            scroll-margin-top: 110px;
         }
 
         .section-header-row {
@@ -289,6 +294,7 @@
             height: 100%;
             background: #2ecc71;
             border-radius: 4px;
+            transition: width 0.3s ease;
         }
 
         /* Dynamic Tier Notice */
@@ -334,12 +340,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -350,7 +356,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -360,31 +366,33 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="policy-header">
-        <a href="about.html" class="btn-back">
+        <button class="btn-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <span class="header-title">Terms & Policies</span>
     </header>
 
@@ -402,7 +410,7 @@
         <span class="hero-badge-tag">Official Governance</span>
         <h1 class="hero-heading">BTube Terms of Service</h1>
         <p class="hero-desc">BTube is a creator-first platform celebrating regional music, local culture, and high-standard media streaming. By using BTube, you agree to these legal conditions and creator guidelines.</p>
-        <span style="font-size:11px; color:#888; margin-top:2px;">Effective date: October 2026 • Version 2.4</span>
+        <span style="font-size:11px; color:#888; margin-top:2px;">Effective date: October 2026 • Production Version 2.4</span>
     </section>
 
     <!-- 4. POLICY SECTIONS -->
@@ -416,17 +424,17 @@
                 </div>
                 <h2 class="section-title-txt">BTube Monetization & Partner Policy</h2>
             </div>
-            <p class="section-para">BTube creators can earn through video advertisements, super-chats, and premium content memberships. The current qualification criteria for partner approval are:</p>
+            <p class="section-para">BTube creators can earn through video advertisements, Super Thanks, and premium content memberships. The current qualification criteria for partner approval are:</p>
 
             <div class="threshold-meter-box">
                 <!-- 1. Subscribers (200 Requirement) -->
                 <div>
                     <div class="threshold-row">
                         <span style="font-weight:600;">Subscribers</span>
-                        <span style="color:#2ecc71; font-weight:700;">200 Subscribers</span>
+                        <span style="color:#2ecc71; font-weight:700;" id="metricSubs">200 Subscribers</span>
                     </div>
                     <div class="meter-bar">
-                        <div class="meter-fill" style="width: 100%;"></div>
+                        <div class="meter-fill" id="barSubs" style="width: 100%;"></div>
                     </div>
                 </div>
 
@@ -434,10 +442,10 @@
                 <div>
                     <div class="threshold-row">
                         <span style="font-weight:600;">Public Watch Hours</span>
-                        <span style="color:#2ecc71; font-weight:700;">200 Watch Hours (घंटे)</span>
+                        <span style="color:#2ecc71; font-weight:700;" id="metricHours">200 Watch Hours (घंटे)</span>
                     </div>
                     <div class="meter-bar">
-                        <div class="meter-fill" style="width: 75%;"></div>
+                        <div class="meter-fill" id="barHours" style="width: 75%;"></div>
                     </div>
                 </div>
 
@@ -445,10 +453,10 @@
                 <div>
                     <div class="threshold-row">
                         <span style="font-weight:600;">Total Channel Views</span>
-                        <span style="color:#2ecc71; font-weight:700;">5,00,000 Views (5 लाख)</span>
+                        <span style="color:#2ecc71; font-weight:700;" id="metricViews">5,00,000 Views (5 लाख)</span>
                     </div>
                     <div class="meter-bar">
-                        <div class="meter-fill" style="width: 52%;"></div>
+                        <div class="meter-fill" id="barViews" style="width: 52%;"></div>
                     </div>
                 </div>
             </div>
@@ -456,7 +464,7 @@
             <!-- Future Scaling Notice -->
             <div class="dynamic-tier-badge">
                 <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/></svg>
-                <span><strong>Flexible Growth Tier:</strong> Initial regional creators ko promote karne ke liye yeh threshold rakha gaya hai. Jaise-jaise BTube platform grow aur popular hoga, administration is monetization threshold ko aage badha (upgrade) sakta hai.</span>
+                <span><strong>Flexible Growth Tier:</strong> Initial regional creators ko promote karne ke liye yeh threshold rakha gaya hai. Jaise-jaise BTube platform grow aur scale karega, administration is monetization threshold ko update kar sakta hai.</span>
             </div>
 
             <div class="policy-rules-list">
@@ -479,7 +487,7 @@
                 </div>
                 <h2 class="section-title-txt">Copyright Information & Fair Use</h2>
             </div>
-            <p class="section-para">Creators must only upload content that they have made or that they are authorized to use. This includes audio tracks, instruments, background songs, and recorded footage.</p>
+            <p class="section-para">Creators must only upload content that they have created or are explicitly authorized to distribute. This includes audio tracks, instruments, background songs, and recorded footage.</p>
 
             <div class="policy-rules-list">
                 <div class="rule-item">
@@ -552,7 +560,7 @@
 
     <!-- 5. FOOTER -->
     <footer class="policy-footer">
-        <span class="footer-note">© 2026 BTube Inc. All legal terms are legally binding under IT Rules of India.</span>
+        <span class="footer-note">© 2026 BTube. All legal terms are legally binding under IT Rules of India.</span>
         <span class="footer-note">Proudly built for regional creators 🇮🇳</span>
     </footer>
 
@@ -574,20 +582,35 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- SCRIPT LOGIC -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+
+            // Optional live channel progress sync
+            if (window.BTubeAPI && typeof window.BTubeAPI.getActiveChannel === 'function') {
+                try {
+                    const ch = await window.BTubeAPI.getActiveChannel();
+                    if (ch) {
+                        const subs = ch.subscribers || 0;
+                        const subPct = Math.min(100, Math.round((subs / 200) * 100));
+                        document.getElementById('metricSubs').innerText = `${subs} / 200 Subscribers`;
+                        document.getElementById('barSubs').style.width = `${subPct}%`;
+                    }
+                } catch(e) {}
             }
         });
 
