@@ -1,4 +1,4 @@
-// BTube Firebase Cloud Engine & State Manager
+// BTube Firebase Cloud Engine & Auth Manager
 const firebaseConfig = {
   apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
   authDomain: "btube-5fae0.firebaseapp.com",
@@ -8,74 +8,88 @@ const firebaseConfig = {
   appId: "1:1009386330534:web:357a0ad258678a54185767"
 };
 
-// Initialize Firebase SDK
 if (typeof firebase !== 'undefined' && !firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
 const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
+const auth = (typeof firebase !== 'undefined') ? firebase.auth() : null;
 
 window.BTubeAPI = {
-    // 1. Fetch Real Feed directly from Firestore
+    // 1. Current Logged-in User
+    getUser() {
+        if (!auth) return null;
+        return auth.currentUser || JSON.parse(localStorage.getItem('btube_user') || 'null');
+    },
+
+    // 2. Google One-Tap Sign In
+    async signInWithGoogle() {
+        if (!auth) return null;
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+            const res = await auth.signInWithPopup(provider);
+            const user = {
+                uid: res.user.uid,
+                name: res.user.displayName || 'BTube User',
+                email: res.user.email,
+                photo: res.user.photoURL || ''
+            };
+            localStorage.setItem('btube_user', JSON.stringify(user));
+            return user;
+        } catch(err) {
+            console.error('Google Sign-in failed:', err);
+            // Fallback Guest/Quick Prompt for testing
+            const fallbackName = prompt("Apna Naam daalein login ke liye:", "User");
+            if (fallbackName) {
+                const guestUser = { uid: 'u_' + Date.now(), name: fallbackName, email: '', photo: '' };
+                localStorage.setItem('btube_user', JSON.stringify(guestUser));
+                return guestUser;
+            }
+            return null;
+        }
+    },
+
+    // 3. Sign Out
+    async signOut() {
+        if (auth) await auth.signOut();
+        localStorage.removeItem('btube_user');
+        window.location.reload();
+    },
+
+    // 4. Feed & Single Video Fetch
     async getFeed(type = 'all') {
         if (!db) return [];
         try {
             const snap = await db.collection('videos').get();
             let items = [];
-            snap.forEach(doc => {
-                items.push({ id: doc.id, ...doc.data() });
-            });
-
-            // Cloud Server Timestamp Sorting
-            items.sort((a, b) => {
-                const tA = a.createdAt?.seconds || 0;
-                const tB = b.createdAt?.seconds || 0;
-                return tB - tA;
-            });
-
+            snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+            items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
             if (type === 'all') return items;
             return items.filter(item => (item.type || 'video').toLowerCase() === type.toLowerCase());
-        } catch (err) {
-            console.error('Firestore fetch failed:', err);
+        } catch(e) {
             return [];
         }
     },
 
-    // 2. Fetch Single Video By Doc ID
     async getVideoById(docId) {
         if (!db || !docId) return null;
-        try {
-            const doc = await db.collection('videos').doc(docId).get();
-            if (doc.exists) {
-                return { id: doc.id, ...doc.data() };
-            }
-            return null;
-        } catch (err) {
-            console.error('Error fetching doc:', err);
-            return null;
-        }
+        const doc = await db.collection('videos').doc(docId).get();
+        return doc.exists ? { id: doc.id, ...doc.data() } : null;
     },
 
-    // 3. Save New Real Video or Short to Firestore
+    // 5. Protected Upload: Sirf login hone par
     async saveVideo(videoData) {
-        if (!db) throw new Error('Firestore not initialized');
-        const docRef = await db.collection('videos').add({
-            title: videoData.title || 'Untitled Video',
-            description: videoData.description || '',
-            category: videoData.category || 'All',
-            type: videoData.type || 'video', // 'video' ya 'short'
-            videoUrl: videoData.videoUrl,
-            thumb: videoData.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
-            channel: videoData.channel || (localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar'),
-            views: 0,
-            visibility: videoData.visibility || 'Public',
-            duration: videoData.duration || (videoData.type === 'short' ? '0:30' : '03:45'),
+        const u = this.getUser();
+        if (!u) throw new Error("Video upload karne ke liye login zaroori hai!");
+        return await db.collection('videos').add({
+            ...videoData,
+            userId: u.uid,
+            channel: u.name,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        return docRef.id;
     },
 
-    // 4. View Counter Increment
+    // 6. View Counter
     async recordView(docId) {
         if (!db || !docId) return;
         try {
