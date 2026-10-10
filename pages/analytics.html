@@ -5,7 +5,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Analytics - Charandas Bhaskar</title>
+    <title>Analytics - BTube Studio</title>
 
     <style>
         * {
@@ -75,7 +75,7 @@
             cursor: pointer;
         }
 
-        /* 2. SUB TABS (Overview, Content, Audience) */
+        /* 2. SUB TABS */
         .analytics-tabs-bar {
             display: flex;
             align-items: center;
@@ -137,7 +137,6 @@
             color: #2ecc71;
         }
 
-        /* Slider Cards (Views, Watch time, Subs) */
         .metrics-cards-slider {
             display: flex;
             gap: 10px;
@@ -188,10 +187,9 @@
             gap: 2px;
         }
 
-        /* Chart Area (SVG Graph) */
         .analytics-chart-frame {
             width: 100%;
-            height: 130px;
+            height: 120px;
             position: relative;
             margin-top: 6px;
         }
@@ -256,16 +254,11 @@
             background: #3ea6ff;
             border-radius: 3px 3px 0 0;
             opacity: 0.7;
-            transition: height 0.3s;
-        }
-
-        .bar-slice:hover {
-            opacity: 1;
         }
 
         /* 5. TOP CONTENT LIST */
         .top-content-section {
-            margin: 0 16px;
+            margin: 0 16px 14px;
             background: #181818;
             border: 1px solid #262626;
             border-radius: 14px;
@@ -330,9 +323,16 @@
             color: #aaaaaa;
         }
 
-        /* 6. TRAFFIC SOURCES PROGRESS */
+        .empty-analytics {
+            padding: 24px 0;
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+        }
+
+        /* 6. TRAFFIC SOURCES */
         .traffic-source-box {
-            margin: 14px 16px;
+            margin: 0 16px 14px;
             background: #181818;
             border: 1px solid #262626;
             border-radius: 14px;
@@ -374,12 +374,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -390,7 +390,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -400,36 +400,37 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="analytics-header">
         <div class="header-left-wrap">
-            <a href="channel.html" class="btn-nav-back">
+            <button class="btn-nav-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title-txt">Analytics</span>
         </div>
 
-        <button class="header-range-pill" onclick="cycleDateRange(this)">Last 28 days ▾</button>
+        <button class="header-range-pill" id="rangeBtn" onclick="cycleDateRange()">Last 28 days ▾</button>
     </header>
 
     <!-- 2. SUB TABS -->
@@ -441,30 +442,28 @@
 
     <!-- 3. MAIN HERO METRICS -->
     <section class="metrics-hero-card">
-        <div class="summary-headline">
-            Your channel got <span>42,500 views</span> in the last 28 days
+        <div class="summary-headline" id="mainHeadline">
+            Your channel got <span id="headlineViews">0 views</span> in this period
         </div>
 
-        <!-- Metric Selection Pills -->
         <div class="metrics-cards-slider">
             <div class="single-metric-box active" onclick="selectMetric('views', this)">
                 <span class="metric-label-txt">Views</span>
-                <span class="metric-val-txt" id="displayMetricVal">42.5K</span>
-                <span class="metric-diff-badge">↑ 14% more</span>
+                <span class="metric-val-txt" id="displayViewsVal">0</span>
+                <span class="metric-diff-badge" id="viewsBadge">—</span>
             </div>
             <div class="single-metric-box" onclick="selectMetric('watchtime', this)">
                 <span class="metric-label-txt">Watch time</span>
-                <span class="metric-val-txt">1.8K hrs</span>
-                <span class="metric-diff-badge">↑ 8% more</span>
+                <span class="metric-val-txt" id="displayWatchTimeVal">0.0 hrs</span>
+                <span class="metric-diff-badge" id="watchBadge">—</span>
             </div>
             <div class="single-metric-box" onclick="selectMetric('subscribers', this)">
                 <span class="metric-label-txt">Subscribers</span>
-                <span class="metric-val-txt">+128</span>
-                <span class="metric-diff-badge">↑ 22% more</span>
+                <span class="metric-val-txt" id="displaySubsVal">0</span>
+                <span class="metric-diff-badge" id="subsBadge">—</span>
             </div>
         </div>
 
-        <!-- SVG Analytics Curve Graph -->
         <div class="analytics-chart-frame">
             <svg viewBox="0 0 320 120" preserveAspectRatio="none">
                 <defs>
@@ -473,12 +472,9 @@
                         <stop offset="100%" stop-color="#3ea6ff" stop-opacity="0.0"/>
                     </linearGradient>
                 </defs>
-                <!-- Filled gradient wave -->
-                <path d="M 0,95 Q 40,75 80,85 T 160,40 T 240,65 T 320,20 L 320,120 L 0,120 Z" fill="url(#chartGradient)"/>
-                <!-- Stroke line -->
-                <path d="M 0,95 Q 40,75 80,85 T 160,40 T 240,65 T 320,20" fill="none" stroke="#3ea6ff" stroke-width="3" stroke-linecap="round"/>
-                <!-- Current dot -->
-                <circle cx="320" cy="20" r="5" fill="#3ea6ff" stroke="#ffffff" stroke-width="2"/>
+                <path d="M 0,110 Q 80,105 160,95 T 320,60 L 320,120 L 0,120 Z" fill="url(#chartGradient)"/>
+                <path d="M 0,110 Q 80,105 160,95 T 320,60" fill="none" stroke="#3ea6ff" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="320" cy="60" r="5" fill="#3ea6ff" stroke="#ffffff" stroke-width="2"/>
             </svg>
         </div>
     </section>
@@ -490,59 +486,28 @@
             <div class="live-pulse-dot"></div>
         </div>
         <div style="font-size: 11px; color: #888;">Updating live • Last 48 hours</div>
-        <div class="realtime-count-big" id="realtimeLiveCount">1,842 views</div>
+        <div class="realtime-count-big" id="realtimeLiveCount">0 views</div>
 
-        <!-- Hourly Bars Visualizer -->
-        <div class="realtime-bars-graph">
+        <div class="realtime-bars-graph" id="realtimeBars">
+            <div class="bar-slice" style="height: 20%;"></div>
             <div class="bar-slice" style="height: 35%;"></div>
+            <div class="bar-slice" style="height: 15%;"></div>
             <div class="bar-slice" style="height: 50%;"></div>
-            <div class="bar-slice" style="height: 40%;"></div>
             <div class="bar-slice" style="height: 70%;"></div>
-            <div class="bar-slice" style="height: 90%;"></div>
+            <div class="bar-slice" style="height: 40%;"></div>
             <div class="bar-slice" style="height: 60%;"></div>
-            <div class="bar-slice" style="height: 85%;"></div>
-            <div class="bar-slice" style="height: 100%;"></div>
-            <div class="bar-slice" style="height: 75%;"></div>
-            <div class="bar-slice" style="height: 65%;"></div>
+            <div class="bar-slice" style="height: 80%;"></div>
+            <div class="bar-slice" style="height: 55%;"></div>
+            <div class="bar-slice" style="height: 45%;"></div>
         </div>
     </section>
 
     <!-- 5. TOP PERFORMING VIDEOS -->
     <section class="top-content-section">
         <span class="section-headline-title">Top content in this period</span>
-
-        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="top-video-row-item">
-            <div class="top-vid-thumb">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Video 1">
-            </div>
-            <div class="top-vid-info">
-                <span class="top-vid-title">Chhattisgarhi Panthi Song • Special Cultural</span>
-                <span class="top-vid-views">21.4K views • 2 weeks ago</span>
-            </div>
-            <span style="font-size: 12px; font-weight:700; color:#3ea6ff;">50.4%</span>
-        </a>
-
-        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Charandas+Bhaskar" class="top-video-row-item">
-            <div class="top-vid-thumb">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video 2">
-            </div>
-            <div class="top-vid-info">
-                <span class="top-vid-title">Typewriter Banjo with Pickups Guide</span>
-                <span class="top-vid-views">12.8K views • 1 month ago</span>
-            </div>
-            <span style="font-size: 12px; font-weight:700; color:#3ea6ff;">30.1%</span>
-        </a>
-
-        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=Charandas+Bhaskar" class="top-video-row-item">
-            <div class="top-vid-thumb">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Video 3">
-            </div>
-            <div class="top-vid-info">
-                <span class="top-vid-title">Morning Commute Village Lifestyle Vlog</span>
-                <span class="top-vid-views">8.3K views • 2 months ago</span>
-            </div>
-            <span style="font-size: 12px; font-weight:700; color:#3ea6ff;">19.5%</span>
-        </a>
+        <div id="topVideosContainer">
+            <div class="empty-analytics">Loading channel analytics...</div>
+        </div>
     </section>
 
     <!-- 6. TRAFFIC SOURCES BREAKDOWN -->
@@ -551,41 +516,31 @@
 
         <div class="source-bar-row">
             <div class="source-label-row">
-                <span>YouTube search</span>
-                <span>58.2%</span>
+                <span>BTube search</span>
+                <span id="pctSearch">62%</span>
             </div>
             <div class="source-meter-track">
-                <div class="source-meter-fill" style="width: 58.2%;"></div>
+                <div class="source-meter-fill" style="width: 62%;"></div>
             </div>
         </div>
 
         <div class="source-bar-row">
             <div class="source-label-row">
-                <span>Browse features / Home</span>
-                <span>24.5%</span>
+                <span>Home feed & browse</span>
+                <span id="pctBrowse">28%</span>
             </div>
             <div class="source-meter-track">
-                <div class="source-meter-fill" style="width: 24.5%; background:#2ecc71;"></div>
-            </div>
-        </div>
-
-        <div class="source-bar-row">
-            <div class="source-label-row">
-                <span>Suggested videos</span>
-                <span>12.1%</span>
-            </div>
-            <div class="source-meter-track">
-                <div class="source-meter-fill" style="width: 12.1%; background:#f39c12;"></div>
+                <div class="source-meter-fill" style="width: 28%; background:#2ecc71;"></div>
             </div>
         </div>
 
         <div class="source-bar-row">
             <div class="source-label-row">
                 <span>Direct or external</span>
-                <span>5.2%</span>
+                <span id="pctDirect">10%</span>
             </div>
             <div class="source-meter-track">
-                <div class="source-meter-fill" style="width: 5.2%; background:#9b59b6;"></div>
+                <div class="source-meter-fill" style="width: 10%; background:#f39c12;"></div>
             </div>
         </div>
     </section>
@@ -607,14 +562,80 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+        <a href="profile.html" class="nav-tab-item">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="botNavAvatar">BT</div>
             <span>You</span>
         </a>
     </nav>
 
-    <!-- SCRIPT LOGIC -->
     <script>
+        let myVideos = [];
+        let totalViews = 0;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const activeCh = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
+
+            // Sync Nav Avatar
+            const botAv = document.getElementById('botNavAvatar');
+            if (activeCh?.avatar || authUser?.photo) {
+                botAv.innerHTML = `<img src="${activeCh?.avatar || authUser?.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+            } else {
+                botAv.innerText = (activeCh?.name || authUser?.name || 'BT').substring(0, 2).toUpperCase();
+            }
+
+            // Fetch Real Videos
+            if (window.BTubeAPI) {
+                const allItems = await window.BTubeAPI.getFeed('all');
+                myVideos = allItems.filter(v => v.channelId === activeCh?.id || v.channel === activeCh?.name || v.userId === authUser?.uid);
+            }
+
+            // Real Metrics Computation
+            totalViews = myVideos.reduce((acc, v) => acc + (parseInt(v.views) || 0), 0);
+            const totalSubs = activeCh?.subscribers || 0;
+            const approxHours = (totalViews * 2.5 / 60).toFixed(1);
+
+            document.getElementById('headlineViews').innerText = `${totalViews.toLocaleString()} views`;
+            document.getElementById('displayViewsVal').innerText = totalViews > 1000 ? (totalViews/1000).toFixed(1) + 'K' : totalViews;
+            document.getElementById('displayWatchTimeVal').innerText = `${approxHours} hrs`;
+            document.getElementById('displaySubsVal').innerText = `+${totalSubs}`;
+            document.getElementById('realtimeLiveCount').innerText = `${totalViews} views`;
+
+            renderTopVideos();
+        });
+
+        function renderTopVideos() {
+            const container = document.getElementById('topVideosContainer');
+            container.innerHTML = '';
+
+            if (myVideos.length === 0) {
+                container.innerHTML = `<div class="empty-analytics">No videos uploaded yet. Upload a video to see analytics!</div>`;
+                return;
+            }
+
+            const sorted = [...myVideos].sort((a, b) => (parseInt(b.views) || 0) - (parseInt(a.views) || 0));
+
+            sorted.slice(0, 5).forEach(v => {
+                const vViews = parseInt(v.views) || 0;
+                const pct = totalViews > 0 ? Math.round((vViews / totalViews) * 100) : 0;
+
+                const row = document.createElement('a');
+                row.className = 'top-video-row-item';
+                row.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                row.innerHTML = `
+                    <div class="top-vid-thumb">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300'}">
+                    </div>
+                    <div class="top-vid-info">
+                        <span class="top-vid-title">${v.title || 'Untitled'}</span>
+                        <span class="top-vid-views">${vViews} views • ${v.type || 'video'}</span>
+                    </div>
+                    <span style="font-size: 12px; font-weight:700; color:#3ea6ff;">${pct}%</span>
+                `;
+                container.appendChild(row);
+            });
+        }
+
         function switchAnalyticsTab(tab, btn) {
             document.querySelectorAll('.an-tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -626,19 +647,11 @@
         }
 
         const ranges = ['Last 7 days ▾', 'Last 28 days ▾', 'Last 90 days ▾', 'Lifetime ▾'];
-        let rangeIndex = 1;
-        function cycleDateRange(btn) {
-            rangeIndex = (rangeIndex + 1) % ranges.length;
-            btn.innerText = ranges[rangeIndex];
+        let rangeIdx = 1;
+        function cycleDateRange() {
+            rangeIdx = (rangeIdx + 1) % ranges.length;
+            document.getElementById('rangeBtn').innerText = ranges[rangeIdx];
         }
-
-        // Live meter animation tick
-        setInterval(() => {
-            const el = document.getElementById('realtimeLiveCount');
-            const current = parseInt(el.innerText.replace(/[^0-9]/g, ''));
-            const randomAdd = Math.floor(Math.random() * 3);
-            el.innerText = (current + randomAdd).toLocaleString() + ' views';
-        }, 4000);
     </script>
 </body>
 </html>
