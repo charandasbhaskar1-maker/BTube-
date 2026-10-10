@@ -2,22 +2,23 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Liked videos - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
         .top-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1c1c1c; }
         .hdr-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
 
         .banner-hero { padding:16px; background:linear-gradient(180deg, #1c1c1c 0%, #0f0f0f 100%); display:flex; flex-direction:column; gap:12px; }
         .hero-thumb { width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#222; position:relative; }
         .hero-thumb img { width:100%; height:100%; object-fit:cover; }
-        .hero-icon-over { position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; }
+        .hero-icon-over { position:absolute; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; }
         .hero-icon-over svg { width:48px; height:48px; fill:#fff; }
 
         .hero-title { font-size:20px; font-weight:800; }
@@ -30,7 +31,8 @@
         .btn-shuffle svg { width:18px; height:18px; fill:#fff; }
 
         .video-feed { display:flex; flex-direction:column; padding:8px 0; }
-        .video-row { display:flex; gap:12px; padding:12px 16px; border-bottom:1px solid #141414; cursor:pointer; align-items:center; }
+        .video-row { display:flex; gap:12px; padding:12px 16px; border-bottom:1px solid #141414; cursor:pointer; align-items:center; justify-content:space-between; }
+        .row-main-wrap { display:flex; gap:12px; flex:1; min-width:0; align-items:center; }
         .v-thumb { width:120px; height:68px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
         .v-thumb img { width:100%; height:100%; object-fit:cover; }
         .v-dur { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.8); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
@@ -39,7 +41,11 @@
         .v-title { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .v-sub { font-size:11px; color:#888; }
 
-        .empty-box { text-align:center; padding:50px 20px; color:#777; font-size:13px; }
+        .btn-more-card { background:none; border:none; color:#888; cursor:pointer; padding:6px; display:flex; align-items:center; }
+        .btn-more-card svg { width:18px; height:18px; fill:currentColor; }
+
+        .empty-box { text-align:center; padding:60px 20px; color:#777; font-size:13px; line-height:1.5; }
+        .btn-browse { display:inline-block; margin-top:14px; background:#e50914; color:#fff; padding:8px 20px; border-radius:20px; text-decoration:none; font-weight:700; font-size:13px; }
 
         .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
         .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
@@ -50,6 +56,7 @@
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
@@ -65,7 +72,7 @@
 
     <div class="banner-hero">
         <div class="hero-thumb">
-            <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+            <img id="heroCoverImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800">
             <div class="hero-icon-over">
                 <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
             </div>
@@ -74,59 +81,108 @@
         <div class="hero-sub" id="likedCount">0 videos • Auto • Private</div>
         <div class="action-btns">
             <button class="btn-play-all" onclick="playAll()"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Play all</button>
-            <button class="btn-shuffle"><svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg> Shuffle</button>
+            <button class="btn-shuffle" onclick="shufflePlay()"><svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg> Shuffle</button>
         </div>
     </div>
 
-    <div class="video-feed" id="likedList">
-        <div class="empty-box">No liked videos yet. Tap 👍 on any video to add it here!</div>
-    </div>
+    <div class="video-feed" id="likedList"></div>
 
     <nav class="bottom-nav">
         <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
         <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div><span>You</span></a>
     </nav>
 
     <script>
         let likedItems = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
+            syncNavAvatar();
+            renderLikedFeed();
+        });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function renderLikedFeed() {
             likedItems = JSON.parse(localStorage.getItem('btube_liked_ids') || '[]');
             const container = document.getElementById('likedList');
+            const coverImg = document.getElementById('heroCoverImg');
+
             document.getElementById('likedCount').innerText = `${likedItems.length} videos • Auto • Private`;
 
             if (likedItems.length === 0) {
-                container.innerHTML = `<div class="empty-box">No liked videos yet.<br><br>Kisi bhi video par 👍 Like dabayein aur wo yahan add ho jayegi!</div>`;
+                coverImg.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800";
+                container.innerHTML = `
+                    <div class="empty-box">
+                        <p>No liked videos yet.<br>Videos you like will show up here automatically.</p>
+                        <a href="../frontend/index.html" class="btn-browse">Explore videos</a>
+                    </div>
+                `;
                 return;
             }
 
+            // Set top cover to latest liked video's thumbnail
+            coverImg.src = likedItems[0].thumb || "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800";
+
             container.innerHTML = '';
-            likedItems.forEach(item => {
+            likedItems.forEach((item, idx) => {
                 const row = document.createElement('div');
                 row.className = 'video-row';
-                row.onclick = () => window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl || '')}`;
                 row.innerHTML = `
-                    <div class="v-thumb">
-                        <img src="${item.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
-                        <span class="v-dur">${item.duration || '03:45'}</span>
+                    <div class="row-main-wrap" onclick="playVideo('${item.id}', '${encodeURIComponent(item.videoUrl || '')}')">
+                        <div class="v-thumb">
+                            <img src="${item.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
+                            <span class="v-dur">${item.duration || '03:45'}</span>
+                        </div>
+                        <div class="v-info">
+                            <div class="v-title">${item.title || 'Liked Video'}</div>
+                            <div class="v-sub">${item.channel || 'BTube Creator'} • Liked</div>
+                        </div>
                     </div>
-                    <div class="v-info">
-                        <div class="v-title">${item.title || 'BTube Video'}</div>
-                        <div class="v-sub">${item.channel || 'BTube Official'} • Liked</div>
-                    </div>
+                    <button class="btn-more-card" onclick="removeLikedVideo(${idx})">
+                        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    </button>
                 `;
                 container.appendChild(row);
             });
-        });
+        }
+
+        function playVideo(id, videoUrl) {
+            window.location.href = `watch.html?id=${id}&videoUrl=${videoUrl}`;
+        }
+
+        function removeLikedVideo(idx) {
+            likedItems.splice(idx, 1);
+            localStorage.setItem('btube_liked_ids', JSON.stringify(likedItems));
+            renderLikedFeed();
+        }
 
         function playAll() {
             if (likedItems.length > 0) {
-                window.location.href = `watch.html?id=${likedItems[0].id}&videoUrl=${encodeURIComponent(likedItems[0].videoUrl || '')}`;
+                playVideo(likedItems[0].id, encodeURIComponent(likedItems[0].videoUrl || ''));
             } else {
-                alert('Pehle kisi video ko Like karein!');
+                alert('No videos to play.');
+            }
+        }
+
+        function shufflePlay() {
+            if (likedItems.length > 0) {
+                const randomIdx = Math.floor(Math.random() * likedItems.length);
+                playVideo(likedItems[randomIdx].id, encodeURIComponent(likedItems[randomIdx].videoUrl || ''));
+            } else {
+                alert('No videos to shuffle.');
             }
         }
     </script>
