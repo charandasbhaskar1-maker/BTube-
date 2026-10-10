@@ -1,21 +1,42 @@
-// BTube PWA Service Worker (Cache-Busting & Cloud Stream Passthrough)
-const CACHE_NAME = 'btube-live-v10';
+/**
+ * BTube PWA Service Worker (v11)
+ * Features:
+ * - App-Shell Precaching (Offline UI Fallback)
+ * - Video Stream Passthrough (Prevents HTTP 206 Range Errors)
+ * - Safe Bypass for FastAPI Backend, Cloud Storage & Firebase
+ * - Immediate Lifecycle Takeover (skipWaiting + clients.claim)
+ */
 
-// Install Event: Purane sabhi workers ko turant replace karein
+const CACHE_NAME = 'btube-live-v11';
+
+// Static Shell Assets for Instant App Launch
+const APP_SHELL_ASSETS = [
+    '/',
+    '/index.html',
+    '/assets/css/global.css',
+    '/assets/js/api-client.js',
+    '/manifest.json'
+];
+
+// 1. Install Event: Cache essential UI assets & activate immediately
 self.addEventListener('install', (event) => {
-    console.log('[ServiceWorker] Installing new version:', CACHE_NAME);
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(APP_SHELL_ASSETS).catch((err) => {
+                console.warn('[ServiceWorker] Shell precache partial skip:', err);
+            });
+        })
+    );
     self.skipWaiting();
 });
 
-// Activate Event: Purana saara demo cache turant delete karein
+// 2. Activate Event: Wipe stale caches and claim all clients
 self.addEventListener('activate', (event) => {
-    console.log('[ServiceWorker] Activating & wiping old stale cache...');
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cache) => {
                     if (cache !== CACHE_NAME) {
-                        console.log('[ServiceWorker] Deleting old cache:', cache);
                         return caches.delete(cache);
                     }
                 })
@@ -26,30 +47,63 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Fetch Event: Network-First Strategy
-// Firebase calls, audio/video streams, aur cloud data ko bina roke seedha live network se chalayein
+// 3. Fetch Event: Media-aware streaming & Network-First Strategy
 self.addEventListener('fetch', (event) => {
-    const requestUrl = new URL(event.request.url);
+    const request = event.request;
+    const requestUrl = new URL(request.url);
 
-    // 1. Firebase API, Firestore, Google APIs, aur Storage streams ko bypass karein (No Caching)
+    // BYPASS 1: Non-GET requests (POST uploads, auth, Super Thanks ledger)
+    if (request.method !== 'GET') {
+        return;
+    }
+
+    // BYPASS 2: Video/Audio streaming & Range requests (Prevents HTTP 206 Cache exceptions)
     if (
+        request.headers.get('range') ||
+        requestUrl.pathname.endsWith('.mp4') ||
+        requestUrl.pathname.endsWith('.webm') ||
+        requestUrl.pathname.endsWith('.m4a') ||
+        requestUrl.pathname.includes('/stream')
+    ) {
+        return; // Direct network browser passthrough
+    }
+
+    // BYPASS 3: Backend API routes & External Cloud Services
+    if (
+        requestUrl.pathname.startsWith('/api/') ||
+        requestUrl.pathname.startsWith('/uploads/') ||
         requestUrl.hostname.includes('firebase') ||
         requestUrl.hostname.includes('googleapis.com') ||
         requestUrl.hostname.includes('firestore') ||
-        event.request.url.includes('.mp4') ||
-        event.request.url.includes('.webm')
+        requestUrl.hostname.includes('onrender.com')
     ) {
-        return; // Direct network stream
+        return; // Direct live network fetch
     }
 
-    // 2. Normal Web Pages & Assets: Pehle fresh network se layein, fail hone par hi cache dekhein
+    // APP ASSETS: Network-First with Cache Fallback
     event.respondWith(
-        fetch(event.request)
+        fetch(request)
             .then((networkResponse) => {
+                // Cache valid HTTP 200 responses only
+                if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(request, responseClone);
+                    });
+                }
                 return networkResponse;
             })
             .catch(() => {
-                return caches.match(event.request);
+                // Fallback to cache when offline
+                return caches.match(request).then((cachedResponse) => {
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    // Offline landing fallback
+                    if (request.mode === 'navigate') {
+                        return caches.match('/index.html');
+                    }
+                });
             })
     );
 });
