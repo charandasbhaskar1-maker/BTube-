@@ -146,6 +146,7 @@
             color: #ffffff;
             transition: background 0.15s;
             position: relative;
+            cursor: pointer;
         }
 
         .history-card-row:active {
@@ -184,7 +185,7 @@
             bottom: 0;
             left: 0;
             height: 3px;
-            background: #ff0000;
+            background: #e50914;
         }
 
         .history-details-col {
@@ -256,7 +257,18 @@
             line-height: 1.4;
         }
 
-        /* 6. BOTTOM DRAWERS (Options & Settings) */
+        .btn-explore {
+            margin-top: 6px;
+            background: #e50914;
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* 6. BOTTOM DRAWERS */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -356,12 +368,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -372,7 +384,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -382,32 +394,33 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="history-header">
         <div class="header-left">
-            <a href="profile.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">History</span>
         </div>
 
@@ -430,73 +443,14 @@
     </div>
 
     <!-- 3. TIMELINE FEED -->
-    <main class="history-feed-list" id="historyFeed">
-
-        <div class="timeline-section-title" id="todayLabel">Today</div>
-
-        <!-- Video 1 -->
-        <div class="history-card-row" id="h-item-1" data-title="Chhattisgarhi Panthi Song Special Cultural 2026 Charandas Bhaskar">
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="history-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
-                <span class="duration-badge">05:42</span>
-                <div class="watch-progress-line" style="width: 75%;"></div>
-            </a>
-            <div class="history-details-col">
-                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="history-video-title" style="text-decoration:none; color:#fff;">
-                    Chhattisgarhi Panthi Song • Special Cultural Video 2026
-                </a>
-                <span class="history-sub-meta">Charandas Bhaskar • 210K views</span>
-            </div>
-            <button class="btn-more-card" onclick="openCardDrawer('h-item-1', 'Chhattisgarhi Panthi Song')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <!-- Video 2 -->
-        <div class="history-card-row" id="h-item-2" data-title="Typewriter Banjo with Magnetic Pickups Full Making Guide Dhun AI">
-            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="history-thumb-box">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
-                <span class="duration-badge">14:10</span>
-                <div class="watch-progress-line" style="width: 40%;"></div>
-            </a>
-            <div class="history-details-col">
-                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="history-video-title" style="text-decoration:none; color:#fff;">
-                    Typewriter Banjo with Magnetic Pickups Full Making Guide
-                </a>
-                <span class="history-sub-meta">Dhun AI • 45K views</span>
-            </div>
-            <button class="btn-more-card" onclick="openCardDrawer('h-item-2', 'Typewriter Banjo Guide')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <div class="timeline-section-title" id="yesterdayLabel">Yesterday</div>
-
-        <!-- Video 3 -->
-        <div class="history-card-row" id="h-item-3" data-title="Morning Commute Village Lifestyle Daily Vlog The Bhaskar Vlog">
-            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="history-thumb-box">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
-                <span class="duration-badge">06:25</span>
-                <div class="watch-progress-line" style="width: 90%;"></div>
-            </a>
-            <div class="history-details-col">
-                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="history-video-title" style="text-decoration:none; color:#fff;">
-                    Morning Commute & Village Lifestyle Daily Vlog #42
-                </a>
-                <span class="history-sub-meta">The Bhaskar Vlog • 8.4K views</span>
-            </div>
-            <button class="btn-more-card" onclick="openCardDrawer('h-item-3', 'Morning Commute Vlog')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-    </main>
+    <main class="history-feed-list" id="historyFeed"></main>
 
     <!-- 4. EMPTY HISTORY STATE -->
     <div class="empty-history-box" id="emptyState">
         <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
         <span class="empty-title">This list has no videos</span>
         <span class="empty-sub">Videos that you watch on BTube will show up here.</span>
+        <a href="../frontend/index.html" class="btn-explore">Explore videos</a>
     </div>
 
     <!-- 5. DRAWER: SINGLE ITEM OPTIONS -->
@@ -536,10 +490,6 @@
                 <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                 <span id="pauseHistoryTxt">Pause watch history</span>
             </button>
-            <a href="settings.html" class="drawer-row-btn">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span>Manage all history</span>
-            </a>
         </div>
     </div>
 
@@ -563,32 +513,127 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- INTERACTION SCRIPT -->
     <script>
-        let currentActiveItemId = null;
+        let currentActiveItem = null;
         let isHistoryPaused = false;
+        let historyData = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            syncNavAvatar();
+            isHistoryPaused = localStorage.getItem('btube_pause_history') === 'true';
+            updatePauseBtnText();
+            loadHistoryFeed();
         });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
 
         function showToast(msg) {
             const t = document.getElementById('histToast');
             t.innerText = msg;
             t.style.display = 'block';
             setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function getHistoryList() {
+            return JSON.parse(localStorage.getItem('btube_watch_history') || '[]');
+        }
+
+        function loadHistoryFeed() {
+            historyData = getHistoryList();
+            renderHistoryItems(historyData);
+        }
+
+        function renderHistoryItems(items) {
+            const container = document.getElementById('historyFeed');
+            const empty = document.getElementById('emptyState');
+            container.innerHTML = '';
+
+            if (!items || items.length === 0) {
+                container.style.display = 'none';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            container.style.display = 'flex';
+            empty.style.display = 'none';
+
+            // Group by date (Today, Earlier)
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+
+            const todayItems = [];
+            const earlierItems = [];
+
+            items.forEach(item => {
+                const age = now - (item.timestamp || now);
+                if (age < oneDay) {
+                    todayItems.push(item);
+                } else {
+                    earlierItems.push(item);
+                }
+            });
+
+            if (todayItems.length > 0) {
+                const lbl = document.createElement('div');
+                lbl.className = 'timeline-section-title';
+                lbl.innerText = 'Today';
+                container.appendChild(lbl);
+                todayItems.forEach(v => container.appendChild(createHistoryCard(v)));
+            }
+
+            if (earlierItems.length > 0) {
+                const lbl = document.createElement('div');
+                lbl.className = 'timeline-section-title';
+                lbl.innerText = 'Earlier';
+                container.appendChild(lbl);
+                earlierItems.forEach(v => container.appendChild(createHistoryCard(v)));
+            }
+        }
+
+        function createHistoryCard(v) {
+            const row = document.createElement('div');
+            row.className = 'history-card-row';
+            row.setAttribute('data-id', v.id);
+            row.setAttribute('data-title', (v.title || '').toLowerCase());
+
+            const progressPct = v.progressPct || Math.floor(Math.random() * 40 + 40);
+
+            row.innerHTML = `
+                <div class="history-thumb-box" onclick="watchVideo('${v.id}', '${encodeURIComponent(v.videoUrl || '')}')">
+                    <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400'}" alt="${v.title}">
+                    <span class="duration-badge">${v.duration || '03:45'}</span>
+                    <div class="watch-progress-line" style="width: ${progressPct}%;"></div>
+                </div>
+                <div class="history-details-col" onclick="watchVideo('${v.id}', '${encodeURIComponent(v.videoUrl || '')}')">
+                    <div class="history-video-title">${v.title || 'Watched Video'}</div>
+                    <span class="history-sub-meta">${v.channel || 'BTube Creator'} • ${v.views || 0} views</span>
+                </div>
+                <button class="btn-more-card" onclick="event.stopPropagation(); openCardDrawer('${v.id}', '${encodeURIComponent(v.title || '')}')">
+                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                </button>
+            `;
+            return row;
+        }
+
+        function watchVideo(id, encUrl) {
+            window.location.href = `watch.html?id=${id}&videoUrl=${encUrl}`;
         }
 
         function toggleSearchRow() {
@@ -601,33 +646,13 @@
 
         function filterHistory(query) {
             const q = query.toLowerCase().trim();
-            const items = document.querySelectorAll('.history-card-row');
-            let visibleCount = 0;
-
-            items.forEach(item => {
-                const title = item.getAttribute('data-title').toLowerCase();
-                if (title.includes(q)) {
-                    item.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            const todayLabel = document.getElementById('todayLabel');
-            const yesterdayLabel = document.getElementById('yesterdayLabel');
-            if (q.length > 0) {
-                if (todayLabel) todayLabel.style.display = 'none';
-                if (yesterdayLabel) yesterdayLabel.style.display = 'none';
-            } else {
-                if (todayLabel) todayLabel.style.display = 'block';
-                if (yesterdayLabel) yesterdayLabel.style.display = 'block';
-            }
+            const filtered = historyData.filter(v => (v.title || '').toLowerCase().includes(q));
+            renderHistoryItems(filtered);
         }
 
         function openCardDrawer(itemId, title) {
-            currentActiveItemId = itemId;
-            document.getElementById('itemDrawerTitle').innerText = title;
+            currentActiveItem = itemId;
+            document.getElementById('itemDrawerTitle').innerText = decodeURIComponent(title);
             document.getElementById('itemDrawer').classList.add('open');
         }
 
@@ -644,16 +669,25 @@
         }
 
         function removeFromHistory() {
-            if (currentActiveItemId) {
-                const target = document.getElementById(currentActiveItemId);
-                if (target) target.remove();
+            if (currentActiveItem) {
+                let list = getHistoryList();
+                list = list.filter(v => v.id !== currentActiveItem);
+                localStorage.setItem('btube_watch_history', JSON.stringify(list));
                 showToast('Removed from watch history');
-                checkIfEmpty();
+                loadHistoryFeed();
             }
             closeDrawer('itemDrawer');
         }
 
         function saveToWatchLater() {
+            if (currentActiveItem) {
+                let wl = JSON.parse(localStorage.getItem('btube_watch_later') || '[]');
+                const item = historyData.find(v => v.id === currentActiveItem);
+                if (item && !wl.some(w => w.id === item.id)) {
+                    wl.unshift(item);
+                    localStorage.setItem('btube_watch_later', JSON.stringify(wl));
+                }
+            }
             showToast('Saved to Watch later');
             closeDrawer('itemDrawer');
         }
@@ -661,33 +695,32 @@
         function shareHistoryVideo() {
             closeDrawer('itemDrawer');
             if (navigator.share) {
-                navigator.share({ title: 'BTube Video', url: window.location.origin + '/pages/watch.html' }).catch(() => {});
+                navigator.share({ title: 'BTube Video', url: window.location.origin + '/pages/watch.html?id=' + currentActiveItem }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(window.location.origin + '/pages/watch.html');
+                navigator.clipboard.writeText(window.location.origin + '/pages/watch.html?id=' + currentActiveItem);
                 showToast('Link copied to clipboard');
             }
         }
 
         function clearAllHistory() {
-            document.getElementById('historyFeed').style.display = 'none';
-            document.getElementById('emptyState').style.display = 'flex';
+            localStorage.removeItem('btube_watch_history');
             closeDrawer('historyControlsDrawer');
             showToast('Watch history cleared');
+            loadHistoryFeed();
         }
 
         function togglePauseHistory() {
             isHistoryPaused = !isHistoryPaused;
-            const txt = document.getElementById('pauseHistoryTxt');
-            txt.innerText = isHistoryPaused ? 'Resume watch history' : 'Pause watch history';
+            localStorage.setItem('btube_pause_history', isHistoryPaused);
+            updatePauseBtnText();
             showToast(isHistoryPaused ? 'Watch history paused' : 'Watch history resumed');
             closeDrawer('historyControlsDrawer');
         }
 
-        function checkIfEmpty() {
-            const remaining = document.querySelectorAll('.history-card-row');
-            if (remaining.length === 0) {
-                document.getElementById('historyFeed').style.display = 'none';
-                document.getElementById('emptyState').style.display = 'flex';
+        function updatePauseBtnText() {
+            const txt = document.getElementById('pauseHistoryTxt');
+            if (txt) {
+                txt.innerText = isHistoryPaused ? 'Resume watch history' : 'Pause watch history';
             }
         }
     </script>
