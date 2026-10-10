@@ -2,7 +2,8 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>You - BTube</title>
     <style>
@@ -10,7 +11,7 @@
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
         /* Top Header Icons */
-        .you-header { height:52px; display:flex; align-items:center; justify-content:flex-end; gap:18px; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; }
+        .you-header { height:52px; display:flex; align-items:center; justify-content:flex-end; gap:18px; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid rgba(255,255,255,0.05); }
         .hdr-icon { background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; text-decoration:none; cursor:pointer; }
         .hdr-icon svg { width:22px; height:22px; fill:#fff; }
 
@@ -62,7 +63,7 @@
         .acc-left svg { width:22px; height:22px; fill:#fff; }
         .badge-count { background:#222; color:#aaa; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700; }
 
-        /* YOUTUBE STYLE ACCOUNTS SWITCH SHEET */
+        /* YOUTUBE MULTI-CHANNEL SWITCH SHEET */
         .sheet-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:4000; display:none; align-items:flex-end; }
         .sheet-backdrop.active { display:flex; }
         .accounts-sheet { width:100%; background:#212121; border-top-left-radius:16px; border-top-right-radius:16px; padding:14px 0 24px; display:flex; flex-direction:column; animation:slideUp 0.2s ease-out; max-height:80vh; }
@@ -115,9 +116,9 @@
 
     <!-- Header Icons -->
     <header class="you-header">
-        <button class="hdr-icon" onclick="alert('Searching for Cast screens...')">
+        <a href="connect-device.html" class="hdr-icon">
             <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-        </button>
+        </a>
         <a href="notifications.html" class="hdr-icon">
             <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </a>
@@ -155,12 +156,12 @@
     </div>
 
     <!-- YouTube Studio Banner -->
-    <a href="your-videos.html" class="studio-card">
+    <a href="manage-channel.html" class="studio-card">
         <div class="studio-left">
             <div class="studio-logo">BT</div>
             <div class="studio-text">
                 <span class="studio-title">BTube Studio</span>
-                <span class="studio-sub">Manage your active channel videos</span>
+                <span class="studio-sub">Manage your active channel videos & analytics</span>
             </div>
         </div>
         <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
@@ -183,22 +184,22 @@
             <span class="section-title">Playlists</span>
             <a href="playlists.html" class="btn-view-all">View all</a>
         </div>
-        <div class="carousel-row">
+        <div class="carousel-row" id="playlistsRow">
             <div class="h-video-card" onclick="window.location.href='liked-videos.html'">
                 <div class="h-thumb-box">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600">
+                    <img id="likedPlThumb" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600">
                     <span class="h-duration">Playlist</span>
                 </div>
                 <div class="h-title">Liked videos</div>
-                <div class="h-meta">Auto playlist</div>
+                <div class="h-meta" id="likedPlMeta">Auto playlist</div>
             </div>
             <div class="h-video-card" onclick="window.location.href='watch-later.html'">
                 <div class="h-thumb-box">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+                    <img id="watchLaterPlThumb" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
                     <span class="h-duration">Playlist</span>
                 </div>
                 <div class="h-title">Watch later</div>
-                <div class="h-meta">Private</div>
+                <div class="h-meta" id="watchLaterPlMeta">Private</div>
             </div>
         </div>
     </div>
@@ -218,7 +219,7 @@
                 <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                 <span>Downloads</span>
             </div>
-            <span class="badge-count">Offline</span>
+            <span class="badge-count" id="downloadBadge">Offline</span>
         </a>
 
         <!-- Premium Link -->
@@ -230,7 +231,7 @@
                 <span>Get BTube Premium</span>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
-                <span style="background:#e50914; color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; letter-spacing:0.5px;">PREMIUM</span>
+                <span id="premStatusBadge" style="background:#e50914; color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; letter-spacing:0.5px;">PREMIUM</span>
                 <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
             </div>
         </a>
@@ -258,9 +259,7 @@
             <div class="sheet-handle-bar"></div>
             <div class="sheet-header-title">Accounts</div>
             
-            <div class="channels-scroll" id="channelsListContainer">
-                <!-- Dynamically injected channels -->
-            </div>
+            <div class="channels-scroll" id="channelsListContainer"></div>
 
             <div class="sheet-footer-actions">
                 <div class="sheet-btn-action" onclick="openCreateModal()">
@@ -282,12 +281,12 @@
             
             <div class="input-group">
                 <label>Channel Name</label>
-                <input type="text" id="inpChName" placeholder="e.g. Karan Vlogs">
+                <input type="text" id="inpChName" placeholder="e.g. My Channel">
             </div>
 
             <div class="input-group">
                 <label>Handle</label>
-                <input type="text" id="inpChHandle" placeholder="@karanvlogs">
+                <input type="text" id="inpChHandle" placeholder="@mychannel">
             </div>
 
             <div class="dialog-actions">
@@ -303,7 +302,7 @@
         <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;" id="bottomNavAvatar">BT</div><span>You</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavAvatar">BT</div><span>You</span></a>
     </nav>
 
     <script>
@@ -311,36 +310,40 @@
         let activeChannel = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
-            authUser = window.BTubeAPI.getAuthUser();
+            authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
 
             if (!authUser) {
-                // Not Logged In
                 document.getElementById('userName').innerText = 'Guest User';
-                document.getElementById('userHandle').innerText = 'Sign in to access BTube';
+                document.getElementById('userHandle').innerText = 'Sign in to access your channel & history';
                 document.getElementById('channelLinkText').innerText = 'Sign in';
-                return;
+            } else {
+                let channels = window.BTubeAPI ? await window.BTubeAPI.getAllUserChannels() : [];
+                if (channels.length === 0 && window.BTubeAPI) {
+                    const defCh = await window.BTubeAPI.createNewChannel({
+                        name: authUser.name || 'My Channel',
+                        handle: '@' + (authUser.name || 'user').toLowerCase().replace(/[^a-z0-9]/g, ''),
+                        avatar: authUser.photo || ''
+                    });
+                    channels = [defCh];
+                }
+
+                activeChannel = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
+                if (activeChannel) applyChannelUI(activeChannel);
+
+                // Fetch real video count for active channel
+                if (window.BTubeAPI) {
+                    try {
+                        const feed = await window.BTubeAPI.getFeed('all');
+                        const myVideos = feed.filter(v => v.channelId === activeChannel?.id || v.channel === activeChannel?.name || v.userId === authUser?.uid);
+                        document.getElementById('vidCountBadge').innerText = myVideos.length;
+                    } catch(e) {}
+                }
             }
 
-            // Get Channels for this authenticated account
-            let channels = await window.BTubeAPI.getAllUserChannels();
-
-            // Auto-create default primary channel if 0 channels exist
-            if (channels.length === 0) {
-                const defCh = await window.BTubeAPI.createNewChannel({
-                    name: authUser.name,
-                    handle: '@' + authUser.name.toLowerCase().replace(/[^a-z0-9]/g, ''),
-                    avatar: authUser.photo || ''
-                });
-                channels = [defCh];
-            }
-
-            activeChannel = await window.BTubeAPI.getActiveChannel();
-            applyChannelUI(activeChannel);
-
-            // Fetch video count for this specific active channel
-            const feed = await window.BTubeAPI.getFeed('all');
-            const myVideos = feed.filter(v => v.channelId === activeChannel.id || v.channel === activeChannel.name);
-            document.getElementById('vidCountBadge').innerText = myVideos.length;
+            // Sync dynamic sections
+            loadWatchHistory();
+            loadPlaylistMetrics();
+            syncBadges();
         });
 
         function applyChannelUI(ch) {
@@ -354,21 +357,79 @@
                 av.innerHTML = `<img src="${ch.avatar}">`;
                 navAv.innerHTML = `<img src="${ch.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
             } else {
-                const init = ch.name.substring(0, 2).toUpperCase();
+                const init = (ch.name || 'BT').substring(0, 2).toUpperCase();
                 av.innerText = init;
                 navAv.innerText = init;
             }
         }
 
+        function loadWatchHistory() {
+            const histList = JSON.parse(localStorage.getItem('btube_watch_history') || '[]');
+            const row = document.getElementById('historyRow');
+
+            if (histList.length === 0) {
+                row.innerHTML = `<div style="font-size:12px; color:#666; padding:10px 0;">No watch history yet. Videos you watch will appear here.</div>`;
+                return;
+            }
+
+            row.innerHTML = '';
+            histList.slice(0, 8).forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'h-video-card';
+                card.onclick = () => window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                card.innerHTML = `
+                    <div class="h-thumb-box">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400'}">
+                        <span class="h-duration">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="h-title">${v.title || 'Watched Video'}</div>
+                    <div class="h-meta">${v.channel || 'BTube'}</div>
+                `;
+                row.appendChild(card);
+            });
+        }
+
+        function loadPlaylistMetrics() {
+            // Liked videos
+            const likedList = JSON.parse(localStorage.getItem('btube_liked_ids') || '[]');
+            document.getElementById('likedPlMeta').innerText = `${likedList.length} videos`;
+            if (likedList.length > 0 && likedList[0].thumb) {
+                document.getElementById('likedPlThumb').src = likedList[0].thumb;
+            }
+
+            // Watch Later
+            const wlList = JSON.parse(localStorage.getItem('btube_watch_later') || '[]');
+            document.getElementById('watchLaterPlMeta').innerText = `${wlList.length} videos`;
+            if (wlList.length > 0 && wlList[0].thumb) {
+                document.getElementById('watchLaterPlThumb').src = wlList[0].thumb;
+            }
+        }
+
+        function syncBadges() {
+            // Offline downloads count
+            const downloads = JSON.parse(localStorage.getItem('btube_downloaded_videos') || '[]');
+            if (downloads.length > 0) {
+                document.getElementById('downloadBadge').innerText = `${downloads.length} vids`;
+            }
+
+            // Premium status badge
+            const isPrem = localStorage.getItem('btube_is_premium') === 'true';
+            if (isPrem) {
+                const badge = document.getElementById('premStatusBadge');
+                badge.innerText = 'ACTIVE';
+                badge.style.background = '#2ecc71';
+            }
+        }
+
         async function openSwitchAccountSheet() {
-            if (!authUser) {
+            if (!authUser && window.BTubeAPI) {
                 window.BTubeAPI.signInWithGoogle().then(u => {
                     if (u) window.location.reload();
                 });
                 return;
             }
 
-            const channels = await window.BTubeAPI.getAllUserChannels();
+            const channels = window.BTubeAPI ? await window.BTubeAPI.getAllUserChannels() : [];
             const container = document.getElementById('channelsListContainer');
             container.innerHTML = '';
 
@@ -381,7 +442,7 @@
                 row.innerHTML = `
                     <div class="ch-left-info">
                         <div class="ch-mini-avatar">
-                            ${ch.avatar ? `<img src="${ch.avatar}">` : ch.name.substring(0,2).toUpperCase()}
+                            ${ch.avatar ? `<img src="${ch.avatar}">` : (ch.name || 'BT').substring(0,2).toUpperCase()}
                         </div>
                         <div>
                             <div class="ch-item-name">${ch.name}</div>
@@ -403,7 +464,9 @@
         }
 
         function selectChannel(chId) {
-            window.BTubeAPI.setActiveChannel(chId);
+            if (window.BTubeAPI) {
+                window.BTubeAPI.setActiveChannel(chId);
+            }
             document.getElementById('switchSheetBackdrop').classList.remove('active');
             window.location.reload();
         }
@@ -426,10 +489,12 @@
                 return;
             }
 
-            await window.BTubeAPI.createNewChannel({
-                name: name,
-                handle: handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''))
-            });
+            if (window.BTubeAPI) {
+                await window.BTubeAPI.createNewChannel({
+                    name: name,
+                    handle: handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''))
+                });
+            }
 
             closeCreateModal();
             window.location.reload();
@@ -445,7 +510,9 @@
 
         function handleSignOut() {
             if (confirm("Sign out of BTube?")) {
-                window.BTubeAPI.signOut();
+                if (window.BTubeAPI) window.BTubeAPI.signOut();
+                localStorage.removeItem('btube_user');
+                window.location.reload();
             }
         }
     </script>
