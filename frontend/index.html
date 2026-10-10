@@ -9,7 +9,7 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
-        /* Top Header */
+        /* Header */
         .app-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1c1c1c; }
         .logo-box { display:flex; align-items:center; gap:6px; text-decoration:none; color:#fff; font-size:19px; font-weight:800; letter-spacing:-0.5px; }
         .logo-icon { width:28px; height:20px; background:#e50914; border-radius:6px; display:flex; align-items:center; justify-content:center; }
@@ -20,58 +20,32 @@
         .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
         .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
 
-        /* Pull to refresh spinner */
-        .refresh-loader { display:none; justify-content:center; align-items:center; padding:10px 0; background:#0f0f0f; }
-        .spinner { width:24px; height:24px; border:3px solid #333; border-top-color:#e50914; border-radius:50%; animation:spin 0.6s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-
-        /* Category Filter Chips */
+        /* Categories */
         .category-bar { display:flex; gap:8px; padding:10px 16px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
         .category-bar::-webkit-scrollbar { display:none; }
         .chip { background:#222; color:#fff; border:none; padding:7px 14px; border-radius:18px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer; }
         .chip.active { background:#fff; color:#000; }
 
-        /* YouTube Top Sponsored / Promoted Ad */
-        .ad-container { margin:6px 0 14px; border-bottom:1px solid #1c1c1c; padding-bottom:14px; }
-        .ad-banner-box { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
-        .ad-banner-box img { width:100%; height:100%; object-fit:cover; }
-        .ad-tag-badge { position:absolute; top:8px; left:8px; background:rgba(0,0,0,0.85); color:#ffd700; font-size:10px; font-weight:800; padding:2px 6px; border-radius:3px; letter-spacing:0.5px; }
-        .ad-details { display:flex; justify-content:space-between; align-items:center; padding:10px 16px 0; gap:12px; }
-        .ad-left { display:flex; gap:12px; align-items:center; flex:1; min-width:0; }
-        .ad-logo { width:38px; height:38px; border-radius:8px; background:#222; overflow:hidden; flex-shrink:0; }
-        .ad-logo img { width:100%; height:100%; object-fit:cover; }
-        .ad-texts { display:flex; flex-direction:column; gap:2px; min-width:0; }
-        .ad-title { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .ad-sponsor { font-size:11px; color:#aaa; }
-        .btn-ad-action { background:#3ea6ff; color:#0f0f0f; font-weight:800; font-size:12px; padding:7px 16px; border-radius:18px; border:none; cursor:pointer; white-space:nowrap; }
-
-        /* Regular Video Cards */
+        /* Video Feed */
         .video-feed { display:flex; flex-direction:column; gap:18px; }
         .video-card { display:flex; flex-direction:column; cursor:pointer; }
-        .thumb-wrapper { width:100%; aspect-ratio:16/9; background:#222; position:relative; overflow:hidden; }
+        .thumb-wrapper { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
         .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
         .badge-time { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; }
 
         .details-wrapper { display:flex; gap:12px; padding:12px 16px 0; align-items:flex-start; }
-        .channel-avatar { width:38px; height:38px; border-radius:50%; background:#333; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+        .channel-avatar { width:38px; height:38px; border-radius:50%; background:#2a2a2a; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
         .channel-avatar img { width:100%; height:100%; object-fit:cover; }
         .meta-col { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
         .video-title { font-size:14px; font-weight:700; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .video-sub-meta { font-size:12px; color:#aaa; }
 
-        /* YouTube Shorts Shelf in Home Feed */
-        .shorts-shelf { padding:14px 0 18px; border-top:1px solid #1c1c1c; border-bottom:1px solid #1c1c1c; margin:6px 0; }
-        .shelf-title-row { display:flex; align-items:center; gap:8px; padding:0 16px 12px; }
-        .shelf-title-row svg { width:22px; height:22px; fill:#e50914; }
-        .shelf-heading { font-size:17px; font-weight:800; }
-        
-        .shorts-shelf-scroll { display:flex; gap:10px; overflow-x:auto; padding:0 16px; scrollbar-width:none; }
-        .shorts-shelf-scroll::-webkit-scrollbar { display:none; }
-        .short-shelf-card { width:140px; aspect-ratio:9/16; border-radius:10px; overflow:hidden; position:relative; background:#222; flex-shrink:0; cursor:pointer; }
-        .short-shelf-card img { width:100%; height:100%; object-fit:cover; }
-        .short-shelf-meta { position:absolute; bottom:0; left:0; right:0; padding:10px 8px; background:linear-gradient(transparent, rgba(0,0,0,0.9)); display:flex; flex-direction:column; gap:2px; }
-        .short-shelf-title { font-size:11px; font-weight:700; line-height:1.2; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
-        .short-shelf-views { font-size:10px; color:#aaa; }
+        /* Empty State */
+        .empty-feed { text-align:center; padding:70px 24px; color:#aaa; display:flex; flex-direction:column; align-items:center; gap:12px; }
+        .empty-feed svg { width:56px; height:56px; fill:#555; }
+        .empty-feed h3 { font-size:18px; font-weight:800; color:#fff; }
+        .empty-feed p { font-size:13px; color:#777; max-width:280px; line-height:1.4; }
+        .btn-feed-upload { background:#e50914; color:#fff; padding:10px 22px; border-radius:24px; text-decoration:none; font-size:14px; font-weight:700; margin-top:6px; }
 
         /* Bottom Nav */
         .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
@@ -87,7 +61,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="app-header">
         <a href="index.html" class="logo-box">
             <div class="logo-icon">
@@ -102,7 +75,7 @@
             <a href="../pages/notifications.html" class="btn-hdr">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
             </a>
-            <button class="btn-hdr" onclick="refreshFeed(true)">
+            <button class="btn-hdr" onclick="loadRealFeed()">
                 <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
             <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='../pages/profile.html'">
@@ -111,54 +84,14 @@
         </div>
     </header>
 
-    <!-- Pull-to-refresh spinner -->
-    <div class="refresh-loader" id="refreshLoader">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Filter Chips -->
     <div class="category-bar">
-        <button class="chip active" onclick="filterCategory('All')">All</button>
-        <button class="chip" onclick="filterCategory('New to you')">New to you</button>
-        <button class="chip" onclick="filterCategory('Gaming')">Gaming</button>
-        <button class="chip" onclick="filterCategory('Music')">Music</button>
-        <button class="chip" onclick="filterCategory('Podcasts')">Podcasts</button>
-    </div>
-
-    <!-- YouTube Top Sponsored / Promoted Ad -->
-    <div class="ad-container" id="sponsoredAd">
-        <div class="ad-banner-box">
-            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800" alt="Sponsored Ad">
-            <div class="ad-tag-badge">Sponsored • Ad</div>
-        </div>
-        <div class="ad-details">
-            <div class="ad-left">
-                <div class="ad-logo">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100">
-                </div>
-                <div class="ad-texts">
-                    <div class="ad-title">BTube Premium: Ad-free Videos & Background Play</div>
-                    <div class="ad-sponsor">btube.app/premium • Try 1 month free</div>
-                </div>
-            </div>
-            <button class="btn-ad-action" onclick="window.location.href='../pages/premium.html'">Get offer</button>
-        </div>
+        <button class="chip active">All</button>
+        <button class="chip">Videos</button>
+        <button class="chip">Shorts</button>
     </div>
 
     <!-- Feed Container -->
     <main class="video-feed" id="mainVideoFeed"></main>
-
-    <!-- YouTube Shorts Shelf Section -->
-    <section class="shorts-shelf">
-        <div class="shelf-title-row">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span class="shelf-heading">Shorts</span>
-        </div>
-        <div class="shorts-shelf-scroll" id="shortsShelfContainer"></div>
-    </section>
-
-    <!-- Secondary Video Feed (After Shorts Shelf) -->
-    <div class="video-feed" id="secondaryVideoFeed"></div>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
@@ -170,84 +103,12 @@
     </nav>
 
     <script>
-        // High quality dynamic videos pool for refreshing
-        const DYNAMIC_VIDEO_POOL = [
-            {
-                id: "v_dynamic_01",
-                title: "BTube 2026: Next-Gen Indian PWA Video Streaming Architecture",
-                channel: "BTube Engineering",
-                avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200",
-                thumb: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                duration: "06:12",
-                views: "42K views • 3 hours ago"
-            },
-            {
-                id: "v_dynamic_02",
-                title: "How to Grow Your Channel Fast in 2026 - Creator Masterclass",
-                channel: "Creator Studio Pro",
-                avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200",
-                thumb: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-                duration: "10:45",
-                views: "189K views • 1 day ago"
-            },
-            {
-                id: "v_dynamic_03",
-                title: "Epic 4K Nature & Cinematic Landscapes Experience",
-                channel: "Earth Relax 4K",
-                avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200",
-                thumb: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                duration: "15:20",
-                views: "520K views • 3 days ago"
-            },
-            {
-                id: "v_dynamic_04",
-                title: "Modern Lo-Fi Beats to Relax / Study to - 24/7 BTube Live",
-                channel: "Chill BTube Records",
-                avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200",
-                thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800",
-                videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-                duration: "24:10",
-                views: "1.2M views • 1 week ago"
-            }
-        ];
-
-        const DYNAMIC_SHORTS_POOL = [
-            {
-                id: "s_dyn_01",
-                title: "Incredible Smartphone Camera Trick! 📸 #shorts",
-                thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600",
-                views: "1.8M views"
-            },
-            {
-                id: "s_dyn_02",
-                title: "Top 3 Coding Shortcuts Every Dev Needs #tech",
-                thumb: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600",
-                views: "750K views"
-            },
-            {
-                id: "s_dyn_03",
-                title: "Fastest Banjo Solo you've ever heard! 🪕🔥",
-                thumb: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=600",
-                views: "3.4M views"
-            },
-            {
-                id: "s_dyn_04",
-                title: "Morning Routine in Indian Village 🌄 #vlog",
-                thumb: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600",
-                views: "920K views"
-            }
-        ];
-
         window.addEventListener('DOMContentLoaded', async () => {
-            syncUserHeader();
-            await refreshFeed(false);
-            initPullToRefresh();
+            syncHeaderAvatar();
+            await loadRealFeed();
         });
 
-        function syncUserHeader() {
+        function syncHeaderAvatar() {
             const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
             const topAv = document.getElementById('topNavAvatar');
             const botAv = document.getElementById('bottomNavAvatar');
@@ -265,109 +126,60 @@
             }
         }
 
-        async function refreshFeed(showAnimation = true) {
-            const loader = document.getElementById('refreshLoader');
-            if (showAnimation) {
-                loader.style.display = 'flex';
-                await new Promise(r => setTimeout(r, 600)); // Smooth YouTube refresh feel
-            }
+        async function loadRealFeed() {
+            const feedContainer = document.getElementById('mainVideoFeed');
+            feedContainer.innerHTML = '';
 
-            // Shuffle videos to give brand new feed on every refresh
-            let feedItems = [...DYNAMIC_VIDEO_POOL].sort(() => 0.5 - Math.random());
-            let shortsItems = [...DYNAMIC_SHORTS_POOL].sort(() => 0.5 - Math.random());
-
-            // Pull live videos from Firestore if exists
+            let realVideos = [];
             if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
                 try {
-                    const cloudItems = await window.BTubeAPI.getFeed('video');
-                    if (cloudItems && cloudItems.length > 0) {
-                        feedItems = [...cloudItems, ...feedItems];
-                    }
-                } catch(e){}
+                    realVideos = await window.BTubeAPI.getFeed('all');
+                } catch(e) {
+                    console.error(e);
+                }
             }
 
-            // Render First Half Feed
-            const mainFeed = document.getElementById('mainVideoFeed');
-            mainFeed.innerHTML = '';
-            feedItems.slice(0, 2).forEach(v => mainFeed.appendChild(createVideoCard(v)));
-
-            // Render Shorts Shelf
-            renderShortsShelf(shortsItems);
-
-            // Render Second Half Feed
-            const secFeed = document.getElementById('secondaryVideoFeed');
-            secFeed.innerHTML = '';
-            feedItems.slice(2).forEach(v => secFeed.appendChild(createVideoCard(v)));
-
-            loader.style.display = 'none';
-        }
-
-        function createVideoCard(v) {
-            const card = document.createElement('article');
-            card.className = 'video-card';
-            card.onclick = () => window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
-
-            const avatarSrc = v.channelAvatar || v.avatar || '';
-            const channelInitial = (v.channel || 'BT').substring(0, 2).toUpperCase();
-
-            card.innerHTML = `
-                <div class="thumb-wrapper">
-                    <img src="${v.thumb}" alt="${v.title}">
-                    <span class="badge-time">${v.duration || '03:45'}</span>
-                </div>
-                <div class="details-wrapper">
-                    <div class="channel-avatar">
-                        ${avatarSrc ? `<img src="${avatarSrc}">` : channelInitial}
-                    </div>
-                    <div class="meta-col">
-                        <h3 class="video-title">${v.title}</h3>
-                        <div class="video-sub-meta">${v.channel} • ${v.views}</div>
-                    </div>
-                </div>
-            `;
-            return card;
-        }
-
-        function renderShortsShelf(shorts) {
-            const container = document.getElementById('shortsShelfContainer');
-            container.innerHTML = '';
-
-            shorts.forEach(s => {
-                const card = document.createElement('div');
-                card.className = 'short-shelf-card';
-                card.onclick = () => window.location.href = `../pages/shorts.html?id=${s.id}`;
-                card.innerHTML = `
-                    <img src="${s.thumb}">
-                    <div class="short-shelf-meta">
-                        <div class="short-shelf-title">${s.title}</div>
-                        <div class="short-shelf-views">${s.views}</div>
+            // Agar koi upload ki hui real video nahi hai
+            if (!realVideos || realVideos.length === 0) {
+                feedContainer.innerHTML = `
+                    <div class="empty-feed">
+                        <svg viewBox="0 0 24 24"><path d="M10 18v-6l5 3-5 3zm7-15H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z"/></svg>
+                        <h3>No videos uploaded yet</h3>
+                        <p>Aapke BTube par abhi koi video nahi hai. Apni pehli video ya short upload karein!</p>
+                        <a href="../pages/upload.html" class="btn-feed-upload">+ Upload first video</a>
                     </div>
                 `;
-                container.appendChild(card);
+                return;
+            }
+
+            // Real uploaded videos render
+            realVideos.forEach(v => {
+                const card = document.createElement('article');
+                card.className = 'video-card';
+                card.onclick = () => {
+                    window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                };
+
+                const avatarSrc = v.channelAvatar || v.avatar || '';
+                const initial = (v.channel || 'BT').substring(0, 2).toUpperCase();
+
+                card.innerHTML = `
+                    <div class="thumb-wrapper">
+                        <img src="${v.thumb}">
+                        <span class="badge-time">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="details-wrapper">
+                        <div class="channel-avatar">
+                            ${avatarSrc ? `<img src="${avatarSrc}">` : initial}
+                        </div>
+                        <div class="meta-col">
+                            <h3 class="video-title">${v.title}</h3>
+                            <div class="video-sub-meta">${v.channel} • ${v.views || 0} views</div>
+                        </div>
+                    </div>
+                `;
+                feedContainer.appendChild(card);
             });
-        }
-
-        function filterCategory(cat) {
-            const chips = document.querySelectorAll('.chip');
-            chips.forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            refreshFeed(true);
-        }
-
-        // Native Touch Pull-to-Refresh
-        function initPullToRefresh() {
-            let startY = 0;
-            window.addEventListener('touchstart', (e) => {
-                if (window.scrollY === 0) startY = e.touches[0].pageY;
-            }, { passive: true });
-
-            window.addEventListener('touchmove', (e) => {
-                const y = e.touches[0].pageY;
-                if (window.scrollY === 0 && y - startY > 120) {
-                    startY = 9999;
-                    refreshFeed(true);
-                }
-            }, { passive: true });
         }
     </script>
 </body>
