@@ -77,7 +77,7 @@
         .banner-edit-frame {
             width: 100%;
             height: 125px;
-            background: linear-gradient(135deg, #1f1f1f 0%, #3a0007 60%, #151515 100%);
+            background: #1c1c1c;
             position: relative;
             display: flex;
             align-items: center;
@@ -93,11 +93,10 @@
             position: absolute;
             inset: 0;
             z-index: 1;
-            display: none;
         }
 
         .banner-cam-btn {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -194,6 +193,7 @@
             gap: 4px;
             flex: 1;
             padding-right: 12px;
+            min-width: 0;
         }
 
         .field-label {
@@ -209,6 +209,7 @@
             color: #ffffff;
             font-weight: 500;
             line-height: 1.35;
+            word-break: break-word;
         }
 
         .field-edit-icon svg {
@@ -377,6 +378,11 @@
             display: none;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
@@ -385,16 +391,16 @@
 
     <header class="edit-header">
         <div class="header-left">
-            <a href="channel.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">Channel settings</span>
         </div>
         <button class="btn-save-check" onclick="saveAllChanges()">Save</button>
     </header>
 
     <div class="banner-edit-frame" onclick="document.getElementById('bannerFileInput').click()">
-        <img id="bannerImg" class="banner-img-preview" alt="Banner">
+        <img id="bannerImg" class="banner-img-preview" alt="Banner" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200">
         <div class="banner-cam-btn">
             <svg viewBox="0 0 24 24"><path d="M12 12c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3zm0 2c-2.21 0-4 1.79-4 4h8c0-2.21-1.79-4-4-4zm9-9h-3.17L16 3H8L6.17 5H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H3V7h3.88l1.83-2h6.58l1.83 2H21v12z"/></svg>
         </div>
@@ -402,7 +408,7 @@
 
     <div class="avatar-edit-wrap">
         <div class="avatar-edit-circle" onclick="document.getElementById('dpFileInput').click()">
-            <span class="avatar-txt" id="avatarTxt">CB</span>
+            <span class="avatar-txt" id="avatarTxt">BT</span>
             <img id="dpImg" class="avatar-img-preview" alt="DP">
             <div class="dp-cam-badge">
                 <svg viewBox="0 0 24 24"><path d="M12 12c1.65 0 3-1.35 3-3s-1.35-3-3-3-3 1.35-3 3 1.35 3 3 3zm0 2c-2.21 0-4 1.79-4 4h8c0-2.21-1.79-4-4-4zm9-9h-3.17L16 3H8L6.17 5H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H3V7h3.88l1.83-2h6.58l1.83 2H21v12z"/></svg>
@@ -414,7 +420,7 @@
         <div class="field-row-item" onclick="openEditModal('name', 'Name', document.getElementById('nameVal').innerText, 50)">
             <div class="field-info">
                 <span class="field-label">Name</span>
-                <span class="field-value" id="nameVal">Charandas Bhaskar</span>
+                <span class="field-value" id="nameVal">Loading...</span>
             </div>
             <div class="field-edit-icon">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -424,7 +430,7 @@
         <div class="field-row-item" onclick="openEditModal('handle', 'Handle', document.getElementById('handleVal').innerText, 30)">
             <div class="field-info">
                 <span class="field-label">Handle</span>
-                <span class="field-value" id="handleVal">@charandasbhaskar</span>
+                <span class="field-value" id="handleVal">@loading</span>
             </div>
             <div class="field-edit-icon">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -434,7 +440,7 @@
         <div class="field-row-item" onclick="openEditModal('desc', 'Description', document.getElementById('descVal').innerText, 1000)">
             <div class="field-info">
                 <span class="field-label">Description</span>
-                <span class="field-value" id="descVal">Official BTube channel for Chhattisgarhi folk music, traditional bhajans, daily life stories and instruments.</span>
+                <span class="field-value" id="descVal">Add a description to tell viewers about your channel</span>
             </div>
             <div class="field-edit-icon">
                 <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -469,7 +475,7 @@
             <span class="sheet-counter" id="charCounter">0/50</span>
             <div class="sheet-btn-row">
                 <button class="sheet-btn cancel" onclick="closeEditModal()">Cancel</button>
-                <button class="sheet-btn confirm" onclick="confirmFieldValue()">Save</button>
+                <button class="sheet-btn confirm" onclick="confirmFieldValue()">Done</button>
             </div>
         </div>
     </div>
@@ -479,31 +485,33 @@
     <script>
         let currentTargetField = null;
         let currentMaxLen = 50;
+        let currentChannelObj = null;
+        let authUserObj = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
-            const savedDesc = localStorage.getItem('btube_channel_desc');
-            const savedDp = localStorage.getItem('btube_channel_dp');
-            const savedBanner = localStorage.getItem('btube_channel_banner');
+        window.addEventListener('DOMContentLoaded', async () => {
+            authUserObj = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            currentChannelObj = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
 
-            if (savedName) {
-                document.getElementById('nameVal').innerText = savedName;
-                updateInitials(savedName);
-            }
-            if (savedHandle) document.getElementById('handleVal').innerText = savedHandle;
-            if (savedDesc) document.getElementById('descVal').innerText = savedDesc;
+            const name = currentChannelObj?.name || authUserObj?.name || 'My Channel';
+            const handle = currentChannelObj?.handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const desc = currentChannelObj?.bio || 'Welcome to my channel!';
+            const avatar = currentChannelObj?.avatar || authUserObj?.photo;
+            const banner = currentChannelObj?.banner;
 
-            if (savedDp) {
+            document.getElementById('nameVal').innerText = name;
+            document.getElementById('handleVal').innerText = handle;
+            document.getElementById('descVal').innerText = desc;
+            updateInitials(name);
+
+            if (avatar) {
                 const dpImg = document.getElementById('dpImg');
-                dpImg.src = savedDp;
+                dpImg.src = avatar;
                 dpImg.style.display = 'block';
                 document.getElementById('avatarTxt').style.display = 'none';
             }
-            if (savedBanner) {
-                const bImg = document.getElementById('bannerImg');
-                bImg.src = savedBanner;
-                bImg.style.display = 'block';
+
+            if (banner) {
+                document.getElementById('bannerImg').src = banner;
             }
         });
 
@@ -521,7 +529,6 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        // AUTO-COMPRESS IMAGE TO FIT LOCALSTORAGE
         function processAndSaveImage(event, target) {
             const file = event.target.files[0];
             if (!file) return;
@@ -550,25 +557,17 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.85);
 
-                    try {
-                        if (target === 'banner') {
-                            const bImg = document.getElementById('bannerImg');
-                            bImg.src = compressedBase64;
-                            bImg.style.display = 'block';
-                            localStorage.setItem('btube_channel_banner', compressedBase64);
-                            showToast('Banner ready');
-                        } else if (target === 'dp') {
-                            const dpImg = document.getElementById('dpImg');
-                            dpImg.src = compressedBase64;
-                            dpImg.style.display = 'block';
-                            document.getElementById('avatarTxt').style.display = 'none';
-                            localStorage.setItem('btube_channel_dp', compressedBase64);
-                            showToast('Profile picture ready');
-                        }
-                    } catch (err) {
-                        showToast('Image too large to store');
+                    if (target === 'banner') {
+                        document.getElementById('bannerImg').src = compressedBase64;
+                        showToast('Banner photo selected');
+                    } else if (target === 'dp') {
+                        const dpImg = document.getElementById('dpImg');
+                        dpImg.src = compressedBase64;
+                        dpImg.style.display = 'block';
+                        document.getElementById('avatarTxt').style.display = 'none';
+                        showToast('Profile photo selected');
                     }
                 };
                 img.src = e.target.result;
@@ -621,10 +620,28 @@
             const name = document.getElementById('nameVal').innerText;
             const handle = document.getElementById('handleVal').innerText;
             const desc = document.getElementById('descVal').innerText;
+            const banner = document.getElementById('bannerImg').src;
+            const dpImg = document.getElementById('dpImg');
+            const avatar = dpImg.style.display !== 'none' ? dpImg.src : '';
 
-            localStorage.setItem('btube_channel_name', name);
-            localStorage.setItem('btube_channel_handle', handle);
-            localStorage.setItem('btube_channel_desc', desc);
+            const uid = authUserObj ? authUserObj.uid : 'default_user';
+            let channelList = JSON.parse(localStorage.getItem('btube_channels_' + uid) || '[]');
+            const activeId = localStorage.getItem('btube_active_channel_id_' + uid);
+
+            let ch = channelList.find(c => c.id === activeId) || channelList[0];
+            if (!ch) {
+                ch = { id: 'ch_' + Date.now(), name, handle, bio: desc, avatar, banner };
+                channelList.push(ch);
+            } else {
+                ch.name = name;
+                ch.handle = handle;
+                ch.bio = desc;
+                if (avatar) ch.avatar = avatar;
+                if (banner) ch.banner = banner;
+            }
+
+            localStorage.setItem('btube_channels_' + uid, JSON.stringify(channelList));
+            localStorage.setItem('btube_active_channel_id_' + uid, ch.id);
 
             showToast('Channel settings saved ✓');
             setTimeout(() => {
