@@ -1,1182 +1,277 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0f0f0f">
-    <title>Upload Video - BTube</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f0f0f">
+<title>Upload Video - BTube</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            padding-bottom: 75px;
-            overflow-x: hidden;
-        }
-
-        /* 1. TOP HEADER */
-        .upload-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn-header-icon {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-header-icon svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        .header-title-txt {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .btn-upload-publish {
-            background: #3ea6ff;
-            color: #0f0f0f;
-            border: none;
-            padding: 7px 18px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        /* 2. PICK VIDEO INITIAL SCREEN */
-        .pick-video-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 70vh;
-            padding: 24px;
-            text-align: center;
-            gap: 16px;
-        }
-
-        .pick-circle-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: #1c1c1c;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px dashed #444;
-            cursor: pointer;
-        }
-
-        .pick-circle-icon svg {
-            width: 36px;
-            height: 36px;
-            fill: #3ea6ff;
-        }
-
-        .btn-select-file {
-            background: #3ea6ff;
-            color: #0f0f0f;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 24px;
-            font-size: 14px;
-            font-weight: 800;
-            cursor: pointer;
-        }
-
-        /* 3. DETAILS FORM VIEW */
-        .upload-editor-view {
-            display: none;
-            flex-direction: column;
-        }
-
-        .preview-media-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
-            background: #141414;
-            border-bottom: 1px solid #222222;
-            position: relative;
-        }
-
-        .preview-frame-holder {
-            width: 100%;
-            max-width: 320px;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid #333333;
-        }
-
-        .preview-frame-holder video, 
-        .preview-frame-holder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .change-thumb-trigger {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            width: 34px;
-            height: 34px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .change-thumb-trigger svg {
-            width: 18px;
-            height: 18px;
-            fill: #ffffff;
-        }
-
-        .editor-form-body {
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            gap: 16px;
-        }
-
-        .input-group-unit {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .label-counter-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            color: #aaaaaa;
-            text-transform: uppercase;
-        }
-
-        .custom-field-input {
-            width: 100%;
-            background: #181818;
-            border: 1px solid #2a2a2a;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .custom-field-input:focus {
-            border-color: #3ea6ff;
-        }
-
-        textarea.custom-field-input {
-            min-height: 85px;
-            resize: vertical;
-        }
-
-        .picker-clickable-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px;
-            background: #181818;
-            border: 1px solid #262626;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .picker-clickable-bar:active {
-            background: #202020;
-        }
-
-        .picker-col-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .picker-col-left svg {
-            width: 20px;
-            height: 20px;
-            fill: #aaaaaa;
-        }
-
-        .picker-col-left strong {
-            font-size: 14px;
-            color: #ffffff;
-        }
-
-        .picker-col-left .sub-meta {
-            font-size: 12px;
-            color: #888888;
-        }
-
-        /* 4. SUBPAGES */
-        .subpage-view {
-            position: fixed;
-            inset: 0;
-            background: #0f0f0f;
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
-            overflow-y: auto;
-            padding-bottom: 30px;
-        }
-
-        .subpage-view.active {
-            display: flex;
-        }
-
-        .subpage-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            padding: 0 16px;
-            border-bottom: 1px solid #222222;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 10;
-        }
-
-        .subpage-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .subpage-content {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .search-pill-input {
-            width: 100%;
-            background: #252525;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 18px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .feature-bullets-list {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 10px;
-        }
-
-        .bullet-item-row {
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-
-        .bullet-item-row svg {
-            width: 24px;
-            height: 24px;
-            fill: #ffffff;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .radio-setting-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 12px 0;
-            cursor: pointer;
-        }
-
-        .radio-dot-outer {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid #666666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 2px;
-            flex-shrink: 0;
-        }
-
-        .radio-setting-row.selected .radio-dot-outer {
-            border-color: #3ea6ff;
-        }
-
-        .radio-setting-row.selected .radio-dot-outer::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #3ea6ff;
-        }
-
-        /* 5. DRAWERS & BOTTOM SHEETS */
-        .drawer-scrim {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.65);
-            z-index: 3000;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-scrim.open {
-            display: flex;
-        }
-
-        .drawer-menu-card {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 18px 16px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .drawer-option-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .drawer-option-row.selected {
-            background: #282828;
-        }
-
-        .schedule-calendar-box {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            background: #181818;
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid #333333;
-            margin-top: 6px;
-        }
-
-        .schedule-calendar-box input {
-            background: #252525;
-            border: 1px solid #444;
-            color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        /* Upload Progress Modal */
-        .upload-progress-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 4000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .progress-box-card {
-            width: 100%;
-            max-width: 320px;
-            background: #202020;
-            border-radius: 16px;
-            padding: 22px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            border: 1px solid #333333;
-            text-align: center;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: #333333;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #3ea6ff;
-            border-radius: 4px;
-            transition: width 0.15s ease-out;
-        }
-
-        /* SafeShield & CopyScan Modal Notification */
-        .policy-alert-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 5000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .policy-alert-card {
-            background: #1f1f1f;
-            border-radius: 16px;
-            padding: 20px;
-            max-width: 340px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            border: 1px solid #333;
-        }
-
-        .policy-alert-title {
-            font-size: 16px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .policy-alert-body {
-            font-size: 13px;
-            color: #ccc;
-            line-height: 1.45;
-        }
-
-        .btn-policy-confirm {
-            background: #3ea6ff;
-            color: #000;
-            border: none;
-            padding: 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            align-self: flex-end;
-            margin-top: 4px;
-        }
-
-        .tags-cluster {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 6px;
-        }
-
-        .tag-pill-item {
-            background: #252525;
-            color: #3ea6ff;
-            border: 1px solid #333333;
-            border-radius: 16px;
-            padding: 4px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .toast-pop {
-            position: fixed;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 6000;
-            display: none;
-        }
-    </style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#0f0f0f;color:#fff;padding-bottom:30px}
+header{height:56px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #292929;position:sticky;top:0;background:#0f0f0f;z-index:5}
+button,.choose{border:0;cursor:pointer;font-weight:700}
+.back{background:none;color:#fff;font-size:25px}
+.publish,.choose{background:#3ea6ff;color:#07111b;padding:11px 20px;border-radius:24px}
+.publish:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:650px;margin:auto;padding:16px}
+.pick{text-align:center;padding:70px 10px;display:flex;align-items:center;flex-direction:column;gap:18px}
+.pick-icon{font-size:48px;background:#202020;border:1px dashed #555;border-radius:50%;width:90px;height:90px;display:grid;place-items:center}
+.muted{font-size:13px;color:#999;line-height:1.5}
+.editor{display:none}
+.preview{background:#181818;padding:12px;border-radius:12px;margin-bottom:22px}
+video{width:100%;max-height:300px;background:#000;border-radius:8px}
+.field{margin:18px 0}
+label.title{display:block;color:#bbb;font-size:13px;margin-bottom:8px}
+input[type=text],textarea,select{width:100%;background:#1b1b1b;border:1px solid #383838;color:#fff;padding:13px;border-radius:9px;font-size:15px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:#3ea6ff}
+textarea{min-height:110px;resize:vertical}
+select{color-scheme:dark}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.note{padding:13px;background:#191919;border-radius:9px;margin:14px 0;color:#aaa;font-size:13px;line-height:1.5}
+.status{display:none;margin:16px 0;padding:14px;background:#1b1b1b;border-radius:10px;line-height:1.5;overflow-wrap:anywhere}
+.progress{height:5px;background:#333;border-radius:5px;overflow:hidden;margin-top:12px}
+.progress span{display:block;height:100%;width:35%;background:#3ea6ff;animation:move 1.2s ease-in-out infinite alternate}
+@keyframes move{from{transform:translateX(-20%)}to{transform:translateX(190%)}}
+.error{color:#ff8b8b}.success{color:#8ee8ad}
+@media(prefers-reduced-motion:reduce){.progress span{animation:none}}
+</style>
 </head>
+
 <body>
+<header>
+  <div class="row">
+    <button class="back" onclick="goBack()" aria-label="Back">‹</button>
+    <strong style="margin-left:12px">Upload Video</strong>
+  </div>
+  <button class="publish" id="publishBtn" style="display:none" onclick="publishVideo()">Publish</button>
+</header>
 
-    <!-- 1. TOP HEADER -->
-    <header class="upload-header">
-        <div class="header-left">
-            <button class="btn-header-icon" onclick="handleHeaderBack()">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-            <span class="header-title-txt">Details (Video)</span>
-        </div>
-        <button class="btn-upload-publish" id="btnPublish" style="display:none;" onclick="startPublishProcess()">Upload</button>
-    </header>
+<main>
+  <section class="pick" id="picker">
+    <div class="pick-icon">↑</div>
+    <h3>अपना वीडियो चुनें</h3>
+    <p class="muted">अपने फोन या डिवाइस से वीडियो चुनें। कोई डेमो वीडियो इस्तेमाल नहीं होगा।</p>
+    <label class="choose" for="videoFile">Choose Video</label>
+    <input id="videoFile" type="file" accept="video/*" hidden>
+  </section>
 
-    <!-- 2. INITIAL FILE CHOOSER -->
-    <main class="pick-video-wrap" id="stepPicker">
-        <label for="longVideoFileInput" class="pick-circle-icon">
-            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-        </label>
-        <div>
-            <h3 style="font-size:18px;">Select a video to upload</h3>
-            <p style="font-size:12px; color:#888; margin-top:4px;">SafeShield AI & CopyScan family protection active</p>
-        </div>
-        <label for="longVideoFileInput" class="btn-select-file">Choose Video File</label>
-        <input type="file" id="longVideoFileInput" accept="video/*" style="display:none;" onchange="handleVideoFileChosen(event)">
-    </main>
-
-    <!-- 3. DETAILS FORM VIEW -->
-    <section class="upload-editor-view" id="stepEditor">
-        <div class="preview-media-section">
-            <div class="preview-frame-holder" id="previewHolder">
-                <video id="previewPlayer" playsinline controls></video>
-                <img id="customThumbPreview" style="display:none;" alt="Thumbnail">
-
-                <label for="customThumbInput" class="change-thumb-trigger" title="Upload Custom Thumbnail">
-                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                </label>
-                <input type="file" id="customThumbInput" accept="image/*" style="display:none;" onchange="handleThumbnailSelect(event)">
-            </div>
-            <span style="font-size:11px; color:#888; margin-top:8px;">Tap top-right pencil to choose custom thumbnail</span>
-        </div>
-
-        <div class="editor-form-body">
-            <!-- Title Field -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar">
-                    <span>Title (required)</span>
-                    <span id="txtTitleCount">0/100</span>
-                </div>
-                <input type="text" id="inputVideoTitle" class="custom-field-input" maxlength="100" placeholder="Add a title that describes your video" oninput="updateTitleCount()">
-            </div>
-
-            <!-- Description Field -->
-            <div class="input-group-unit">
-                <div class="label-counter-bar"><span>Description</span></div>
-                <textarea id="inputVideoDesc" class="custom-field-input" placeholder="Tell viewers about your video..."></textarea>
-            </div>
-
-            <!-- Visibility Selector -->
-            <div class="picker-clickable-bar" onclick="openVisibilityDrawer()">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    <div>
-                        <strong>Visibility</strong>
-                        <div class="sub-meta" id="txtVisValue">Public</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Audience Setting -->
-            <div class="picker-clickable-bar" onclick="toggleAudienceSetting()">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                    <div>
-                        <strong>Audience</strong>
-                        <div class="sub-meta" id="txtKidsSetting">No, it's not made for kids</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Community Hub Row -->
-            <div class="picker-clickable-bar" onclick="openSubpage('communitySubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    <div>
-                        <strong>Community</strong>
-                        <div class="sub-meta" id="txtCommunitySub">Comments On, Remixing allowed</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <!-- Attributes Hub Row -->
-            <div class="picker-clickable-bar" onclick="openSubpage('attributesSubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                    <div>
-                        <strong>Attributes</strong>
-                        <div class="sub-meta" id="txtAttributesSub">AI use: No • Tags</div>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= SUBPAGES ================= -->
-    <!-- COMMUNITY -->
-    <div class="subpage-view" id="communitySubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('communitySubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">Community</span>
-        </div>
-        <div class="subpage-content">
-            <div class="picker-clickable-bar" onclick="openSubpage('collabSubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1.4c0-2 4-3.1 6-3.1s6 1.1 6 3.1V18z"/></svg>
-                    <div><strong>Invite a collaborator</strong></div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <div class="picker-clickable-bar" onclick="openSubpage('commentsSubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                    <div>
-                        <div style="font-size:12px; color:#888;">Comments</div>
-                        <strong id="dispCommentsVal">On</strong>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <div class="picker-clickable-bar" onclick="openSubpage('remixingSubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-                    <div>
-                        <div style="font-size:12px; color:#888;">Shorts remixing</div>
-                        <strong id="dispRemixingVal">Allow video and audio remixing</strong>
-                    </div>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-        </div>
+  <section class="editor" id="editor">
+    <div class="preview">
+      <video id="videoPreview" controls playsinline preload="metadata"></video>
+      <p class="muted" id="fileInfo" style="margin-top:8px"></p>
     </div>
 
-    <!-- COLLAB -->
-    <div class="subpage-view" id="collabSubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('collabSubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">Invite a collaborator</span>
-        </div>
-        <div class="subpage-content">
-            <input type="text" class="search-pill-input" placeholder="Search for a channel" onkeydown="if(event.key==='Enter') showToast('Collaborator invited ✓')">
-            <div class="feature-bullets-list">
-                <div class="bullet-item-row">
-                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    <div>
-                        <strong>You're in control</strong>
-                        <p style="font-size:12px; color:#888; margin-top:2px;">Only you can make changes to the video</p>
-                    </div>
-                </div>
-                <div class="bullet-item-row">
-                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    <div>
-                        <strong>Expanded reach</strong>
-                        <p style="font-size:12px; color:#888; margin-top:2px;">Reach your collaborators' audiences</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="field">
+      <div class="row">
+        <label class="title" for="videoTitle">वीडियो का नाम *</label>
+        <span class="muted" id="titleCount">0/100</span>
+      </div>
+      <input id="videoTitle" type="text" maxlength="100" placeholder="वीडियो का शीर्षक लिखें">
     </div>
 
-    <!-- COMMENTS -->
-    <div class="subpage-view" id="commentsSubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('commentsSubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">Comments</span>
-        </div>
-        <div class="subpage-content">
-            <div class="radio-setting-row selected" id="optCommentsOn" onclick="toggleCommentsMaster(true)">
-                <div class="radio-dot-outer"></div>
-                <div style="flex:1;">
-                    <strong style="font-size:15px;">On</strong>
-                    <div id="commentsOnSuboptions" style="margin-top:14px; display:flex; flex-direction:column; gap:16px;">
-                        <div class="picker-clickable-bar" style="background:#161616;" onclick="openDrawer('moderationDrawer')">
-                            <div>
-                                <div style="font-size:12px; color:#888;">Comment moderation</div>
-                                <strong id="txtModVal">Basic</strong>
-                            </div>
-                            <span style="color:#666;">❯</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="radio-setting-row" id="optCommentsOff" onclick="toggleCommentsMaster(false)">
-                <div class="radio-dot-outer"></div>
-                <div><strong style="font-size:15px;">Off</strong></div>
-            </div>
-        </div>
+    <div class="field">
+      <label class="title" for="videoDescription">वीडियो का विवरण</label>
+      <textarea id="videoDescription" maxlength="5000" placeholder="अपने वीडियो के बारे में लिखें"></textarea>
     </div>
 
-    <!-- REMIXING -->
-    <div class="subpage-view" id="remixingSubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('remixingSubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">Shorts remixing</span>
-        </div>
-        <div class="subpage-content">
-            <div class="radio-setting-row selected" id="remix-1" onclick="selectRemixOption('Allow video and audio remixing', 'remix-1')">
-                <div class="radio-dot-outer"></div>
-                <span>Allow video and audio remixing</span>
-            </div>
-            <div class="radio-setting-row" id="remix-2" onclick="selectRemixOption('Allow only audio remixing', 'remix-2')">
-                <div class="radio-dot-outer"></div>
-                <span>Allow only audio remixing</span>
-            </div>
-            <div class="radio-setting-row" id="remix-3" onclick="selectRemixOption('Don\'t allow remixing', 'remix-3')">
-                <div class="radio-dot-outer"></div>
-                <span>Don't allow remixing</span>
-            </div>
-        </div>
+    <div class="field">
+      <label class="title" for="visibility">वीडियो कौन देख सकता है?</label>
+      <select id="visibility">
+        <option value="Public">Public — सभी देख सकते हैं</option>
+        <option value="Unlisted">Unlisted — लिंक रखने वाले</option>
+        <option value="Private">Private — निजी</option>
+      </select>
     </div>
 
-    <!-- ATTRIBUTES -->
-    <div class="subpage-view" id="attributesSubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('attributesSubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">Attributes</span>
-        </div>
-        <div class="subpage-content">
-            <div class="picker-clickable-bar" onclick="openSubpage('aiUseSubpage')">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                    <strong>AI use</strong>
-                </div>
-                <span style="color:#666;">❯</span>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
-                <div class="picker-col-left">
-                    <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
-                    <strong>Add tags</strong>
-                </div>
-                <input type="text" id="attrTagInput" class="custom-field-input" placeholder="Add tag and press Enter" onkeydown="handleTagKey(event)">
-                <div class="tags-cluster" id="tagsClusterWrap">
-                    <div class="tag-pill-item"><span>#BTube</span><span onclick="this.parentElement.remove()">×</span></div>
-                </div>
-            </div>
-        </div>
+    <div class="field">
+      <label class="title" for="audience">क्या यह वीडियो बच्चों के लिए बनाया गया है?</label>
+      <select id="audience">
+        <option value="no">नहीं</option>
+        <option value="yes">हाँ</option>
+      </select>
     </div>
 
-    <!-- AI USE -->
-    <div class="subpage-view" id="aiUseSubpage">
-        <div class="subpage-header">
-            <button class="btn-header-icon" onclick="closeSubpage('aiUseSubpage')">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="subpage-title">AI use</span>
-        </div>
-        <div class="subpage-content">
-            <strong>Was AI used to generate or edit your content?</strong>
-            <div style="margin-top:14px;">
-                <div class="radio-setting-row" id="aiOptYes" onclick="selectAiOption(true)">
-                    <div class="radio-dot-outer"></div>
-                    <strong>Yes</strong>
-                </div>
-                <div class="radio-setting-row selected" id="aiOptNo" onclick="selectAiOption(false)">
-                    <div class="radio-dot-outer"></div>
-                    <strong>No</strong>
-                </div>
-            </div>
-        </div>
+    <div class="note">
+      <strong>अपलोड से जुड़ी जानकारी</strong>
+      <p style="margin-top:6px">वीडियो Firebase Storage में और उसका विवरण Firestore में सेव किया जाएगा। इसके लिए Firebase Storage की सेटिंग और सही सुरक्षा नियम आवश्यक हैं।</p>
     </div>
 
-    <!-- VISIBILITY DRAWER -->
-    <div class="drawer-scrim" id="visDrawerScrim" onclick="if(event.target.id==='visDrawerScrim') closeDrawer('visDrawerScrim')">
-        <div class="drawer-menu-card">
-            <div style="font-size:16px; font-weight:700; padding-bottom:8px; border-bottom:1px solid #333;">Select Visibility</div>
-            <div class="drawer-option-row selected" id="opt-public" onclick="setVisOption('Public', 'opt-public')">
-                <div><strong>Public 🌐</strong><div style="font-size:11px; color:#888;">Instant release to everyone</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-unlisted" onclick="setVisOption('Unlisted', 'opt-unlisted')">
-                <div><strong>Unlisted 🔗</strong><div style="font-size:11px; color:#888;">Visible only to people with the link</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-private" onclick="setVisOption('Private', 'opt-private')">
-                <div><strong>Private 🔒</strong><div style="font-size:11px; color:#888;">Only visible to your channel</div></div>
-            </div>
-            <div class="drawer-option-row" id="opt-schedule" onclick="toggleScheduleInput()">
-                <div><strong>Schedule ⏰</strong><div style="font-size:11px; color:#888;">Pick a date to make public</div></div>
-            </div>
-            <div class="schedule-calendar-box" id="scheduleBox">
-                <span style="font-size:12px; color:#aaa;">Publish Date & Time:</span>
-                <input type="datetime-local" id="scheduleDateTimeInput">
-                <button type="button" class="btn-upload-publish" onclick="applyScheduleSetting()">Set Schedule</button>
-            </div>
-        </div>
-    </div>
+    <div class="status" id="statusBox" role="status" aria-live="polite"></div>
+    <button class="publish" id="publishBtnBottom" style="width:100%" onclick="publishVideo()">वीडियो Publish करें</button>
+  </section>
+</main>
 
-    <!-- MODERATION DRAWER -->
-    <div class="drawer-scrim" id="moderationDrawer" onclick="if(event.target.id==='moderationDrawer') closeDrawer('moderationDrawer')">
-        <div class="drawer-menu-card">
-            <div style="font-size:16px; font-weight:700; padding-bottom:6px; border-bottom:1px solid #333;">Comment moderation</div>
-            <div class="drawer-option-row" onclick="setModeration('None')"><div><strong>None</strong></div></div>
-            <div class="drawer-option-row selected" onclick="setModeration('Basic')"><div><strong>Basic</strong><div style="font-size:11px; color:#888;">Hold potentially inappropriate comments</div></div></div>
-            <div class="drawer-option-row" onclick="setModeration('Strict')"><div><strong>Strict</strong></div></div>
-        </div>
-    </div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+<script src="../assets/js/api-client.js"></script>
 
-    <!-- Upload Progress Modal -->
-    <div class="upload-progress-overlay" id="uploadModal">
-        <div class="progress-box-card">
-            <span style="font-size:16px; font-weight:700;" id="txtUploadModalTitle">Uploading to BTube...</span>
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFillBar"></div>
-            </div>
-            <span style="font-size:13px; color:#3ea6ff; font-weight:700;" id="progressPercentage">0%</span>
-            <span style="font-size:11px; color:#888;" id="txtUploadModalSub">Streaming video chunks to server...</span>
-        </div>
-    </div>
+<script>
+"use strict";
 
-    <!-- SafeShield & CopyScan Modal Alert -->
-    <div class="policy-alert-overlay" id="policyAlertOverlay">
-        <div class="policy-alert-card">
-            <div class="policy-alert-title" id="alertCardTitle">⚠️ Notice</div>
-            <div class="policy-alert-body" id="alertCardMessage">Alert message here.</div>
-            <button class="btn-policy-confirm" id="btnPolicyConfirm" onclick="handlePolicyAlertDismiss()">OK</button>
-        </div>
-    </div>
+let selectedFile = null;
+let previewUrl = null;
+let isUploading = false;
 
-    <!-- Toast Notification -->
-    <div class="toast-pop" id="uploadToast"></div>
+const fileInput = document.getElementById("videoFile");
+const titleInput = document.getElementById("videoTitle");
+const descriptionInput = document.getElementById("videoDescription");
+const visibilityInput = document.getElementById("visibility");
+const statusBox = document.getElementById("statusBox");
+const publishBtn = document.getElementById("publishBtn");
+const publishBtnBottom = document.getElementById("publishBtnBottom");
 
-    <!-- Load API Bridge -->
-    <script src="../assets/js/api-client.js"></script>
+function showStatus(message, type = "") {
+  statusBox.style.display = "block";
+  statusBox.className = "status " + type;
+  statusBox.textContent = message;
+}
 
-    <!-- SCRIPT ENGINE -->
-    <script>
-        let selectedVideoFile = null;
-        let selectedThumbFile = null;
-        let currentVisState = "Public";
-        let isBlockedBySafeShield = false;
+function goBack() {
+  if (isUploading) {
+    alert("अपलोड पूरा होने तक कृपया पेज बंद न करें।");
+    return;
+  }
+  if (selectedFile && !confirm("क्या आप अपलोड पेज से बाहर जाना चाहते हैं?")) return;
+  window.location.href = "upload.html";
+}
 
-        function showToast(msg) {
-            const t = document.getElementById('uploadToast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
-        }
+fileInput.addEventListener("change", function(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
 
-        function openSubpage(id) { document.getElementById(id).classList.add('active'); }
-        function closeSubpage(id) { document.getElementById(id).classList.remove('active'); }
-        function openDrawer(id) { document.getElementById(id).classList.add('open'); }
-        function closeDrawer(id) { document.getElementById(id).classList.remove('open'); }
+  if (!file.type || !file.type.startsWith("video/")) {
+    alert("कृपया सही वीडियो फाइल चुनें।");
+    fileInput.value = "";
+    return;
+  }
 
-        function handleHeaderBack() {
-            if (document.getElementById('stepEditor').style.display === 'flex') {
-                if (confirm('Discard video? All progress will be lost.')) {
-                    window.location.reload();
-                }
-            } else {
-                window.location.href = 'upload.html';
-            }
-        }
+  selectedFile = file;
 
-        function handleVideoFileChosen(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
 
-            selectedVideoFile = file;
-            const rawName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
-            document.getElementById('inputVideoTitle').value = rawName;
-            updateTitleCount();
+  const player = document.getElementById("videoPreview");
+  player.src = previewUrl;
 
-            const player = document.getElementById('previewPlayer');
-            player.src = URL.createObjectURL(file);
+  document.getElementById("fileInfo").textContent =
+    file.name + " • " + formatSize(file.size);
 
-            document.getElementById('stepPicker').style.display = 'none';
-            document.getElementById('stepEditor').style.display = 'flex';
-            document.getElementById('btnPublish').style.display = 'block';
-        }
+  if (!titleInput.value.trim()) {
+    titleInput.value = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+  }
 
-        function handleThumbnailSelect(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+  document.getElementById("picker").style.display = "none";
+  document.getElementById("editor").style.display = "block";
+  publishBtn.style.display = "block";
+  statusBox.style.display = "none";
+  updateTitleCount();
+});
 
-            selectedThumbFile = file;
-            const thumbImg = document.getElementById('customThumbPreview');
-            thumbImg.src = URL.createObjectURL(file);
-            thumbImg.style.display = 'block';
-            document.getElementById('previewPlayer').style.display = 'none';
-            showToast('Custom thumbnail selected ✓');
-        }
+function formatSize(bytes) {
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+}
 
-        function updateTitleCount() {
-            const count = document.getElementById('inputVideoTitle').value.length;
-            document.getElementById('txtTitleCount').innerText = `${count}/100`;
-        }
+function updateTitleCount() {
+  document.getElementById("titleCount").textContent =
+    titleInput.value.length + "/100";
+}
+titleInput.addEventListener("input", updateTitleCount);
 
-        function openVisibilityDrawer() { openDrawer('visDrawerScrim'); }
+function setBusy(busy) {
+  isUploading = busy;
+  publishBtn.disabled = busy;
+  publishBtnBottom.disabled = busy;
+  publishBtn.textContent = busy ? "Uploading…" : "Publish";
+  publishBtnBottom.textContent = busy ? "अपलोड हो रहा है…" : "वीडियो Publish करें";
+}
 
-        function setVisOption(vis, elId) {
-            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
-            document.getElementById(elId).classList.add('selected');
-            document.getElementById('scheduleBox').style.display = 'none';
+async function publishVideo() {
+  if (isUploading) return;
 
-            currentVisState = vis;
-            document.getElementById('txtVisValue').innerText = vis;
-            closeDrawer('visDrawerScrim');
-            showToast(`Visibility set to ${vis}`);
-        }
+  if (!selectedFile) {
+    showStatus("पहले अपने डिवाइस से वीडियो चुनें।", "error");
+    return;
+  }
 
-        function toggleScheduleInput() {
-            document.querySelectorAll('#visDrawerScrim .drawer-option-row').forEach(r => r.classList.remove('selected'));
-            document.getElementById('opt-schedule').classList.add('selected');
-            const box = document.getElementById('scheduleBox');
-            box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
-        }
+  const title = titleInput.value.trim();
+  if (!title) {
+    showStatus("वीडियो का शीर्षक लिखना ज़रूरी है।", "error");
+    titleInput.focus();
+    return;
+  }
 
-        function applyScheduleSetting() {
-            const dt = document.getElementById('scheduleDateTimeInput').value;
-            if (!dt) {
-                showToast('Please pick a date and time');
-                return;
-            }
-            const dateObj = new Date(dt);
-            currentVisState = "Scheduled";
-            document.getElementById('txtVisValue').innerText = `Scheduled ⏰ (${dateObj.toLocaleDateString()})`;
-            closeDrawer('visDrawerScrim');
-            showToast('Video scheduled successfully ✓');
-        }
+  if (!window.BTubeAPI || typeof window.BTubeAPI.uploadVideo !== "function") {
+    showStatus(
+      "BTube API लोड नहीं हुई। Firebase SDK और assets/js/api-client.js का पाथ जाँचें।",
+      "error"
+    );
+    return;
+  }
 
-        function toggleAudienceSetting() {
-            const txt = document.getElementById('txtKidsSetting');
-            if (txt.innerText.includes('No')) {
-                txt.innerText = 'Yes, made for kids';
-                txt.style.color = '#3ea6ff';
-            } else {
-                txt.innerText = "No, it's not made for kids";
-                txt.style.color = '#aaa';
-            }
-        }
+  if (!window.firebase || !firebase.apps || firebase.apps.length === 0) {
+    showStatus(
+      "Firebase शुरू नहीं हुआ। api-client.js में Firebase configuration जाँचें।",
+      "error"
+    );
+    return;
+  }
 
-        function toggleCommentsMaster(isOn) {
-            const onRow = document.getElementById('optCommentsOn');
-            const offRow = document.getElementById('optCommentsOff');
-            const subOpts = document.getElementById('commentsOnSuboptions');
-            const disp = document.getElementById('dispCommentsVal');
+  if (!firebase.storage) {
+    showStatus(
+      "Firebase Storage SDK उपलब्ध नहीं है। पेज को रीफ्रेश करके दोबारा कोशिश करें।",
+      "error"
+    );
+    return;
+  }
 
-            if (isOn) {
-                onRow.classList.add('selected');
-                offRow.classList.remove('selected');
-                subOpts.style.display = 'flex';
-                disp.innerText = 'On';
-                document.getElementById('txtCommunitySub').innerText = 'Comments On, Remixing allowed';
-            } else {
-                onRow.classList.remove('selected');
-                offRow.classList.add('selected');
-                subOpts.style.display = 'none';
-                disp.innerText = 'Off';
-                document.getElementById('txtCommunitySub').innerText = 'Comments Off, Remixing allowed';
-            }
-        }
+  setBusy(true);
+  showStatus("वीडियो Firebase Storage पर अपलोड हो रहा है। फाइल के आकार और इंटरनेट के अनुसार समय लग सकता है।");
 
-        function setModeration(val) {
-            document.getElementById('txtModVal').innerText = val;
-            closeDrawer('moderationDrawer');
-            showToast(`Moderation: ${val}`);
-        }
+  const timeoutMessage =
+    "अपलोड पूरा नहीं हो पाया। इंटरनेट, Firebase Storage और Firebase सुरक्षा नियम जाँचें।";
 
-        function selectRemixOption(txt, elId) {
-            document.querySelectorAll('#remixingSubpage .radio-setting-row').forEach(r => r.classList.remove('selected'));
-            document.getElementById(elId).classList.add('selected');
-            document.getElementById('dispRemixingVal').innerText = txt;
-            closeSubpage('remixingSubpage');
-            showToast('Remixing updated');
-        }
+  try {
+    const user = firebase.auth ? firebase.auth().currentUser : null;
 
-        function selectAiOption(isYes) {
-            document.getElementById('aiOptYes').classList.toggle('selected', isYes);
-            document.getElementById('aiOptNo').classList.toggle('selected', !isYes);
-            document.getElementById('txtAttributesSub').innerText = `AI use: ${isYes ? 'Yes' : 'No'} • Tags`;
-            closeSubpage('aiUseSubpage');
-            showToast(`AI declaration: ${isYes ? 'Yes' : 'No'}`);
-        }
+    if (!user) {
+      throw new Error("वीडियो अपलोड करने से पहले BTube में लॉग इन करें।");
+    }
 
-        function handleTagKey(e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                const val = e.target.value.trim().replace(/^#/, '').replace(/,/g, '');
-                if (val) {
-                    const wrap = document.getElementById('tagsClusterWrap');
-                    const pill = document.createElement('div');
-                    pill.className = 'tag-pill-item';
-                    pill.innerHTML = `<span>#${val}</span><span onclick="this.parentElement.remove()">×</span>`;
-                    wrap.appendChild(pill);
-                    e.target.value = '';
-                }
-            }
-        }
+    const result = await window.BTubeAPI.uploadVideo({
+      file: selectedFile,
+      title: title,
+      description: descriptionInput.value.trim(),
+      type: "video",
+      thumb: "",
+      channel: user.displayName || user.email || "BTube Creator",
+      visibility: visibilityInput.value
+    });
 
-        function showAlertModal(title, msg, isBlocked) {
-            isBlockedBySafeShield = isBlocked;
-            document.getElementById('alertCardTitle').innerHTML = isBlocked ? '🛑 SafeShield AI Block' : '⚠️ Potential Limitation';
-            document.getElementById('alertCardTitle').style.color = isBlocked ? '#e50914' : '#f1c40f';
-            document.getElementById('alertCardMessage').innerText = msg;
-            document.getElementById('policyAlertOverlay').style.display = 'flex';
-        }
+    if (!result || !result.id) {
+      throw new Error("अपलोड का रिकॉर्ड नहीं मिला। वीडियो सूची में सेव होने की पुष्टि नहीं हुई।");
+    }
 
-        function handlePolicyAlertDismiss() {
-            document.getElementById('policyAlertOverlay').style.display = 'none';
-            if (!isBlockedBySafeShield) {
-                window.location.href = 'your-videos.html';
-            }
-        }
+    showStatus("वीडियो सफलतापूर्वक अपलोड और सेव हो गया। आपकी वीडियो सूची खोली जा रही है।", "success");
 
-        // ================= YOUTUBE-STYLE CHUNKED STREAMING PUBLISH ENGINE =================
-        async function startPublishProcess() {
-            const title = document.getElementById('inputVideoTitle').value.trim();
-            const desc = document.getElementById('inputVideoDesc').value.trim();
-            if (!title) {
-                showToast('Please enter a video title');
-                return;
-            }
+    setTimeout(function() {
+      window.location.href = "your-videos.html";
+    }, 900);
 
-            const modal = document.getElementById('uploadModal');
-            const bar = document.getElementById('progressFillBar');
-            const percent = document.getElementById('progressPercentage');
-            const subText = document.getElementById('txtUploadModalSub');
+  } catch (error) {
+    console.error("BTube video upload failed:", error);
+    showStatus(error && error.message ? error.message : timeoutMessage, "error");
+  } finally {
+    setBusy(false);
+  }
+}
 
-            modal.style.display = 'flex';
-            subText.innerText = 'Streaming video chunks to server...';
-
-            try {
-                if (selectedVideoFile) {
-                    // YouTube-grade 2MB chunk slicing
-                    const CHUNK_SIZE = 2 * 1024 * 1024;
-                    const totalChunks = Math.ceil(selectedVideoFile.size / CHUNK_SIZE);
-
-                    for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
-                        const start = chunkIdx * CHUNK_SIZE;
-                        const end = Math.min(start + CHUNK_SIZE, selectedVideoFile.size);
-                        const chunk = selectedVideoFile.slice(start, end);
-
-                        // Real byte calculation (up to 85%)
-                        const currentPct = Math.round(((chunkIdx + 1) / totalChunks) * 85);
-                        bar.style.width = currentPct + '%';
-                        percent.innerText = currentPct + '%';
-
-                        // Stream chunk to backend if endpoint available
-                        if (window.BTubeAPI && typeof fetch === "function") {
-                            await fetch(`${window.location.origin}/api/videos/upload-chunk`, {
-                                method: 'POST',
-                                headers: {
-                                    'X-Chunk-Index': chunkIdx,
-                                    'X-Total-Chunks': totalChunks,
-                                    'X-Video-Title': encodeURIComponent(title)
-                                },
-                                body: chunk
-                            }).catch(() => {});
-                        }
-                    }
-                }
-
-                // 2. Background Validation & AI Checks (85% -> 100%)
-                subText.innerText = 'Running SafeShield & CopyScan checks...';
-                bar.style.width = '100%';
-                percent.innerText = '100%';
-
-                const payload = {
-                    title: title,
-                    description: desc,
-                    category: "Music",
-                    video_url: selectedVideoFile ? URL.createObjectURL(selectedVideoFile) : "https://www.w3schools.com/html/mov_bbb.mp4",
-                    thumbnail_url: selectedThumbFile ? URL.createObjectURL(selectedThumbFile) : "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
-                    duration_seconds: 180,
-                    is_shorts: false,
-                    visibility: currentVisState,
-                    audio_hash: title.toLowerCase().includes("banjo") ? "hash_banjo_classical_tune" : "clean_original"
-                };
-
-                const result = await BTubeAPI.uploadVideo(payload);
-                modal.style.display = 'none';
-
-                // SafeShield Block
-                if (!result.success) {
-                    showAlertModal('SafeShield Blocked', result.error || 'Video contains inappropriate content.', true);
-                    return;
-                }
-
-                // Store metadata locally
-                localStorage.setItem('btube_last_edited_title', title);
-                localStorage.setItem('btube_last_edited_vis', currentVisState);
-                if (selectedThumbFile) {
-                    localStorage.setItem('btube_temp_edit_thumb', document.getElementById('customThumbPreview').src);
-                }
-
-                // CopyScan Limitation
-                if (result.data && result.data.claim_notice) {
-                    showAlertModal(
-                        'Potential Limitation',
-                        `Claimed content was found in this video (${result.data.claim_notice}). This doesn't affect the video right now, but ad revenue will go to the copyright owner.`,
-                        false
-                    );
-                } else {
-                    showToast('Video published instantly ✓');
-                    setTimeout(() => {
-                        window.location.href = 'your-videos.html';
-                    }, 400);
-                }
-
-            } catch (err) {
-                modal.style.display = 'none';
-                showToast('Saved with local buffer ✓');
-                setTimeout(() => {
-                    window.location.href = 'your-videos.html';
-                }, 400);
-            }
-        }
-    </script>
+window.addEventListener("beforeunload", function() {
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+});
+</script>
 </body>
 </html>
