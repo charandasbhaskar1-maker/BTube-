@@ -43,6 +43,7 @@
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
@@ -52,7 +53,6 @@
         <video id="mainVideoPlayer" controls playsinline preload="auto">
             Your browser does not support HTML5 video.
         </video>
-        <!-- Overlay Button for Guaranteed One-Tap Playback on Mobile -->
         <div class="play-trigger-overlay" id="playOverlay" onclick="forcePlayStream()">
             <div class="play-circle-btn">
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -69,10 +69,10 @@
 
         <div class="channel-strip">
             <a href="channel.html" class="channel-info">
-                <div class="avatar-c" id="chAvatar">CB</div>
+                <div class="avatar-c" id="chAvatar">BT</div>
                 <div>
-                    <div style="font-size:14px; font-weight:700;" id="channelName">Charandas Bhaskar</div>
-                    <div style="font-size:11px; color:#aaa;">Creator</div>
+                    <div style="font-size:14px; font-weight:700;" id="channelName">BTube Official</div>
+                    <div style="font-size:11px; color:#aaa;">Verified Platform</div>
                 </div>
             </a>
             <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
@@ -109,6 +109,25 @@
 
         let currentDocId = null;
 
+        // --- YouTube Style Login Guard ---
+        function checkAuth(actionName, callback) {
+            const user = window.BTubeAPI.getUser();
+            if (!user) {
+                const wantsLogin = confirm(`BTube par ${actionName} karne ke liye Sign in zaroori hai.\n\nKya aap abhi Sign in karna chahte hain?`);
+                if (wantsLogin) {
+                    window.BTubeAPI.signInWithGoogle().then(u => {
+                        if (u) {
+                            alert(`Sign in safal raha! Welcome ${u.name}`);
+                            if (callback) callback(u);
+                        }
+                    });
+                }
+                return false;
+            }
+            if (callback) callback(user);
+            return true;
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             currentDocId = params.get('id');
@@ -117,18 +136,18 @@
 
             let finalStreamUrl = null;
 
-            // 1. Agar docId hai toh Firestore se asli details load karein
             if (currentDocId && window.BTubeAPI) {
                 try {
                     const videoDoc = await window.BTubeAPI.getVideoById(currentDocId);
                     if (videoDoc) {
-                        document.getElementById('watchTitle').innerText = videoDoc.title || 'Untitled Video';
-                        document.getElementById('channelName').innerText = videoDoc.channel || 'Charandas Bhaskar';
-                        document.getElementById('chAvatar').innerText = (videoDoc.channel || 'CB').substring(0,2).toUpperCase();
+                        const safeTitle = videoDoc.title || videoDoc.name || 'BTube Video';
+                        const safeCh = videoDoc.channel || 'BTube Official';
+                        document.getElementById('watchTitle').innerText = safeTitle;
+                        document.getElementById('channelName').innerText = safeCh;
+                        document.getElementById('chAvatar').innerText = safeCh.substring(0,2).toUpperCase();
                         document.getElementById('watchViews').innerText = `${videoDoc.views || 0} views`;
                         if (videoDoc.videoUrl) finalStreamUrl = videoDoc.videoUrl;
 
-                        // Increment view on Firestore
                         window.BTubeAPI.recordView(currentDocId);
                         loadComments();
                     }
@@ -137,36 +156,26 @@
                 }
             }
 
-            // 2. Fallbacks
-            if (!finalStreamUrl && paramUrl) {
-                finalStreamUrl = decodeURIComponent(paramUrl);
-            }
+            if (!finalStreamUrl && paramUrl) finalStreamUrl = decodeURIComponent(paramUrl);
             if (paramTitle && document.getElementById('watchTitle').innerText === 'Loading Video...') {
                 document.getElementById('watchTitle').innerText = decodeURIComponent(paramTitle);
             }
-            if (!finalStreamUrl) {
-                finalStreamUrl = FALLBACK_STREAM;
-            }
+            if (!finalStreamUrl) finalStreamUrl = FALLBACK_STREAM;
 
-            // 3. Assign Video Source
             player.src = finalStreamUrl;
             player.load();
 
-            // Mobile Autoplay Attempt (Muted allow karta hai bina freeze ke)
             player.play().then(() => {
                 overlay.style.display = 'none';
             }).catch(() => {
-                // Autoplay block hone par user tap ke liye overlay button dikhayega
                 overlay.style.display = 'flex';
             });
         });
 
-        // 1-Tap Force Play
         function forcePlayStream() {
             overlay.style.display = 'none';
             player.muted = false;
             player.play().catch(e => {
-                console.log('Play retry:', e);
                 player.play();
             });
         }
@@ -174,7 +183,6 @@
         player.onplay = () => { overlay.style.display = 'none'; };
         player.onpause = () => { overlay.style.display = 'flex'; };
 
-        // Comments Handling
         async function loadComments() {
             if (!currentDocId || !db) return;
             const snap = await db.collection('videos').doc(currentDocId).collection('comments').orderBy('createdAt', 'desc').get();
@@ -190,32 +198,43 @@
             });
         }
 
+        // 1. Protected Comment
         async function submitComment() {
             const input = document.getElementById('commentInput');
             const txt = input.value.trim();
-            if (!txt || !currentDocId || !db) return;
+            if (!txt) return;
 
-            await db.collection('videos').doc(currentDocId).collection('comments').add({
-                user: localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar',
-                text: txt,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            checkAuth("comment karne", async (user) => {
+                if (!currentDocId || !db) return;
+                await db.collection('videos').doc(currentDocId).collection('comments').add({
+                    user: user.name || 'BTube User',
+                    text: txt,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                input.value = '';
+                loadComments();
             });
-
-            input.value = '';
-            loadComments();
         }
 
+        // 2. Protected Subscribe
         function toggleSub() {
-            const btn = document.getElementById('btnSubscribe');
-            btn.innerText = (btn.innerText === 'Subscribe') ? 'Subscribed' : 'Subscribe';
-            btn.style.background = (btn.innerText === 'Subscribed') ? '#333' : '#fff';
-            btn.style.color = (btn.innerText === 'Subscribed') ? '#fff' : '#000';
+            checkAuth("channel subscribe karne", () => {
+                const btn = document.getElementById('btnSubscribe');
+                const isSubbed = btn.innerText === 'Subscribed';
+                btn.innerText = isSubbed ? 'Subscribe' : 'Subscribed';
+                btn.style.background = isSubbed ? '#fff' : '#333';
+                btn.style.color = isSubbed ? '#000' : '#fff';
+            });
         }
 
+        // 3. Protected Like
         function toggleLike() {
-            const btn = document.getElementById('likeBtn');
-            const svg = btn.querySelector('svg');
-            svg.style.fill = (svg.style.fill === 'rgb(229, 9, 20)') ? '#fff' : '#e50914';
+            checkAuth("video like karne", () => {
+                const btn = document.getElementById('likeBtn');
+                const svg = btn.querySelector('svg');
+                const isLiked = svg.style.fill === 'rgb(229, 9, 20)';
+                svg.style.fill = isLiked ? '#fff' : '#e50914';
+            });
         }
 
         function shareVideo() {
