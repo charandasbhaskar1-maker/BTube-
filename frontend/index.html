@@ -1,322 +1,188 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f0f0f">
-  <title>BTube</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="../manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>BTube - Bharat Ka Video Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:60px; }
 
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <script src="../assets/js/api-client.js"></script>
+        .app-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1a1a1a; }
+        .logo-wrap { display:flex; align-items:center; gap:6px; font-size:19px; font-weight:800; letter-spacing:-0.5px; }
+        .logo-badge { background:#e50914; color:#fff; padding:2px 7px; border-radius:6px; font-size:16px; }
 
-  <style>
-    .bt-state {
-      padding: 48px 20px;
-      text-align: center;
-      color: #aaa;
-      line-height: 1.6;
-    }
-    .bt-state h3 { color: #fff; }
-    .bt-button {
-      display: inline-block;
-      padding: 11px 20px;
-      margin-top: 12px;
-      border-radius: 22px;
-      color: white;
-      background: #e50914;
-      text-decoration: none;
-      font-weight: 700;
-    }
-    .bt-video-card { margin-bottom: 24px; }
-    .bt-thumb {
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #181818;
-      object-fit: contain;
-      border-radius: 10px;
-    }
-    .bt-video-info {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 4px;
-    }
-    .bt-avatar {
-      flex: 0 0 40px;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: #e50914;
-      color: white;
-      display: grid;
-      place-items: center;
-      font-weight: 700;
-    }
-    .bt-title {
-      display: block;
-      color: white;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 600;
-      overflow-wrap: anywhere;
-    }
-    .bt-meta {
-      display: block;
-      margin-top: 6px;
-      color: #aaa;
-      font-size: 12px;
-    }
-    .bt-shorts-row {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 8px 0 20px;
-    }
-    .bt-short-card {
-      display: block;
-      flex: 0 0 145px;
-      color: white;
-      text-decoration: none;
-    }
-    .bt-short-thumb {
-      width: 145px;
-      height: 230px;
-      border-radius: 10px;
-      background: #181818;
-      object-fit: contain;
-    }
-    .bt-short-title {
-      display: block;
-      padding-top: 8px;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-    .bt-error { color: #ffb4b4; }
-  </style>
+        /* Chips Bar */
+        .chips-bar { display:flex; gap:8px; padding:10px 16px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
+        .chips-bar::-webkit-scrollbar { display:none; }
+        .chip { background:#222; border:none; color:#fff; padding:7px 14px; border-radius:16px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer; }
+        .chip.active { background:#fff; color:#000; }
+
+        /* Feed Cards */
+        .feed-container { display:flex; flex-direction:column; gap:16px; }
+        .video-card { display:flex; flex-direction:column; cursor:pointer; }
+        .thumb-box { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
+        .thumb-box img { width:100%; height:100%; object-fit:cover; }
+        .duration-badge { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.8); font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; }
+
+        .video-meta { display:flex; gap:12px; padding:12px 16px; }
+        .ch-avatar { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; flex-shrink:0; }
+        .meta-col { display:flex; flex-direction:column; gap:3px; }
+        .v-title { font-size:14px; font-weight:600; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .v-sub { font-size:12px; color:#aaa; }
+
+        /* Shorts Shelf */
+        .shorts-shelf { padding:14px 16px; border-top:1px solid #222; border-bottom:1px solid #222; display:flex; flex-direction:column; gap:12px; }
+        .shelf-title { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; }
+        .shelf-title svg { width:20px; height:20px; fill:#e50914; }
+        .shorts-row { display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; }
+        .shorts-row::-webkit-scrollbar { display:none; }
+        .short-thumb-card { width:135px; aspect-ratio:9/16; border-radius:10px; background:#222; overflow:hidden; position:relative; flex-shrink:0; cursor:pointer; }
+        .short-thumb-card img { width:100%; height:100%; object-fit:cover; }
+        .short-label { position:absolute; bottom:8px; left:8px; right:8px; font-size:11px; font-weight:700; line-height:1.2; text-shadow:0 1px 4px rgba(0,0,0,0.9); }
+
+        /* Bottom Nav */
+        .bottom-nav-bar { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
+        .nav-btn.active { color:#fff; font-weight:700; }
+        .nav-btn svg { width:22px; height:22px; fill:currentColor; }
+
+        .empty-placeholder { text-align:center; padding:60px 20px; color:#777; font-size:14px; }
+    </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
-  <header class="bt-header">
-    <a href="index.html" class="bt-brand">
-      <svg viewBox="0 0 32 24" class="bt-logo-svg" aria-hidden="true">
-        <rect width="32" height="24" rx="7" fill="#FF0000"/>
-        <path d="M9 5.5h7c2.2 0 3.8 1.3 3.8 3.3 0 1.4-.9 2.5-2.3 3 1.7.5 2.7 1.8 2.7 3.4 0 2.2-1.8 3.3-4.2 3.3H9z" fill="#fff"/>
-        <path d="M12 7.8V11l3.5-1.6zM12 13v3.2l3.8-1.6z" fill="#f00"/>
-      </svg>
-      <span class="bt-brand-text">B<span>Tube</span></span>
-    </a>
-    <div class="bt-header-icons">
-      <a href="../pages/cast.html" class="header-icon-btn" aria-label="Cast">Cast</a>
-      <a href="../pages/notifications.html" class="header-icon-btn" aria-label="Notifications">♧</a>
-      <a href="../pages/search.html" class="header-icon-btn" aria-label="Search">⌕</a>
-    </div>
-  </header>
 
-  <nav class="category-tray" aria-label="Video categories">
-    <button class="cat-pill active" onclick="filterFeed('All',this)">All</button>
-    <button class="cat-pill" onclick="filterFeed('Music',this)">Music</button>
-    <button class="cat-pill" onclick="filterFeed('Chhattisgarhi',this)">Chhattisgarhi</button>
-    <button class="cat-pill" onclick="filterFeed('Vlogs',this)">Vlogs</button>
-    <button class="cat-pill" onclick="filterFeed('Tech',this)">Tech</button>
-  </nav>
+    <header class="app-header">
+        <div class="logo-wrap">
+            <span class="logo-badge">B</span>
+            <span>BTube</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+            <a href="../pages/search.html" style="color:#fff; text-decoration:none;">
+                <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:#fff;"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </a>
+            <a href="../pages/channel.html" style="text-decoration:none;">
+                <div style="width:26px; height:26px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff;">CB</div>
+            </a>
+        </div>
+    </header>
 
-  <main class="video-stream-feed" id="videoFeedArea">
-    <div class="bt-state" id="feedLoading">Firebase से वीडियो लोड हो रहे हैं…</div>
-
-    <section id="shortsContainer" style="display:none;padding:0 12px;">
-      <h3>Shorts</h3>
-      <div id="dynamicShortsSlider" class="bt-shorts-row"></div>
-    </section>
-
-    <div id="dynamicVideosContainer" style="padding:0 12px;"></div>
-
-    <div class="bt-state" id="emptyStateBox" style="display:none;">
-      <h3>अभी कोई वीडियो नहीं है</h3>
-      <p>Firebase में असली वीडियो अपलोड होने के बाद वे यहाँ दिखाई देंगे।</p>
-      <a href="../pages/upload-video.html" class="bt-button">+ वीडियो अपलोड करें</a>
+    <!-- Chips Filter -->
+    <div class="chips-bar">
+        <button class="chip active" onclick="filterCategory('All', this)">All</button>
+        <button class="chip" onclick="filterCategory('Chhattisgarhi', this)">Chhattisgarhi</button>
+        <button class="chip" onclick="filterCategory('Music', this)">Music</button>
+        <button class="chip" onclick="filterCategory('Vlogs', this)">Vlogs</button>
+        <button class="chip" onclick="filterCategory('Tech', this)">Tech</button>
     </div>
 
-    <div class="bt-state" id="errorStateBox" style="display:none;">
-      <h3>वीडियो लोड नहीं हो पाए</h3>
-      <p id="errorMessage" class="bt-error">इंटरनेट या Firebase सेटिंग जाँचें।</p>
-      <button class="bt-button" onclick="loadFirebaseRealFeed()">दोबारा कोशिश करें</button>
-    </div>
-  </main>
+    <!-- Feed Container -->
+    <main class="feed-container" id="feedContainer">
+        <div class="empty-placeholder">Connecting to Firestore Cloud...</div>
+    </main>
 
-  <nav class="bottom-nav-bar">
-    <a href="index.html" class="nav-tab-item active"><span>⌂</span><span>Home</span></a>
-    <a href="../pages/shorts.html" class="nav-tab-item"><span>▶</span><span>Shorts</span></a>
-    <a href="../pages/upload-video.html" class="nav-plus-circle" aria-label="Upload">+</a>
-    <a href="../pages/subscriptions.html" class="nav-tab-item"><span>▤</span><span>Subscriptions</span></a>
-    <a href="../pages/profile.html" class="nav-tab-item"><span>●</span><span>You</span></a>
-  </nav>
+    <!-- Navigation -->
+    <nav class="bottom-nav-bar">
+        <a href="index.html" class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="../pages/shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="../pages/upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="../pages/subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="../pages/profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
+    </nav>
 
-  <script>
-    let allRealFeedItems = [];
+    <script>
+        let allVideos = [];
+        let allShorts = [];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      loadFirebaseRealFeed();
-    });
+        window.addEventListener('DOMContentLoaded', async () => {
+            const feed = await window.BTubeAPI.getFeed('all');
+            allVideos = feed.filter(i => (i.type || 'video') === 'video');
+            allShorts = feed.filter(i => (i.type || 'video') === 'short');
 
-    function makeText(tag, className, value) {
-      const el = document.createElement(tag);
-      if (className) el.className = className;
-      el.textContent = value == null ? '' : String(value);
-      return el;
-    }
-
-    function safeVideoUrl(url) {
-      try {
-        const parsed = new URL(url, location.href);
-        return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-      } catch (_) {
-        return false;
-      }
-    }
-
-    function makeThumbnail(item, isShort) {
-      const img = document.createElement('img');
-      img.className = isShort ? 'bt-short-thumb' : 'bt-thumb';
-      img.alt = item.title || 'Video thumbnail';
-      img.loading = 'lazy';
-
-      // नकली/demo thumbnail का उपयोग नहीं किया जाता।
-      if (item.thumb && safeVideoUrl(item.thumb)) {
-        img.src = item.thumb;
-      } else {
-        img.alt = 'इस वीडियो का thumbnail उपलब्ध नहीं है';
-      }
-      return img;
-    }
-
-    function makeWatchUrl(item) {
-      return '../pages/watch.html?id=' + encodeURIComponent(item.id);
-    }
-
-    function renderShort(item) {
-      if (!item.id || !safeVideoUrl(item.videoUrl)) return null;
-
-      const card = document.createElement('a');
-      card.className = 'bt-short-card';
-      card.href = '../pages/shorts.html?id=' + encodeURIComponent(item.id);
-      card.appendChild(makeThumbnail(item, true));
-      card.appendChild(makeText('span', 'bt-short-title', item.title || 'बिना शीर्षक'));
-      return card;
-    }
-
-    function renderVideo(item) {
-      if (!item.id || !safeVideoUrl(item.videoUrl)) return null;
-      if (String(item.visibility || 'Public').toLowerCase() !== 'public') return null;
-
-      const category = String(item.category || item.description || '');
-      const card = document.createElement('article');
-      card.className = 'bt-video-card feed-video-card';
-      card.dataset.cat = 'all ' + category.toLowerCase();
-
-      const link = document.createElement('a');
-      link.href = makeWatchUrl(item);
-      link.appendChild(makeThumbnail(item, false));
-      card.appendChild(link);
-
-      const info = document.createElement('div');
-      info.className = 'bt-video-info';
-
-      const channel = String(item.channel || 'BTube Creator');
-      const avatar = makeText('div', 'bt-avatar',
-        channel.trim().split(/\s+/).map(part => part[0] || '').join('').slice(0,2).toUpperCase()
-      );
-
-      const details = document.createElement('div');
-      details.style.minWidth = '0';
-      const title = makeText('a', 'bt-title', item.title || 'बिना शीर्षक');
-      title.href = makeWatchUrl(item);
-
-      const meta = makeText('span', 'bt-meta',
-        channel + ' • ' + Number(item.views || 0) + ' views'
-      );
-
-      details.append(title, meta);
-      info.append(avatar, details);
-      card.appendChild(info);
-      return card;
-    }
-
-    async function loadFirebaseRealFeed() {
-      const loading = document.getElementById('feedLoading');
-      const videoContainer = document.getElementById('dynamicVideosContainer');
-      const shortsContainer = document.getElementById('shortsContainer');
-      const shortsSlider = document.getElementById('dynamicShortsSlider');
-      const empty = document.getElementById('emptyStateBox');
-      const error = document.getElementById('errorStateBox');
-
-      loading.style.display = 'block';
-      empty.style.display = 'none';
-      error.style.display = 'none';
-      videoContainer.replaceChildren();
-      shortsSlider.replaceChildren();
-      shortsContainer.style.display = 'none';
-
-      try {
-        if (!window.BTubeAPI || typeof window.BTubeAPI.getFeed !== 'function') {
-          throw new Error('BTube API लोड नहीं हुआ।');
-        }
-
-        allRealFeedItems = await window.BTubeAPI.getFeed('all');
-        if (!Array.isArray(allRealFeedItems)) allRealFeedItems = [];
-
-        const shorts = allRealFeedItems.filter(item =>
-          String(item.type || 'video').toLowerCase() === 'short'
-        );
-        const videos = allRealFeedItems.filter(item =>
-          String(item.type || 'video').toLowerCase() !== 'short'
-        );
-
-        shorts.forEach(item => {
-          const card = renderShort(item);
-          if (card) shortsSlider.appendChild(card);
+            renderFeed(allVideos);
         });
 
-        if (shortsSlider.childElementCount) {
-          shortsContainer.style.display = 'block';
+        function filterCategory(cat, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            if (cat === 'All') {
+                renderFeed(allVideos);
+            } else {
+                const filtered = allVideos.filter(v => v.category === cat || (v.title && v.title.toLowerCase().includes(cat.toLowerCase())));
+                renderFeed(filtered);
+            }
         }
 
-        videos.forEach(item => {
-          const card = renderVideo(item);
-          if (card) videoContainer.appendChild(card);
-        });
+        function renderFeed(videos) {
+            const container = document.getElementById('feedContainer');
+            container.innerHTML = '';
 
-        loading.style.display = 'none';
-        if (!shortsSlider.childElementCount && !videoContainer.childElementCount) {
-          empty.style.display = 'flex';
+            if (videos.length === 0 && allShorts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-placeholder">
+                        <h3 style="margin-bottom:8px;">Abhi koi video upload nahi hui hai</h3>
+                        <p style="font-size:12px; margin-bottom:20px;">BTube par pehla real video upload karein!</p>
+                        <a href="../pages/upload.html" style="background:#e50914; color:#fff; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:700;">+ Upload Video</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Render Shorts Shelf agar shorts available hain
+            if (allShorts.length > 0) {
+                const shelf = document.createElement('div');
+                shelf.className = 'shorts-shelf';
+                shelf.innerHTML = `
+                    <div class="shelf-title">
+                        <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+                        <span>Shorts</span>
+                    </div>
+                    <div class="shorts-row" id="shortsRow"></div>
+                `;
+                container.appendChild(shelf);
+
+                const row = shelf.querySelector('#shortsRow');
+                allShorts.slice(0, 6).forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'short-thumb-card';
+                    card.onclick = () => window.location.href = `../pages/shorts.html?id=${s.id}`;
+                    card.innerHTML = `
+                        <img src="${s.thumb || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'}">
+                        <div class="short-label">${s.title}</div>
+                    `;
+                    row.appendChild(card);
+                });
+            }
+
+            // Render Long Videos
+            videos.forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl)}`;
+                card.innerHTML = `
+                    <div class="thumb-box">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
+                        <span class="duration-badge">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="video-meta">
+                        <div class="ch-avatar">${(v.channel || 'CB').substring(0,2).toUpperCase()}</div>
+                        <div class="meta-col">
+                            <div class="v-title">${v.title}</div>
+                            <div class="v-sub">${v.channel || 'Charandas Bhaskar'} • ${v.views || 0} views • Cloud Realtime</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
-      } catch (err) {
-        loading.style.display = 'none';
-        error.style.display = 'block';
-        document.getElementById('errorMessage').textContent =
-          'Firebase से वीडियो नहीं आए। Firebase SDK, Firestore Rules और नेटवर्क जाँचें।';
-        console.error('BTube feed error:', err);
-      }
-    }
-
-    function filterFeed(category, button) {
-      document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-      button.classList.add('active');
-
-      document.querySelectorAll('.feed-video-card').forEach(card => {
-        const itemCategory = card.dataset.cat || '';
-        card.style.display =
-          category === 'All' || itemCategory.includes(category.toLowerCase())
-            ? ''
-            : 'none';
-      });
-    }
-  </script>
+    </script>
 </body>
 </html>
