@@ -2,494 +2,145 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
     <title>Your videos - BTube</title>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        .yv-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
+        .header-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back svg { width:22px; height:22px; fill:#fff; }
 
-        body {
-            background: #0f0f0f;
-            color: #fff;
-            padding-bottom: 72px;
-        }
+        .tabs-tray { display:flex; border-bottom:1px solid #222; padding:0 16px; }
+        .tab-btn { background:none; border:none; color:#aaa; padding:12px 14px; font-size:14px; font-weight:700; cursor:pointer; }
+        .tab-btn.active { color:#fff; border-bottom:2px solid #fff; }
 
-        a { color: inherit; text-decoration: none; }
+        .video-list { display:flex; flex-direction:column; min-height:260px; }
+        .video-row-item { display:flex; gap:12px; padding:12px 16px; border-bottom:1px solid #1a1a1a; cursor:pointer; }
+        .thumb-box { width:120px; height:68px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
+        .thumb-box.is-short { width:55px; height:85px; }
+        .thumb-box img { width:100%; height:100%; object-fit:cover; }
+        .dur-badge { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.8); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
 
-        .yv-header {
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            border-bottom: 1px solid #272727;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 100;
-        }
+        .meta-box { flex:1; display:flex; flex-direction:column; justify-content:space-between; min-width:0; }
+        .title-text { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .badges-row { display:flex; align-items:center; gap:6px; margin:4px 0; font-size:11px; font-weight:700; }
+        .badge-vis { color:#2ecc71; }
+        .stats-sub { font-size:11px; color:#888; }
+        .empty-hint { padding:40px 16px; text-align:center; color:#666; font-size:13px; }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn-back, .add-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .btn-back svg, .add-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
-        .page-title { font-size: 18px; font-weight: 700; }
-
-        .tabs-tray {
-            display: flex;
-            border-bottom: 1px solid #272727;
-            padding: 0 12px;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #aaa;
-            padding: 14px 12px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .tab-btn.active {
-            color: #fff;
-            border-bottom: 2px solid #fff;
-        }
-
-        .video-list { display: flex; flex-direction: column; }
-
-        .video-row-item {
-            display: flex;
-            gap: 12px;
-            padding: 14px 16px;
-            border-bottom: 1px solid #202020;
-            cursor: pointer;
-        }
-
-        .thumb-box {
-            width: 124px;
-            height: 70px;
-            border-radius: 7px;
-            overflow: hidden;
-            background: #252525;
-            position: relative;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .thumb-box.is-short {
-            width: 58px;
-            height: 86px;
-        }
-
-        .thumb-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-thumb {
-            font-size: 11px;
-            color: #aaa;
-            text-align: center;
-            padding: 5px;
-        }
-
-        .dur-badge {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(0,0,0,.85);
-            font-size: 10px;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
-
-        .meta-box {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 6px;
-        }
-
-        .title-text {
-            font-size: 14px;
-            font-weight: 600;
-            line-height: 1.35;
-            overflow-wrap: anywhere;
-        }
-
-        .badges-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            font-size: 11px;
-            color: #aaa;
-        }
-
-        .badge-vis { color: #6bdc9a; }
-        .stats-sub { font-size: 11px; color: #888; }
-
-        .status-box {
-            padding: 48px 24px;
-            text-align: center;
-            color: #aaa;
-            line-height: 1.6;
-        }
-
-        .status-box h2 {
-            font-size: 18px;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .status-box p { font-size: 14px; margin-bottom: 18px; }
-
-        .primary-btn {
-            display: inline-block;
-            padding: 11px 18px;
-            background: #e50914;
-            color: white;
-            border: none;
-            border-radius: 22px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .bottom-nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 58px;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #272727;
-            z-index: 1000;
-        }
-
-        .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            font-size: 10px;
-            color: #aaa;
-        }
-
-        .nav-tab-item.active { color: #fff; font-weight: 700; }
-
-        .nav-tab-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
+        .bottom-nav-bar { position:fixed; bottom:0; left:0; width:100%; height:54px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-tab-item { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:3px; }
+        .nav-tab-item.active { color:#fff; font-weight:700; }
+        .nav-tab-item svg { width:22px; height:22px; fill:currentColor; }
     </style>
-</head>
 
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
+</head>
 <body>
     <header class="yv-header">
         <div class="header-left">
-            <button class="btn-back" onclick="location.href='../frontend/index.html'" aria-label="Back">
+            <button class="btn-back" onclick="window.location.href='../frontend/index.html'">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            <span class="page-title">Your videos</span>
+            <span style="font-size:18px; font-weight:700;">Your videos</span>
         </div>
-
-        <a class="add-btn" href="upload-video.html" aria-label="Upload video">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <a href="upload.html" style="color:#fff; text-decoration:none;">
+            <svg viewBox="0 0 24 24" style="width:22px; height:22px; fill:#fff;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         </a>
     </header>
 
     <div class="tabs-tray">
-        <button class="tab-btn active" id="btnTabVideos" onclick="setTab('videos')">
-            Videos (<span id="cVideos">0</span>)
-        </button>
-        <button class="tab-btn" id="btnTabShorts" onclick="setTab('shorts')">
-            Shorts (<span id="cShorts">0</span>)
-        </button>
-        <button class="tab-btn" id="btnTabLive" onclick="setTab('live')">
-            Live (0)
-        </button>
+        <button class="tab-btn active" id="btnVideosTab" onclick="setTab('video')">Videos (<span id="cVideos">0</span>)</button>
+        <button class="tab-btn" id="btnShortsTab" onclick="setTab('short')">Shorts (<span id="cShorts">0</span>)</button>
+        <button class="tab-btn">Live (0)</button>
     </div>
 
-    <main class="video-list" id="listContainer">
-        <div class="status-box">
-            <p>आपके वीडियो लोड हो रहे हैं...</p>
-        </div>
-    </main>
+    <div class="video-list" id="listContainer">
+        <div class="empty-hint">Loading cloud videos...</div>
+    </div>
 
     <nav class="bottom-nav-bar">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload-video.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Create</span>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subscriptions</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item active">
-            <div style="width:20px;height:20px;border-radius:50%;background:#e50914;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#fff;">BT</div>
-            <span>You</span>
-        </a>
+        <a href="../frontend/index.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-tab-item" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-tab-item active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
     </nav>
 
-    <!-- Firebase SDKs must load before api-client.js -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="../assets/js/api-client.js"></script>
-
     <script>
-        let currentTab = 'videos';
-        let allItems = [];
+        let currentTabMode = 'video';
+        let cloudItems = [];
 
-        function isShort(item) {
-            return String(item.type || '').toLowerCase() === 'short';
-        }
-
-        function safeText(value) {
-            return String(value ?? '');
-        }
-
-        function showMessage(title, message, showUpload = false) {
-            const container = document.getElementById('listContainer');
-            container.replaceChildren();
-
-            const box = document.createElement('div');
-            box.className = 'status-box';
-
-            const heading = document.createElement('h2');
-            heading.textContent = title;
-
-            const paragraph = document.createElement('p');
-            paragraph.textContent = message;
-
-            box.append(heading, paragraph);
-
-            if (showUpload) {
-                const button = document.createElement('a');
-                button.className = 'primary-btn';
-                button.href = 'upload-video.html';
-                button.textContent = 'Upload करें';
-                box.appendChild(button);
-            }
-
-            container.appendChild(box);
-        }
-
-        function makeItemRow(item) {
-            const short = isShort(item);
-            const row = document.createElement('article');
-            row.className = 'video-row-item';
-            row.setAttribute('role', 'link');
-            row.tabIndex = 0;
-
-            const thumbBox = document.createElement('div');
-            thumbBox.className = 'thumb-box' + (short ? ' is-short' : '');
-
-            if (item.thumb) {
-                const img = document.createElement('img');
-                img.src = item.thumb;
-                img.alt = '';
-                img.loading = 'lazy';
-                img.onerror = () => {
-                    img.remove();
-                    const fallback = document.createElement('span');
-                    fallback.className = 'no-thumb';
-                    fallback.textContent = 'No thumbnail';
-                    thumbBox.appendChild(fallback);
-                };
-                thumbBox.appendChild(img);
-            } else {
-                const placeholder = document.createElement('span');
-                placeholder.className = 'no-thumb';
-                placeholder.textContent = 'No thumbnail';
-                thumbBox.appendChild(placeholder);
-            }
-
-            if (!short && item.duration) {
-                const duration = document.createElement('span');
-                duration.className = 'dur-badge';
-                duration.textContent = safeText(item.duration);
-                thumbBox.appendChild(duration);
-            }
-
-            const meta = document.createElement('div');
-            meta.className = 'meta-box';
-
-            const title = document.createElement('div');
-            title.className = 'title-text';
-            title.textContent = safeText(item.title || 'Untitled video');
-
-            const badges = document.createElement('div');
-            badges.className = 'badges-row';
-
-            const visibility = document.createElement('span');
-            visibility.className = 'badge-vis';
-            visibility.textContent = safeText(item.visibility || 'Public');
-            badges.appendChild(visibility);
-
-            const stats = document.createElement('div');
-            stats.className = 'stats-sub';
-            stats.textContent = `${Number(item.views || 0)} views`;
-
-            meta.append(title, badges, stats);
-            row.append(thumbBox, meta);
-
-            const openItem = () => {
-                if (!item.id) {
-                    showMessage('वीडियो नहीं खुल पाया', 'इस वीडियो की ID उपलब्ध नहीं है।');
-                    return;
-                }
-
-                const page = short ? 'shorts.html' : 'watch.html';
-                window.location.href = `${page}?id=${encodeURIComponent(item.id)}`;
-            };
-
-            row.addEventListener('click', openItem);
-            row.addEventListener('keydown', event => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    openItem();
-                }
-            });
-
-            return row;
-        }
-
-        function render() {
-            const videos = allItems.filter(item => !isShort(item));
-            const shorts = allItems.filter(item => isShort(item));
-
-            document.getElementById('cVideos').textContent = videos.length;
-            document.getElementById('cShorts').textContent = shorts.length;
-
-            const activeVideos = currentTab === 'videos' ? videos : shorts;
-            const container = document.getElementById('listContainer');
-            container.replaceChildren();
-
-            if (currentTab === 'live') {
-                showMessage('Live videos', 'अभी आपके कोई Live videos नहीं हैं।');
-                return;
-            }
-
-            if (activeVideos.length === 0) {
-                showMessage(
-                    currentTab === 'videos' ? 'अभी कोई वीडियो नहीं है' : 'अभी कोई Short नहीं है',
-                    currentTab === 'videos'
-                        ? 'आपके अपलोड किए हुए वीडियो यहाँ दिखाई देंगे।'
-                        : 'आपके अपलोड किए हुए Shorts यहाँ दिखाई देंगे।',
-                    true
-                );
-                return;
-            }
-
-            activeVideos.forEach(item => container.appendChild(makeItemRow(item)));
-        }
-
-        function setTab(tab) {
-            currentTab = tab;
-
-            document.getElementById('btnTabVideos').classList.toggle('active', tab === 'videos');
-            document.getElementById('btnTabShorts').classList.toggle('active', tab === 'shorts');
-            document.getElementById('btnTabLive').classList.toggle('active', tab === 'live');
-
-            render();
-        }
-
-        async function initPage() {
+        window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
-            if (params.get('tab') === 'shorts') currentTab = 'shorts';
+            if (params.get('tab') === 'shorts') currentTabMode = 'short';
 
-            setTab(currentTab);
+            await loadCloudData();
+        });
 
-            if (!window.BTubeAPI || typeof BTubeAPI.getMyVideos !== 'function') {
-                showMessage('सेवा उपलब्ध नहीं है', 'Firebase और api-client.js की सेटिंग जाँचें।');
+        async function loadCloudData() {
+            cloudItems = await window.BTubeAPI.getFeed('all');
+
+            const vList = cloudItems.filter(i => (i.type || 'video') === 'video');
+            const sList = cloudItems.filter(i => (i.type || 'video') === 'short');
+
+            document.getElementById('cVideos').innerText = vList.length;
+            document.getElementById('cShorts').innerText = sList.length;
+
+            renderList();
+        }
+
+        function setTab(mode) {
+            currentTabMode = mode;
+            document.getElementById('btnVideosTab').classList.toggle('active', mode === 'video');
+            document.getElementById('btnShortsTab').classList.toggle('active', mode === 'short');
+            renderList();
+        }
+
+        function renderList() {
+            const container = document.getElementById('listContainer');
+            container.innerHTML = '';
+
+            const list = cloudItems.filter(i => (i.type || 'video') === currentTabMode);
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-hint">Koi ${currentTabMode} nahi mila.</div>`;
                 return;
             }
 
-            try {
-                const user = firebase.auth().currentUser;
+            list.forEach(item => {
+                const isShort = (item.type === 'short');
+                const row = document.createElement('div');
+                row.className = 'video-row-item';
 
-                if (!user) {
-                    showMessage(
-                        'Login जरूरी है',
-                        'अपने अपलोड किए हुए वीडियो देखने के लिए पहले BTube में Login करें।'
-                    );
+                row.onclick = () => {
+                    if (isShort) {
+                        window.location.href = `shorts.html?id=${item.id}`;
+                    } else {
+                        window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl)}`;
+                    }
+                };
 
-                    firebase.auth().onAuthStateChanged(async signedInUser => {
-                        if (!signedInUser) return;
-                        await loadMyVideos();
-                    });
-                    return;
-                }
-
-                await loadMyVideos();
-            } catch (error) {
-                console.error('Your videos error:', error);
-                showMessage('वीडियो लोड नहीं हुए', error.message || 'Firebase सेटिंग और इंटरनेट जाँचें।');
-            }
+                row.innerHTML = `
+                    <div class="thumb-box ${isShort ? 'is-short' : ''}">
+                        <img src="${item.thumb}">
+                        ${!isShort ? `<span class="dur-badge">${item.duration || '03:45'}</span>` : ''}
+                    </div>
+                    <div class="meta-box">
+                        <div class="title-text">${item.title}</div>
+                        <div class="badges-row"><span class="badge-vis">🌐 ${item.visibility || 'Public'}</span></div>
+                        <div class="stats-sub">${item.views || 0} views • Cloud Realtime</div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
         }
-
-        async function loadMyVideos() {
-            showMessage('लोड हो रहा है', 'आपके अपलोड किए हुए वीडियो लाए जा रहे हैं...');
-
-            try {
-                allItems = await BTubeAPI.getMyVideos();
-                if (!Array.isArray(allItems)) allItems = [];
-                render();
-            } catch (error) {
-                console.error('Could not load user videos:', error);
-                showMessage(
-                    'वीडियो लोड नहीं हुए',
-                    error.message || 'Firestore की Security Rules और इंटरनेट कनेक्शन जाँचें।'
-                );
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
