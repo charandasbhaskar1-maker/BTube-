@@ -70,7 +70,7 @@
         <a href="shorts.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="upload.html" class="nav-tab-item" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="subscriptions.html" class="nav-tab-item"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="profile.html" class="nav-tab-item active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
+        <a href="profile.html" class="nav-tab-item active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
     </nav>
 
     <script>
@@ -80,7 +80,6 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('tab') === 'shorts') currentTabMode = 'short';
-
             await loadCloudData();
         });
 
@@ -119,21 +118,24 @@
                 const row = document.createElement('div');
                 row.className = 'video-row-item';
 
+                // Safe Title Logic: undefined ko rokein
+                const safeTitle = item.title || item.name || 'BTube Official Video';
+
                 row.onclick = () => {
                     if (isShort) {
                         window.location.href = `shorts.html?id=${item.id}`;
                     } else {
-                        window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl)}`;
+                        window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl || '')}`;
                     }
                 };
 
                 row.innerHTML = `
                     <div class="thumb-box ${isShort ? 'is-short' : ''}">
-                        <img src="${item.thumb}">
+                        <img src="${item.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
                         ${!isShort ? `<span class="dur-badge">${item.duration || '03:45'}</span>` : ''}
                     </div>
                     <div class="meta-box">
-                        <div class="title-text">${item.title}</div>
+                        <div class="title-text">${safeTitle}</div>
                         <div class="badges-row"><span class="badge-vis">🌐 ${item.visibility || 'Public'}</span></div>
                         <div class="stats-sub">${item.views || 0} views • Cloud Realtime</div>
                     </div>
