@@ -9,10 +9,12 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
+        /* Top Header Icons */
         .you-header { height:52px; display:flex; align-items:center; justify-content:flex-end; gap:18px; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; }
         .hdr-icon { background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; text-decoration:none; cursor:pointer; }
         .hdr-icon svg { width:22px; height:22px; fill:#fff; }
 
+        /* Profile Hero Section */
         .profile-hero { padding:8px 16px 16px; display:flex; flex-direction:column; gap:14px; }
         .profile-row { display:flex; align-items:center; gap:16px; }
         .avatar-lg { width:74px; height:74px; border-radius:50%; background:linear-gradient(135deg, #ff1a1a 0%, #8b0000 100%); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; color:#fff; box-shadow:0 4px 15px rgba(229,9,20,0.5); flex-shrink:0; overflow:hidden; }
@@ -24,11 +26,13 @@
         .user-handle { font-size:12px; color:#aaa; }
         .link-view-channel { font-size:12px; color:#aaa; text-decoration:none; display:flex; align-items:center; gap:3px; margin-top:2px; font-weight:600; cursor:pointer; }
 
+        /* Small Buttons (Switch / Add Channel) */
         .pill-actions { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
         .pill-actions::-webkit-scrollbar { display:none; }
         .pill-btn { background:#222; color:#fff; border:none; border-radius:18px; padding:8px 14px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; white-space:nowrap; cursor:pointer; }
         .pill-btn svg { width:16px; height:16px; fill:#fff; }
 
+        /* YouTube Studio Red Banner */
         .studio-card { margin:10px 16px; background:#181818; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; border:1px solid #252525; }
         .studio-left { display:flex; align-items:center; gap:12px; }
         .studio-logo { width:38px; height:38px; border-radius:8px; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; }
@@ -36,6 +40,7 @@
         .studio-title { font-size:14px; font-weight:700; }
         .studio-sub { font-size:11px; color:#888; }
 
+        /* Carousels & Sections */
         .section-block { padding:14px 0 10px; border-top:1px solid #1a1a1a; display:flex; flex-direction:column; gap:10px; }
         .section-hdr { display:flex; align-items:center; justify-content:space-between; padding:0 16px; }
         .section-title { font-size:16px; font-weight:800; }
@@ -50,6 +55,7 @@
         .h-title { font-size:12px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .h-meta { font-size:10px; color:#888; }
 
+        /* Account Actions List Rows */
         .account-list { display:flex; flex-direction:column; border-top:1px solid #1a1a1a; margin-top:8px; }
         .acc-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; text-decoration:none; color:#fff; font-size:14px; font-weight:600; border-bottom:1px solid #141414; }
         .acc-left { display:flex; align-items:center; gap:16px; }
@@ -99,6 +105,7 @@
         .nav-btn svg { width:22px; height:22px; fill:currentColor; }
     </style>
 
+    <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -106,6 +113,7 @@
 </head>
 <body>
 
+    <!-- Header Icons -->
     <header class="you-header">
         <button class="hdr-icon" onclick="alert('Searching for Cast screens...')">
             <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
@@ -118,6 +126,7 @@
         </a>
     </header>
 
+    <!-- Profile Hero Info -->
     <div class="profile-hero">
         <div class="profile-row">
             <div class="avatar-lg" id="userAvatar">BT</div>
@@ -157,7 +166,7 @@
         <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
     </a>
 
-    <!-- History Carousel -->
+    <!-- History Carousel Section -->
     <div class="section-block">
         <div class="section-hdr">
             <span class="section-title">History</span>
@@ -168,7 +177,7 @@
         </div>
     </div>
 
-    <!-- Playlists Carousel -->
+    <!-- Playlists Carousel Section -->
     <div class="section-block">
         <div class="section-hdr">
             <span class="section-title">Playlists</span>
@@ -212,10 +221,32 @@
             <span class="badge-count">Offline</span>
         </a>
 
+        <!-- Premium Link -->
         <a href="premium.html" class="acc-row">
             <div class="acc-left">
-                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                <svg viewBox="0 0 24 24" style="fill:#e50914;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                </svg>
                 <span>Get BTube Premium</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+                <span style="background:#e50914; color:#fff; font-size:10px; font-weight:800; padding:2px 6px; border-radius:4px; letter-spacing:0.5px;">PREMIUM</span>
+                <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+            </div>
+        </a>
+
+        <a href="time-watched.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 10 10 10-4.48 10-10S17.52 2 12 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                <span>Time watched</span>
+            </div>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+        </a>
+
+        <a href="help.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                <span>Help and feedback</span>
             </div>
             <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
         </a>
@@ -290,7 +321,7 @@
                 return;
             }
 
-            // Get Channels
+            // Get Channels for this authenticated account
             let channels = await window.BTubeAPI.getAllUserChannels();
 
             // Auto-create default primary channel if 0 channels exist
