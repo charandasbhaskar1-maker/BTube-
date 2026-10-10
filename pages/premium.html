@@ -136,6 +136,30 @@
             max-width: 300px;
         }
 
+        /* Active Membership Card */
+        .active-prem-box {
+            display: none;
+            width: 100%;
+            max-width: 340px;
+            background: #18222b;
+            border: 1px solid #3ea6ff;
+            border-radius: 16px;
+            padding: 16px;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .active-prem-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2ecc71;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
         /* 3. FEATURES LIST */
         .prem-features-section {
             padding: 20px 16px;
@@ -240,7 +264,7 @@
             color: #999999;
         }
 
-        /* 5. WORKING PAYMENT SHEET MODAL */
+        /* 5. PAYMENT SHEET MODAL */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -357,7 +381,6 @@
             cursor: pointer;
         }
 
-        /* Verification Form */
         .verify-box {
             width: 100%;
             display: flex;
@@ -394,7 +417,6 @@
             cursor: pointer;
         }
 
-        /* Toast */
         .toast-pop {
             position: fixed;
             bottom: 70px;
@@ -417,12 +439,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -433,7 +455,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -443,31 +465,33 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="prem-header">
-        <a href="profile.html" class="btn-back">
+        <button class="btn-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <div class="header-title-box">
             <div class="brand-badge">B</div>
             <span class="brand-name">Premium</span>
@@ -481,9 +505,22 @@
             <span><span style="color:#e50914;">B</span>Tube Premium</span>
         </div>
         <p class="hero-sub-head">All BTube. No interruptions. Listen in background, offline and ad-free.</p>
-        <span class="hero-trial-tag">Instant Direct UPI Activation</span>
-        <button class="btn-get-trial" onclick="openPaymentModal(129, 'Individual Plan')">Get BTube Premium</button>
-        <span class="trial-terms-txt">₹129/month • Direct Creator Support • Cancel anytime</span>
+        
+        <div id="trialActionWrap" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            <span class="hero-trial-tag">Instant Direct UPI Activation</span>
+            <button class="btn-get-trial" onclick="openPaymentModal(129, 'Individual Plan')">Get BTube Premium</button>
+            <span class="trial-terms-txt">₹129/month • Direct Creator Transfer • Cancel anytime</span>
+        </div>
+
+        <!-- Active Premium Status Box -->
+        <div class="active-prem-box" id="activePremCard">
+            <div class="active-prem-badge">
+                <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#2ecc71;"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                <span>Active Premium Member</span>
+            </div>
+            <div style="font-size:14px; font-weight:700;">Unlimited Ad-Free & Background Play Active</div>
+            <div style="font-size:11px; color:#aaa;" id="premUtrInfo">Verified on device</div>
+        </div>
     </section>
 
     <!-- 3. PREMIUM ADVANTAGES -->
@@ -496,7 +533,7 @@
             </div>
             <div class="feat-info">
                 <span class="feat-title">Ad-free streaming</span>
-                <span class="feat-desc">Enjoy unlimited regional videos, panthi songs and tutorials without video or banner ads.</span>
+                <span class="feat-desc">Enjoy unlimited regional videos, cultural tracks and tutorials without video or banner ads.</span>
             </div>
         </div>
 
@@ -522,7 +559,7 @@
     </section>
 
     <!-- 4. MEMBERSHIP PLANS -->
-    <section class="plans-section">
+    <section class="plans-section" id="plansSection">
         <span class="sec-heading">Choose your plan</span>
 
         <div class="plan-box recommended" onclick="openPaymentModal(129, 'Individual Plan')">
@@ -550,7 +587,7 @@
         </div>
     </section>
 
-    <!-- 5. REAL UPI PAYMENT MODAL (DIRECT TRANSFER TO CREATOR) -->
+    <!-- 5. REAL UPI PAYMENT MODAL -->
     <div class="drawer-overlay" id="paymentDrawer" onclick="closeDrawerOnBackdrop(event)">
         <div class="payment-sheet-card">
             <div class="sheet-head">
@@ -562,26 +599,23 @@
                 <span style="font-size:12px; color:#aaa;">Pay Directly via Any UPI App</span>
                 <div class="upi-amount-badge" id="upiAmountText">₹129</div>
 
-                <!-- Live Dynamic QR Code -->
                 <div class="qr-code-box">
                     <img id="upiQrImg" src="" alt="Scan QR to Pay">
                 </div>
 
                 <div class="upi-id-pill" onclick="copyUpiId()">
-                    <span id="creatorUpiId">charandasbhaskar156-1@oksbi</span>
+                    <span id="creatorUpiIdDisplay">charandasbhaskar156-1@oksbi</span>
                     <span style="color:#3ea6ff; font-weight:700;">Copy</span>
                 </div>
 
-                <!-- Direct App Launch Deep Link -->
                 <a id="upiDeepLink" href="#" class="btn-upi-direct-app">
                     <span>Pay via GPay / PhonePe / Paytm</span>
                 </a>
             </div>
 
-            <!-- Transaction Verification -->
             <div class="verify-box">
-                <span style="font-size:12px; color:#aaa;">Payment hone ke baad UTR / Transaction ID dalein:</span>
-                <input type="text" id="utrInput" class="verify-input" placeholder="e.g. 4289xxxxxxxx (12 Digit UTR)">
+                <span style="font-size:12px; color:#aaa;">Payment hone ke baad 12-digit UTR / Reference No. dalein:</span>
+                <input type="text" id="utrInput" class="verify-input" placeholder="e.g. 4289xxxxxxxx">
                 <button class="btn-verify-submit" onclick="verifyAndActivate()">Confirm & Activate Premium</button>
             </div>
         </div>
@@ -607,27 +641,46 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div>
             <span>You</span>
         </a>
     </nav>
 
-    <!-- SCRIPT LOGIC -->
     <script>
-        // SET YOUR ACTUAL UPI ID HERE
-        const CREATOR_UPI_ID = "charandasbhaskar@upi";
+        const CREATOR_UPI_ID = "charandasbhaskar156-1@oksbi";
         const CREATOR_NAME = "Charandas Bhaskar";
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            syncNavAvatar();
+            checkExistingPremium();
+            document.getElementById('creatorUpiIdDisplay').innerText = CREATOR_UPI_ID;
         });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function checkExistingPremium() {
+            const isPrem = localStorage.getItem('btube_is_premium') === 'true';
+            if (isPrem) {
+                document.getElementById('trialActionWrap').style.display = 'none';
+                const card = document.getElementById('activePremCard');
+                card.style.display = 'flex';
+                const utr = localStorage.getItem('btube_premium_utr');
+                if (utr) {
+                    document.getElementById('premUtrInfo').innerText = `Ref: ${utr} • All features active`;
+                }
+            }
+        }
 
         function showToast(msg) {
             const t = document.getElementById('premToast');
@@ -640,13 +693,9 @@
             document.getElementById('selectedPlanTitle').innerText = `${planName} (₹${amount})`;
             document.getElementById('upiAmountText').innerText = `₹${amount}`;
 
-            // Build NPCI Standard UPI Link
             const upiUrl = `upi://pay?pa=${encodeURIComponent(CREATOR_UPI_ID)}&pn=${encodeURIComponent(CREATOR_NAME)}&am=${amount}&cu=INR&tn=BTube%20Premium%20Subscription`;
-            
-            // Set Direct App Link
             document.getElementById('upiDeepLink').href = upiUrl;
 
-            // Generate Instant Dynamic QR Code
             const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
             document.getElementById('upiQrImg').src = qrApi;
 
@@ -668,20 +717,19 @@
 
         function verifyAndActivate() {
             const utr = document.getElementById('utrInput').value.trim();
-            if (!utr || utr.length < 8) {
-                showToast('Kripya valid 12-digit UPI UTR number dalein');
+            if (!utr || utr.length < 6) {
+                showToast('Kripya valid UPI UTR / Reference number dalein');
                 return;
             }
 
-            // Save UTR transaction proof and grant Premium
             localStorage.setItem('btube_is_premium', 'true');
             localStorage.setItem('btube_premium_utr', utr);
 
             closePaymentModal();
             showToast('🎉 Payment verified! BTube Premium activated!');
             setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 1200);
+                checkExistingPremium();
+            }, 600);
         }
     </script>
 </body>
