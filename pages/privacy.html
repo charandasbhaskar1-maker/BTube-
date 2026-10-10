@@ -16,6 +16,10 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             background-color: #0f0f0f;
             color: #ffffff;
@@ -147,6 +151,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            scroll-margin-top: 110px;
         }
 
         .section-header-row {
@@ -271,12 +276,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -287,7 +292,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -297,40 +302,42 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="policy-header">
-        <a href="about.html" class="btn-back">
+        <button class="btn-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <span class="header-title">Privacy Policy</span>
     </header>
 
     <!-- 2. QUICK ANCHOR CHIPS -->
     <nav class="chip-nav-bar">
         <a href="#overview" class="filter-chip active" onclick="activateChip(this)">Overview</a>
-        <a href="#storage" class="filter-chip" onclick="activateChip(this)">Device Storage</a>
+        <a href="#storage" class="filter-chip" onclick="activateChip(this)">Hybrid Data Model</a>
         <a href="#tracking" class="filter-chip" onclick="activateChip(this)">Zero Tracking</a>
-        <a href="#control" class="filter-chip" onclick="activateChip(this)">Data Control</a>
+        <a href="#control" class="filter-chip" onclick="activateChip(this)">User Control</a>
         <a href="#security" class="filter-chip" onclick="activateChip(this)">Security</a>
     </nav>
 
@@ -338,39 +345,39 @@
     <section class="policy-hero-card" id="overview">
         <span class="hero-badge-tag">Privacy & Security Hub</span>
         <h1 class="hero-heading">BTube Privacy Policy</h1>
-        <p class="hero-desc">BTube creator-first aur privacy-by-design architecture par aadharit hai. Hum aapke viewing habits aur personal files ka poora aadar karte hain aur unhe surrender nahi karte.</p>
-        <span style="font-size:11px; color:#88b4db; margin-top:2px;">Last updated: October 2026 • Version 2.4</span>
+        <p class="hero-desc">BTube creator-first aur privacy-by-design architecture par aadharit hai. Hum aapke viewing habits aur personal media ka poora aadar karte hain.</p>
+        <span style="font-size:11px; color:#88b4db; margin-top:2px;">Last updated: October 2026 • Production Version 2.4</span>
     </section>
 
     <!-- 4. POLICY SECTIONS -->
     <main class="policy-content-wrap">
 
-        <!-- SECTION 1: DEVICE STORAGE -->
+        <!-- SECTION 1: HYBRID DATA MODEL -->
         <section class="policy-section-box" id="storage">
             <div class="section-header-row">
                 <div class="section-icon-badge" style="background: rgba(62, 166, 255, 0.15);">
                     <svg viewBox="0 0 24 24" style="fill: #3ea6ff;"><path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/></svg>
                 </div>
-                <h2 class="section-title-txt">Local Device Storage Architecture</h2>
+                <h2 class="section-title-txt">Hybrid Cloud & Local Storage Architecture</h2>
             </div>
-            <p class="section-para">BTube par aapka profile aur channel setup aapke phone ke browser ki secure <strong>HTML5 LocalStorage</strong> me hi surakshit rehta hai:</p>
+            <p class="section-para">BTube par creator metadata aur playback sessions surakshit aur transparent tareeqe se manage hote hain:</p>
 
             <div class="privacy-grid">
                 <div class="privacy-grid-card">
-                    <span class="grid-card-head">Profile DP & Banner</span>
-                    <span class="grid-card-body">Aapke local storage me compress hokar rahti hai, third-party server par upload nahi hoti.</span>
+                    <span class="grid-card-head">Cloud Profile Sync</span>
+                    <span class="grid-card-body">Firebase Auth aur Firestore ke zariye aapka channel name, handle aur uploaded videos authenticated devices par sync hote hain.</span>
                 </div>
                 <div class="privacy-grid-card">
                     <span class="grid-card-head">Custom Playlists</span>
-                    <span class="grid-card-body">Aapki banayi hui playlists aur save kiye huye gaane aapke device me private rehte hain.</span>
+                    <span class="grid-card-body">Aapki custom collections aur save kiye hue gaane device aur authenticated cloud state me private rehte hain.</span>
                 </div>
                 <div class="privacy-grid-card">
                     <span class="grid-card-head">Offline Downloads</span>
-                    <span class="grid-card-body">Downloads phone ke offline browser cache me save hote hain bina external internet leak ke.</span>
+                    <span class="grid-card-body">Offline videos aapke phone ke browser storage me save hote hain jisse bina internet playback possible hota hai.</span>
                 </div>
                 <div class="privacy-grid-card">
-                    <span class="grid-card-head">Time Watched Stats</span>
-                    <span class="grid-card-body">Daily watch minutes aur weekly bar chart calculate hokar aapke device par hi render hota hai.</span>
+                    <span class="grid-card-head">Watch Sessions</span>
+                    <span class="grid-card-body">Watch history aur watch later queues aapke direct control me hote hain jinhe ek click me clear kiya ja sakta hai.</span>
                 </div>
             </div>
         </section>
@@ -381,18 +388,18 @@
                 <div class="section-icon-badge" style="background: rgba(46, 204, 113, 0.15);">
                     <svg viewBox="0 0 24 24" style="fill: #2ecc71;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
                 </div>
-                <h2 class="section-title-txt">No Ad-Tracking or Data Selling</h2>
+                <h2 class="section-title-txt">No Data Selling or Third-Party Brokers</h2>
             </div>
-            <p class="section-para">Hum kisi bhi third-party data broker ya marketing company ko aapka data monitor ya sell nahi karte:</p>
+            <p class="section-para">Hum kisi bhi ad network ya external broker ko user behavioral profile sell nahi karte:</p>
 
             <div class="policy-rules-list">
                 <div class="rule-item alert-success">
                     <span class="rule-head">Zero Cross-App Tracking</span>
-                    <span class="rule-body">BTube app ke bahar aap kis website ya application ko use karte hain, hum use track nahi karte.</span>
+                    <span class="rule-body">BTube app ke bahar aapki internet browsing ya dusri apps ki activity hum monitor nahi karte.</span>
                 </div>
                 <div class="rule-item alert-success">
-                    <span class="rule-head">No Location Snooping</span>
-                    <span class="rule-body">Background GPS ya precise location permissions ki koi zaroorat nahi hoti.</span>
+                    <span class="rule-head">No Invasive Location Tracking</span>
+                    <span class="rule-body">Playback ya streaming ke liye device ke background GPS coordinates collect nahi kiye jaate.</span>
                 </div>
             </div>
         </section>
@@ -405,20 +412,20 @@
                 </div>
                 <h2 class="section-title-txt">Your Rights & Complete Data Control</h2>
             </div>
-            <p class="section-para">Aap apne poore record ko Settings aur History menu se bina kisi rukawat ke manage aur delete kar sakte hain:</p>
+            <p class="section-para">Aap apne records ko Settings aur History menu se bina kisi rukawat ke manage aur purge kar sakte hain:</p>
 
             <div class="policy-rules-list">
                 <div class="rule-item">
-                    <span class="rule-head">Clear Watch & Search History</span>
-                    <span class="rule-body">History page ke 3-dots menu se ek tap me saari watch history clear ki ja sakti hai.</span>
+                    <span class="rule-head">Clear Watch History</span>
+                    <span class="rule-body">History page ke options drawer se ek tap me saari watch sessions clear ya pause ki ja sakti hain.</span>
                 </div>
                 <div class="rule-item">
                     <span class="rule-head">Purge Offline Downloads</span>
-                    <span class="rule-body">Downloads page se offline storage bar ke zariye aap sabhi videos ko kisi bhi waqt delete kar sakte hain.</span>
+                    <span class="rule-body">Downloads page se storage manager ke zariye saved videos instant delete ki ja sakti hain.</span>
                 </div>
                 <div class="rule-item alert-warning">
-                    <span class="rule-head">Reset Channel Settings</span>
-                    <span class="rule-body">Browser cookies ya cache clear karne se local profile data fresh start ho jata hai.</span>
+                    <span class="rule-head">Delete Uploaded Videos</span>
+                    <span class="rule-body">Creator Studio aur Video Editor page par jakar upload ki hui videos permanently remove ki ja sakti hain.</span>
                 </div>
             </div>
         </section>
@@ -431,14 +438,14 @@
                 </div>
                 <h2 class="section-title-txt">Platform Security Standards</h2>
             </div>
-            <p class="section-para">BTube SSL/TLS Encryption ke sath GitHub Pages aur PWA sandbox environment me run karta hai, jisse cross-site script injections aur unauthorized tampering rokhi jaati hai.</p>
+            <p class="section-para">BTube SSL/TLS Encryption ke sath GitHub Pages aur PWA sandbox environment me run karta hai, jisse cross-site script injections aur unauthorized tampering secure rehti hai.</p>
         </section>
 
     </main>
 
     <!-- 5. FOOTER -->
     <footer class="policy-footer">
-        <span class="footer-note">© 2026 BTube Inc. Encrypted & Secure Under Privacy Acts.</span>
+        <span class="footer-note">© 2026 BTube. Encrypted & Secure Under Privacy Standards.</span>
         <span class="footer-note">Built with creator privacy in mind 🇮🇳</span>
     </footer>
 
@@ -460,7 +467,7 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
@@ -468,12 +475,14 @@
     <!-- SCRIPT LOGIC -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
             }
         });
 
