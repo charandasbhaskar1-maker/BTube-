@@ -81,12 +81,43 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* 3. DEVICE LIST */
+        /* 3. DEVICE LIST & EMPTY STATE */
         .device-section {
             padding: 8px 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        .empty-devices-box {
+            background: #181818;
+            border: 1px dashed #333;
+            border-radius: 14px;
+            padding: 30px 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .empty-devices-box svg {
+            width: 44px;
+            height: 44px;
+            fill: #555;
+        }
+
+        .empty-devices-box h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .empty-devices-box p {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+            max-width: 260px;
         }
 
         .device-card-item {
@@ -99,10 +130,6 @@
             justify-content: space-between;
             cursor: pointer;
             transition: background 0.15s;
-        }
-
-        .device-card-item:active {
-            background: #252525;
         }
 
         .device-left-wrap {
@@ -152,7 +179,6 @@
             border-radius: 14px;
             font-size: 12px;
             font-weight: 700;
-            display: none;
             cursor: pointer;
         }
 
@@ -274,9 +300,9 @@
 
     <!-- 1. TOP HEADER -->
     <header class="cast-header">
-        <a href="../frontend/index.html" class="btn-back-nav">
+        <button class="btn-back-nav" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <span class="cast-title">Connect to a device</span>
     </header>
 
@@ -286,35 +312,9 @@
         <span id="scanStatusText">Searching for nearby screens...</span>
     </div>
 
-    <!-- 3. DEVICES LIST -->
-    <main class="device-section">
-        <!-- Device 1 -->
-        <div class="device-card-item" id="device-1" onclick="toggleConnectDevice('device-1', 'Smart TV (Living Room)')">
-            <div class="device-left-wrap">
-                <div class="device-icon-box">
-                    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-                </div>
-                <div class="device-texts">
-                    <span class="device-name">Smart TV (Living Room)</span>
-                    <span class="device-status-txt">Ready to connect</span>
-                </div>
-            </div>
-            <button class="btn-disconnect" onclick="event.stopPropagation(); disconnectDevice('device-1')">Disconnect</button>
-        </div>
-
-        <!-- Device 2 -->
-        <div class="device-card-item" id="device-2" onclick="toggleConnectDevice('device-2', 'Android TV (Bedroom)')">
-            <div class="device-left-wrap">
-                <div class="device-icon-box">
-                    <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
-                </div>
-                <div class="device-texts">
-                    <span class="device-name">Android TV (Bedroom)</span>
-                    <span class="device-status-txt">Ready to connect</span>
-                </div>
-            </div>
-            <button class="btn-disconnect" onclick="event.stopPropagation(); disconnectDevice('device-2')">Disconnect</button>
-        </div>
+    <!-- 3. DEVICES LIST (Dynamic - Real Paired TVs) -->
+    <main class="device-section" id="deviceListContainer">
+        <!-- Rendered dynamically -->
     </main>
 
     <!-- 4. LINK WITH TV CODE OPTION -->
@@ -338,47 +338,70 @@
                 <span>Enter TV Code</span>
                 <button class="tv-code-close" onclick="closeTvCodeModal()">✕</button>
             </div>
-            <p style="font-size: 13px; color: #aaa;">Find the 12-digit code in your TV settings under "Link with TV code".</p>
-            <input type="number" id="tvCodeInput" class="tv-code-input" placeholder="000 000 000 000">
+            <p style="font-size: 13px; color: #aaa;">Find the 12-digit code in your Smart TV settings under "Link with TV code".</p>
+            <input type="text" id="tvCodeInput" class="tv-code-input" placeholder="000 000 000 000" maxlength="14">
             <button class="btn-link-submit" onclick="submitTvCode()">Link TV</button>
         </div>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Stop scanning animation after 3 seconds
-        setTimeout(() => {
-            const spinner = document.getElementById('scanSpinner');
-            const text = document.getElementById('scanStatusText');
-            if (spinner) spinner.style.display = 'none';
-            if (text) text.innerText = 'Devices on your Wi-Fi network';
-        }, 3000);
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPairedDevices();
 
-        function toggleConnectDevice(cardId, name) {
-            const card = document.getElementById(cardId);
-            const status = card.querySelector('.device-status-txt');
-            const disBtn = card.querySelector('.btn-disconnect');
-
-            if (status.innerText.includes('Connected')) return;
-
-            status.innerText = 'Connecting...';
-            status.style.color = '#3ea6ff';
-
+            // Real Wi-Fi scan timeout (YouTube scan simulation)
             setTimeout(() => {
-                status.innerText = 'Connected ✓';
-                status.style.color = '#2ecc71';
-                disBtn.style.display = 'block';
-            }, 1000);
+                const spinner = document.getElementById('scanSpinner');
+                const text = document.getElementById('scanStatusText');
+                if (spinner) spinner.style.display = 'none';
+                if (text) text.innerText = 'Scan finished';
+            }, 2500);
+        });
+
+        function getSavedDevices() {
+            return JSON.parse(localStorage.getItem('btube_linked_tvs') || '[]');
         }
 
-        function disconnectDevice(cardId) {
-            const card = document.getElementById(cardId);
-            const status = card.querySelector('.device-status-txt');
-            const disBtn = card.querySelector('.btn-disconnect');
+        function renderPairedDevices() {
+            const container = document.getElementById('deviceListContainer');
+            container.innerHTML = '';
+            const devices = getSavedDevices();
 
-            status.innerText = 'Ready to connect';
-            status.style.color = '#888888';
-            disBtn.style.display = 'none';
+            if (devices.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-devices-box">
+                        <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                        <h4>No devices found</h4>
+                        <p>No screen detected on your current Wi-Fi. You can link manually using TV code below.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            devices.forEach((dev, idx) => {
+                const card = document.createElement('div');
+                card.className = 'device-card-item';
+                card.innerHTML = `
+                    <div class="device-left-wrap">
+                        <div class="device-icon-box">
+                            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>
+                        </div>
+                        <div class="device-texts">
+                            <span class="device-name">${dev.name}</span>
+                            <span class="device-status-txt" style="color:#2ecc71;">Connected ✓</span>
+                        </div>
+                    </div>
+                    <button class="btn-disconnect" onclick="removeDevice(${idx})">Unlink</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function removeDevice(idx) {
+            let devices = getSavedDevices();
+            devices.splice(idx, 1);
+            localStorage.setItem('btube_linked_tvs', JSON.stringify(devices));
+            renderPairedDevices();
         }
 
         function openTvCodeModal() {
@@ -397,10 +420,17 @@
         function submitTvCode() {
             const val = document.getElementById('tvCodeInput').value.trim();
             if (val.length >= 6) {
+                let devices = getSavedDevices();
+                devices.push({
+                    name: `Linked Smart TV (${val.substring(0, 4)}...)`,
+                    code: val,
+                    linkedAt: Date.now()
+                });
+                localStorage.setItem('btube_linked_tvs', JSON.stringify(devices));
                 closeTvCodeModal();
-                alert('Connected to TV successfully!');
+                renderPairedDevices();
             } else {
-                document.getElementById('tvCodeInput').style.borderColor = '#ff4e4e';
+                alert("Please enter a valid TV code.");
             }
         }
     </script>
