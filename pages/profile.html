@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Profile - BTube</title>
+    <title>You - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
 
         .profile-hdr { padding:24px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #1c1c1c; }
-        .avatar-box { width:68px; height:68px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800; }
+        .avatar-box { width:68px; height:68px; border-radius:50%; background:linear-gradient(135deg, #ff1a1a, #8b0000); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; box-shadow:0 4px 12px rgba(229,9,20,0.4); }
         .u-info { display:flex; flex-direction:column; gap:4px; }
-        .u-name { font-size:18px; font-weight:800; }
+        .u-name { font-size:18px; font-weight:800; display:flex; align-items:center; gap:6px; }
+        .verified-tick { width:16px; height:16px; fill:#e50914; }
         .u-handle { font-size:12px; color:#aaa; }
 
-        .menu-grid { padding:14px 16px; display:flex; flex-direction:column; gap:4px; }
+        .menu-grid { padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
         .menu-row { display:flex; align-items:center; justify-content:space-between; padding:14px 12px; background:#141414; border-radius:10px; text-decoration:none; color:#fff; font-size:14px; font-weight:600; }
         .row-left { display:flex; align-items:center; gap:14px; }
         .row-left svg { width:22px; height:22px; fill:#aaa; }
@@ -35,10 +36,13 @@
 <body>
 
     <header class="profile-hdr">
-        <div class="avatar-box" id="avatarDisplay">CB</div>
+        <div class="avatar-box">BT</div>
         <div class="u-info">
-            <div class="u-name" id="nameDisplay">Charandas Bhaskar</div>
-            <div class="u-handle">@charandasbhaskar • Creator Studio</div>
+            <div class="u-name">
+                <span>BTube Official</span>
+                <svg class="verified-tick" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <div class="u-handle">@btubeofficial • Official Platform Channel</div>
             <span style="font-size:12px; color:#2ecc71;">● Cloud Firestore Live Connected</span>
         </div>
     </header>
@@ -85,13 +89,12 @@
         </a>
     </div>
 
-    <!-- Navigation -->
     <nav class="bottom-nav">
         <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
         <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">CB</div><span>You</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
     </nav>
 
     <script>
