@@ -2,236 +2,363 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <title>BTube Shorts</title>
+
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; width: 100%; height: 100%;
-      background: #000; color: #fff;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
     }
-    body { overflow: hidden; }
-    .top {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: 54px; padding: 0 16px;
-      display: flex; align-items: center;
-      justify-content: space-between; z-index: 10;
-      background: linear-gradient(#000b, transparent);
+
+    header {
+      height: 56px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #101010;
     }
-    .brand { font-size: 20px; font-weight: 800; }
-    a { color: #fff; text-decoration: none; }
-    .top a { font-size: 14px; }
-    #shortsViewport {
-      position: absolute; inset: 0 0 56px;
-      overflow-y: auto; scroll-snap-type: y mandatory;
+
+    .brand {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .brand span {
+      color: #ff253a;
+    }
+
+    a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .upload-link {
+      background: #e50914;
+      padding: 9px 14px;
+      border-radius: 22px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    #status {
+      padding: 20px;
+      color: #bbb;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    #shorts {
+      height: calc(100dvh - 112px);
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
       scrollbar-width: none;
     }
-    #shortsViewport::-webkit-scrollbar { display: none; }
-    .short-slide {
-      position: relative; width: 100%; height: 100%;
-      min-height: 100%; background: #111;
-      scroll-snap-align: start; overflow: hidden;
+
+    #shorts::-webkit-scrollbar {
+      display: none;
     }
-    .short-media-video {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%; object-fit: contain;
+
+    .short-card {
+      position: relative;
+      height: calc(100dvh - 112px);
+      max-height: 850px;
+      width: 100%;
+      background: #111;
+      overflow: hidden;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .short-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       background: #000;
     }
-    .scrim-bottom {
-      position: absolute; inset: 45% 0 0;
-      background: linear-gradient(transparent, #000d);
+
+    .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 50px 75px 22px 16px;
+      background: linear-gradient(transparent, rgba(0,0,0,.9));
       pointer-events: none;
     }
-    .shorts-meta-box {
-      position: absolute; left: 16px; right: 78px;
-      bottom: 22px; z-index: 2;
+
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
     }
-    .creator-user-name { font-size: 14px; font-weight: 700; }
-    .short-caption-text { font-size: 14px; line-height: 1.4; }
-    .shorts-rail {
-      position: absolute; right: 12px; bottom: 24px;
-      z-index: 3; display: flex; flex-direction: column;
-      gap: 20px; align-items: center;
+
+    .channel {
+      color: #ddd;
+      font-size: 13px;
+      margin-top: 8px;
     }
-    .rail-btn-unit {
-      color: #fff; background: #222a; border: 0;
-      border-radius: 50%; width: 44px; height: 44px;
+
+    .controls {
+      position: absolute;
+      right: 12px;
+      bottom: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .controls button {
+      border: 0;
+      border-radius: 50%;
+      background: rgba(45,45,45,.85);
+      color: white;
+      width: 46px;
+      height: 46px;
       font-size: 20px;
+      cursor: pointer;
     }
-    .rail-counter-txt { font-size: 11px; text-align: center; }
-    .bottom-nav-fixed {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      height: 56px; background: #080808;
-      border-top: 1px solid #222;
-      display: flex; justify-content: space-around;
-      align-items: center; z-index: 20;
-    }
-    .nav-tab-item {
-      color: #aaa; font-size: 11px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 4px;
-    }
-    .nav-tab-item.active { color: #fff; }
+
     .empty {
-      min-height: 100%; display: flex;
-      flex-direction: column; align-items: center;
-      justify-content: center; text-align: center;
-      padding: 28px; color: #ddd;
+      max-width: 360px;
+      margin: 65px auto;
+      padding: 24px;
+      text-align: center;
+      line-height: 1.7;
     }
-    .empty h2 { font-size: 20px; margin-bottom: 8px; }
-    .empty p { color: #aaa; line-height: 1.5; }
-    .empty a {
-      display: inline-block; background: #e50914;
-      padding: 11px 18px; border-radius: 24px;
-      margin-top: 12px; font-weight: 700;
+
+    .empty h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
     }
-    #status { padding: 24px; text-align: center; color: #aaa; }
+
+    .empty p {
+      color: #aaa;
+      margin-bottom: 22px;
+    }
+
+    footer {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      background: #101010;
+      border-top: 1px solid #292929;
+      font-size: 13px;
+    }
+
+    footer a.active {
+      color: #ff3548;
+    }
+
+    @media (min-width: 700px) {
+      #shorts {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+
+      .short-card {
+        max-width: 480px;
+        margin: 0 auto;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <header class="top">
-    <a href="../frontend/index.html" aria-label="वापस">←</a>
-    <div class="brand">BTube Shorts</div>
-    <a href="search.html">Search</a>
+  <header>
+    <a class="brand" href="../frontend/index.html">
+      B<span>Tube</span> Shorts
+    </a>
+    <a class="upload-link" href="upload-short.html">+ Upload Short</a>
   </header>
 
-  <main id="shortsViewport">
-    <div id="status">असली Shorts लोड हो रहे हैं…</div>
-  </main>
+  <div id="status" role="status">Firebase से असली Shorts लोड हो रहे हैं...</div>
+  <main id="shorts"></main>
 
-  <nav class="bottom-nav-fixed">
-    <a class="nav-tab-item" href="../frontend/index.html">⌂<span>Home</span></a>
-    <a class="nav-tab-item active" href="shorts.html">▶<span>Shorts</span></a>
-    <a class="nav-tab-item" href="upload.html">＋<span>Create</span></a>
-    <a class="nav-tab-item" href="subscriptions.html">▤<span>Subscriptions</span></a>
-    <a class="nav-tab-item" href="profile.html">●<span>You</span></a>
-  </nav>
+  <footer>
+    <a href="../frontend/index.html">⌂ Home</a>
+    <a class="active" href="shorts.html">▶ Shorts</a>
+    <a href="upload-short.html">＋ Upload</a>
+    <a href="your-videos.html">You</a>
+  </footer>
 
+  <!-- Firebase SDK पहले लोड होना जरूरी है -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
   <script src="../assets/js/api-client.js"></script>
 
   <script>
-    const viewport = document.getElementById('shortsViewport');
+    const statusBox = document.getElementById('status');
+    const shortsBox = document.getElementById('shorts');
 
-    function makeElement(tag, className, text) {
-      const el = document.createElement(tag);
-      if (className) el.className = className;
-      if (text !== undefined) el.textContent = text;
-      return el;
-    }
-
-    function showEmpty(message, withUpload) {
-      viewport.replaceChildren();
-      const box = makeElement('section', 'empty');
-      box.append(
-        makeElement('h2', '', 'अभी कोई Short उपलब्ध नहीं है'),
-        makeElement('p', '', message)
-      );
-      if (withUpload) {
-        const link = makeElement('a', '', 'अपना Short अपलोड करें');
-        link.href = 'upload-short.html';
-        box.append(link);
-      }
-      viewport.append(box);
-    }
-
-    function createShort(item) {
-      const slide = makeElement('section', 'short-slide');
-      const video = makeElement('video', 'short-media-video');
-      video.src = item.videoUrl;
-      video.controls = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = 'metadata';
-
-      const gradient = makeElement('div', 'scrim-bottom');
-      const meta = makeElement('div', 'shorts-meta-box');
-      meta.append(
-        makeElement('div', 'creator-user-name',
-          item.channel || 'BTube Creator'),
-        makeElement('p', 'short-caption-text',
-          item.title || 'Untitled Short')
-      );
-
-      const rail = makeElement('div', 'shorts-rail');
-      const share = makeElement('button', 'rail-btn-unit', '↗');
-      share.type = 'button';
-      share.setAttribute('aria-label', 'Share Short');
-      share.onclick = async () => {
-        const url = new URL('watch.html', location.href);
-        url.searchParams.set('id', item.id);
-        try {
-          if (navigator.share) {
-            await navigator.share({
-              title: item.title || 'BTube Short',
-              url: url.href
-            });
-          } else {
-            await navigator.clipboard.writeText(url.href);
-            alert('लिंक कॉपी हो गया।');
-          }
-        } catch (e) {
-          if (e.name !== 'AbortError') alert('लिंक शेयर नहीं हो सका।');
-        }
-      };
-      rail.append(share);
-
-      slide.append(video, gradient, meta, rail);
-      return slide;
-    }
-
-    async function loadShorts() {
+    function isHttpUrl(value) {
       try {
-        if (!window.BTubeAPI ||
-            typeof window.BTubeAPI.getFeed !== 'function') {
-          throw new Error('BTube API लोड नहीं हुई।');
-        }
+        const url = new URL(value);
+        return url.protocol === 'https:' || url.protocol === 'http:';
+      } catch {
+        return false;
+      }
+    }
 
-        const results = await window.BTubeAPI.getFeed('short');
-        const shorts = Array.isArray(results)
-          ? results.filter(v =>
-              v && typeof v.videoUrl === 'string' &&
-              /^https?:\/\//i.test(v.videoUrl) &&
-              String(v.type || '').toLowerCase() === 'short')
-          : [];
+    function makeText(tag, className, value) {
+      const element = document.createElement(tag);
+      element.className = className;
+      element.textContent = value || '';
+      return element;
+    }
 
-        if (!shorts.length) {
-          showEmpty('जब कोई असली Short अपलोड होगा, वह यहाँ दिखाई देगा।', true);
-          return;
-        }
-
-        viewport.replaceChildren();
-        shorts.forEach(item => viewport.append(createShort(item)));
-
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            const video = entry.target.querySelector('video');
-            if (!video) return;
-            if (entry.isIntersecting) {
+    function makeButton(label, action) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.setAttribute('aria-label', action);
+      button.addEventListener('click', action === 'चलाएँ'
+        ? () => {
+            const video = button.closest('.short-card')
+                              .querySelector('video');
+            if (video.paused) {
               video.play().catch(() => {});
             } else {
               video.pause();
             }
-          });
-        }, { root: viewport, threshold: 0.7 });
+          }
+        : () => {});
+      return button;
+    }
 
-        viewport.querySelectorAll('.short-slide').forEach(slide =>
-          observer.observe(slide));
+    function showEmpty(message, showUpload) {
+      statusBox.textContent = '';
+      const box = document.createElement('section');
+      box.className = 'empty';
+
+      box.appendChild(makeText('h2', '', 'अभी कोई Short नहीं है'));
+      box.appendChild(makeText('p', '', message));
+
+      if (showUpload) {
+        const link = document.createElement('a');
+        link.className = 'upload-link';
+        link.href = 'upload-short.html';
+        link.textContent = 'अपना पहला Short अपलोड करें';
+        box.appendChild(link);
+      }
+
+      shortsBox.replaceChildren(box);
+    }
+
+    function renderShort(videoData) {
+      const card = document.createElement('section');
+      card.className = 'short-card';
+
+      const video = document.createElement('video');
+      video.src = videoData.videoUrl;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.loop = true;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'overlay';
+      overlay.appendChild(
+        makeText('div', 'title', videoData.title || 'Untitled Short')
+      );
+      overlay.appendChild(
+        makeText('div', 'channel',
+          '@' + (videoData.channel || 'BTube Creator'))
+      );
+
+      const controls = document.createElement('div');
+      controls.className = 'controls';
+
+      const play = makeButton('▶', 'चलाएँ');
+      controls.appendChild(play);
+
+      const share = document.createElement('button');
+      share.type = 'button';
+      share.textContent = '↗';
+      share.setAttribute('aria-label', 'शेयर करें');
+      share.addEventListener('click', async () => {
+        const shareData = {
+          title: videoData.title || 'BTube Short',
+          url: location.href
+        };
+
+        try {
+          if (navigator.share) {
+            await navigator.share(shareData);
+          } else if (navigator.clipboard) {
+            await navigator.clipboard.writeText(location.href);
+            share.textContent = '✓';
+          }
+        } catch (error) {
+          // उपयोगकर्ता ने शेयर विंडो बंद की हो तो कुछ नहीं करना।
+        }
+      });
+      controls.appendChild(share);
+
+      card.append(video, overlay, controls);
+      shortsBox.appendChild(card);
+    }
+
+    async function loadShorts() {
+      shortsBox.replaceChildren();
+      statusBox.textContent = 'Firebase से असली Shorts लोड हो रहे हैं...';
+
+      try {
+        if (!window.BTubeAPI ||
+            typeof window.BTubeAPI.getFeed !== 'function') {
+          throw new Error('BTube Firebase API लोड नहीं हुई।');
+        }
+
+        const records = await window.BTubeAPI.getFeed('short');
+
+        if (!Array.isArray(records)) {
+          throw new Error('Firebase से सही वीडियो सूची नहीं मिली।');
+        }
+
+        // केवल असली, सार्वजनिक Firebase Shorts दिखाएँ।
+        const realShorts = records.filter(item => {
+          const type = String(item.type || '').toLowerCase();
+          const visibility = String(item.visibility || '')
+                                .toLowerCase();
+
+          return type === 'short' &&
+                 visibility === 'public' &&
+                 isHttpUrl(item.videoUrl);
+        });
+
+        if (realShorts.length === 0) {
+          showEmpty(
+            'जब कोई सार्वजनिक Short अपलोड होगा, वह यहाँ दिखाई देगा।',
+            true
+          );
+          return;
+        }
+
+        statusBox.textContent = '';
+        realShorts.forEach(renderShort);
+
       } catch (error) {
         console.error('BTube Shorts load error:', error);
-        showEmpty(
-          'Shorts लोड नहीं हो पाए। इंटरनेट, Firebase सेटिंग और Firestore Rules जाँचें।',
-          false
-        );
+        statusBox.textContent =
+          'Shorts लोड नहीं हो पाए। इंटरनेट, Firebase कनेक्शन और Firestore Rules जाँचें।';
       }
     }
 
-    document.addEventListener('DOMContentLoaded', loadShorts);
+    loadShorts();
   </script>
 </body>
 </html>
