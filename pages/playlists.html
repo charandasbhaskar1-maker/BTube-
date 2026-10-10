@@ -2,980 +2,147 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
     <title>Playlists - BTube</title>
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            padding-bottom: 75px;
-            overflow-x: hidden;
-        }
-
-        /* 1. TOP HEADER */
-        .playlist-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn-back {
-            background: none;
-            border: none;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .btn-back svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-
-        .header-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .header-right-tools {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .btn-new-pl {
-            background: #272727;
-            border: 1px solid #383838;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-new-pl svg {
-            width: 14px;
-            height: 14px;
-            fill: #ffffff;
-        }
-
-        /* 2. SORT FILTER CHIPS */
-        .sort-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-bottom: 1px solid #1a1a1a;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .sort-bar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .sort-pill {
-            background: #212121;
-            color: #aaaaaa;
-            border: 1px solid #2d2d2d;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .sort-pill.active {
-            background: #ffffff;
-            color: #0f0f0f;
-            border-color: #ffffff;
-            font-weight: 700;
-        }
-
-        /* 3. PLAYLISTS GRID */
-        .playlist-grid-feed {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px 12px;
-            padding: 14px 16px;
-        }
-
-        .pl-card-box {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .pl-thumb-container {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #1e1e1e;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .pl-thumb-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-
-        .pl-center-icon {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .pl-center-icon svg {
-            width: 28px;
-            height: 28px;
-            fill: #ffffff;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
-        }
-
-        .pl-badge-banner {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 8px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .pl-meta-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 4px;
-        }
-
-        .pl-info-col {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .pl-title-text {
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.35;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .pl-sub-meta {
-            font-size: 11px;
-            color: #888888;
-        }
-
-        .btn-card-more {
-            background: none;
-            border: none;
-            color: #888888;
-            cursor: pointer;
-            padding: 2px;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-card-more svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* 4. IN-PAGE PLAYLIST DETAIL SHEET */
-        .playlist-view-sheet {
-            position: fixed;
-            inset: 0;
-            background: #0f0f0f;
-            z-index: 3000;
-            display: none;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .playlist-view-sheet.open {
-            display: flex;
-        }
-
-        .sheet-top-header {
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 10;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .sheet-hero-box {
-            padding: 16px;
-            background: linear-gradient(180deg, #1e1e1e 0%, #0f0f0f 100%);
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .sheet-hero-thumb {
-            width: 120px;
-            aspect-ratio: 16 / 9;
-            background: #252525;
-            border-radius: 8px;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .sheet-hero-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .sheet-hero-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .sheet-pl-title {
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .sheet-pl-owner {
-            font-size: 12px;
-            color: #aaaaaa;
-        }
-
-        .sheet-btn-row {
-            display: flex;
-            gap: 10px;
-            padding: 4px 16px 14px;
-        }
-
-        .btn-play-all {
-            flex: 1;
-            background: #ffffff;
-            color: #0f0f0f;
-            border: none;
-            padding: 8px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .btn-shuffle {
-            flex: 1;
-            background: #272727;
-            color: #ffffff;
-            border: 1px solid #333;
-            padding: 8px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-        }
-
-        .playlist-video-item {
-            display: flex;
-            padding: 10px 16px;
-            gap: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #181818;
-            text-decoration: none;
-            color: #ffffff;
-        }
-
-        .playlist-video-item:active {
-            background: #1c1c1c;
-        }
-
-        .item-thumb-frame {
-            width: 110px;
-            aspect-ratio: 16 / 9;
-            background: #222;
-            border-radius: 6px;
-            overflow: hidden;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .item-thumb-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .item-duration-tag {
-            position: absolute;
-            bottom: 3px;
-            right: 3px;
-            background: rgba(0,0,0,0.85);
-            font-size: 9px;
-            font-weight: 700;
-            padding: 1px 4px;
-            border-radius: 3px;
-        }
-
-        .item-details-col {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .item-title-txt {
-            font-size: 13px;
-            font-weight: 600;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .item-meta-txt {
-            font-size: 11px;
-            color: #aaaaaa;
-        }
-
-        /* 5. MODALS & DRAWERS */
-        .drawer-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.65);
-            z-index: 5000;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-overlay.open {
-            display: flex;
-        }
-
-        .drawer-sheet-card {
-            width: 100%;
-            background: #212121;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 18px 16px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.8);
-        }
-
-        .drawer-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #2d2d2d;
-        }
-
-        .drawer-title-txt {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .drawer-close-btn {
-            background: none;
-            border: none;
-            color: #aaaaaa;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .drawer-row-btn {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 10px 4px;
-            color: #ffffff;
-            background: none;
-            border: none;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: left;
-            border-radius: 8px;
-        }
-
-        .drawer-row-btn:active {
-            background: #2a2a2a;
-        }
-
-        .drawer-row-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: #ffffff;
-        }
-
-        .modal-input-field {
-            width: 100%;
-            background: #141414;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .modal-input-field:focus {
-            border-color: #3ea6ff;
-        }
-
-        .modal-select-field {
-            width: 100%;
-            background: #141414;
-            border: 1px solid #333333;
-            border-radius: 8px;
-            padding: 12px 14px;
-            color: #ffffff;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .modal-btn-row {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            padding-top: 6px;
-        }
-
-        .modal-btn {
-            background: none;
-            border: none;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 8px 16px;
-            border-radius: 16px;
-        }
-
-        .modal-btn.cancel { color: #aaaaaa; }
-        .modal-btn.confirm { background: #3ea6ff; color: #0f0f0f; }
-
-        .toast-pop {
-            position: fixed;
-            bottom: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 6000;
-            display: none;
-        }
-
-        /* 6. BOTTOM NAVIGATION */
-        .bottom-nav-fixed {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 56px;
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #272727;
-            z-index: 1000;
-        }
-
-        .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: #aaaaaa;
-            text-decoration: none;
-            gap: 3px;
-        }
-
-        .nav-tab-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+
+        .pl-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
+        .hdr-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
+        .btn-back svg { width:22px; height:22px; fill:#fff; }
+
+        .create-pl-bar { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #1a1a1a; }
+        .btn-new-pl { background:#222; border:1px solid #333; color:#fff; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; }
+        .btn-new-pl svg { width:18px; height:18px; fill:#e50914; }
+
+        .pl-list { display:flex; flex-direction:column; padding:8px 0; }
+        .pl-item { display:flex; gap:14px; padding:12px 16px; border-bottom:1px solid #161616; cursor:pointer; text-decoration:none; color:#fff; align-items:center; }
+        
+        .pl-thumb-box { width:120px; height:68px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
+        .pl-thumb-box img { width:100%; height:100%; object-fit:cover; }
+        .pl-badge-count { position:absolute; bottom:0; right:0; top:0; width:40%; background:rgba(0,0,0,0.75); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:11px; font-weight:800; backdrop-filter:blur(2px); }
+        .pl-badge-count svg { width:14px; height:14px; fill:#fff; }
+
+        .pl-info { flex:1; display:flex; flex-direction:column; gap:4px; min-width:0; }
+        .pl-name { font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .pl-sub { font-size:12px; color:#888; }
+
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
+        .nav-btn.active { color:#fff; font-weight:700; }
+        .nav-btn svg { width:22px; height:22px; fill:currentColor; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <!-- 1. TOP HEADER -->
-    <header class="playlist-header">
-        <div class="header-left">
-            <a href="profile.html" class="btn-back">
+    <header class="pl-header">
+        <div class="hdr-left">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
-            <span class="header-title">Playlists</span>
-        </div>
-
-        <div class="header-right-tools">
-            <button class="btn-new-pl" onclick="openNewPlaylistModal()">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                <span>New</span>
             </button>
+            <span style="font-size:18px; font-weight:700;">Playlists</span>
         </div>
     </header>
 
-    <!-- 2. SORT CHIPS -->
-    <nav class="sort-bar">
-        <button class="sort-pill active" onclick="applySort('recent', this)">Recently added</button>
-        <button class="sort-pill" onclick="applySort('alpha', this)">A to Z</button>
-        <button class="sort-pill" onclick="applySort('videos', this)">Most videos</button>
-    </nav>
-
-    <!-- 3. PLAYLISTS GRID -->
-    <main class="playlist-grid-feed" id="playlistsContainer">
-
-        <!-- 1. Liked Videos -->
-        <div class="pl-card-box" id="pl-liked" data-count="38" data-title="Liked videos" onclick="openPlaylistView('Liked videos', '38 videos', 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=600')">
-            <div class="pl-thumb-container">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Liked">
-                <div class="pl-center-icon">
-                    <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                </div>
-                <div class="pl-badge-banner">
-                    <span>Playlist</span>
-                    <span>38 videos</span>
-                </div>
-            </div>
-            <div class="pl-meta-row">
-                <div class="pl-info-col">
-                    <span class="pl-title-text">Liked videos</span>
-                    <span class="pl-sub-meta">Auto • Private</span>
-                </div>
-                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-liked', 'Liked videos', false)">
-                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- 2. Watch Later -->
-        <div class="pl-card-box" id="pl-watchlater" data-count="14" data-title="Watch Later" onclick="openPlaylistView('Watch Later', '14 videos', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600')">
-            <div class="pl-thumb-container">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Watch Later">
-                <div class="pl-center-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
-                </div>
-                <div class="pl-badge-banner">
-                    <span>Playlist</span>
-                    <span>14 videos</span>
-                </div>
-            </div>
-            <div class="pl-meta-row">
-                <div class="pl-info-col">
-                    <span class="pl-title-text">Watch Later</span>
-                    <span class="pl-sub-meta">Private</span>
-                </div>
-                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-watchlater', 'Watch Later', false)">
-                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- 3. Chhattisgarhi Folk Songs -->
-        <div class="pl-card-box" id="pl-custom-1" data-count="6" data-title="Chhattisgarhi Folk Songs" onclick="openPlaylistView('Chhattisgarhi Folk Songs', '6 videos', 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600')">
-            <div class="pl-thumb-container">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Folk">
-                <div class="pl-center-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                </div>
-                <div class="pl-badge-banner">
-                    <span>Playlist</span>
-                    <span>6 videos</span>
-                </div>
-            </div>
-            <div class="pl-meta-row">
-                <div class="pl-info-col">
-                    <span class="pl-title-text">Chhattisgarhi Folk Songs</span>
-                    <span class="pl-sub-meta">Charandas Bhaskar • Public</span>
-                </div>
-                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-custom-1', 'Chhattisgarhi Folk Songs', true)">
-                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                </button>
-            </div>
-        </div>
-
-        <!-- 4. Banjo Making & Tutorials -->
-        <div class="pl-card-box" id="pl-custom-2" data-count="4" data-title="Banjo Tutorials" onclick="openPlaylistView('Banjo Tutorials', '4 videos', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600')">
-            <div class="pl-thumb-container">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Banjo">
-                <div class="pl-center-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                </div>
-                <div class="pl-badge-banner">
-                    <span>Playlist</span>
-                    <span>4 videos</span>
-                </div>
-            </div>
-            <div class="pl-meta-row">
-                <div class="pl-info-col">
-                    <span class="pl-title-text">Banjo Tutorials</span>
-                    <span class="pl-sub-meta">Charandas Bhaskar • Public</span>
-                </div>
-                <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('pl-custom-2', 'Banjo Tutorials', true)">
-                    <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                </button>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- 4. IN-PAGE PLAYLIST DETAIL SHEET -->
-    <div class="playlist-view-sheet" id="playlistDetailSheet">
-        <header class="sheet-top-header">
-            <button class="btn-back" onclick="closePlaylistView()">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </button>
-            <span class="header-title" id="viewSheetHeadTitle">Playlist</span>
-            <div style="width:24px;"></div>
-        </header>
-
-        <section class="sheet-hero-box">
-            <div class="sheet-hero-thumb">
-                <img id="viewSheetThumb" src="" alt="Cover">
-            </div>
-            <div class="sheet-hero-info">
-                <span class="sheet-pl-title" id="viewSheetTitle">Title</span>
-                <span class="sheet-pl-owner" id="viewSheetOwner">Charandas Bhaskar • Playlist</span>
-            </div>
-        </section>
-
-        <div class="sheet-btn-row">
-            <!-- Direct link to watch.html -->
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="btn-play-all">
-                <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M8 5v14l11-7z"/></svg>
-                <span>Play all</span>
-            </a>
-            <button class="btn-shuffle" onclick="showToast('Shuffling playlist...')">
-                <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:currentColor;"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
-                <span>Shuffle</span>
-            </button>
-        </div>
-
-        <!-- Playlist Videos Feed List (Direct links to watch.html inside pages/) -->
-        <div id="playlistVideosList">
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="playlist-video-item">
-                <div class="item-thumb-frame">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Video">
-                    <span class="item-duration-tag">05:42</span>
-                </div>
-                <div class="item-details-col">
-                    <span class="item-title-txt">Chhattisgarhi Panthi Song • Special Cultural 2026</span>
-                    <span class="item-meta-txt">Charandas Bhaskar • 210K views</span>
-                </div>
-            </a>
-
-            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="playlist-video-item">
-                <div class="item-thumb-frame">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Video">
-                    <span class="item-duration-tag">14:10</span>
-                </div>
-                <div class="item-details-col">
-                    <span class="item-title-txt">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
-                    <span class="item-meta-txt">Dhun AI • 45K views</span>
-                </div>
-            </a>
-
-            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="playlist-video-item">
-                <div class="item-thumb-frame">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Video">
-                    <span class="item-duration-tag">06:25</span>
-                </div>
-                <div class="item-details-col">
-                    <span class="item-title-txt">Morning Commute & Village Lifestyle Daily Vlog #42</span>
-                    <span class="item-meta-txt">The Bhaskar Vlog • 8.4K views</span>
-                </div>
-            </a>
-        </div>
-    </div>
-
-    <!-- 5. MODAL: CREATE NEW PLAYLIST -->
-    <div class="drawer-overlay" id="newPlaylistModal" onclick="closeDrawerOnBackdrop(event, 'newPlaylistModal')">
-        <div class="drawer-sheet-card">
-            <div class="drawer-header-row">
-                <span class="drawer-title-txt">New playlist</span>
-                <button class="drawer-close-btn" onclick="closeDrawer('newPlaylistModal')">✕</button>
-            </div>
-            <input type="text" id="newPlTitleInput" class="modal-input-field" placeholder="Title">
-            <select id="newPlPrivacySelect" class="modal-select-field">
-                <option value="Public">Public (Anyone can search and view)</option>
-                <option value="Unlisted">Unlisted (Anyone with link can view)</option>
-                <option value="Private">Private (Only you can view)</option>
-            </select>
-            <div class="modal-btn-row">
-                <button class="modal-btn cancel" onclick="closeDrawer('newPlaylistModal')">Cancel</button>
-                <button class="modal-btn confirm" onclick="createNewPlaylist()">Create</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. DRAWER: PLAYLIST ACTIONS -->
-    <div class="drawer-overlay" id="playlistOptionsDrawer" onclick="closeDrawerOnBackdrop(event, 'playlistOptionsDrawer')">
-        <div class="drawer-sheet-card">
-            <div class="drawer-header-row">
-                <span class="drawer-title-txt" id="optionsPlTitle">Options</span>
-                <button class="drawer-close-btn" onclick="closeDrawer('playlistOptionsDrawer')">✕</button>
-            </div>
-            <button class="drawer-row-btn" onclick="sharePlaylist()">
-                <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                <span>Share playlist</span>
-            </button>
-            <button class="drawer-row-btn" id="deletePlBtn" onclick="deleteSelectedPlaylist()" style="color:#ff4e4e;">
-                <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                <span>Delete playlist</span>
-            </button>
-        </div>
-    </div>
-
-    <div class="toast-pop" id="plToast"></div>
-
-    <!-- 7. BOTTOM NAVIGATION -->
-    <nav class="bottom-nav-fixed">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-plus-circle">
+    <div class="create-pl-bar">
+        <span style="font-size:13px; color:#aaa;">Your custom collections</span>
+        <button class="btn-new-pl" onclick="createNewPlaylist()">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>New playlist</span>
+        </button>
+    </div>
+
+    <div class="pl-list" id="playlistsContainer">
+        <!-- 1. Liked Videos Default Playlist -->
+        <a href="liked-videos.html" class="pl-item">
+            <div class="pl-thumb-box">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600" alt="Liked Videos">
+                <div class="pl-badge-count">
+                    <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    <span>Auto</span>
+                </div>
+            </div>
+            <div class="pl-info">
+                <div class="pl-name">Liked videos</div>
+                <div class="pl-sub">Private • Auto Playlist</div>
+            </div>
         </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
+
+        <!-- 2. Watch Later Default Playlist -->
+        <a href="watch-later.html" class="pl-item">
+            <div class="pl-thumb-box">
+                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Watch Later">
+                <div class="pl-badge-count">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.15.8-1.23-4.5-2.67z"/></svg>
+                    <span>Auto</span>
+                </div>
+            </div>
+            <div class="pl-info">
+                <div class="pl-name">Watch later</div>
+                <div class="pl-sub">Private • Save for later</div>
+            </div>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
-            <span>You</span>
-        </a>
+
+        <!-- Dynamic User Playlists Container -->
+        <div id="userPlaylists"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bottom-nav">
+        <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
     <script>
-        let selectedPlCardId = null;
-
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            renderStoredPlaylists();
         });
 
-        function showToast(msg) {
-            const t = document.getElementById('plToast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
-        }
+        function renderStoredPlaylists() {
+            const list = JSON.parse(localStorage.getItem('btube_custom_playlists') || '[]');
+            const container = document.getElementById('userPlaylists');
+            container.innerHTML = '';
 
-        function openPlaylistView(title, count, thumb) {
-            document.getElementById('viewSheetHeadTitle').innerText = title;
-            document.getElementById('viewSheetTitle').innerText = title;
-            document.getElementById('viewSheetOwner').innerText = `Charandas Bhaskar • ${count}`;
-            document.getElementById('viewSheetThumb').src = thumb;
-            document.getElementById('playlistDetailSheet').classList.add('open');
-        }
-
-        function closePlaylistView() {
-            document.getElementById('playlistDetailSheet').classList.remove('open');
-        }
-
-        function openNewPlaylistModal() {
-            document.getElementById('newPlTitleInput').value = '';
-            document.getElementById('newPlaylistModal').classList.add('open');
-            document.getElementById('newPlTitleInput').focus();
-        }
-
-        function closeDrawer(id) {
-            document.getElementById(id).classList.remove('open');
-        }
-
-        function closeDrawerOnBackdrop(e, id) {
-            if (e.target.id === id) closeDrawer(id);
+            list.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'pl-item';
+                item.onclick = () => alert(`Opening playlist: ${p.title}`);
+                item.innerHTML = `
+                    <div class="pl-thumb-box">
+                        <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+                        <div class="pl-badge-count">
+                            <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
+                            <span>${p.count || 0}</span>
+                        </div>
+                    </div>
+                    <div class="pl-info">
+                        <div class="pl-name">${p.title}</div>
+                        <div class="pl-sub">Custom • ${p.visibility || 'Public'}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
         }
 
         function createNewPlaylist() {
-            const title = document.getElementById('newPlTitleInput').value.trim();
-            const privacy = document.getElementById('newPlPrivacySelect').value;
+            const name = prompt("Nayi Playlist ka naam likhein:");
+            if (!name || !name.trim()) return;
 
-            if (!title) {
-                showToast('Please enter a playlist title');
-                return;
-            }
-
-            const container = document.getElementById('playlistsContainer');
-            const newId = 'pl-user-' + Date.now();
-            const dummyThumb = 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400';
-
-            const card = document.createElement('div');
-            card.className = 'pl-card-box';
-            card.id = newId;
-            card.setAttribute('data-count', '0');
-            card.setAttribute('data-title', title);
-            card.onclick = () => openPlaylistView(title, '0 videos', dummyThumb);
-
-            card.innerHTML = `
-                <div class="pl-thumb-container">
-                    <img src="${dummyThumb}" alt="${title}">
-                    <div class="pl-center-icon">
-                        <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                    </div>
-                    <div class="pl-badge-banner">
-                        <span>Playlist</span>
-                        <span>0 videos</span>
-                    </div>
-                </div>
-                <div class="pl-meta-row">
-                    <div class="pl-info-col">
-                        <span class="pl-title-text">${title}</span>
-                        <span class="pl-sub-meta">Charandas Bhaskar • ${privacy}</span>
-                    </div>
-                    <button class="btn-card-more" onclick="event.stopPropagation(); openPlaylistOptions('${newId}', '${title}', true)">
-                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                    </button>
-                </div>
-            `;
-
-            container.prepend(card);
-            closeDrawer('newPlaylistModal');
-            showToast('Playlist created');
-        }
-
-        function openPlaylistOptions(id, title, isDeletable) {
-            selectedPlCardId = id;
-            document.getElementById('optionsPlTitle').innerText = title;
-            const delBtn = document.getElementById('deletePlBtn');
-            delBtn.style.display = isDeletable ? 'flex' : 'none';
-            document.getElementById('playlistOptionsDrawer').classList.add('open');
-        }
-
-        function deleteSelectedPlaylist() {
-            if (selectedPlCardId) {
-                const target = document.getElementById(selectedPlCardId);
-                if (target) target.remove();
-                showToast('Playlist deleted');
-            }
-            closeDrawer('playlistOptionsDrawer');
-        }
-
-        function sharePlaylist() {
-            closeDrawer('playlistOptionsDrawer');
-            if (navigator.share) {
-                navigator.share({ title: 'BTube Playlist', url: window.location.href }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                showToast('Playlist link copied');
-            }
-        }
-
-        function applySort(type, btn) {
-            document.querySelectorAll('.sort-pill').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const container = document.getElementById('playlistsContainer');
-            const cards = Array.from(container.children);
-
-            if (type === 'alpha') {
-                cards.sort((a, b) => a.getAttribute('data-title').localeCompare(b.getAttribute('data-title')));
-            } else if (type === 'videos') {
-                cards.sort((a, b) => parseInt(b.getAttribute('data-count')) - parseInt(a.getAttribute('data-count')));
-            }
-
-            cards.forEach(card => container.appendChild(card));
-            showToast('Sorted');
+            let list = JSON.parse(localStorage.getItem('btube_custom_playlists') || '[]');
+            list.push({ title: name.trim(), count: 0, visibility: 'Public' });
+            localStorage.setItem('btube_custom_playlists', JSON.stringify(list));
+            renderStoredPlaylists();
         }
     </script>
 </body>
