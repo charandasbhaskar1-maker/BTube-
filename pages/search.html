@@ -102,7 +102,7 @@
             fill: #ffffff;
         }
 
-        /* 2. VOICE SEARCH FULL SCREEN MODAL (YOUTUBE STYLE) */
+        /* 2. VOICE SEARCH FULL SCREEN MODAL */
         .voice-overlay {
             position: fixed;
             inset: 0;
@@ -156,7 +156,7 @@
             width: 84px;
             height: 84px;
             border-radius: 50%;
-            background: #ff0000;
+            background: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -173,18 +173,12 @@
         }
 
         @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
-            }
-            70% {
-                box-shadow: 0 0 0 24px rgba(255, 0, 0, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0.6); }
+            70% { box-shadow: 0 0 0 24px rgba(229, 9, 20, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 9, 20, 0); }
         }
 
-        /* 3. SUGGESTIONS LIST */
+        /* 3. SUGGESTIONS & RECENT SEARCHES */
         .search-suggestions-wrap {
             display: flex;
             flex-direction: column;
@@ -197,7 +191,6 @@
             justify-content: space-between;
             padding: 12px 16px;
             cursor: pointer;
-            text-decoration: none;
             color: #ffffff;
         }
 
@@ -210,6 +203,7 @@
             align-items: center;
             gap: 16px;
             flex: 1;
+            min-width: 0;
         }
 
         .suggest-left svg {
@@ -222,6 +216,18 @@
         .suggest-text {
             font-size: 14px;
             color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-del-suggest {
+            background: none;
+            border: none;
+            color: #666666;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 14px;
         }
 
         .btn-arrow-fill {
@@ -238,7 +244,7 @@
             display: none;
             flex-direction: column;
             gap: 16px;
-            padding: 12px 0;
+            padding: 8px 0;
         }
 
         .result-card-video {
@@ -246,6 +252,7 @@
             flex-direction: column;
             text-decoration: none;
             color: #ffffff;
+            cursor: pointer;
         }
 
         .result-thumb-box {
@@ -282,39 +289,87 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
+            background: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             font-weight: 800;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .result-author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .result-meta-column {
             display: flex;
             flex-direction: column;
             gap: 3px;
+            min-width: 0;
         }
 
         .result-title-text {
             font-size: 14px;
             font-weight: 600;
             line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .result-sub-meta {
             font-size: 12px;
             color: #aaaaaa;
         }
+
+        /* 5. EMPTY RESULTS STATE */
+        .empty-results-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .empty-results-box svg {
+            width: 56px;
+            height: 56px;
+            fill: #444;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .empty-sub {
+            font-size: 13px;
+            color: #888888;
+            max-width: 260px;
+            line-height: 1.4;
+        }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP BAR -->
     <header class="search-nav">
-        <a href="../frontend/index.html" class="btn-nav-back">
+        <button class="btn-nav-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
 
         <div class="search-pill-box">
             <input type="text" id="searchInput" class="search-input-ctrl" placeholder="Search BTube..." autofocus oninput="onSearchChange(this.value)" onkeydown="onSearchKeyDown(event)">
@@ -346,80 +401,18 @@
         </div>
     </div>
 
-    <!-- 3. SUGGESTIONS / HISTORY TRAY -->
-    <main class="search-suggestions-wrap" id="suggestionsWrap">
-        <!-- Item 1 -->
-        <div class="suggest-item-row" onclick="executeSearch('Chhattisgarhi Panthi Geet')">
-            <div class="suggest-left">
-                <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                <span class="suggest-text">Chhattisgarhi Panthi Geet</span>
-            </div>
-            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Chhattisgarhi Panthi Geet');">↖</button>
-        </div>
-
-        <!-- Item 2 -->
-        <div class="suggest-item-row" onclick="executeSearch('Typewriter Banjo Making')">
-            <div class="suggest-left">
-                <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
-                <span class="suggest-text">Typewriter Banjo Making</span>
-            </div>
-            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Typewriter Banjo Making');">↖</button>
-        </div>
-
-        <!-- Item 3 -->
-        <div class="suggest-item-row" onclick="executeSearch('Daily Vlog Morning Village')">
-            <div class="suggest-left">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <span class="suggest-text">Daily Vlog Morning Village</span>
-            </div>
-            <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('Daily Vlog Morning Village');">↖</button>
-        </div>
-    </main>
+    <!-- 3. SUGGESTIONS & RECENT SEARCHES TRAY -->
+    <main class="search-suggestions-wrap" id="suggestionsWrap"></main>
 
     <!-- 4. SEARCH RESULTS STREAM -->
-    <section class="results-container" id="resultsBox">
-        <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="result-card-video" data-keywords="panthi chhattisgarhi song geet charandas">
-            <div class="result-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Thumb">
-                <span class="result-time-badge">05:42</span>
-            </div>
-            <div class="result-info-box">
-                <div class="result-author-avatar" style="background:#e50914;">CB</div>
-                <div class="result-meta-column">
-                    <span class="result-title-text">Chhattisgarhi Panthi Song • Special Cultural Video 2026</span>
-                    <span class="result-sub-meta">Charandas Bhaskar • 210K views • 2 weeks ago</span>
-                </div>
-            </div>
-        </a>
+    <section class="results-container" id="resultsBox"></section>
 
-        <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="result-card-video" data-keywords="typewriter banjo making magnetic pickup dhun">
-            <div class="result-thumb-box">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" alt="Thumb">
-                <span class="result-time-badge">14:10</span>
-            </div>
-            <div class="result-info-box">
-                <div class="result-author-avatar" style="background:#3ea6ff;">DH</div>
-                <div class="result-meta-column">
-                    <span class="result-title-text">Typewriter Banjo with Magnetic Pickups Full Making Guide</span>
-                    <span class="result-sub-meta">Dhun AI • 45K views • 1 day ago</span>
-                </div>
-            </div>
-        </a>
-
-        <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="result-card-video" data-keywords="morning commute village lifestyle daily vlog bhaskar">
-            <div class="result-thumb-box">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" alt="Thumb">
-                <span class="result-time-badge">06:25</span>
-            </div>
-            <div class="result-info-box">
-                <div class="result-author-avatar" style="background:#2ecc71;">BV</div>
-                <div class="result-meta-column">
-                    <span class="result-title-text">Morning Commute & Village Lifestyle Daily Vlog #42</span>
-                    <span class="result-sub-meta">The Bhaskar Vlog • 8.4K views • 2 days ago</span>
-                </div>
-            </div>
-        </a>
-    </section>
+    <!-- 5. EMPTY RESULTS STATE -->
+    <div class="empty-results-box" id="emptyState">
+        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span class="empty-title" id="emptyTitle">No results found</span>
+        <span class="empty-sub">Try different search keywords or check for spelling errors.</span>
+    </div>
 
     <!-- INTERACTIVE JAVASCRIPT -->
     <script>
@@ -427,14 +420,89 @@
         const clearBtn = document.getElementById('clearBtn');
         const suggestWrap = document.getElementById('suggestionsWrap');
         const resultsBox = document.getElementById('resultsBox');
+        const emptyState = document.getElementById('emptyState');
 
+        let allFeedVideos = [];
         let speechRecognizer = null;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            renderRecentSearches();
+
+            // Fetch live feed from database for real search
+            if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
+                try {
+                    allFeedVideos = await window.BTubeAPI.getFeed('all');
+                } catch (e) {
+                    allFeedVideos = [];
+                }
+            }
+
+            // Check if query passed via URL
+            const urlQuery = new URLSearchParams(window.location.search).get('q');
+            if (urlQuery && urlQuery.trim()) {
+                input.value = urlQuery.trim();
+                executeSearch(urlQuery.trim());
+            }
+        });
+
+        function getRecentSearches() {
+            return JSON.parse(localStorage.getItem('btube_search_history') || '[]');
+        }
+
+        function saveRecentSearch(query) {
+            let list = getRecentSearches();
+            list = list.filter(item => item.toLowerCase() !== query.toLowerCase());
+            list.unshift(query);
+            if (list.length > 10) list.pop();
+            localStorage.setItem('btube_search_history', JSON.stringify(list));
+        }
+
+        function removeSearchItem(query, e) {
+            if (e) e.stopPropagation();
+            let list = getRecentSearches();
+            list = list.filter(item => item.toLowerCase() !== query.toLowerCase());
+            localStorage.setItem('btube_search_history', JSON.stringify(list));
+            renderRecentSearches();
+        }
+
+        function renderRecentSearches() {
+            const list = getRecentSearches();
+            suggestWrap.innerHTML = '';
+
+            if (list.length === 0) {
+                suggestWrap.innerHTML = `
+                    <div style="padding: 24px 16px; color: #666; font-size: 13px; text-align: center;">
+                        Type in search bar to explore creators, music, and videos.
+                    </div>
+                `;
+                return;
+            }
+
+            list.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'suggest-item-row';
+                row.onclick = () => executeSearch(item);
+                row.innerHTML = `
+                    <div class="suggest-left">
+                        <svg viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                        <span class="suggest-text">${item}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                        <button class="btn-arrow-fill" onclick="event.stopPropagation(); fillInput('${item.replace(/'/g, "\\'")}');">↖</button>
+                        <button class="btn-del-suggest" onclick="removeSearchItem('${item.replace(/'/g, "\\'")}', event)">✕</button>
+                    </div>
+                `;
+                suggestWrap.appendChild(row);
+            });
+        }
 
         function onSearchChange(val) {
             clearBtn.style.display = val.trim().length > 0 ? 'block' : 'none';
             if (val.trim().length === 0) {
                 suggestWrap.style.display = 'flex';
                 resultsBox.style.display = 'none';
+                emptyState.style.display = 'none';
+                renderRecentSearches();
             }
         }
 
@@ -443,6 +511,8 @@
             clearBtn.style.display = 'none';
             suggestWrap.style.display = 'flex';
             resultsBox.style.display = 'none';
+            emptyState.style.display = 'none';
+            renderRecentSearches();
             input.focus();
         }
 
@@ -459,29 +529,62 @@
         }
 
         function executeSearch(query) {
-            if (!query.trim()) return;
-            input.value = query;
+            const q = query.trim();
+            if (!q) return;
+
+            input.value = q;
             clearBtn.style.display = 'block';
             suggestWrap.style.display = 'none';
-            resultsBox.style.display = 'flex';
 
-            const q = query.toLowerCase().trim();
-            const cards = document.querySelectorAll('.result-card-video');
-            let found = false;
+            saveRecentSearch(q);
 
-            cards.forEach(card => {
-                const text = (card.getAttribute('data-keywords') + ' ' + card.innerText).toLowerCase();
-                if (text.includes(q)) {
-                    card.style.display = 'flex';
-                    found = true;
-                } else {
-                    card.style.display = 'none';
-                }
+            const qLower = q.toLowerCase();
+            const filtered = allFeedVideos.filter(v => {
+                const title = (v.title || '').toLowerCase();
+                const channel = (v.channel || '').toLowerCase();
+                const desc = (v.description || '').toLowerCase();
+                const cat = (v.category || '').toLowerCase();
+                return title.includes(qLower) || channel.includes(qLower) || desc.includes(qLower) || cat.includes(qLower);
             });
 
-            if (!found) {
-                cards.forEach(c => c.style.display = 'flex');
+            resultsBox.innerHTML = '';
+
+            if (filtered.length === 0) {
+                resultsBox.style.display = 'none';
+                document.getElementById('emptyTitle').innerText = `No results found for "${q}"`;
+                emptyState.style.display = 'flex';
+                return;
             }
+
+            emptyState.style.display = 'none';
+            resultsBox.style.display = 'flex';
+
+            filtered.forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'result-card-video';
+                card.onclick = () => {
+                    window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                };
+
+                const avatarContent = v.channelAvatar 
+                    ? `<img src="${v.channelAvatar}">` 
+                    : (v.channel || 'BT').substring(0, 2).toUpperCase();
+
+                card.innerHTML = `
+                    <div class="result-thumb-box">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'}" alt="${v.title || 'Video'}">
+                        <span class="result-time-badge">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="result-info-box">
+                        <div class="result-author-avatar">${avatarContent}</div>
+                        <div class="result-meta-column">
+                            <span class="result-title-text">${v.title || 'Untitled Video'}</span>
+                            <span class="result-sub-meta">${v.channel || 'Creator'} • ${v.views || 0} views</span>
+                        </div>
+                    </div>
+                `;
+                resultsBox.appendChild(card);
+            });
         }
 
         // FULL SCREEN VOICE SEARCH MODAL
@@ -533,7 +636,7 @@
                 }
             };
 
-            speechRecognizer.onerror = (e) => {
+            speechRecognizer.onerror = () => {
                 title.innerText = 'Didn\'t catch that';
                 spokenTxt.innerText = 'Tap the microphone to try again';
             };
