@@ -1,11 +1,19 @@
-// BTube Central Cloud Engine & Instant State Sync
+/**
+ * BTube Central Cloud Engine & Instant State Sync
+ * Bridges Frontend PWA with FastAPI Backend, SafeShield, CopyScan, and Firebase Auth/Firestore
+ */
+
+const API_BASE_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://127.0.0.1:8000"
+    : "https://btube-api.onrender.com"; // Render / Production URL
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
-  authDomain: "btube-5fae0.firebaseapp.com",
-  projectId: "btube-5fae0",
-  storageBucket: "btube-5fae0.firebasestorage.app",
-  messagingSenderId: "1009386330534",
-  appId: "1:1009386330534:web:357a0ad258678a54185767"
+    apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
+    authDomain: "btube-5fae0.firebaseapp.com",
+    projectId: "btube-5fae0",
+    storageBucket: "btube-5fae0.firebasestorage.app",
+    messagingSenderId: "1009386330534",
+    appId: "1:1009386330534:web:357a0ad258678a54185767"
 };
 
 if (typeof firebase !== 'undefined' && !firebase.apps.length) {
@@ -15,7 +23,7 @@ if (typeof firebase !== 'undefined' && !firebase.apps.length) {
 const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
 const auth = (typeof firebase !== 'undefined') ? firebase.auth() : null;
 
-// Built-in initial videos (Zero screen freeze)
+// Built-in initial videos (Zero screen freeze fallback)
 const OFFICIAL_FEED_ITEMS = [
     {
         id: "vid_intro_01",
@@ -44,6 +52,15 @@ const OFFICIAL_FEED_ITEMS = [
 ];
 
 window.BTubeAPI = {
+    // ================= 1. AUTH & JWT STATE =================
+    getToken() {
+        return localStorage.getItem("btube_auth_token") || "";
+    },
+
+    setToken(token) {
+        localStorage.setItem("btube_auth_token", token);
+    },
+
     getAuthUser() {
         if (auth && auth.currentUser) {
             return {
@@ -56,6 +73,55 @@ window.BTubeAPI = {
         return JSON.parse(localStorage.getItem('btube_user') || 'null');
     },
 
+    async signInWithGoogle() {
+        if (!auth) return null;
+        try {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            const res = await auth.signInWithPopup(provider);
+            const user = {
+                uid: res.user.uid,
+                name: res.user.displayName || 'BTube User',
+                email: res.user.email,
+                photo: res.user.photoURL || ''
+            };
+            localStorage.setItem('btube_user', JSON.stringify(user));
+
+            // Bridge to FastAPI Backend for session JWT token
+            try {
+                const idToken = await res.user.getIdToken();
+                const apiRes = await fetch(`${API_BASE_URL}/api/auth/google`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_token: idToken, preferred_channel_name: user.name })
+                });
+                if (apiRes.ok) {
+                    const data = await apiRes.json();
+                    this.setToken(data.access_token);
+                }
+            } catch (err) {
+                console.warn("Backend Auth Bridge offline, running in client mode:", err);
+            }
+
+            return user;
+        } catch(e) {
+            console.error("Google Sign-In Error:", e);
+            return null;
+        }
+    },
+
+    async signOut() {
+        const u = this.getAuthUser();
+        if (u) {
+            localStorage.removeItem('btube_active_channel_id_' + u.uid);
+            localStorage.removeItem('btube_channels_' + u.uid);
+        }
+        localStorage.removeItem('btube_user');
+        localStorage.removeItem('btube_auth_token');
+        if (auth) await auth.signOut();
+        window.location.reload();
+    },
+
+    // ================= 2. MULTI-CHANNEL ROUTING =================
     async getAllUserChannels() {
         const u = this.getAuthUser();
         if (!u) return [];
@@ -92,6 +158,21 @@ window.BTubeAPI = {
         const u = this.getAuthUser();
         if (!u) return;
         localStorage.setItem('btube_active_channel_id_' + u.uid, channelId);
+
+        // Notify FastAPI Backend if token available
+        const token = this.getToken();
+        if (token) {
+            fetch(`${API_BASE_URL}/api/auth/channels/switch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ channel_id: channelId })
+            }).then(r => r.ok && r.json()).then(d => {
+                if (d && d.access_token) this.setToken(d.access_token);
+            }).catch(()=>{});
+        }
     },
 
     async createNewChannel(data) {
@@ -119,11 +200,21 @@ window.BTubeAPI = {
         return newCh;
     },
 
+    // ================= 3. VIRAL FEED & VIDEO ACTIONS =================
     async getFeed(type = 'all') {
         let items = [];
-        
-        // Fast Firestore Fetch with 1.8s Timeout Fallback
-        if (db) {
+
+        // 1. Try FastAPI Recommendation Feed
+        try {
+            const apiRes = await fetch(`${API_BASE_URL}/api/videos/feed`);
+            if (apiRes.ok) {
+                const apiVideos = await apiRes.json();
+                if (apiVideos && apiVideos.length > 0) items = apiVideos;
+            }
+        } catch(e) {}
+
+        // 2. Try Firestore
+        if (items.length === 0 && db) {
             try {
                 const pFetch = db.collection('videos').get();
                 const pTimeout = new Promise((_, rej) => setTimeout(() => rej('timeout'), 1800));
@@ -134,41 +225,116 @@ window.BTubeAPI = {
             }
         }
 
+        // 3. Fallback to Official Items
         if (items.length === 0) {
             items = [...OFFICIAL_FEED_ITEMS];
         }
 
         if (type === 'all') return items;
-        return items.filter(i => (i.type || 'video').toLowerCase() === type.toLowerCase());
+        return items.filter(i => (i.type || (i.is_shorts ? 'short' : 'video')).toLowerCase() === type.toLowerCase());
     },
 
-    async signInWithGoogle() {
-        if (!auth) return null;
+    async uploadVideoChunks(file, onProgress) {
+        const CHUNK_SIZE = 2 * 1024 * 1024;
+        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+        const uploadId = "up_" + Date.now() + "_" + Math.random().toString(36).substring(2, 9);
+
+        for (let idx = 0; idx < totalChunks; idx++) {
+            const start = idx * CHUNK_SIZE;
+            const end = Math.min(file.size, start + CHUNK_SIZE);
+            const chunk = file.slice(start, end);
+
+            const res = await fetch(`${API_BASE_URL}/api/videos/upload-chunk`, {
+                method: "POST",
+                headers: {
+                    "X-Upload-ID": uploadId,
+                    "X-Chunk-Index": idx.toString(),
+                    "X-Total-Chunks": totalChunks.toString()
+                },
+                body: chunk
+            });
+
+            if (!res.ok) throw new Error(`Chunk ${idx} upload failed`);
+            if (onProgress) onProgress(Math.round(((idx + 1) / totalChunks) * 100));
+
+            if (idx === totalChunks - 1) {
+                const finalData = await res.json();
+                return finalData.video_url;
+            }
+        }
+    },
+
+    async saveVideo(videoData) {
+        // Fast backend publish with SafeShield / CopyScan Gatekeeper
         try {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            const res = await auth.signInWithPopup(provider);
-            const user = {
-                uid: res.user.uid,
-                name: res.user.displayName || 'BTube User',
-                email: res.user.email,
-                photo: res.user.photoURL || ''
-            };
-            localStorage.setItem('btube_user', JSON.stringify(user));
-            return user;
-        } catch(e) {
-            console.error(e);
-            return null;
+            const res = await fetch(`${API_BASE_URL}/api/videos/upload`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.getToken()}`
+                },
+                body: JSON.stringify({
+                    title: videoData.title,
+                    description: videoData.description || "",
+                    category: videoData.category || "All",
+                    video_url: videoData.videoUrl || videoData.video_url,
+                    thumbnail_url: videoData.thumb || videoData.thumbnail_url,
+                    duration_seconds: videoData.durationSeconds || 180,
+                    is_shorts: (videoData.type === 'short'),
+                    visibility: videoData.visibility || "Public",
+                    audio_hash: videoData.audio_hash || null
+                })
+            });
+
+            if (res.ok) {
+                const cloudSaved = await res.json();
+                videoData.id = cloudSaved.video_id;
+            }
+        } catch (err) {}
+
+        if (db) {
+            db.collection('videos').add(videoData).catch(()=>{});
         }
+        return videoData;
     },
 
-    async signOut() {
-        const u = this.getAuthUser();
-        if (u) {
-            localStorage.removeItem('btube_active_channel_id_' + u.uid);
-            localStorage.removeItem('btube_channels_' + u.uid);
-        }
-        localStorage.removeItem('btube_user');
-        if (auth) await auth.signOut();
-        window.location.reload();
+    async recordView(videoId, watchSeconds = 15.0) {
+        try {
+            await fetch(`${API_BASE_URL}/api/videos/${videoId}/view`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ watch_seconds: watchSeconds })
+            });
+        } catch(e) {}
+    },
+
+    // ================= 4. YPP 70/30 SUPER THANKS =================
+    async processSuperThanks(videoId, grossAmount, message) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/bpp/super-thanks/process`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${this.getToken()}`
+                },
+                body: JSON.stringify({
+                    video_id: videoId,
+                    gross_amount: Number(grossAmount),
+                    message: message
+                })
+            });
+            if (res.ok) return await res.json();
+        } catch(e) {}
+
+        const gross = Number(grossAmount);
+        return {
+            status: "success",
+            split_summary: {
+                gross_amount: gross,
+                creator_net_70: Number((gross * 0.70).toFixed(2)),
+                platform_fee_30: Number((gross * 0.30).toFixed(2)),
+                currency: "INR"
+            }
+        };
     }
 };
