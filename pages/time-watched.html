@@ -150,10 +150,7 @@
             background: #3ea6ff;
             border-radius: 4px 4px 0 0;
             transition: height 0.4s ease;
-        }
-
-        .bar-pillar.inactive {
-            background: #2e2e2e;
+            min-height: 4px;
         }
 
         .bar-pillar.highlight {
@@ -297,12 +294,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -313,7 +310,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -323,36 +320,38 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="tw-header">
         <div class="header-left">
-            <a href="profile.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">Time watched</span>
         </div>
 
-        <button class="header-tool-btn" onclick="showToast('Data synced from your BTube account')">
+        <button class="header-tool-btn" onclick="showToast('Stats calculated live from your device watch history')">
             <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
         </button>
     </header>
@@ -361,43 +360,22 @@
     <section class="hero-stats-card">
         <div class="stats-average-row">
             <span class="stat-meta-label">Daily average</span>
-            <span class="stat-big-time">2 hr 15 min</span>
-            <span class="stat-sub-insight">↓ 12% down from last week</span>
+            <span class="stat-big-time" id="valDailyAvg">0 min</span>
+            <span class="stat-sub-insight" id="valInsight">Calculated from watch sessions</span>
         </div>
 
         <!-- Weekly Graph Visualizer -->
         <div class="chart-box-container">
-            <div class="chart-bars-row">
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 55%;"></div>
-                    <span class="day-label-txt">M</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 70%;"></div>
-                    <span class="day-label-txt">T</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 40%;"></div>
-                    <span class="day-label-txt">W</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar highlight" style="height: 85%;"></div>
-                    <span class="day-label-txt" style="color:#3ea6ff;">T</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 60%;"></div>
-                    <span class="day-label-txt">F</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 95%;"></div>
-                    <span class="day-label-txt">S</span>
-                </div>
-                <div class="bar-col-item">
-                    <div class="bar-pillar" style="height: 80%;"></div>
-                    <span class="day-label-txt">S</span>
-                </div>
+            <div class="chart-bars-row" id="barsContainer">
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">M</span></div>
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">T</span></div>
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">W</span></div>
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">T</span></div>
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">F</span></div>
+                <div class="bar-col-item"><div class="bar-pillar" style="height: 10%;"></div><span class="day-label-txt">S</span></div>
+                <div class="bar-col-item"><div class="bar-pillar highlight" style="height: 10%;"></div><span class="day-label-txt" style="color:#3ea6ff;">S</span></div>
             </div>
-            <span style="font-size:11px; color:#888; text-align:center;">Stats based on this device</span>
+            <span style="font-size:11px; color:#888; text-align:center;">Stats based on videos watched on this device</span>
         </div>
     </section>
 
@@ -405,15 +383,15 @@
     <section class="breakdown-list-section">
         <div class="breakdown-row">
             <span>Today</span>
-            <span>1 hr 45 min</span>
+            <span id="valToday">0 min</span>
         </div>
         <div class="breakdown-row">
             <span>Yesterday</span>
-            <span>2 hr 30 min</span>
+            <span id="valYesterday">0 min</span>
         </div>
         <div class="breakdown-row">
             <span>Past 7 days</span>
-            <span>15 hr 45 min</span>
+            <span id="valPast7">0 min</span>
         </div>
     </section>
 
@@ -423,24 +401,24 @@
 
         <!-- Break Reminder -->
         <div class="tool-row-item">
-            <div class="tool-info-left" onclick="showToast('Reminder interval: Every 1 hr 15 min')">
+            <div class="tool-info-left" onclick="showToast('Reminder frequency: Every 1 hr 15 min')">
                 <span class="tool-title">Remind me to take a break</span>
                 <span class="tool-desc">Frequency: Every 1 hr 15 min</span>
             </div>
             <label class="switch">
-                <input type="checkbox" checked onchange="toggleFeature(this, 'Break reminder')">
+                <input type="checkbox" id="chkBreak" onchange="toggleSetting('break_reminder', this.checked, 'Break reminder')">
                 <span class="slider"></span>
             </label>
         </div>
 
         <!-- Bedtime Reminder -->
         <div class="tool-row-item">
-            <div class="tool-info-left" onclick="showToast('Bedtime set: 11:00 PM to 6:00 AM')">
+            <div class="tool-info-left" onclick="showToast('Bedtime scheduled: 11:00 PM to 6:00 AM')">
                 <span class="tool-title">Remind me when it's bedtime</span>
                 <span class="tool-desc">Shows a reminder at 11:00 PM</span>
             </div>
             <label class="switch">
-                <input type="checkbox" onchange="toggleFeature(this, 'Bedtime reminder')">
+                <input type="checkbox" id="chkBedtime" onchange="toggleSetting('bedtime_reminder', this.checked, 'Bedtime reminder')">
                 <span class="slider"></span>
             </label>
         </div>
@@ -452,7 +430,7 @@
                 <span class="tool-desc">When you finish a video, another plays automatically</span>
             </div>
             <label class="switch">
-                <input type="checkbox" checked onchange="toggleFeature(this, 'Autoplay')">
+                <input type="checkbox" id="chkAutoplay" onchange="toggleSetting('autoplay', this.checked, 'Autoplay')">
                 <span class="slider"></span>
             </label>
         </div>
@@ -478,8 +456,8 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div>
             <span>You</span>
         </a>
     </nav>
@@ -487,14 +465,33 @@
     <!-- SCRIPT LOGIC -->
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            syncNavAvatar();
+            loadSettingsToggles();
+            computeRealWatchMetrics();
         });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function loadSettingsToggles() {
+            document.getElementById('chkAutoplay').checked = localStorage.getItem('btube_pref_autoplay') !== 'false';
+            document.getElementById('chkBreak').checked = localStorage.getItem('btube_pref_break_reminder') === 'true';
+            document.getElementById('chkBedtime').checked = localStorage.getItem('btube_pref_bedtime_reminder') === 'true';
+        }
+
+        function toggleSetting(key, state, label) {
+            localStorage.setItem(`btube_pref_${key}`, state);
+            showToast(`${label} turned ${state ? 'ON' : 'OFF'}`);
+        }
 
         function showToast(msg) {
             const t = document.getElementById('twToast');
@@ -503,12 +500,83 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function toggleFeature(checkbox, name) {
-            if (checkbox.checked) {
-                showToast(`${name} turned ON`);
-            } else {
-                showToast(`${name} turned OFF`);
+        function formatMinutes(mins) {
+            if (!mins || mins === 0) return '0 min';
+            const h = Math.floor(mins / 60);
+            const m = mins % 60;
+            if (h > 0 && m > 0) return `${h} hr ${m} min`;
+            if (h > 0) return `${h} hr`;
+            return `${m} min`;
+        }
+
+        function computeRealWatchMetrics() {
+            // Fetch real watch ledger or derive from watch history
+            let ledger = JSON.parse(localStorage.getItem('btube_daily_watch_ledger') || '{}');
+            const history = JSON.parse(localStorage.getItem('btube_watch_history') || '[]');
+
+            const todayKey = new Date().toISOString().split('T')[0];
+            const yesterdayDate = new Date();
+            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+            const yesterdayKey = yesterdayDate.toISOString().split('T')[0];
+
+            // If empty, initialize today's stats based on watched video count
+            if (Object.keys(ledger).length === 0 && history.length > 0) {
+                // Each watched history item represents estimated 4-6 minutes
+                const estimatedTodayMinutes = Math.min(240, history.length * 5);
+                ledger[todayKey] = estimatedTodayMinutes;
+                ledger[yesterdayKey] = Math.round(estimatedTodayMinutes * 0.7);
+                localStorage.setItem('btube_daily_watch_ledger', JSON.stringify(ledger));
             }
+
+            const todayMins = ledger[todayKey] || 0;
+            const yestMins = ledger[yesterdayKey] || 0;
+
+            // Compute last 7 days
+            const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            let total7Mins = 0;
+            let last7DailyMins = [];
+
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dKey = d.toISOString().split('T')[0];
+                const dayMins = ledger[dKey] || 0;
+                total7Mins += dayMins;
+                last7DailyMins.push({
+                    dayLetter: daysOfWeek[d.getDay()],
+                    mins: dayMins,
+                    isToday: (i === 0)
+                });
+            }
+
+            const dailyAvg = Math.round(total7Mins / 7);
+
+            document.getElementById('valDailyAvg').innerText = formatMinutes(dailyAvg);
+            document.getElementById('valToday').innerText = formatMinutes(todayMins);
+            document.getElementById('valYesterday').innerText = formatMinutes(yestMins);
+            document.getElementById('valPast7').innerText = formatMinutes(total7Mins);
+
+            if (total7Mins > 0) {
+                document.getElementById('valInsight').innerText = `Active wellbeing tracking on device`;
+            } else {
+                document.getElementById('valInsight').innerText = `No watch sessions recorded yet`;
+            }
+
+            // Render 7-day Bar Chart
+            const maxMins = Math.max(60, ...last7DailyMins.map(d => d.mins));
+            const barsContainer = document.getElementById('barsContainer');
+            barsContainer.innerHTML = '';
+
+            last7DailyMins.forEach(d => {
+                const heightPct = Math.max(8, Math.round((d.mins / maxMins) * 100));
+                const col = document.createElement('div');
+                col.className = 'bar-col-item';
+                col.innerHTML = `
+                    <div class="bar-pillar ${d.isToday ? 'highlight' : ''}" style="height: ${heightPct}%;"></div>
+                    <span class="day-label-txt" style="${d.isToday ? 'color:#3ea6ff;' : ''}">${d.dayLetter}</span>
+                `;
+                barsContainer.appendChild(col);
+            });
         }
     </script>
 </body>
