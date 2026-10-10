@@ -7,21 +7,64 @@
     <title>You - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
 
-        .profile-hdr { padding:24px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #1c1c1c; }
-        .avatar-box { width:68px; height:68px; border-radius:50%; background:linear-gradient(135deg, #ff1a1a, #8b0000); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; box-shadow:0 4px 12px rgba(229,9,20,0.4); }
-        .u-info { display:flex; flex-direction:column; gap:4px; }
-        .u-name { font-size:18px; font-weight:800; display:flex; align-items:center; gap:6px; }
-        .verified-tick { width:16px; height:16px; fill:#e50914; }
-        .u-handle { font-size:12px; color:#aaa; }
+        /* Top Bar */
+        .you-header { height:52px; display:flex; align-items:center; justify-content:flex-end; gap:18px; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; }
+        .hdr-icon { background:none; border:none; color:#fff; display:flex; align-items:center; justify-content:center; text-decoration:none; cursor:pointer; }
+        .hdr-icon svg { width:22px; height:22px; fill:#fff; }
 
-        .menu-grid { padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
-        .menu-row { display:flex; align-items:center; justify-content:space-between; padding:14px 12px; background:#141414; border-radius:10px; text-decoration:none; color:#fff; font-size:14px; font-weight:600; }
-        .row-left { display:flex; align-items:center; gap:14px; }
-        .row-left svg { width:22px; height:22px; fill:#aaa; }
-        .menu-badge { background:#e50914; color:#fff; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:800; }
+        /* Profile Info Header */
+        .profile-hero { padding:8px 16px 16px; display:flex; flex-direction:column; gap:14px; }
+        .profile-row { display:flex; align-items:center; gap:16px; }
+        .avatar-lg { width:74px; height:74px; border-radius:50%; background:linear-gradient(135deg, #ff1a1a 0%, #8b0000 100%); display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; color:#fff; box-shadow:0 4px 15px rgba(229,9,20,0.5); flex-shrink:0; }
+        
+        .user-titles { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+        .name-line { display:flex; align-items:center; gap:6px; }
+        .display-name { font-size:20px; font-weight:800; }
+        .verified-tick { width:17px; height:17px; fill:#e50914; flex-shrink:0; }
+        .user-handle { font-size:12px; color:#aaa; }
+        .link-view-channel { font-size:12px; color:#aaa; text-decoration:none; display:flex; align-items:center; gap:3px; margin-top:2px; font-weight:600; }
 
+        /* Small Buttons (Switch / Incognito) */
+        .pill-actions { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
+        .pill-actions::-webkit-scrollbar { display:none; }
+        .pill-btn { background:#222; color:#fff; border:none; border-radius:18px; padding:8px 14px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; white-space:nowrap; text-decoration:none; cursor:pointer; }
+        .pill-btn svg { width:16px; height:16px; fill:#fff; }
+
+        /* Sections (History / Playlists) */
+        .section-block { padding:14px 0 10px; border-top:1px solid #1a1a1a; display:flex; flex-direction:column; gap:10px; }
+        .section-hdr { display:flex; align-items:center; justify-content:space-between; padding:0 16px; }
+        .section-title { font-size:16px; font-weight:800; }
+        .btn-view-all { background:none; border:none; color:#3ea6ff; font-size:13px; font-weight:700; text-decoration:none; cursor:pointer; }
+
+        /* Horizontal Carousels */
+        .carousel-row { display:flex; gap:12px; overflow-x:auto; padding:0 16px 6px; scrollbar-width:none; }
+        .carousel-row::-webkit-scrollbar { display:none; }
+
+        .h-video-card { width:150px; flex-shrink:0; display:flex; flex-direction:column; gap:6px; cursor:pointer; }
+        .h-thumb-box { width:100%; aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:#222; position:relative; }
+        .h-thumb-box img { width:100%; height:100%; object-fit:cover; }
+        .h-duration { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.8); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
+        .h-title { font-size:12px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .h-meta { font-size:10px; color:#888; }
+
+        /* YouTube Studio Red Banner Card */
+        .studio-card { margin:10px 16px; background:#181818; border-radius:12px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; text-decoration:none; color:#fff; border:1px solid #252525; }
+        .studio-left { display:flex; align-items:center; gap:12px; }
+        .studio-logo { width:38px; height:38px; border-radius:8px; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:14px; }
+        .studio-text { display:flex; flex-direction:column; gap:2px; }
+        .studio-title { font-size:14px; font-weight:700; }
+        .studio-sub { font-size:11px; color:#888; }
+
+        /* Native List Rows */
+        .account-list { display:flex; flex-direction:column; border-top:1px solid #1a1a1a; margin-top:8px; }
+        .acc-row { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; text-decoration:none; color:#fff; font-size:14px; font-weight:600; border-bottom:1px solid #141414; }
+        .acc-left { display:flex; align-items:center; gap:16px; }
+        .acc-left svg { width:22px; height:22px; fill:#fff; }
+        .badge-count { background:#222; color:#aaa; padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700; }
+
+        /* Bottom Nav */
         .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
         .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
         .nav-btn.active { color:#fff; font-weight:700; }
@@ -35,60 +78,141 @@
 </head>
 <body>
 
-    <header class="profile-hdr">
-        <div class="avatar-box">BT</div>
-        <div class="u-info">
-            <div class="u-name">
-                <span>BTube Official</span>
-                <svg class="verified-tick" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            </div>
-            <div class="u-handle">@btubeofficial • Official Platform Channel</div>
-            <span style="font-size:12px; color:#2ecc71;">● Cloud Firestore Live Connected</span>
-        </div>
+    <!-- Top Right Icons Tray -->
+    <header class="you-header">
+        <button class="hdr-icon" title="Cast" onclick="alert('Searching for Cast screens...')">
+            <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+        </button>
+        <a href="notifications.html" class="hdr-icon" title="Notifications">
+            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        </a>
+        <a href="settings.html" class="hdr-icon" title="Settings">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        </a>
     </header>
 
-    <div class="menu-grid">
-        <a href="channel.html" class="menu-row">
-            <div class="row-left">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-                <span>View Channel</span>
+    <!-- Profile Hero Info -->
+    <div class="profile-hero">
+        <div class="profile-row">
+            <div class="avatar-lg">BT</div>
+            <div class="user-titles">
+                <div class="name-line">
+                    <span class="display-name">BTube Official</span>
+                    <svg class="verified-tick" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <div class="user-handle">@btubeofficial • Verified Platform</div>
+                <a href="channel.html" class="link-view-channel">
+                    <span>View channel</span>
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+                </a>
             </div>
-            <span>›</span>
-        </a>
+        </div>
 
-        <a href="your-videos.html" class="menu-row">
-            <div class="row-left">
+        <div class="pill-actions">
+            <a href="switch-account.html" class="pill-btn">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                <span>Switch account</span>
+            </a>
+            <button class="pill-btn" onclick="alert('Incognito Mode Activated')">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <span>Turn on Incognito</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- YouTube Studio Banner -->
+    <a href="your-videos.html" class="studio-card">
+        <div class="studio-left">
+            <div class="studio-logo">BT</div>
+            <div class="studio-text">
+                <span class="studio-title">BTube Studio</span>
+                <span class="studio-sub">Manage videos, comments & analytics</span>
+            </div>
+        </div>
+        <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#aaa;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+    </a>
+
+    <!-- History Carousel Section -->
+    <div class="section-block">
+        <div class="section-hdr">
+            <span class="section-title">History</span>
+            <a href="history.html" class="btn-view-all">View all</a>
+        </div>
+        <div class="carousel-row" id="historyRow">
+            <div style="font-size:12px; color:#666; padding:10px 0;">Loading history...</div>
+        </div>
+    </div>
+
+    <!-- Playlists Carousel Section -->
+    <div class="section-block">
+        <div class="section-hdr">
+            <span class="section-title">Playlists</span>
+            <a href="playlists.html" class="btn-view-all">View all</a>
+        </div>
+        <div class="carousel-row" id="playlistRow">
+            <div class="h-video-card" onclick="window.location.href='liked-videos.html'">
+                <div class="h-thumb-box">
+                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600">
+                    <span class="h-duration">Playlist</span>
+                </div>
+                <div class="h-title">Liked videos</div>
+                <div class="h-meta">Auto playlist</div>
+            </div>
+            <div class="h-video-card" onclick="window.location.href='watch-later.html'">
+                <div class="h-thumb-box">
+                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+                    <span class="h-duration">Playlist</span>
+                </div>
+                <div class="h-title">Watch later</div>
+                <div class="h-meta">Private</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Actions List -->
+    <div class="account-list">
+        <a href="your-videos.html" class="acc-row">
+            <div class="acc-left">
                 <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>
-                <span>Your Videos & Studio</span>
+                <span>Your videos</span>
             </div>
-            <span class="menu-badge" id="videoTotalCount">0</span>
+            <span class="badge-count" id="vidCountBadge">0</span>
         </a>
 
-        <a href="upload.html" class="menu-row" style="border:1px solid #e50914;">
-            <div class="row-left">
-                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                <span style="color:#e50914;">Upload New Video / Short</span>
+        <a href="downloads.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                <span>Downloads</span>
             </div>
-            <span>+</span>
+            <span class="badge-count">Offline</span>
         </a>
 
-        <a href="analytics.html" class="menu-row">
-            <div class="row-left">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                <span>Analytics & Realtime Views</span>
+        <a href="premium.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                <span>Get BTube Premium</span>
             </div>
-            <span>›</span>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
         </a>
 
-        <a href="settings.html" class="menu-row">
-            <div class="row-left">
-                <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span>Settings</span>
+        <a href="time-watched.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                <span>Time watched</span>
             </div>
-            <span>›</span>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+        </a>
+
+        <a href="help.html" class="acc-row">
+            <div class="acc-left">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                <span>Help and feedback</span>
+            </div>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:#777;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
         </a>
     </div>
 
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
         <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
@@ -100,7 +224,38 @@
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
             const feed = await window.BTubeAPI.getFeed('all');
-            document.getElementById('videoTotalCount').innerText = feed.length;
+            document.getElementById('vidCountBadge').innerText = feed.length;
+
+            const hRow = document.getElementById('historyRow');
+            hRow.innerHTML = '';
+
+            if (feed.length === 0) {
+                hRow.innerHTML = `<div style="font-size:12px; color:#666; padding:8px 0;">No watch history yet.</div>`;
+                return;
+            }
+
+            // Real Firestore Videos In History Carousel
+            feed.slice(0, 5).forEach(item => {
+                const safeTitle = item.title || item.name || 'BTube Video';
+                const card = document.createElement('div');
+                card.className = 'h-video-card';
+                card.onclick = () => {
+                    if (item.type === 'short') {
+                        window.location.href = `shorts.html?id=${item.id}`;
+                    } else {
+                        window.location.href = `watch.html?id=${item.id}&videoUrl=${encodeURIComponent(item.videoUrl || '')}`;
+                    }
+                };
+                card.innerHTML = `
+                    <div class="h-thumb-box">
+                        <img src="${item.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
+                        <span class="h-duration">${item.duration || '03:45'}</span>
+                    </div>
+                    <div class="h-title">${safeTitle}</div>
+                    <div class="h-meta">${item.views || 0} views</div>
+                `;
+                hRow.appendChild(card);
+            });
         });
     </script>
 </body>
