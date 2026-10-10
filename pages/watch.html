@@ -2,42 +2,103 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Watch - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
         
-        /* Video Container */
+        /* 1. Video Player Container */
         .player-wrapper { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:500; }
         video { width:100%; height:100%; object-fit:contain; background:#000; }
 
-        /* Tap to Play Overlay for Mobile */
         .play-trigger-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:10; cursor:pointer; }
         .play-circle-btn { width:60px; height:60px; border-radius:50%; background:rgba(229,9,20,0.95); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,0,0,0.6); }
         .play-circle-btn svg { width:28px; height:28px; fill:#fff; margin-left:3px; }
 
-        .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
-        .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
-        .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
+        /* 2. Video Title & Details */
+        .watch-details { padding:12px 14px; display:flex; flex-direction:column; gap:10px; }
+        .video-headline { font-size:16px; font-weight:700; line-height:1.35; color:#fff; }
 
-        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; margin-top:4px; }
-        .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
-        .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
-        .btn-sub { background:#fff; color:#000; border:none; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
+        /* Expandable Description Card */
+        .desc-box { background:#1e1e1e; border-radius:12px; padding:10px 12px; font-size:12px; color:#ccc; line-height:1.45; cursor:pointer; display:flex; flex-direction:column; gap:6px; }
+        .desc-meta-line { font-weight:700; color:#fff; display:flex; gap:8px; font-size:12px; }
+        .desc-text { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .desc-text.expanded { display:block; }
+        .desc-more-btn { font-weight:700; color:#aaa; font-size:11px; align-self:flex-start; }
 
-        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; scrollbar-width:none; }
+        /* 3. Channel Strip */
+        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:4px 0; }
+        .channel-info { display:flex; align-items:center; gap:10px; text-decoration:none; color:#fff; min-width:0; }
+        .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; overflow:hidden; flex-shrink:0; }
+        .avatar-c img { width:100%; height:100%; object-fit:cover; }
+        .ch-col { display:flex; flex-direction:column; min-width:0; }
+        .ch-title { font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .ch-subs-cnt { font-size:11px; color:#aaa; }
+        .btn-sub { background:#fff; color:#000; border:none; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; flex-shrink:0; transition:all 0.2s; }
+        .btn-sub.subscribed { background:#2a2a2a; color:#fff; }
+
+        /* 4. Action Tray (YouTube Standard) */
+        .action-tray { display:flex; gap:8px; overflow-x:auto; padding:4px 0; scrollbar-width:none; align-items:center; }
         .action-tray::-webkit-scrollbar { display:none; }
-        .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
-        .act-pill svg { width:16px; height:16px; fill:#fff; }
 
-        /* Comment Section */
-        .comments-section { margin-top:10px; background:#181818; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+        /* Like / Dislike Combined Pill */
+        .like-dislike-pill { display:flex; align-items:center; background:#222; border-radius:20px; padding:0 4px; height:36px; flex-shrink:0; }
+        .ld-btn { background:none; border:none; color:#fff; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:6px 10px; cursor:pointer; }
+        .ld-btn svg { width:17px; height:17px; fill:#fff; }
+        .ld-divider { width:1px; height:18px; background:#383838; }
+
+        .act-pill { background:#222; border:none; color:#fff; height:36px; padding:0 14px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
+        .act-pill svg { width:17px; height:17px; fill:#fff; }
+
+        /* Super Thanks Button */
+        .act-pill.super-thanks-pill { background:linear-gradient(135deg, rgba(62,166,255,0.25) 0%, rgba(229,9,20,0.3) 100%); border:1px solid rgba(255,255,255,0.25); color:#ffd700; }
+        .act-pill.super-thanks-pill svg { fill:#ffd700; }
+
+        /* 5. Comment Section */
+        .comments-section { margin-top:6px; background:#181818; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+        .c-header { display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:13px; }
         .comment-input-row { display:flex; gap:8px; }
         .comment-input-row input { flex:1; background:#0f0f0f; border:1px solid #333; border-radius:18px; padding:8px 14px; color:#fff; font-size:13px; outline:none; }
-        .comment-input-row button { background:#e50914; color:#fff; border:none; padding:8px 14px; border-radius:18px; font-weight:700; font-size:12px; cursor:pointer; }
-        .comment-entry { display:flex; gap:8px; font-size:12px; padding:6px 0; border-bottom:1px solid #222; }
+        .comment-input-row button { background:#3ea6ff; color:#000; border:none; padding:8px 16px; border-radius:18px; font-weight:800; font-size:12px; cursor:pointer; }
+        
+        .comments-list { display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto; padding-right:2px; }
+        .comment-entry { display:flex; gap:10px; font-size:12px; padding:6px 0; border-bottom:1px solid #222; }
+        .c-user-av { width:26px; height:26px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+
+        /* Super Thanks Bottom Sheet Modal */
+        .sheet-scrim { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:3000; display:none; align-items:flex-end; }
+        .sheet-scrim.open { display:flex; }
+        .super-thanks-sheet { width:100%; background:#1c1c1c; border-top-left-radius:16px; border-top-right-radius:16px; padding:16px 16px 26px; display:flex; flex-direction:column; gap:14px; box-shadow:0 -6px 24px rgba(0,0,0,0.9); animation:slideUp 0.2s ease-out; }
+        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+        .sheet-drag { width:36px; height:4px; background:#444; border-radius:2px; margin:0 auto 4px; }
+        .st-header { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #282828; padding-bottom:10px; }
+        .st-title { font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px; }
+        .st-close { background:none; border:none; color:#aaa; font-size:20px; cursor:pointer; }
+        .st-chip-row { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:4px 0; }
+        .st-chip-row::-webkit-scrollbar { display:none; }
+        .st-chip { background:#272727; border:1px solid #383838; color:#fff; border-radius:18px; padding:8px 16px; font-size:13px; font-weight:800; cursor:pointer; white-space:nowrap; }
+        .st-chip.active { background:#ffd700; color:#000; border-color:#ffd700; }
+        .st-msg-box { width:100%; background:#121212; border:1px solid #333; border-radius:10px; padding:10px 12px; color:#fff; font-size:13px; outline:none; resize:none; }
+        .btn-buy-send { background:#ffd700; color:#000; border:none; padding:12px; border-radius:24px; font-size:14px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+
+        /* 6. Related Videos Up Next Shelf */
+        .related-section { display:flex; flex-direction:column; gap:12px; padding:16px 14px 0; }
+        .related-card { display:flex; gap:12px; cursor:pointer; text-decoration:none; color:#fff; }
+        .r-thumb { width:130px; height:74px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
+        .r-thumb img { width:100%; height:100%; object-fit:cover; }
+        .r-dur { position:absolute; bottom:4px; right:4px; background:rgba(0,0,0,0.85); font-size:10px; font-weight:700; padding:1px 4px; border-radius:3px; }
+        .r-info { display:flex; flex-direction:column; gap:3px; min-width:0; }
+        .r-title { font-size:13px; font-weight:600; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+        .r-sub { font-size:11px; color:#aaa; }
+
+        /* Bottom Nav */
+        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
+        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
+        .nav-btn.active { color:#fff; font-weight:700; }
+        .nav-btn svg { width:22px; height:22px; fill:currentColor; }
     </style>
 
     <!-- Firebase SDK Scripts -->
@@ -63,72 +124,135 @@
     <!-- 2. Video Info & Actions -->
     <div class="watch-details">
         <h1 class="video-headline" id="watchTitle">Loading Video...</h1>
-        <div class="video-meta-row">
-            <span id="watchViews">0 views</span> • <span>Cloud Stream</span>
+
+        <!-- Expandable Description Box -->
+        <div class="desc-box" onclick="toggleDescription()">
+            <div class="desc-meta-line">
+                <span id="watchViews">0 views</span> • <span id="watchDate">Recently uploaded</span>
+            </div>
+            <div class="desc-text" id="descContent">No description provided.</div>
+            <span class="desc-more-btn" id="descToggleBtn">...more</span>
         </div>
 
+        <!-- Channel Strip -->
         <div class="channel-strip">
-            <a href="channel.html" class="channel-info">
+            <a href="channel.html" class="channel-info" id="channelLink">
                 <div class="avatar-c" id="chAvatar">BT</div>
-                <div>
-                    <div style="font-size:14px; font-weight:700;" id="channelName">BTube Official</div>
-                    <div style="font-size:11px; color:#aaa;">Verified Platform</div>
+                <div class="ch-col">
+                    <span class="ch-title" id="channelName">BTube Creator</span>
+                    <span class="ch-subs-cnt" id="channelSubs">245 subscribers</span>
                 </div>
             </a>
             <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
         </div>
 
+        <!-- YouTube Action Tray -->
         <div class="action-tray">
-            <button class="act-pill" id="likeBtn" onclick="toggleLike()">
-                <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                <span id="likeCount">Like</span>
-            </button>
+            <!-- Like / Dislike Combined Pill -->
+            <div class="like-dislike-pill">
+                <button class="ld-btn" id="likeBtn" onclick="toggleLike()">
+                    <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
+                    <span id="likeCount">Like</span>
+                </button>
+                <div class="ld-divider"></div>
+                <button class="ld-btn" id="dislikeBtn" onclick="toggleDislike()">
+                    <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
+                </button>
+            </div>
+
+            <!-- Share -->
             <button class="act-pill" onclick="shareVideo()">
-                <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M11.73 3L5.8 8.94l5.93 5.93v-3.95c4.78 0 8.12 1.53 10.51 4.93-.95-4.78-3.82-9.56-10.51-10.9V3z"/></svg>
                 <span>Share</span>
+            </button>
+
+            <!-- Super Thanks (70% Creator / 30% Platform Split) -->
+            <button class="act-pill super-thanks-pill" id="btnSuperThanks" onclick="openSuperThanks()">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <span>Thanks</span>
+            </button>
+
+            <!-- Save to Watch Later -->
+            <button class="act-pill" onclick="saveToWatchLater()">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.48 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z"/></svg>
+                <span>Save</span>
             </button>
         </div>
 
-        <!-- 3. Realtime Cloud Comments -->
+        <!-- 3. Comments Section -->
         <div class="comments-section">
-            <div style="font-weight:700; font-size:13px;">Comments</div>
+            <div class="c-header">
+                <span>Comments <span id="commentsCount" style="color:#aaa; font-size:12px;">(0)</span></span>
+            </div>
             <div class="comment-input-row">
-                <input type="text" id="commentInput" placeholder="Add a comment...">
+                <input type="text" id="commentInput" placeholder="Add a comment..." onkeydown="if(event.key==='Enter') submitComment()">
                 <button onclick="submitComment()">Post</button>
             </div>
-            <div id="commentsList">
-                <div style="font-size:12px; color:#666;">Koi comment nahi hai. Pehla comment karein!</div>
+            <div class="comments-list" id="commentsList">
+                <div style="font-size:12px; color:#777;">No comments yet. Be the first to comment!</div>
             </div>
+        </div>
+
+        <!-- 4. Related Videos Shelf -->
+        <div class="related-section">
+            <span style="font-weight:700; font-size:14px;">Up next</span>
+            <div id="relatedList" style="display:flex; flex-direction:column; gap:12px;"></div>
         </div>
     </div>
 
+    <!-- Super Thanks Bottom Sheet Modal -->
+    <div class="sheet-scrim" id="superThanksModal" onclick="if(event.target===this) closeSuperThanks()">
+        <div class="super-thanks-sheet">
+            <div class="sheet-drag"></div>
+            <div class="st-header">
+                <span class="st-title">
+                    <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#ffd700;"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    Send Super Thanks
+                </span>
+                <button class="st-close" onclick="closeSuperThanks()">✕</button>
+            </div>
+            <div style="font-size:12px; color:#aaa;">Support <strong id="stCreatorName" style="color:#fff;">Creator</strong> directly with a highlighted comment!</div>
+            
+            <div class="st-chip-row">
+                <button class="st-chip active" onclick="setStAmount(20, this)">₹20</button>
+                <button class="st-chip" onclick="setStAmount(50, this)">₹50</button>
+                <button class="st-chip" onclick="setStAmount(100, this)">₹100</button>
+                <button class="st-chip" onclick="setStAmount(500, this)">₹500</button>
+            </div>
+
+            <textarea id="stCommentInput" class="st-msg-box" rows="2" placeholder="Write a supportive comment..."></textarea>
+            
+            <button class="btn-buy-send" onclick="submitSuperThanks()">
+                <span id="stPayLabel">Buy and Send (₹20)</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+        <a href="../frontend/index.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div><span>You</span></a>
+    </nav>
+
     <script>
         const FALLBACK_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        const FAN_FUNDING_CREATOR_SHARE = 0.70;
+        const FAN_FUNDING_PLATFORM_FEE = 0.30;
+
         const player = document.getElementById('mainVideoPlayer');
         const overlay = document.getElementById('playOverlay');
 
         let currentDocId = null;
-
-        // --- YouTube Style Login Guard ---
-        function checkAuth(actionName, callback) {
-            const user = window.BTubeAPI.getUser();
-            if (!user) {
-                const wantsLogin = confirm(`BTube par ${actionName} karne ke liye Sign in zaroori hai.\n\nKya aap abhi Sign in karna chahte hain?`);
-                if (wantsLogin) {
-                    window.BTubeAPI.signInWithGoogle().then(u => {
-                        if (u) {
-                            alert(`Sign in safal raha! Welcome ${u.name}`);
-                            if (callback) callback(u);
-                        }
-                    });
-                }
-                return false;
-            }
-            if (callback) callback(user);
-            return true;
-        }
+        let currentVideoObj = null;
+        let activeCreatorName = 'BTube Creator';
+        let currentStAmount = 20;
 
         window.addEventListener('DOMContentLoaded', async () => {
+            syncNavAvatar();
+
             const params = new URLSearchParams(window.location.search);
             currentDocId = params.get('id');
             const paramUrl = params.get('videoUrl');
@@ -136,23 +260,38 @@
 
             let finalStreamUrl = null;
 
+            // Load Video Metadata
             if (currentDocId && window.BTubeAPI) {
                 try {
                     const videoDoc = await window.BTubeAPI.getVideoById(currentDocId);
                     if (videoDoc) {
-                        const safeTitle = videoDoc.title || videoDoc.name || 'BTube Video';
-                        const safeCh = videoDoc.channel || 'BTube Official';
-                        document.getElementById('watchTitle').innerText = safeTitle;
-                        document.getElementById('channelName').innerText = safeCh;
-                        document.getElementById('chAvatar').innerText = safeCh.substring(0,2).toUpperCase();
+                        currentVideoObj = videoDoc;
+                        activeCreatorName = videoDoc.channel || 'BTube Creator';
+
+                        document.getElementById('watchTitle').innerText = videoDoc.title || videoDoc.name || 'BTube Video';
+                        document.getElementById('channelName').innerText = activeCreatorName;
+                        document.getElementById('stCreatorName').innerText = activeCreatorName;
+
+                        const av = document.getElementById('chAvatar');
+                        if (videoDoc.channelAvatar) {
+                            av.innerHTML = `<img src="${videoDoc.channelAvatar}">`;
+                        } else {
+                            av.innerText = activeCreatorName.substring(0, 2).toUpperCase();
+                        }
+
                         document.getElementById('watchViews').innerText = `${videoDoc.views || 0} views`;
+                        document.getElementById('descContent').innerText = videoDoc.description || 'No description provided for this video.';
+
                         if (videoDoc.videoUrl) finalStreamUrl = videoDoc.videoUrl;
 
-                        window.BTubeAPI.recordView(currentDocId);
-                        loadComments();
+                        // Record watch view & watch history
+                        recordWatchHistory(videoDoc);
+                        if (typeof window.BTubeAPI.recordView === 'function') {
+                            window.BTubeAPI.recordView(currentDocId);
+                        }
                     }
                 } catch(e) {
-                    console.error('Firestore doc load error:', e);
+                    console.error('Video fetch error:', e);
                 }
             }
 
@@ -170,71 +309,261 @@
             }).catch(() => {
                 overlay.style.display = 'flex';
             });
+
+            loadComments();
+            loadRelatedVideos();
         });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function recordWatchHistory(v) {
+            let hist = JSON.parse(localStorage.getItem('btube_watch_history') || '[]');
+            hist = hist.filter(i => i.id !== v.id);
+            hist.unshift({
+                id: v.id,
+                title: v.title || v.name,
+                channel: v.channel,
+                thumb: v.thumb,
+                duration: v.duration,
+                videoUrl: v.videoUrl,
+                watchedAt: new Date().toISOString()
+            });
+            localStorage.setItem('btube_watch_history', JSON.stringify(hist));
+        }
 
         function forcePlayStream() {
             overlay.style.display = 'none';
             player.muted = false;
-            player.play().catch(e => {
-                player.play();
-            });
+            player.play().catch(() => player.play());
         }
 
         player.onplay = () => { overlay.style.display = 'none'; };
         player.onpause = () => { overlay.style.display = 'flex'; };
 
-        async function loadComments() {
-            if (!currentDocId || !db) return;
-            const snap = await db.collection('videos').doc(currentDocId).collection('comments').orderBy('createdAt', 'desc').get();
+        function toggleDescription() {
+            const text = document.getElementById('descContent');
+            const btn = document.getElementById('descToggleBtn');
+            const isExp = text.classList.toggle('expanded');
+            btn.innerText = isExp ? 'Show less' : '...more';
+        }
+
+        /* Comments Engine */
+        function loadComments() {
             const list = document.getElementById('commentsList');
-            if (snap.empty) return;
+            const commentsKey = `btube_comments_${currentDocId || 'general'}`;
+            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+
+            document.getElementById('commentsCount').innerText = `(${comments.length})`;
+
+            if (comments.length === 0) {
+                list.innerHTML = `<div style="font-size:12px; color:#777;">No comments yet. Be the first to comment!</div>`;
+                return;
+            }
+
             list.innerHTML = '';
-            snap.forEach(doc => {
-                const c = doc.data();
+            comments.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'comment-entry';
-                div.innerHTML = `<strong>${c.user || 'User'}:</strong> <span>${c.text}</span>`;
+
+                if (c.isSuperThanks) {
+                    div.style.cssText = `border:1px solid ${c.badgeColor}; background:rgba(255,255,255,0.05); border-radius:10px; padding:10px; width:100%;`;
+                    div.innerHTML = `
+                        <div style="width:100%;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div class="c-user-av" style="background:${c.badgeColor}; color:#000;">${c.author.substring(0,2).toUpperCase()}</div>
+                                    <strong style="color:#fff;">${c.author}</strong>
+                                </div>
+                                <span style="background:${c.badgeColor}; color:#000; font-size:11px; font-weight:900; padding:2px 8px; border-radius:12px;">₹${c.superThanksAmount}</span>
+                            </div>
+                            <span style="color:#eee; font-size:13px; line-height:1.35;">${c.text}</span>
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <div class="c-user-av">${(c.author || 'U').substring(0,2).toUpperCase()}</div>
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <strong style="color:#aaa; font-size:11px;">${c.author || 'User'}</strong>
+                            <span style="color:#eee; font-size:12px;">${c.text}</span>
+                        </div>
+                    `;
+                }
                 list.appendChild(div);
             });
         }
 
-        // 1. Protected Comment
-        async function submitComment() {
+        function submitComment() {
             const input = document.getElementById('commentInput');
             const txt = input.value.trim();
             if (!txt) return;
 
-            checkAuth("comment karne", async (user) => {
-                if (!currentDocId || !db) return;
-                await db.collection('videos').doc(currentDocId).collection('comments').add({
-                    user: user.name || 'BTube User',
-                    text: txt,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                input.value = '';
-                loadComments();
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const author = authUser?.name || 'Viewer';
+
+            const commentsKey = `btube_comments_${currentDocId || 'general'}`;
+            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+            comments.unshift({
+                id: 'c_' + Date.now(),
+                author: author,
+                text: txt,
+                isSuperThanks: false,
+                createdAt: new Date().toISOString()
             });
+
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+            input.value = '';
+            loadComments();
         }
 
-        // 2. Protected Subscribe
-        function toggleSub() {
-            checkAuth("channel subscribe karne", () => {
-                const btn = document.getElementById('btnSubscribe');
-                const isSubbed = btn.innerText === 'Subscribed';
-                btn.innerText = isSubbed ? 'Subscribe' : 'Subscribed';
-                btn.style.background = isSubbed ? '#fff' : '#333';
-                btn.style.color = isSubbed ? '#000' : '#fff';
-            });
+        /* Super Thanks Flow with 70/30 Split */
+        function openSuperThanks() {
+            document.getElementById('superThanksModal').classList.add('open');
         }
 
-        // 3. Protected Like
+        function closeSuperThanks() {
+            document.getElementById('superThanksModal').classList.remove('open');
+        }
+
+        function setStAmount(amt, btn) {
+            currentStAmount = amt;
+            document.querySelectorAll('.st-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('stPayLabel').innerText = `Buy and Send (₹${amt})`;
+        }
+
+        function getSuperThanksColor(amount) {
+            if (amount >= 500) return '#e62117';
+            if (amount >= 100) return '#ff7700';
+            if (amount >= 50)  return '#ffcc00';
+            return '#00bfa5';
+        }
+
+        function submitSuperThanks() {
+            const comment = document.getElementById('stCommentInput').value.trim();
+            const grossAmount = Number(currentStAmount);
+
+            // Official YPP Split: 70% Creator / 30% Platform Fee
+            const creatorNet = Number((grossAmount * FAN_FUNDING_CREATOR_SHARE).toFixed(2));
+            const platformCut = Number((grossAmount * FAN_FUNDING_PLATFORM_FEE).toFixed(2));
+
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const senderName = authUser?.name || 'Viewer';
+            const txId = 'TXN_' + Date.now();
+
+            // 1. Creator Studio Wallet Update
+            const creatorKey = `btube_creator_wallet_${activeCreatorName}`;
+            let creatorWallet = JSON.parse(localStorage.getItem(creatorKey) || JSON.stringify({
+                totalEarned: 0,
+                pendingPayout: 0,
+                transactions: []
+            }));
+
+            creatorWallet.totalEarned += creatorNet;
+            creatorWallet.pendingPayout += creatorNet;
+            creatorWallet.transactions.unshift({
+                txId,
+                type: 'SUPER_THANKS',
+                videoId: currentDocId,
+                gross: grossAmount,
+                creatorNet: creatorNet,
+                platformCut: platformCut,
+                sender: senderName,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem(creatorKey, JSON.stringify(creatorWallet));
+
+            // 2. Platform Treasury Update
+            let platformTreasury = JSON.parse(localStorage.getItem('btube_platform_treasury') || JSON.stringify({
+                totalPlatformFees: 0,
+                transactions: []
+            }));
+            platformTreasury.totalPlatformFees += platformCut;
+            platformTreasury.transactions.unshift({
+                txId,
+                videoId: currentDocId,
+                creator: activeCreatorName,
+                gross: grossAmount,
+                fee: platformCut,
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('btube_platform_treasury', JSON.stringify(platformTreasury));
+
+            // 3. Highlighted Super Thanks Comment
+            const commentsKey = `btube_comments_${currentDocId || 'general'}`;
+            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+            comments.unshift({
+                id: 'c_' + Date.now(),
+                author: senderName,
+                text: comment || 'Sent Super Thanks! 🎉',
+                isSuperThanks: true,
+                superThanksAmount: grossAmount,
+                badgeColor: getSuperThanksColor(grossAmount),
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+
+            closeSuperThanks();
+            document.getElementById('stCommentInput').value = '';
+            loadComments();
+
+            alert(
+                `🎉 Super Thanks Sent: ₹${grossAmount}\n` +
+                `------------------------------------\n` +
+                `• Creator Share (70%): ₹${creatorNet}\n` +
+                `• BTube Platform Fee (30%): ₹${platformCut}\n` +
+                `Transaction ID: ${txId}`
+            );
+        }
+
+        /* Action Buttons */
         function toggleLike() {
-            checkAuth("video like karne", () => {
-                const btn = document.getElementById('likeBtn');
-                const svg = btn.querySelector('svg');
-                const isLiked = svg.style.fill === 'rgb(229, 9, 20)';
-                svg.style.fill = isLiked ? '#fff' : '#e50914';
-            });
+            const svg = document.querySelector('#likeBtn svg');
+            const isLiked = svg.style.fill === 'rgb(229, 9, 20)';
+            svg.style.fill = isLiked ? '#fff' : '#e50914';
+            document.getElementById('likeCount').innerText = isLiked ? 'Like' : 'Liked';
+
+            if (currentVideoObj) {
+                let likedList = JSON.parse(localStorage.getItem('btube_liked_ids') || '[]');
+                if (!isLiked) {
+                    if (!likedList.some(v => v.id === currentVideoObj.id)) likedList.unshift(currentVideoObj);
+                } else {
+                    likedList = likedList.filter(v => v.id !== currentVideoObj.id);
+                }
+                localStorage.setItem('btube_liked_ids', JSON.stringify(likedList));
+            }
+        }
+
+        function toggleDislike() {
+            const svg = document.querySelector('#dislikeBtn svg');
+            const isDisliked = svg.style.fill === 'rgb(62, 166, 255)';
+            svg.style.fill = isDisliked ? '#fff' : '#3ea6ff';
+        }
+
+        function toggleSub() {
+            const btn = document.getElementById('btnSubscribe');
+            const isSub = btn.classList.toggle('subscribed');
+            btn.innerText = isSub ? 'Subscribed' : 'Subscribe';
+
+            // Sync with subscriptions storage
+            let subs = JSON.parse(localStorage.getItem('btube_subscriptions') || '[]');
+            if (isSub) {
+                if (!subs.some(s => s.name === activeCreatorName)) {
+                    subs.unshift({ id: 'ch_' + Date.now(), name: activeCreatorName, avatar: currentVideoObj?.channelAvatar || '' });
+                }
+            } else {
+                subs = subs.filter(s => s.name !== activeCreatorName);
+            }
+            localStorage.setItem('btube_subscriptions', JSON.stringify(subs));
         }
 
         function shareVideo() {
@@ -242,11 +571,57 @@
                 navigator.share({
                     title: document.getElementById('watchTitle').innerText,
                     url: window.location.href
-                });
+                }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href);
                 alert('Link copied to clipboard!');
             }
+        }
+
+        function saveToWatchLater() {
+            if (currentVideoObj) {
+                let wl = JSON.parse(localStorage.getItem('btube_watch_later') || '[]');
+                if (!wl.some(w => w.id === currentVideoObj.id)) {
+                    wl.unshift(currentVideoObj);
+                    localStorage.setItem('btube_watch_later', JSON.stringify(wl));
+                    localStorage.setItem('btube_watch_later_ids', JSON.stringify(wl));
+                }
+                alert('Saved to Watch later ✓');
+            }
+        }
+
+        /* 5. Related Videos Loader */
+        async function loadRelatedVideos() {
+            let feed = [];
+            if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
+                feed = await window.BTubeAPI.getFeed('video');
+            }
+
+            const container = document.getElementById('relatedList');
+            container.innerHTML = '';
+
+            const filtered = feed.filter(v => v.id !== currentDocId).slice(0, 8);
+            if (filtered.length === 0) {
+                container.innerHTML = `<span style="color:#777; font-size:12px;">No related videos found</span>`;
+                return;
+            }
+
+            filtered.forEach(v => {
+                const a = document.createElement('a');
+                a.className = 'related-card';
+                a.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                a.innerHTML = `
+                    <div class="r-thumb">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}" alt="${v.title || 'Video'}">
+                        <span class="r-dur">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="r-info">
+                        <span class="r-title">${v.title || v.name || 'Untitled'}</span>
+                        <span class="r-sub">${v.channel || 'Creator'} • ${v.views || 0} views</span>
+                    </div>
+                `;
+                container.appendChild(a);
+            });
         }
     </script>
 </body>
