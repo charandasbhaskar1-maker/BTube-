@@ -20,6 +20,7 @@
             background-color: #0f0f0f;
             color: #ffffff;
             padding-bottom: 70px;
+            overflow-x: hidden;
         }
 
         /* 1. TOP HEADER */
@@ -102,10 +103,11 @@
             color: #ffffff;
             border: none;
             padding: 6px 14px;
-            border-radius: 8px;
+            border-radius: 18px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
+            transition: background 0.15s ease;
         }
 
         .pill-btn.active {
@@ -137,6 +139,7 @@
             color: #ffffff;
             transition: background 0.15s;
             position: relative;
+            cursor: pointer;
         }
 
         .notif-row-card:active {
@@ -161,6 +164,7 @@
             width: 42px;
             height: 42px;
             border-radius: 50%;
+            background: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -168,6 +172,13 @@
             font-weight: 800;
             color: #ffffff;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .notif-avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .notif-details {
@@ -229,7 +240,36 @@
             fill: currentColor;
         }
 
-        /* 5. OPTIONS BOTTOM SHEET */
+        /* 5. EMPTY STATE */
+        .empty-notif-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 90px 24px;
+            text-align: center;
+            gap: 12px;
+        }
+
+        .empty-notif-box svg {
+            width: 58px;
+            height: 58px;
+            fill: #444;
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .empty-sub {
+            font-size: 13px;
+            color: #888888;
+            max-width: 270px;
+            line-height: 1.45;
+        }
+
+        /* 6. OPTIONS BOTTOM SHEET */
         .sheet-backdrop {
             position: fixed;
             inset: 0;
@@ -300,18 +340,18 @@
             fill: #ffffff;
         }
 
-        /* 6. BOTTOM NAVIGATION */
+        /* 7. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -322,7 +362,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-link svg {
@@ -332,32 +372,34 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="notif-header">
         <div class="header-left">
-            <a href="../frontend/index.html" class="btn-back-nav">
+            <button class="btn-back-nav" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-page-title">Notifications</span>
         </div>
 
@@ -371,92 +413,23 @@
         </div>
     </header>
 
-    <!-- 2. FILTER PILLS (All, Mentions) -->
+    <!-- 2. FILTER PILLS -->
     <nav class="filter-row">
-        <button class="pill-btn active" onclick="filterNotifs('all', this)">All</button>
-        <button class="pill-btn" onclick="filterNotifs('mentions', this)">Mentions</button>
+        <button class="pill-btn active" onclick="setNotifFilter('all', this)">All</button>
+        <button class="pill-btn" onclick="setNotifFilter('mention', this)">Mentions</button>
     </nav>
 
-    <!-- 3. LIST -->
-    <main class="notif-feed-list" id="notifList">
+    <!-- 3. NOTIFICATION LIST -->
+    <main class="notif-feed-list" id="notifList"></main>
 
-        <div class="section-label" id="impLabel">Important</div>
+    <!-- 4. EMPTY NOTIFICATIONS STATE -->
+    <div class="empty-notif-box" id="emptyNotifState">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+        <div class="empty-title">Your notifications live here</div>
+        <div class="empty-sub">Subscribe to your favorite channels to get notified about their latest uploads and community posts.</div>
+    </div>
 
-        <!-- Notification 1 -->
-        <div class="notif-row-card unread" data-type="video" id="notif-1" onclick="openVideo(this, 'watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar')">
-            <div class="unread-indicator-dot"></div>
-            <div class="notif-avatar-circle" style="background:#e50914;">CB</div>
-            <div class="notif-details">
-                <div class="notif-text">
-                    <b>Charandas Bhaskar</b> uploaded: Chhattisgarhi Panthi Song • Special Cultural Video 2026
-                </div>
-                <span class="notif-timestamp">2 hours ago</span>
-            </div>
-            <div class="notif-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
-            </div>
-            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-1', 'Charandas Bhaskar')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <!-- Notification 2 -->
-        <div class="notif-row-card unread" data-type="video" id="notif-2" onclick="openVideo(this, 'watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI')">
-            <div class="unread-indicator-dot"></div>
-            <div class="notif-avatar-circle" style="background:#3ea6ff;">DH</div>
-            <div class="notif-details">
-                <div class="notif-text">
-                    <b>Dhun AI</b> uploaded: Typewriter Banjo with Magnetic Pickups Full Making Guide
-                </div>
-                <span class="notif-timestamp">5 hours ago</span>
-            </div>
-            <div class="notif-thumb-box">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300" alt="Thumb">
-            </div>
-            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-2', 'Dhun AI')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <div class="section-label" id="earlierLabel">Earlier</div>
-
-        <!-- Notification 3 -->
-        <div class="notif-row-card" data-type="video" id="notif-3" onclick="openVideo(this, 'watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog')">
-            <div class="notif-avatar-circle" style="background:#2ecc71;">BV</div>
-            <div class="notif-details">
-                <div class="notif-text">
-                    <b>The Bhaskar Vlog</b> uploaded: Morning Commute & Village Lifestyle Daily Vlog #42
-                </div>
-                <span class="notif-timestamp">2 days ago</span>
-            </div>
-            <div class="notif-thumb-box">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=300" alt="Thumb">
-            </div>
-            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-3', 'The Bhaskar Vlog')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <!-- Notification 4 (Mention) -->
-        <div class="notif-row-card" data-type="mention" id="notif-4" onclick="openVideo(this, 'watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar')">
-            <div class="notif-avatar-circle" style="background:#f39c12;">R</div>
-            <div class="notif-details">
-                <div class="notif-text">
-                    <b>@ramesh_kumar</b> commented on your video: "Jay Satnam bhaiya! Bahut sughar geet he..."
-                </div>
-                <span class="notif-timestamp">3 days ago</span>
-            </div>
-            <div class="notif-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=300" alt="Thumb">
-            </div>
-            <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('notif-4', '@ramesh_kumar')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-    </main>
-
-    <!-- 4. BOTTOM ACTION SHEET (Options Modal) -->
+    <!-- 5. BOTTOM ACTION SHEET -->
     <div class="sheet-backdrop" id="optSheet" onclick="closeSheetOnBackdrop(event)">
         <div class="bottom-panel-card">
             <div class="panel-header-row">
@@ -474,7 +447,7 @@
         </div>
     </div>
 
-    <!-- 5. BOTTOM NAVIGATION -->
+    <!-- 6. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-link">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -492,47 +465,125 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-link">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;">CB</div>
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
+    <!-- LOGIC SCRIPT -->
     <script>
+        let currentFilter = 'all';
         let currentTargetId = null;
+        let notificationsData = [];
 
-        function filterNotifs(type, btn) {
-            document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
+        window.addEventListener('DOMContentLoaded', async () => {
+            syncNavAvatar();
+            await loadNotifications();
+        });
 
-            const rows = document.querySelectorAll('.notif-row-card');
-            const impLabel = document.getElementById('impLabel');
-            const earlierLabel = document.getElementById('earlierLabel');
-
-            rows.forEach(row => {
-                const rowType = row.getAttribute('data-type');
-                if (type === 'all' || rowType === 'mention') {
-                    row.style.display = (type === 'all' || rowType === type) ? 'flex' : 'none';
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
                 } else {
-                    row.style.display = 'none';
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
                 }
-            });
-
-            if (type === 'mentions') {
-                if (impLabel) impLabel.style.display = 'none';
-            } else {
-                if (impLabel) impLabel.style.display = 'block';
             }
         }
 
-        function openVideo(card, targetUrl) {
-            const dot = card.querySelector('.unread-indicator-dot');
-            if (dot) dot.remove();
-            card.classList.remove('unread');
-            window.location.href = targetUrl;
+        async function loadNotifications() {
+            notificationsData = JSON.parse(localStorage.getItem('btube_notifications') || '[]');
+
+            // Sync with real newly uploaded videos if notifications store is empty
+            if (notificationsData.length === 0 && window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
+                try {
+                    const realFeed = await window.BTubeAPI.getFeed('all');
+                    if (realFeed && realFeed.length > 0) {
+                        notificationsData = realFeed.slice(0, 5).map(v => ({
+                            id: 'notif_' + v.id,
+                            videoId: v.id,
+                            channel: v.channel || 'BTube Creator',
+                            channelAvatar: v.channelAvatar || '',
+                            title: v.title || 'New Upload',
+                            thumb: v.thumb || '',
+                            time: 'Recently',
+                            unread: true,
+                            type: 'video',
+                            targetUrl: `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`
+                        }));
+                        localStorage.setItem('btube_notifications', JSON.stringify(notificationsData));
+                    }
+                } catch(e) {}
+            }
+
+            renderNotifications();
         }
 
-        function openItemMenu(id, channel) {
+        function setNotifFilter(type, btn) {
+            currentFilter = type;
+            document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            renderNotifications();
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifList');
+            const empty = document.getElementById('emptyNotifState');
+            list.innerHTML = '';
+
+            let filtered = notificationsData;
+            if (currentFilter !== 'all') {
+                filtered = notificationsData.filter(n => n.type === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                list.style.display = 'none';
+                empty.style.display = 'flex';
+                return;
+            }
+
+            list.style.display = 'flex';
+            empty.style.display = 'none';
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `notif-row-card ${item.unread ? 'unread' : ''}`;
+                card.setAttribute('data-id', item.id);
+                card.onclick = () => openNotification(item);
+
+                const avatarContent = item.channelAvatar 
+                    ? `<img src="${item.channelAvatar}">` 
+                    : (item.channel || 'BT').substring(0, 2).toUpperCase();
+
+                card.innerHTML = `
+                    ${item.unread ? '<div class="unread-indicator-dot"></div>' : ''}
+                    <div class="notif-avatar-circle">${avatarContent}</div>
+                    <div class="notif-details">
+                        <div class="notif-text">
+                            <b>${item.channel}</b> uploaded: ${item.title}
+                        </div>
+                        <span class="notif-timestamp">${item.time || 'Recently'}</span>
+                    </div>
+                    ${item.thumb ? `<div class="notif-thumb-box"><img src="${item.thumb}"></div>` : ''}
+                    <button class="btn-item-more" onclick="event.stopPropagation(); openItemMenu('${item.id}', '${encodeURIComponent(item.channel || '')}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    </button>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function openNotification(item) {
+            item.unread = false;
+            localStorage.setItem('btube_notifications', JSON.stringify(notificationsData));
+            window.location.href = item.targetUrl || `watch.html?id=${item.videoId || ''}`;
+        }
+
+        function openItemMenu(id, channelEnc) {
             currentTargetId = id;
+            const channel = decodeURIComponent(channelEnc);
             document.getElementById('sheetChannelTitle').innerText = channel;
             document.getElementById('turnOffText').innerText = `Turn off notifications from ${channel}`;
             document.getElementById('optSheet').classList.add('open');
@@ -548,8 +599,9 @@
 
         function hideCurrentNotif() {
             if (currentTargetId) {
-                const el = document.getElementById(currentTargetId);
-                if (el) el.remove();
+                notificationsData = notificationsData.filter(n => n.id !== currentTargetId);
+                localStorage.setItem('btube_notifications', JSON.stringify(notificationsData));
+                renderNotifications();
             }
             closeSheet();
         }
