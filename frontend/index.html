@@ -20,6 +20,11 @@
         .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
         .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
 
+        /* Refresh Indicator */
+        .refresh-spinner-bar { display:none; justify-content:center; align-items:center; padding:10px 0; background:#0f0f0f; }
+        .spin-circle { width:24px; height:24px; border:3px solid #222; border-top-color:#e50914; border-radius:50%; animation:spin 0.6s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
         /* Categories */
         .category-bar { display:flex; gap:8px; padding:10px 16px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
         .category-bar::-webkit-scrollbar { display:none; }
@@ -33,12 +38,16 @@
         .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
         .badge-time { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; }
 
-        .details-wrapper { display:flex; gap:12px; padding:12px 16px 0; align-items:flex-start; }
+        .details-wrapper { display:flex; gap:12px; padding:12px 16px 0; align-items:flex-start; justify-content:space-between; }
+        .card-main-info { display:flex; gap:12px; flex:1; min-width:0; }
         .channel-avatar { width:38px; height:38px; border-radius:50%; background:#2a2a2a; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
         .channel-avatar img { width:100%; height:100%; object-fit:cover; }
         .meta-col { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
         .video-title { font-size:14px; font-weight:700; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .video-sub-meta { font-size:12px; color:#aaa; }
+
+        .btn-card-dots { background:none; border:none; color:#aaa; padding:2px 0 2px 8px; cursor:pointer; display:flex; align-items:center; }
+        .btn-card-dots svg { width:18px; height:18px; fill:#aaa; }
 
         /* Empty State */
         .empty-feed { text-align:center; padding:70px 24px; color:#aaa; display:flex; flex-direction:column; align-items:center; gap:12px; }
@@ -61,6 +70,7 @@
 </head>
 <body>
 
+    <!-- Header -->
     <header class="app-header">
         <a href="index.html" class="logo-box">
             <div class="logo-icon">
@@ -69,13 +79,13 @@
             <span>BTube</span>
         </a>
         <div class="hdr-actions">
-            <button class="btn-hdr" onclick="alert('Cast to screen')">
+            <button class="btn-hdr" onclick="alert('Searching screen...')">
                 <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
             </button>
             <a href="../pages/notifications.html" class="btn-hdr">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
             </a>
-            <button class="btn-hdr" onclick="loadRealFeed()">
+            <button class="btn-hdr" onclick="refreshFeed(true)">
                 <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
             <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='../pages/profile.html'">
@@ -84,10 +94,16 @@
         </div>
     </header>
 
+    <!-- Refresh Spinner -->
+    <div class="refresh-spinner-bar" id="refreshSpinner">
+        <div class="spin-circle"></div>
+    </div>
+
+    <!-- Filter Chips -->
     <div class="category-bar">
-        <button class="chip active">All</button>
-        <button class="chip">Videos</button>
-        <button class="chip">Shorts</button>
+        <button class="chip active" onclick="setCategoryFilter('all', this)">All</button>
+        <button class="chip" onclick="setCategoryFilter('video', this)">Videos</button>
+        <button class="chip" onclick="setCategoryFilter('short', this)">Shorts</button>
     </div>
 
     <!-- Feed Container -->
@@ -103,9 +119,13 @@
     </nav>
 
     <script>
+        let currentFilter = 'all';
+        let allCloudVideos = [];
+
         window.addEventListener('DOMContentLoaded', async () => {
             syncHeaderAvatar();
-            await loadRealFeed();
+            await refreshFeed(false);
+            setupPullToRefresh();
         });
 
         function syncHeaderAvatar() {
@@ -126,34 +146,55 @@
             }
         }
 
-        async function loadRealFeed() {
-            const feedContainer = document.getElementById('mainVideoFeed');
-            feedContainer.innerHTML = '';
+        async function refreshFeed(showSpinner = true) {
+            const spinner = document.getElementById('refreshSpinner');
+            if (showSpinner) {
+                spinner.style.display = 'flex';
+                await new Promise(r => setTimeout(r, 400));
+            }
 
-            let realVideos = [];
+            allCloudVideos = [];
             if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
                 try {
-                    realVideos = await window.BTubeAPI.getFeed('all');
+                    allCloudVideos = await window.BTubeAPI.getFeed('all');
                 } catch(e) {
-                    console.error(e);
+                    console.error("Firestore feed load error:", e);
                 }
             }
 
-            // Agar koi upload ki hui real video nahi hai
-            if (!realVideos || realVideos.length === 0) {
+            renderFeedList();
+            spinner.style.display = 'none';
+        }
+
+        function setCategoryFilter(type, el) {
+            currentFilter = type;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderFeedList();
+        }
+
+        function renderFeedList() {
+            const feedContainer = document.getElementById('mainVideoFeed');
+            feedContainer.innerHTML = '';
+
+            let filtered = allCloudVideos;
+            if (currentFilter !== 'all') {
+                filtered = allCloudVideos.filter(v => (v.type || 'video').toLowerCase() === currentFilter);
+            }
+
+            if (!filtered || filtered.length === 0) {
                 feedContainer.innerHTML = `
                     <div class="empty-feed">
                         <svg viewBox="0 0 24 24"><path d="M10 18v-6l5 3-5 3zm7-15H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z"/></svg>
                         <h3>No videos uploaded yet</h3>
-                        <p>Aapke BTube par abhi koi video nahi hai. Apni pehli video ya short upload karein!</p>
+                        <p>Be the first creator to upload a video or Short to BTube.</p>
                         <a href="../pages/upload.html" class="btn-feed-upload">+ Upload first video</a>
                     </div>
                 `;
                 return;
             }
 
-            // Real uploaded videos render
-            realVideos.forEach(v => {
+            filtered.forEach(v => {
                 const card = document.createElement('article');
                 card.className = 'video-card';
                 card.onclick = () => {
@@ -169,17 +210,37 @@
                         <span class="badge-time">${v.duration || '03:45'}</span>
                     </div>
                     <div class="details-wrapper">
-                        <div class="channel-avatar">
-                            ${avatarSrc ? `<img src="${avatarSrc}">` : initial}
+                        <div class="card-main-info">
+                            <div class="channel-avatar">
+                                ${avatarSrc ? `<img src="${avatarSrc}">` : initial}
+                            </div>
+                            <div class="meta-col">
+                                <h3 class="video-title">${v.title}</h3>
+                                <div class="video-sub-meta">${v.channel} • ${v.views || 0} views</div>
+                            </div>
                         </div>
-                        <div class="meta-col">
-                            <h3 class="video-title">${v.title}</h3>
-                            <div class="video-sub-meta">${v.channel} • ${v.views || 0} views</div>
-                        </div>
+                        <button class="btn-card-dots" onclick="event.stopPropagation(); alert('Options for: ${v.title}')">
+                            <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        </button>
                     </div>
                 `;
                 feedContainer.appendChild(card);
             });
+        }
+
+        function setupPullToRefresh() {
+            let startY = 0;
+            window.addEventListener('touchstart', (e) => {
+                if (window.scrollY === 0) startY = e.touches[0].pageY;
+            }, { passive: true });
+
+            window.addEventListener('touchmove', (e) => {
+                const y = e.touches[0].pageY;
+                if (window.scrollY === 0 && y - startY > 100) {
+                    startY = 9999;
+                    refreshFeed(true);
+                }
+            }, { passive: true });
         }
     </script>
 </body>
