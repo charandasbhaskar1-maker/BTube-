@@ -13,6 +13,8 @@
         .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
         .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
+        .btn-pub:disabled { opacity:0.4; cursor:not-allowed; }
+
         .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
 
         .type-selector { display:flex; background:#1c1c1c; border-radius:10px; padding:4px; gap:6px; }
@@ -27,6 +29,11 @@
         .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
         .inp-grp input:focus, .inp-grp textarea:focus { border-color:#e50914; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
     <header class="hdr">
@@ -36,35 +43,47 @@
             </button>
             <span style="font-size:17px; font-weight:700;">Upload Content</span>
         </div>
-        <button class="btn-pub" id="btnPublish" onclick="handleSaveUpload()">Upload</button>
+        <button class="btn-pub" id="btnPublish" onclick="startCloudUpload()">Upload</button>
     </header>
 
     <div class="container">
+        <!-- Type Selection Toggle -->
         <div class="type-selector">
-            <button class="type-btn active" id="btnTypeVideo" onclick="switchType('video')">Long Video</button>
-            <button class="type-btn" id="btnTypeShort" onclick="switchType('short')">Short (9:16)</button>
+            <button class="type-btn active" id="btnVideo" onclick="setType('video')">Long Video</button>
+            <button class="type-btn" id="btnShort" onclick="setType('short')">Short (9:16)</button>
         </div>
 
         <div class="dropzone" onclick="document.getElementById('videoFile').click()">
             <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
             <span style="font-weight:700;" id="fileLabel">Select Video from Phone</span>
-            <span style="font-size:11px; color:#777;">Tap to choose video</span>
-            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onVideoSelect(event)">
+            <span style="font-size:11px; color:#777;">Supports MP4 or WebM</span>
+            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
         </div>
 
         <div class="inp-grp">
             <label>Title</label>
-            <input type="text" id="vTitle" placeholder="Video Title (add #shorts for short)">
+            <input type="text" id="titleInput" placeholder="Video Title (add #shorts for short)">
         </div>
 
         <div class="inp-grp">
             <label>Description</label>
-            <textarea id="vDesc" rows="3" placeholder="Description..."></textarea>
+            <textarea id="descInput" rows="3" placeholder="Tell viewers about this video..."></textarea>
+        </div>
+
+        <div class="inp-grp">
+            <label>Category</label>
+            <select id="catInput">
+                <option value="All">All Categories</option>
+                <option value="Chhattisgarhi">Chhattisgarhi</option>
+                <option value="Music">Music</option>
+                <option value="Vlogs">Vlogs</option>
+                <option value="Tech">Tech</option>
+            </select>
         </div>
 
         <div class="inp-grp">
             <label>Visibility</label>
-            <select id="vVis">
+            <select id="visInput">
                 <option value="Public">Public</option>
                 <option value="Unlisted">Unlisted</option>
                 <option value="Private">Private</option>
@@ -73,67 +92,70 @@
     </div>
 
     <script>
-        let chosenType = 'video';
-        let selectedFile = null;
+        let selectedType = 'video';
+        let chosenFile = null;
 
-        function switchType(t) {
-            chosenType = t;
-            document.getElementById('btnTypeVideo').classList.toggle('active', t === 'video');
-            document.getElementById('btnTypeShort').classList.toggle('active', t === 'short');
-            
-            const titleInput = document.getElementById('vTitle');
-            if (t === 'short' && !titleInput.value.toLowerCase().includes('#short')) {
-                titleInput.value = (titleInput.value.trim() + ' #shorts').trim();
+        function setType(t) {
+            selectedType = t;
+            document.getElementById('btnVideo').classList.toggle('active', t === 'video');
+            document.getElementById('btnShort').classList.toggle('active', t === 'short');
+            const titleField = document.getElementById('titleInput');
+            if (t === 'short' && !titleField.value.toLowerCase().includes('#short')) {
+                titleField.value = (titleField.value.trim() + ' #shorts').trim();
             }
         }
 
-        function onVideoSelect(e) {
+        function onFileChosen(e) {
             const f = e.target.files[0];
             if (f) {
-                selectedFile = f;
+                chosenFile = f;
                 document.getElementById('fileLabel').innerText = f.name;
-                const titleInput = document.getElementById('vTitle');
-                if (!titleInput.value) {
-                    const clean = f.name.replace(/\.[^/.]+$/, "");
-                    titleInput.value = (chosenType === 'short') ? `${clean} #shorts` : clean;
+                const titleField = document.getElementById('titleInput');
+                if (!titleField.value) {
+                    const cleanName = f.name.replace(/\.[^/.]+$/, "");
+                    titleField.value = (selectedType === 'short') ? `${cleanName} #shorts` : cleanName;
                 }
             }
         }
 
-        function handleSaveUpload() {
-            const title = document.getElementById('vTitle').value.trim() || 'Untitled Video';
-            const desc = document.getElementById('vDesc').value.trim();
-            const vis = document.getElementById('vVis').value;
+        async function startCloudUpload() {
+            const title = document.getElementById('titleInput').value.trim();
+            if (!title) {
+                alert('Title daalna anivarya hai!');
+                return;
+            }
 
-            // Title me #short ho ya short button clicked ho -> 100% Short
-            const isShort = (chosenType === 'short') || title.toLowerCase().includes('#short');
+            const btn = document.getElementById('btnPublish');
+            btn.disabled = true;
+            btn.innerText = 'Publishing...';
 
-            // Reliable playable stream source fallback
-            const playableStream = isShort
+            const isShort = (selectedType === 'short') || title.toLowerCase().includes('#short');
+            
+            // Reliable CDN Playable stream setup
+            const streamingUrl = isShort 
                 ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
                 : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
 
-            const newItem = {
-                id: (isShort ? 'short_' : 'vid_') + Date.now(),
-                title: title,
-                desc: desc,
-                visibility: vis,
-                views: '0',
-                age: 'Just now',
-                duration: isShort ? '0:30' : '03:45',
-                type: isShort ? 'short' : 'video',
-                videoUrl: playableStream,
-                thumb: isShort 
-                    ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'
-                    : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
-            };
+            try {
+                await window.BTubeAPI.saveVideo({
+                    title: title,
+                    description: document.getElementById('descInput').value.trim(),
+                    category: document.getElementById('catInput').value,
+                    visibility: document.getElementById('visInput').value,
+                    type: isShort ? 'short' : 'video',
+                    videoUrl: streamingUrl,
+                    thumb: isShort 
+                        ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'
+                        : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
+                });
 
-            let list = JSON.parse(localStorage.getItem('btube_user_videos') || '[]');
-            list.unshift(newItem);
-            localStorage.setItem('btube_user_videos', JSON.stringify(list));
-
-            alert((isShort ? 'Short' : 'Video') + ' uploaded successfully!');
-            window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
+                alert((isShort ? 'Short' : 'Video') + ' Firestore Cloud par upload ho gaya!');
+                window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
+            } catch (err) {
+                alert('Upload fail: ' + err.message);
+                btn.disabled = false;
+                btn.innerText = 'Upload';
+            }
         }
     </script>
 </body>
