@@ -2,34 +2,64 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Upload Video - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
-        .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:60px; overflow-x:hidden; }
+
+        /* Top Bar */
+        .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
         .hdr-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
+        .btn-pub { background:#3ea6ff; color:#0f0f0f; border:none; padding:8px 22px; border-radius:20px; font-weight:800; cursor:pointer; font-size:13px; transition:opacity 0.2s; }
+        .btn-pub:disabled { opacity:0.6; cursor:not-allowed; }
 
-        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-        .dropzone { border:2px dashed #333; border-radius:12px; padding:30px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; }
-        .dropzone svg { width:42px; height:42px; fill:#e50914; }
+        .container { padding:16px; max-width:640px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
 
+        /* Creator Identity Bar */
+        .creator-bar { display:flex; align-items:center; gap:12px; padding:10px 14px; background:#161616; border-radius:12px; border:1px solid #252525; }
+        .c-av { width:36px; height:36px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; overflow:hidden; flex-shrink:0; }
+        .c-av img { width:100%; height:100%; object-fit:cover; }
+        .c-meta { display:flex; flex-direction:column; gap:2px; min-width:0; }
+        .c-name { font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .c-handle { font-size:12px; color:#888; }
+
+        /* Dropzone / Video Preview Area */
+        .dropzone { border:2px dashed #333; border-radius:14px; padding:24px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; overflow:hidden; transition:border-color 0.2s; }
+        .dropzone:hover { border-color:#3ea6ff; }
+        .dropzone svg { width:42px; height:42px; fill:#3ea6ff; }
+        .preview-player { width:100%; aspect-ratio:16/9; border-radius:10px; background:#000; object-fit:contain; display:none; }
+
+        /* Custom Thumbnail Strip */
+        .thumb-upload-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:#161616; border-radius:12px; border:1px solid #252525; }
+        .thumb-preview-mini { width:64px; height:36px; border-radius:6px; background:#222; overflow:hidden; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .thumb-preview-mini img { width:100%; height:100%; object-fit:cover; }
+        .btn-custom-thumb { background:#252525; border:1px solid #3d3d3d; color:#fff; font-size:12px; font-weight:700; padding:6px 14px; border-radius:16px; cursor:pointer; }
+
+        /* Form Controls */
         .inp-grp { display:flex; flex-direction:column; gap:6px; }
         .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
-        .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
-        .inp-grp input:focus, .inp-grp textarea:focus { border-color:#e50914; }
+        .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; transition:border-color 0.2s; }
+        .inp-grp input:focus, .inp-grp textarea:focus, .inp-grp select:focus { border-color:#3ea6ff; }
+
+        /* Audience Selector Card */
+        .audience-card { padding:14px; background:#161616; border:1px solid #252525; border-radius:12px; display:flex; flex-direction:column; gap:8px; }
+        .radio-line { display:flex; align-items:center; gap:10px; font-size:13px; cursor:pointer; color:#ccc; }
+        .radio-line input { accent-color:#3ea6ff; }
     </style>
 
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
+
     <header class="hdr">
         <div class="hdr-left">
             <button class="btn-back" onclick="window.history.back()">
@@ -41,69 +71,232 @@
     </header>
 
     <div class="container">
-        <div class="dropzone" onclick="document.getElementById('fileInp').click()">
-            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-            <span style="font-weight:700;" id="fileLabel">Select Video from Phone</span>
-            <span style="font-size:11px; color:#777;">Supports 16:9 Long Form MP4 / WebM</span>
-            <input type="file" id="fileInp" accept="video/*" style="display:none;" onchange="onPicked(event)">
+        <!-- Active Channel Profile -->
+        <div class="creator-bar">
+            <div class="c-av" id="creatorAvatar">BT</div>
+            <div class="c-meta">
+                <span class="c-name" id="creatorName">Channel</span>
+                <span class="c-handle" id="creatorHandle">@channel</span>
+            </div>
         </div>
 
+        <!-- Video Selector & 16:9 Player Preview -->
+        <div class="dropzone" id="dropArea" onclick="document.getElementById('fileInp').click()">
+            <video id="previewPlayer" class="preview-player" playsinline controls></video>
+            <div id="dropPlaceholder" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span style="font-weight:700;" id="fileLabel">Select 16:9 Video from Phone</span>
+                <span style="font-size:11px; color:#777;">Supports MP4, WebM (Long-form Video)</span>
+            </div>
+            <input type="file" id="fileInp" accept="video/*" style="display:none;" onchange="onVideoPicked(event)">
+        </div>
+
+        <!-- Thumbnail Option -->
+        <div class="thumb-upload-strip">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="thumb-preview-mini">
+                    <img id="thumbMiniImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400" alt="Thumb">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-size:13px; font-weight:700;">Thumbnail</span>
+                    <span style="font-size:11px; color:#888;">Auto-frame or upload image</span>
+                </div>
+            </div>
+            <button class="btn-custom-thumb" onclick="document.getElementById('thumbInp').click()">Change</button>
+            <input type="file" id="thumbInp" accept="image/*" style="display:none;" onchange="onCustomThumbPicked(event)">
+        </div>
+
+        <!-- Title -->
         <div class="inp-grp">
-            <label>Title</label>
-            <input type="text" id="vTitle" placeholder="e.g. BTube Official Platform Launch">
+            <label>Title (required)</label>
+            <input type="text" id="vTitle" placeholder="Add a title that describes your video">
         </div>
 
+        <!-- Description -->
         <div class="inp-grp">
             <label>Description</label>
-            <textarea id="vDesc" rows="3" placeholder="Tell viewers about this video..."></textarea>
+            <textarea id="vDesc" rows="3" placeholder="Tell viewers about your video (links, timestamps, social handles)"></textarea>
         </div>
 
+        <!-- Category -->
         <div class="inp-grp">
             <label>Category</label>
             <select id="vCat">
+                <option value="All">General / All</option>
+                <option value="Chhattisgarhi" selected>Chhattisgarhi Culture & Songs</option>
+                <option value="Music">Music & Instruments</option>
+                <option value="Vlogs">Daily Vlogs & Lifestyle</option>
+                <option value="Education">Education & Tutorials</option>
                 <option value="Features">BTube Features</option>
-                <option value="Policy">Policy & Guidelines</option>
-                <option value="Chhattisgarhi">Chhattisgarhi</option>
-                <option value="Music">Music</option>
-                <option value="Vlogs">Vlogs</option>
             </select>
+        </div>
+
+        <!-- Visibility -->
+        <div class="inp-grp">
+            <label>Visibility</label>
+            <select id="vVisibility">
+                <option value="Public" selected>Public (Everyone can search & watch)</option>
+                <option value="Unlisted">Unlisted (Anyone with link can watch)</option>
+                <option value="Private">Private (Only you can watch)</option>
+            </select>
+        </div>
+
+        <!-- Audience (Made for Kids) -->
+        <div class="audience-card">
+            <span style="font-size:13px; font-weight:700;">Audience</span>
+            <span style="font-size:11px; color:#888;">Is this video made for kids? (Regardless of location)</span>
+            <label class="radio-line">
+                <input type="radio" name="audience" value="no" checked>
+                <span>No, it's not made for kids</span>
+            </label>
+            <label class="radio-line">
+                <input type="radio" name="audience" value="yes">
+                <span>Yes, it's made for kids</span>
+            </label>
         </div>
     </div>
 
+    <!-- Hidden canvas for automatic frame capture -->
+    <canvas id="thumbCanvas" style="display:none;"></canvas>
+
     <script>
-        function onPicked(e) {
-            const f = e.target.files[0];
-            if (f) {
-                document.getElementById('fileLabel').innerText = f.name;
-                const t = document.getElementById('vTitle');
-                if (!t.value) t.value = f.name.replace(/\.[^/.]+$/, "");
+        let currentActiveChannel = null;
+        let selectedVideoFile = null;
+        let finalThumbUrl = '';
+        let extractedDuration = '04:15';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            if (window.BTubeAPI && typeof window.BTubeAPI.getActiveChannel === 'function') {
+                currentActiveChannel = await window.BTubeAPI.getActiveChannel();
             }
+
+            const chName = currentActiveChannel?.name || authUser?.name || 'BTube Creator';
+            const chHandle = currentActiveChannel?.handle || ('@' + chName.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const chAvatar = currentActiveChannel?.avatar || authUser?.photo;
+
+            document.getElementById('creatorName').innerText = chName;
+            document.getElementById('creatorHandle').innerText = chHandle;
+
+            const av = document.getElementById('creatorAvatar');
+            if (chAvatar) {
+                av.innerHTML = `<img src="${chAvatar}">`;
+            } else {
+                av.innerText = chName.substring(0, 2).toUpperCase();
+            }
+        });
+
+        function onVideoPicked(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            selectedVideoFile = file;
+            document.getElementById('fileLabel').innerText = file.name;
+
+            const titleInput = document.getElementById('vTitle');
+            if (!titleInput.value) {
+                titleInput.value = file.name.replace(/\.[^/.]+$/, "");
+            }
+
+            // Preview Video Setup
+            const preview = document.getElementById('previewPlayer');
+            const placeholder = document.getElementById('dropPlaceholder');
+            const streamUrl = URL.createObjectURL(file);
+
+            preview.src = streamUrl;
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            preview.onloadedmetadata = () => {
+                const totalSec = Math.round(preview.duration);
+                const m = Math.floor(totalSec / 60);
+                const s = totalSec % 60;
+                extractedDuration = `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+
+                // Extract frame for auto thumbnail
+                extractThumbnailFromVideo(preview);
+            };
+        }
+
+        function extractThumbnailFromVideo(video) {
+            video.currentTime = Math.min(2, video.duration / 4);
+            video.onseeked = () => {
+                try {
+                    const canvas = document.getElementById('thumbCanvas');
+                    canvas.width = 640;
+                    canvas.height = 360;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    finalThumbUrl = canvas.toDataURL('image/jpeg', 0.85);
+                    document.getElementById('thumbMiniImg').src = finalThumbUrl;
+                } catch(e) {
+                    finalThumbUrl = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800';
+                }
+            };
+        }
+
+        function onCustomThumbPicked(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                finalThumbUrl = event.target.result;
+                document.getElementById('thumbMiniImg').src = finalThumbUrl;
+            };
+            reader.readAsDataURL(file);
         }
 
         async function publishVideo() {
-            const title = document.getElementById('vTitle').value.trim() || 'BTube Official Video';
+            const title = document.getElementById('vTitle').value.trim() || 'Untitled Video';
+            const desc = document.getElementById('vDesc').value.trim();
+            const category = document.getElementById('vCat').value;
+            const visibility = document.getElementById('vVisibility').value;
+            const isKids = document.querySelector('input[name="audience"]:checked').value === 'yes';
+
             const btn = document.getElementById('btnUpload');
             btn.disabled = true;
             btn.innerText = 'Publishing...';
 
+            const chName = document.getElementById('creatorName').innerText;
+            const streamUrl = selectedVideoFile 
+                ? URL.createObjectURL(selectedVideoFile) 
+                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+
+            const payload = {
+                id: 'vid_' + Date.now(),
+                title: title,
+                name: title,
+                description: desc,
+                category: category,
+                type: 'video',
+                videoUrl: streamUrl,
+                thumb: finalThumbUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800',
+                channel: chName,
+                channelId: currentActiveChannel?.id || '',
+                channelAvatar: currentActiveChannel?.avatar || '',
+                visibility: visibility,
+                isMadeForKids: isKids,
+                duration: extractedDuration,
+                views: 0,
+                likes: 0,
+                monetized: true,
+                createdAt: new Date().toISOString()
+            };
+
             try {
-                await window.BTubeAPI.saveVideo({
-                    title: title,
-                    name: title,
-                    description: document.getElementById('vDesc').value.trim(),
-                    category: document.getElementById('vCat').value,
-                    type: 'video',
-                    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                    thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800',
-                    channel: 'BTube',
-                    visibility: 'Public',
-                    duration: '04:15'
-                });
+                if (window.BTubeAPI && typeof window.BTubeAPI.saveVideo === 'function') {
+                    await window.BTubeAPI.saveVideo(payload);
+                } else {
+                    let localFeed = JSON.parse(localStorage.getItem('btube_feed_videos') || '[]');
+                    localFeed.unshift(payload);
+                    localStorage.setItem('btube_feed_videos', JSON.stringify(localFeed));
+                }
 
                 alert('Video uploaded successfully!');
                 window.location.href = 'your-videos.html';
             } catch(e) {
-                alert('Upload fail: ' + e.message);
+                alert('Upload failed: ' + e.message);
                 btn.disabled = false;
                 btn.innerText = 'Upload';
             }
