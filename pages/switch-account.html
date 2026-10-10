@@ -97,12 +97,16 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            min-width: 0;
         }
 
         .ga-email-txt {
             font-size: 14px;
             font-weight: 700;
             color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .ga-manage-sub {
@@ -172,7 +176,6 @@
             object-fit: cover;
             position: absolute;
             inset: 0;
-            display: none;
         }
 
         .ch-text-block {
@@ -234,7 +237,7 @@
             font-weight: 500;
         }
 
-        /* 6. MODAL DRAWERS (ADD ACCOUNT & MANAGE ACCOUNTS) */
+        /* 6. MODAL DRAWERS */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -283,7 +286,6 @@
             cursor: pointer;
         }
 
-        /* Sign-in Inputs */
         .input-group-label {
             font-size: 12px;
             color: #aaaaaa;
@@ -307,7 +309,8 @@
 
         .sheet-btn-row {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
+            gap: 10px;
             align-items: center;
             padding-top: 6px;
         }
@@ -315,9 +318,10 @@
         .btn-sheet-text {
             background: none;
             border: none;
-            color: #3ea6ff;
+            color: #aaaaaa;
             font-size: 13px;
             font-weight: 700;
+            padding: 8px 14px;
             cursor: pointer;
         }
 
@@ -332,7 +336,7 @@
             cursor: pointer;
         }
 
-        /* Manage Device Card Rows */
+        /* Device Card Rows */
         .device-acc-card {
             background: #171717;
             border: 1px solid #2a2a2a;
@@ -400,12 +404,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -416,7 +420,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -426,37 +430,38 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="acc-header">
         <div class="header-left">
-            <a href="profile.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">Accounts</span>
         </div>
 
-        <!-- + Add Account (Working Modal Trigger) -->
-        <button class="btn-add-acc" onclick="openAddAccountModal()">
+        <button class="btn-add-acc" onclick="openAddChannelModal()">
             <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             <span>Add</span>
         </button>
@@ -465,7 +470,7 @@
     <!-- 2. GOOGLE ACCOUNT HEADER -->
     <section class="google-account-banner">
         <div class="ga-left">
-            <span class="ga-email-txt" id="displayGoogleEmail">charandasbhaskar@gmail.com</span>
+            <span class="ga-email-txt" id="displayGoogleEmail">Sign in to manage accounts</span>
             <span class="ga-manage-sub" onclick="openManageAccountsModal()">Manage your Google Account</span>
         </div>
     </section>
@@ -474,50 +479,7 @@
     <span class="section-label">Channels on this account</span>
 
     <main class="channels-list-feed" id="channelsFeedContainer">
-
-        <!-- Channel 1: Charandas Bhaskar (Official Primary) -->
-        <div class="channel-card-item" id="ch-charandas" onclick="switchChannel('Charandas Bhaskar', '@charandasbhaskar', '245 subscribers', 'CB', 'ch-charandas')">
-            <div class="ch-left-cluster">
-                <div class="ch-avatar-frame" style="background:#e50914;">
-                    <span id="customMainInits">CB</span>
-                    <img id="customMainDp" alt="DP">
-                </div>
-                <div class="ch-text-block">
-                    <span class="ch-title-txt">Charandas Bhaskar</span>
-                    <span class="ch-meta-sub">@charandasbhaskar • 245 subscribers</span>
-                </div>
-            </div>
-            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-        </div>
-
-        <!-- Channel 2: The Bhaskar Vlog (Daily Vlogs) -->
-        <div class="channel-card-item" id="ch-vlog" onclick="switchChannel('The Bhaskar Vlog', '@thebhaskarvlog', '1.2K subscribers', 'BV', 'ch-vlog')">
-            <div class="ch-left-cluster">
-                <div class="ch-avatar-frame" style="background:#f39c12;">
-                    <span>BV</span>
-                </div>
-                <div class="ch-text-block">
-                    <span class="ch-title-txt">The Bhaskar Vlog</span>
-                    <span class="ch-meta-sub">@thebhaskarvlog • 1.2K subscribers</span>
-                </div>
-            </div>
-            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-        </div>
-
-        <!-- Channel 3: Dhun AI Studio (Music & Banjo) -->
-        <div class="channel-card-item" id="ch-dhun" onclick="switchChannel('Dhun AI Studio', '@dhunai', '850 subscribers', 'DA', 'ch-dhun')">
-            <div class="ch-left-cluster">
-                <div class="ch-avatar-frame" style="background:#3ea6ff;">
-                    <span>DA</span>
-                </div>
-                <div class="ch-text-block">
-                    <span class="ch-title-txt">Dhun AI Studio</span>
-                    <span class="ch-meta-sub">@dhunai • 850 subscribers</span>
-                </div>
-            </div>
-            <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-        </div>
-
+        <div style="padding: 20px 16px; color: #777; font-size: 13px;">Loading channels...</div>
     </main>
 
     <!-- 4. MORE OPTIONS -->
@@ -528,30 +490,29 @@
         <span class="util-text-txt" id="incognitoTxt">Turn on Incognito</span>
     </div>
 
-    <!-- Manage Accounts on this Device (Working Drawer Trigger) -->
     <div class="util-action-row" onclick="openManageAccountsModal()">
         <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
         <span class="util-text-txt">Manage accounts on this device</span>
     </div>
 
-    <!-- 5. WORKING SHEET: ADD GOOGLE ACCOUNT -->
-    <div class="drawer-overlay" id="addAccountDrawer" onclick="closeDrawerOnBackdrop(event, 'addAccountDrawer')">
+    <!-- 5. WORKING SHEET: ADD NEW CHANNEL -->
+    <div class="drawer-overlay" id="addChannelDrawer" onclick="closeDrawerOnBackdrop(event, 'addChannelDrawer')">
         <div class="drawer-sheet-card">
             <div class="sheet-head-bar">
-                <span class="sheet-title-txt">Sign in with Google</span>
-                <button class="sheet-close-btn" onclick="closeDrawer('addAccountDrawer')">✕</button>
+                <span class="sheet-title-txt">Create a new channel</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('addChannelDrawer')">✕</button>
             </div>
-            <p style="font-size:12px; color:#aaa; line-height:1.4;">Add your Google Account or create a new creator channel on BTube.</p>
+            <p style="font-size:12px; color:#aaa; line-height:1.4;">Create an additional channel under your current account on BTube.</p>
             
-            <span class="input-group-label">Email or Phone</span>
-            <input type="email" id="newAccEmailInput" class="sign-in-field" placeholder="example@gmail.com">
+            <span class="input-group-label">Channel Name</span>
+            <input type="text" id="newChannelNameInput" class="sign-in-field" placeholder="e.g. My Vlog Studio">
 
-            <span class="input-group-label">New Channel Name (Optional)</span>
-            <input type="text" id="newAccChannelName" class="sign-in-field" placeholder="My New Vlog Channel">
+            <span class="input-group-label">Handle (Optional)</span>
+            <input type="text" id="newChannelHandleInput" class="sign-in-field" placeholder="@myvlogstudio">
 
             <div class="sheet-btn-row">
-                <button class="btn-sheet-text" onclick="showToast('Create account workflow ready')">Create account</button>
-                <button class="btn-sheet-primary" onclick="submitAddAccount()">Next</button>
+                <button class="btn-sheet-text" onclick="closeDrawer('addChannelDrawer')">Cancel</button>
+                <button class="btn-sheet-primary" onclick="submitCreateChannel()">Create</button>
             </div>
         </div>
     </div>
@@ -564,27 +525,17 @@
                 <button class="sheet-close-btn" onclick="closeDrawer('manageAccountsDrawer')">✕</button>
             </div>
             
-            <p style="font-size:12px; color:#888;">Accounts currently signed in on this phone:</p>
+            <p style="font-size:12px; color:#888;">Account currently signed in on this phone:</p>
 
-            <!-- Account 1 -->
-            <div class="device-acc-card">
+            <div class="device-acc-card" id="deviceAccCard">
                 <div class="device-acc-left">
-                    <span class="device-acc-email">charandasbhaskar@gmail.com</span>
-                    <span class="device-acc-sync">● Synced with BTube</span>
+                    <span class="device-acc-email" id="deviceUserEmail">Not signed in</span>
+                    <span class="device-acc-sync">● Synced with BTube Cloud</span>
                 </div>
-                <button class="btn-remove-acc" onclick="showToast('Primary account cannot be removed')">Active</button>
+                <button class="btn-remove-acc" onclick="handleSignOutAction()">Sign out</button>
             </div>
 
-            <!-- Account 2 -->
-            <div class="device-acc-card">
-                <div class="device-acc-left">
-                    <span class="device-acc-email">thebhaskarvlog.official@gmail.com</span>
-                    <span class="device-acc-sync">● Synced</span>
-                </div>
-                <button class="btn-remove-acc" onclick="removeDeviceAccount(this, 'thebhaskarvlog.official@gmail.com')">Sign out</button>
-            </div>
-
-            <button class="btn-sheet-primary" style="margin-top:6px; width:100%;" onclick="closeDrawer('manageAccountsDrawer'); openAddAccountModal();">+ Add another account</button>
+            <button class="btn-sheet-primary" style="margin-top:6px; width:100%;" onclick="handleGoogleSignInAction()">+ Sign in with Google</button>
         </div>
     </div>
 
@@ -608,39 +559,117 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- INTERACTION LOGIC -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const currentActiveName = localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar';
-            const savedDp = localStorage.getItem('btube_channel_dp');
+        let authUser = null;
+        let activeChannel = null;
+        let userChannels = [];
 
-            if (savedDp) {
-                const dp = document.getElementById('customMainDp');
-                dp.src = savedDp;
-                dp.style.display = 'block';
-                document.getElementById('customMainInits').style.display = 'none';
-            }
-
-            // Highlight currently active channel card
-            document.querySelectorAll('.channel-card-item').forEach(c => c.classList.remove('active'));
-
-            if (currentActiveName.includes('Vlog')) {
-                document.getElementById('ch-vlog').classList.add('active');
-                document.getElementById('bottomNavInits').innerText = 'BV';
-            } else if (currentActiveName.includes('Dhun')) {
-                document.getElementById('ch-dhun').classList.add('active');
-                document.getElementById('bottomNavInits').innerText = 'DA';
-            } else {
-                document.getElementById('ch-charandas').classList.add('active');
-                document.getElementById('bottomNavInits').innerText = 'CB';
-            }
+        window.addEventListener('DOMContentLoaded', async () => {
+            authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            syncNavAvatar();
+            await loadAccountChannels();
         });
+
+        function syncNavAvatar() {
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        async function loadAccountChannels() {
+            const emailDisp = document.getElementById('displayGoogleEmail');
+            const devEmail = document.getElementById('deviceUserEmail');
+
+            if (!authUser) {
+                emailDisp.innerText = 'Guest (Not signed in)';
+                devEmail.innerText = 'No account logged in';
+                renderGuestState();
+                return;
+            }
+
+            emailDisp.innerText = authUser.email || (authUser.name + '@gmail.com');
+            devEmail.innerText = authUser.email || (authUser.name + '@gmail.com');
+
+            if (window.BTubeAPI) {
+                userChannels = await window.BTubeAPI.getAllUserChannels();
+                activeChannel = await window.BTubeAPI.getActiveChannel();
+
+                // If user has 0 channels, auto-create their primary channel
+                if (userChannels.length === 0) {
+                    const primary = await window.BTubeAPI.createNewChannel({
+                        name: authUser.name || 'My Channel',
+                        handle: '@' + (authUser.name || 'user').toLowerCase().replace(/[^a-z0-9]/g, ''),
+                        avatar: authUser.photo || ''
+                    });
+                    userChannels = [primary];
+                    activeChannel = primary;
+                }
+            } else {
+                userChannels = JSON.parse(localStorage.getItem('btube_channels') || '[]');
+            }
+
+            renderChannelsFeed();
+        }
+
+        function renderGuestState() {
+            const container = document.getElementById('channelsFeedContainer');
+            container.innerHTML = `
+                <div style="padding: 30px 16px; text-align: center; color: #888;">
+                    <p style="margin-bottom: 12px; font-size: 13px;">Sign in with Google to switch channels or manage account settings.</p>
+                    <button class="btn-sheet-primary" onclick="handleGoogleSignInAction()">Sign in with Google</button>
+                </div>
+            `;
+        }
+
+        function renderChannelsFeed() {
+            const container = document.getElementById('channelsFeedContainer');
+            container.innerHTML = '';
+
+            userChannels.forEach(ch => {
+                const isActive = activeChannel && (activeChannel.id === ch.id);
+                const card = document.createElement('div');
+                card.className = `channel-card-item ${isActive ? 'active' : ''}`;
+                card.onclick = () => selectChannel(ch.id, ch.name);
+
+                const avatarContent = ch.avatar 
+                    ? `<img src="${ch.avatar}">` 
+                    : (ch.name || 'BT').substring(0, 2).toUpperCase();
+
+                card.innerHTML = `
+                    <div class="ch-left-cluster">
+                        <div class="ch-avatar-frame">${avatarContent}</div>
+                        <div class="ch-text-block">
+                            <span class="ch-title-txt">${ch.name}</span>
+                            <span class="ch-meta-sub">${ch.handle} • ${ch.subscribers || 0} subscribers</span>
+                        </div>
+                    </div>
+                    <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectChannel(chId, name) {
+            if (window.BTubeAPI) {
+                window.BTubeAPI.setActiveChannel(chId);
+            }
+            showToast(`Switched to ${name}`);
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 600);
+        }
 
         function showToast(msg) {
             const t = document.getElementById('accToast');
@@ -657,89 +686,66 @@
             if (e.target.id === id) closeDrawer(id);
         }
 
-        // Open Add Account Sheet
-        function openAddAccountModal() {
-            document.getElementById('newAccEmailInput').value = '';
-            document.getElementById('newAccChannelName').value = '';
-            document.getElementById('addAccountDrawer').classList.add('open');
-            document.getElementById('newAccEmailInput').focus();
+        function openAddChannelModal() {
+            if (!authUser) {
+                handleGoogleSignInAction();
+                return;
+            }
+            document.getElementById('newChannelNameInput').value = '';
+            document.getElementById('newChannelHandleInput').value = '';
+            document.getElementById('addChannelDrawer').classList.add('open');
+            document.getElementById('newChannelNameInput').focus();
         }
 
-        // Open Manage Accounts on Device Sheet
         function openManageAccountsModal() {
             document.getElementById('manageAccountsDrawer').classList.add('open');
         }
 
-        function removeDeviceAccount(btn, email) {
-            btn.closest('.device-acc-card').remove();
-            showToast(`Signed out from ${email}`);
-        }
+        async function submitCreateChannel() {
+            const name = document.getElementById('newChannelNameInput').value.trim();
+            const handle = document.getElementById('newChannelHandleInput').value.trim();
 
-        function submitAddAccount() {
-            const email = document.getElementById('newAccEmailInput').value.trim();
-            const chName = document.getElementById('newAccChannelName').value.trim() || 'New Creator';
-
-            if (!email || !email.includes('@')) {
-                showToast('Please enter a valid Google email');
+            if (!name) {
+                showToast('Please enter a channel name');
                 return;
             }
 
-            closeDrawer('addAccountDrawer');
-            showToast(`Account ${email} added successfully ✓`);
-
-            // Dynamically prepend new channel to list
-            const newId = 'ch-user-' + Date.now();
-            const container = document.getElementById('channelsFeedContainer');
-            const card = document.createElement('div');
-            card.className = 'channel-card-item';
-            card.id = newId;
-            card.onclick = () => switchChannel(chName, '@' + chName.toLowerCase().replace(/\s+/g, ''), '0 subscribers', chName.slice(0,2).toUpperCase(), newId);
-
-            card.innerHTML = `
-                <div class="ch-left-cluster">
-                    <div class="ch-avatar-frame" style="background:#2ecc71;">
-                        <span>${chName.slice(0,2).toUpperCase()}</span>
-                    </div>
-                    <div class="ch-text-block">
-                        <span class="ch-title-txt">${chName}</span>
-                        <span class="ch-meta-sub">@${chName.toLowerCase().replace(/\s+/g, '')} • 0 subscribers</span>
-                    </div>
-                </div>
-                <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-            `;
-            container.appendChild(card);
-        }
-
-        function switchChannel(name, handle, subs, inits, elId) {
-            document.querySelectorAll('.channel-card-item').forEach(c => c.classList.remove('active'));
-            document.getElementById(elId).classList.add('active');
-
-            localStorage.setItem('btube_channel_name', name);
-            localStorage.setItem('btube_channel_handle', handle);
-
-            if (elId !== 'ch-charandas') {
-                localStorage.setItem('btube_temp_inits', inits);
-            } else {
-                localStorage.removeItem('btube_temp_inits');
+            if (window.BTubeAPI) {
+                await window.BTubeAPI.createNewChannel({
+                    name: name,
+                    handle: handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''))
+                });
             }
 
-            document.getElementById('bottomNavInits').innerText = inits;
-            showToast(`Switched to ${name}`);
+            closeDrawer('addChannelDrawer');
+            showToast(`Channel "${name}" created ✓`);
+            await loadAccountChannels();
+        }
 
-            setTimeout(() => {
-                window.location.href = 'profile.html';
-            }, 750);
+        function handleGoogleSignInAction() {
+            if (window.BTubeAPI) {
+                window.BTubeAPI.signInWithGoogle().then(u => {
+                    if (u) window.location.reload();
+                });
+            } else {
+                showToast('Google Sign-In ready');
+            }
+        }
+
+        function handleSignOutAction() {
+            if (confirm("Sign out of BTube?")) {
+                if (window.BTubeAPI) window.BTubeAPI.signOut();
+                localStorage.removeItem('btube_user');
+                closeDrawer('manageAccountsDrawer');
+                window.location.reload();
+            }
         }
 
         function toggleIncognito() {
             const txt = document.getElementById('incognitoTxt');
-            if (txt.innerText.includes('Turn on')) {
-                txt.innerText = 'Turn off Incognito';
-                showToast('Incognito mode ON');
-            } else {
-                txt.innerText = 'Turn on Incognito';
-                showToast('Incognito mode OFF');
-            }
+            const isCurrentlyOn = txt.innerText.includes('Turn off');
+            txt.innerText = isCurrentlyOn ? 'Turn on Incognito' : 'Turn off Incognito';
+            showToast(isCurrentlyOn ? 'Incognito mode OFF' : 'Incognito mode ON');
         }
     </script>
 </body>
