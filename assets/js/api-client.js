@@ -1,4 +1,4 @@
-// BTube Firebase Cloud Engine & Global Channel Identity Manager
+// BTube Firebase Cloud Engine & YouTube Multi-Channel Manager
 const firebaseConfig = {
   apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
   authDomain: "btube-5fae0.firebaseapp.com",
@@ -16,7 +16,7 @@ const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
 const auth = (typeof firebase !== 'undefined') ? firebase.auth() : null;
 
 window.BTubeAPI = {
-    // 1. Current Auth User
+    // 1. Current Authenticated Google Account
     getAuthUser() {
         if (auth && auth.currentUser) {
             return {
@@ -29,67 +29,77 @@ window.BTubeAPI = {
         return JSON.parse(localStorage.getItem('btube_user') || 'null');
     },
 
-    // 2. Fetch User Channel Profile (Firestore synced)
-    async getUserChannel() {
-        const authUser = this.getAuthUser();
-        if (!authUser) return null;
+    // 2. Multi-Channel: User ke saare channels list karna
+    async getAllUserChannels() {
+        const u = this.getAuthUser();
+        if (!u) return [];
 
-        // Pehle local cache check karo for high speed
-        const cached = localStorage.getItem('btube_channel_profile_' + authUser.uid);
-        if (cached) {
-            const data = JSON.parse(cached);
-            // Async background sync with Firestore
-            if (db) {
-                db.collection('users').doc(authUser.uid).get().then(doc => {
-                    if (doc.exists) {
-                        localStorage.setItem('btube_channel_profile_' + authUser.uid, JSON.stringify(doc.data()));
-                    }
-                }).catch(() => {});
-            }
-            return data;
-        }
-
-        // Firestore se fetch
-        if (db) {
+        let list = JSON.parse(localStorage.getItem('btube_channels_' + u.uid) || '[]');
+        if (list.length === 0 && db) {
             try {
-                const doc = await db.collection('users').doc(authUser.uid).get();
-                if (doc.exists) {
-                    const data = doc.data();
-                    localStorage.setItem('btube_channel_profile_' + authUser.uid, JSON.stringify(data));
-                    return data;
+                const snap = await db.collection('users').doc(u.uid).collection('channels').get();
+                snap.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                if (list.length > 0) {
+                    localStorage.setItem('btube_channels_' + u.uid, JSON.stringify(list));
                 }
-            } catch(e) {
-                console.warn("Channel fetch error:", e);
-            }
+            } catch(e) {}
         }
-        return null; // Channel abhi bana nahi hai
+        return list;
     },
 
-    // 3. Create or Update Channel Profile
-    async saveUserChannel(channelData) {
-        const authUser = this.getAuthUser();
-        if (!authUser) throw new Error("Please sign in first");
+    // 3. Current Selected Active Channel
+    async getActiveChannel() {
+        const u = this.getAuthUser();
+        if (!u) return null;
 
-        const payload = {
-            uid: authUser.uid,
-            name: channelData.name || authUser.name,
-            handle: channelData.handle || ('@' + (channelData.name || authUser.name).toLowerCase().replace(/[^a-z0-9]/g, '')),
-            avatar: channelData.avatar || authUser.photo || '',
-            banner: channelData.banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200',
-            bio: channelData.bio || 'Welcome to my official BTube channel!',
-            subscribers: channelData.subscribers || 0,
-            hasChannel: true,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        const activeId = localStorage.getItem('btube_active_channel_id_' + u.uid);
+        const channels = await this.getAllUserChannels();
+
+        if (channels.length > 0) {
+            const found = channels.find(c => c.id === activeId);
+            return found || channels[0];
+        }
+        return null;
+    },
+
+    // 4. Switch Active Channel (Instant)
+    setActiveChannel(channelId) {
+        const u = this.getAuthUser();
+        if (!u) return;
+        localStorage.setItem('btube_active_channel_id_' + u.uid, channelId);
+    },
+
+    // 5. Create a New Channel under this Google Account
+    async createNewChannel(data) {
+        const u = this.getAuthUser();
+        if (!u) throw new Error("Please sign in first");
+
+        const channelObj = {
+            id: 'ch_' + Date.now(),
+            uid: u.uid,
+            name: data.name,
+            handle: data.handle.startsWith('@') ? data.handle : ('@' + data.handle),
+            avatar: data.avatar || u.photo || '',
+            banner: data.banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200',
+            subscribers: 0,
+            createdAt: new Date().toISOString()
         };
 
+        // Local cache
+        let list = await this.getAllUserChannels();
+        list.push(channelObj);
+        localStorage.setItem('btube_channels_' + u.uid, JSON.stringify(list));
+        this.setActiveChannel(channelObj.id);
+
+        // Firestore sync
         if (db) {
-            await db.collection('users').doc(authUser.uid).set(payload, { merge: true });
+            db.collection('users').doc(u.uid).collection('channels').doc(channelObj.id).set(channelObj).catch(() => {});
         }
-        localStorage.setItem('btube_channel_profile_' + authUser.uid, JSON.stringify(payload));
-        return payload;
+
+        return channelObj;
     },
 
-    // 4. Google One-Tap Sign In & Auto Check Channel
+    // 6. Sign In / Sign Out
     async signInWithGoogle() {
         if (!auth) return null;
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -111,30 +121,31 @@ window.BTubeAPI = {
 
     async signOut() {
         const u = this.getAuthUser();
-        if (u) localStorage.removeItem('btube_channel_profile_' + u.uid);
+        if (u) {
+            localStorage.removeItem('btube_active_channel_id_' + u.uid);
+            localStorage.removeItem('btube_channels_' + u.uid);
+        }
         localStorage.removeItem('btube_user');
         if (auth) await auth.signOut();
         window.location.reload();
     },
 
-    // 5. Protected Upload: User ke actual channel name ke sath upload hota hai
+    // 7. Video Upload (Active Channel se bind hota hai)
     async saveVideo(videoData) {
-        const authUser = this.getAuthUser();
-        if (!authUser) throw new Error("Upload ke liye sign-in zaroori hai!");
-        const ch = await this.getUserChannel();
-        const chName = ch ? ch.name : authUser.name;
-        const chAvatar = ch ? ch.avatar : authUser.photo;
+        const u = this.getAuthUser();
+        if (!u) throw new Error("Please sign in first");
+        const activeCh = await this.getActiveChannel();
 
         return await db.collection('videos').add({
             ...videoData,
-            userId: authUser.uid,
-            channel: chName,
-            channelAvatar: chAvatar,
+            userId: u.uid,
+            channelId: activeCh ? activeCh.id : 'default',
+            channel: activeCh ? activeCh.name : u.name,
+            channelAvatar: activeCh ? activeCh.avatar : u.photo,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
     },
 
-    // 6. Global Feeds
     async getFeed(type = 'all') {
         let items = [];
         if (db) {
