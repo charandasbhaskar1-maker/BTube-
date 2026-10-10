@@ -1,1026 +1,237 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <title>BTube Shorts</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --app-height: 100dvh;
-        }
-
-        html, body {
-            background-color: #000000;
-            color: #ffffff;
-            height: 100%;
-            height: var(--app-height);
-            width: 100vw;
-            overflow: hidden;
-            position: fixed;
-        }
-
-        /* 1. TOP FLOATING APP BAR */
-        .shorts-top-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 54px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            z-index: 100;
-            background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 70%, transparent 100%);
-            pointer-events: auto;
-        }
-
-        .shorts-brand {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-        }
-
-        .brand-badge {
-            width: 24px;
-            height: 18px;
-            background: #e50914;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 900;
-            color: #fff;
-        }
-
-        .top-action-cluster {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .top-action-btn {
-            background: none;
-            border: none;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .top-action-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
-        }
-
-        /* 2. SHORTS CONTAINER (SNAP SCROLL) */
-        .shorts-scroller {
-            height: calc(var(--app-height) - 56px);
-            width: 100%;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
-            position: relative;
-        }
-
-        .shorts-scroller::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* 3. INDIVIDUAL SHORT CARD */
-        .short-slide {
-            height: calc(var(--app-height) - 56px);
-            width: 100%;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            position: relative;
-            background-color: #0d0d0d;
-            background-size: cover;
-            background-position: center;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .short-media-video {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        /* Gradient scrims */
-        .scrim-top {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 80px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        .scrim-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 260px;
-            background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
-            pointer-events: none;
-            z-index: 5;
-        }
-
-        /* Play / Pause Indicator */
-        .play-indicator-overlay {
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: scale(0.7);
-            transition: all 0.25s ease;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .play-indicator-overlay.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .play-indicator-overlay svg {
-            width: 32px;
-            height: 32px;
-            fill: #ffffff;
-        }
-
-        /* 4. RIGHT ACTION RAIL */
-        .shorts-rail {
-            position: absolute;
-            right: 12px;
-            bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            z-index: 20;
-        }
-
-        .rail-btn-unit {
-            background: none;
-            border: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #ffffff;
-            cursor: pointer;
-        }
-
-        .rail-btn-bubble {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(35, 35, 35, 0.45);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.15s, background 0.2s;
-        }
-
-        .rail-btn-bubble:active {
-            transform: scale(0.85);
-            background: rgba(229, 9, 20, 0.5);
-        }
-
-        .rail-btn-bubble svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-            transition: fill 0.2s;
-        }
-
-        .rail-btn-unit.liked .rail-btn-bubble svg {
-            fill: #e50914;
-        }
-
-        .rail-btn-unit.disliked .rail-btn-bubble svg {
-            fill: #3ea6ff;
-        }
-
-        .rail-counter-txt {
-            font-size: 11px;
-            font-weight: 700;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            letter-spacing: -0.2px;
-        }
-
-        .disc-sound-wrap {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #111;
-            border: 2px solid #ffffff;
-            overflow: hidden;
-            animation: spinDisc 4s linear infinite;
-            margin-top: 2px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.7);
-        }
-
-        .disc-sound-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        @keyframes spinDisc {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* 5. BOTTOM CREATOR OVERLAY */
-        .shorts-meta-box {
-            position: absolute;
-            left: 14px;
-            right: 76px;
-            bottom: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-        }
-
-        .creator-title-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .creator-pfp {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #e50914;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 800;
-            color: #fff;
-            flex-shrink: 0;
-            overflow: hidden;
-            border: 1.5px solid rgba(255,255,255,0.8);
-        }
-
-        .creator-pfp img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .creator-user-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-        }
-
-        .btn-subscribe-pill {
-            background: #ffffff;
-            color: #0f0f0f;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-subscribe-pill.subscribed {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-            backdrop-filter: blur(6px);
-        }
-
-        .short-caption-text {
-            font-size: 13px;
-            line-height: 1.35;
-            color: #ffffff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .sound-badge-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #ffffff;
-            opacity: 0.95;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-        }
-
-        .sound-badge-row svg {
-            width: 13px;
-            height: 13px;
-            fill: #ffffff;
-        }
-
-        /* 6. LIVE COMMENTS DRAWER SHEET */
-        .drawer-overlay-scrim {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: 2500;
-            display: none;
-            align-items: flex-end;
-        }
-
-        .drawer-overlay-scrim.open {
-            display: flex;
-        }
-
-        .comments-bottom-sheet {
-            width: 100%;
-            max-height: 68vh;
-            background: #181818;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -6px 24px rgba(0,0,0,0.9);
-            overflow: hidden;
-        }
-
-        .comments-header-bar {
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #262626;
-        }
-
-        .comments-count-title {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .btn-close-comments-sheet {
-            background: none;
-            border: none;
-            color: #aaaaaa;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 2px 6px;
-        }
-
-        .comments-feed-area {
-            padding: 14px 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            flex: 1;
-            max-height: 44vh;
-        }
-
-        .single-comment-item {
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-
-        .comment-user-dp {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #e50914;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 800;
-            color: #ffffff;
-            flex-shrink: 0;
-        }
-
-        .comment-body-col {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            font-size: 12px;
-            flex: 1;
-        }
-
-        .comment-meta-user {
-            font-weight: 700;
-            color: #888888;
-        }
-
-        .comment-text-content {
-            color: #ffffff;
-            line-height: 1.35;
-        }
-
-        .comments-input-dock {
-            padding: 10px 16px 14px;
-            border-top: 1px solid #262626;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #141414;
-        }
-
-        .comments-input-dock input {
-            flex: 1;
-            background: #252525;
-            border: 1px solid #333333;
-            border-radius: 20px;
-            padding: 10px 14px;
-            color: #ffffff;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .comments-input-dock input:focus {
-            border-color: #3ea6ff;
-        }
-
-        .btn-comment-send {
-            background: #3ea6ff;
-            color: #000000;
-            border: none;
-            font-weight: 800;
-            font-size: 12px;
-            padding: 9px 15px;
-            border-radius: 18px;
-            cursor: pointer;
-        }
-
-        /* Toast notification */
-        .toast-bubble {
-            position: fixed;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(33, 33, 33, 0.95);
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 3000;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-        }
-
-        /* 7. BOTTOM NAVIGATION BAR */
-        .bottom-nav-fixed {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 56px;
-            background: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #1a1a1a;
-            z-index: 1000;
-        }
-
-        .nav-tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: #aaaaaa;
-            text-decoration: none;
-            gap: 3px;
-        }
-
-        .nav-tab-item.active {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .nav-tab-item svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-        }
-
-        .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>BTube Shorts</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; width: 100%; height: 100%;
+      background: #000; color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    body { overflow: hidden; }
+    .top {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 54px; padding: 0 16px;
+      display: flex; align-items: center;
+      justify-content: space-between; z-index: 10;
+      background: linear-gradient(#000b, transparent);
+    }
+    .brand { font-size: 20px; font-weight: 800; }
+    a { color: #fff; text-decoration: none; }
+    .top a { font-size: 14px; }
+    #shortsViewport {
+      position: absolute; inset: 0 0 56px;
+      overflow-y: auto; scroll-snap-type: y mandatory;
+      scrollbar-width: none;
+    }
+    #shortsViewport::-webkit-scrollbar { display: none; }
+    .short-slide {
+      position: relative; width: 100%; height: 100%;
+      min-height: 100%; background: #111;
+      scroll-snap-align: start; overflow: hidden;
+    }
+    .short-media-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: contain;
+      background: #000;
+    }
+    .scrim-bottom {
+      position: absolute; inset: 45% 0 0;
+      background: linear-gradient(transparent, #000d);
+      pointer-events: none;
+    }
+    .shorts-meta-box {
+      position: absolute; left: 16px; right: 78px;
+      bottom: 22px; z-index: 2;
+    }
+    .creator-user-name { font-size: 14px; font-weight: 700; }
+    .short-caption-text { font-size: 14px; line-height: 1.4; }
+    .shorts-rail {
+      position: absolute; right: 12px; bottom: 24px;
+      z-index: 3; display: flex; flex-direction: column;
+      gap: 20px; align-items: center;
+    }
+    .rail-btn-unit {
+      color: #fff; background: #222a; border: 0;
+      border-radius: 50%; width: 44px; height: 44px;
+      font-size: 20px;
+    }
+    .rail-counter-txt { font-size: 11px; text-align: center; }
+    .bottom-nav-fixed {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      height: 56px; background: #080808;
+      border-top: 1px solid #222;
+      display: flex; justify-content: space-around;
+      align-items: center; z-index: 20;
+    }
+    .nav-tab-item {
+      color: #aaa; font-size: 11px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+    }
+    .nav-tab-item.active { color: #fff; }
+    .empty {
+      min-height: 100%; display: flex;
+      flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+      padding: 28px; color: #ddd;
+    }
+    .empty h2 { font-size: 20px; margin-bottom: 8px; }
+    .empty p { color: #aaa; line-height: 1.5; }
+    .empty a {
+      display: inline-block; background: #e50914;
+      padding: 11px 18px; border-radius: 24px;
+      margin-top: 12px; font-weight: 700;
+    }
+    #status { padding: 24px; text-align: center; color: #aaa; }
+  </style>
 </head>
 <body>
+  <header class="top">
+    <a href="../frontend/index.html" aria-label="वापस">←</a>
+    <div class="brand">BTube Shorts</div>
+    <a href="search.html">Search</a>
+  </header>
 
-    <!-- 1. TOP FLOATING APP BAR -->
-    <header class="shorts-top-header">
-        <div class="shorts-brand">
-            <div class="brand-badge">B</div>
-            <span>Shorts</span>
-        </div>
-        <div class="top-action-cluster">
-            <a href="search.html" class="top-action-btn">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </a>
-            <a href="upload.html" class="top-action-btn">
-                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-            </a>
-        </div>
-    </header>
+  <main id="shortsViewport">
+    <div id="status">असली Shorts लोड हो रहे हैं…</div>
+  </main>
 
-    <!-- 2. SHORTS VERTICAL VIEWPORT -->
-    <main class="shorts-scroller" id="shortsViewport">
+  <nav class="bottom-nav-fixed">
+    <a class="nav-tab-item" href="../frontend/index.html">⌂<span>Home</span></a>
+    <a class="nav-tab-item active" href="shorts.html">▶<span>Shorts</span></a>
+    <a class="nav-tab-item" href="upload.html">＋<span>Create</span></a>
+    <a class="nav-tab-item" href="subscriptions.html">▤<span>Subscriptions</span></a>
+    <a class="nav-tab-item" href="profile.html">●<span>You</span></a>
+  </nav>
 
-        <!-- SHORT 1 -->
-        <section class="short-slide" id="short-1" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800');">
-            <video class="short-media-video" loop playsinline autoplay muted poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800" onclick="togglePlayPause(this)">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4">
-            </video>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+  <script src="../assets/js/api-client.js"></script>
 
-            <div class="scrim-top"></div>
-            <div class="scrim-bottom"></div>
+  <script>
+    const viewport = document.getElementById('shortsViewport');
 
-            <div class="play-indicator-overlay">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
+    function makeElement(tag, className, text) {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text !== undefined) el.textContent = text;
+      return el;
+    }
 
-            <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 'short-1', 9200)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">9.2K</span>
-                </button>
+    function showEmpty(message, withUpload) {
+      viewport.replaceChildren();
+      const box = makeElement('section', 'empty');
+      box.append(
+        makeElement('h2', '', 'अभी कोई Short उपलब्ध नहीं है'),
+        makeElement('p', '', message)
+      );
+      if (withUpload) {
+        const link = makeElement('a', '', 'अपना Short अपलोड करें');
+        link.href = 'upload-short.html';
+        box.append(link);
+      }
+      viewport.append(box);
+    }
 
-                <button class="rail-btn-unit" onclick="handleDislike(this)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Dislike</span>
-                </button>
+    function createShort(item) {
+      const slide = makeElement('section', 'short-slide');
+      const video = makeElement('video', 'short-media-video');
+      video.src = item.videoUrl;
+      video.controls = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
 
-                <button class="rail-btn-unit" onclick="openCommentsSheet('short-1', 118)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt" id="comment-count-short-1">118</span>
-                </button>
+      const gradient = makeElement('div', 'scrim-bottom');
+      const meta = makeElement('div', 'shorts-meta-box');
+      meta.append(
+        makeElement('div', 'creator-user-name',
+          item.channel || 'BTube Creator'),
+        makeElement('p', 'short-caption-text',
+          item.title || 'Untitled Short')
+      );
 
-                <button class="rail-btn-unit" onclick="handleShare()">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Share</span>
-                </button>
-
-                <div class="disc-sound-wrap">
-                    <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100" alt="Audio">
-                </div>
-            </div>
-
-            <div class="shorts-meta-box">
-                <div class="creator-title-row">
-                    <div class="creator-pfp" style="background:#f39c12;">BV</div>
-                    <span class="creator-user-name">@thebhaskarvlog</span>
-                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
-                </div>
-                <p class="short-caption-text">Mungeli morning quiet road vlog 🌅 Shandar subah! #BTube #VillageVlog #Chhattisgarh</p>
-                <div class="sound-badge-row">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                    <span>Morning Instrumental • The Bhaskar Vlog</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SHORT 2 -->
-        <section class="short-slide" id="short-2" style="background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800');">
-            <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800" onclick="togglePlayPause(this)">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
-            </video>
-
-            <div class="scrim-top"></div>
-            <div class="scrim-bottom"></div>
-
-            <div class="play-indicator-overlay">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-
-            <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 'short-2', 18400)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">18.4K</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="handleDislike(this)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Dislike</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="openCommentsSheet('short-2', 342)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt" id="comment-count-short-2">342</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="handleShare()">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Share</span>
-                </button>
-
-                <div class="disc-sound-wrap">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100" alt="Audio">
-                </div>
-            </div>
-
-            <div class="shorts-meta-box">
-                <div class="creator-title-row">
-                    <div class="creator-pfp" style="background:#3ea6ff;">DA</div>
-                    <span class="creator-user-name">@dhunai</span>
-                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
-                </div>
-                <p class="short-caption-text">Electronic Banjo Solo with magnetic pickups! 🪕 #Chhattisgarhi #Banjo #FolkBeat</p>
-                <div class="sound-badge-row">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                    <span>Original Audio • Dhun AI Studio</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SHORT 3 -->
-        <section class="short-slide" id="short-3" style="background-image: url('https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800');">
-            <video class="short-media-video" loop playsinline muted poster="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" onclick="togglePlayPause(this)">
-                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4" type="video/mp4">
-            </video>
-
-            <div class="scrim-top"></div>
-            <div class="scrim-bottom"></div>
-
-            <div class="play-indicator-overlay">
-                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            </div>
-
-            <div class="shorts-rail">
-                <button class="rail-btn-unit" onclick="handleLike(this, 'short-3', 32100)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">32.1K</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="handleDislike(this)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v2c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Dislike</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="openCommentsSheet('short-3', 510)">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt" id="comment-count-short-3">510</span>
-                </button>
-
-                <button class="rail-btn-unit" onclick="handleShare()">
-                    <div class="rail-btn-bubble">
-                        <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                    </div>
-                    <span class="rail-counter-txt">Share</span>
-                </button>
-
-                <div class="disc-sound-wrap">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=100" alt="Audio">
-                </div>
-            </div>
-
-            <div class="shorts-meta-box">
-                <div class="creator-title-row">
-                    <div class="creator-pfp" style="background:#e50914;">CB</div>
-                    <span class="creator-user-name">@charandasbhaskar</span>
-                    <button class="btn-subscribe-pill" onclick="handleSubscribe(this)">Subscribe</button>
-                </div>
-                <p class="short-caption-text">Chhattisgarhi Panthi Geet Special Cultural Dance 2026 🙏 #Panthi #Culture #CG</p>
-                <div class="sound-badge-row">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                    <span>Panthi Dhun 2026 • Charandas Bhaskar</span>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- 3. LIVE COMMENTS SHEET -->
-    <div class="drawer-overlay-scrim" id="commentsDrawerScrim" onclick="closeCommentsOnBackdrop(event)">
-        <div class="comments-bottom-sheet">
-            <div class="comments-header-bar">
-                <span class="comments-count-title" id="commentsDrawerHeaderTitle">Comments • 118</span>
-                <button class="btn-close-comments-sheet" onclick="closeCommentsSheet()">✕</button>
-            </div>
-            
-            <div class="comments-feed-area" id="liveCommentsList">
-                <div class="single-comment-item">
-                    <div class="comment-user-dp" style="background:#f39c12;">AK</div>
-                    <div class="comment-body-col">
-                        <span class="comment-meta-user">@amitkumar • 2h ago</span>
-                        <span class="comment-text-content">Bahut sundar video bhaiya! Chhattisgarh mahol ekdam mast dikh raha hai 🔥</span>
-                    </div>
-                </div>
-
-                <div class="single-comment-item">
-                    <div class="comment-user-dp" style="background:#3ea6ff;">RS</div>
-                    <div class="comment-body-col">
-                        <span class="comment-meta-user">@rahul_sahu • 4h ago</span>
-                        <span class="comment-text-content">BTube app me shorts bilkul fast chal raha hai. Maza aa gaya! 👏</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="comments-input-dock">
-                <input type="text" id="liveCommentField" placeholder="Add a comment..." onkeydown="if(event.key==='Enter') submitLiveComment()">
-                <button class="btn-comment-send" onclick="submitLiveComment()">Comment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Bubble -->
-    <div class="toast-bubble" id="shortsToastBubble"></div>
-
-    <!-- 4. BOTTOM NAVIGATION -->
-    <nav class="bottom-nav-fixed">
-        <a href="../frontend/index.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-        <a href="shorts.html" class="nav-tab-item active">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
-        <a href="upload.html" class="nav-plus-circle">
-            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        </a>
-        <a href="subscriptions.html" class="nav-tab-item">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subs</span>
-        </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
-            <span>You</span>
-        </a>
-    </nav>
-
-    <!-- Load BTube API Client -->
-    <script src="../assets/js/api-client.js"></script>
-
-    <!-- 5. INTERACTION LOGIC & BACKEND METRICS SYNC -->
-    <script>
-        let currentShortId = 'short-1';
-        let currentShortCommentsCount = 118;
-        let shortViewTimer = null;
-
-        // Dynamic 100dvh calculation
-        function resetAppHeight() {
-            document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+      const rail = makeElement('div', 'shorts-rail');
+      const share = makeElement('button', 'rail-btn-unit', '↗');
+      share.type = 'button';
+      share.setAttribute('aria-label', 'Share Short');
+      share.onclick = async () => {
+        const url = new URL('watch.html', location.href);
+        url.searchParams.set('id', item.id);
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: item.title || 'BTube Short',
+              url: url.href
+            });
+          } else {
+            await navigator.clipboard.writeText(url.href);
+            alert('लिंक कॉपी हो गया।');
+          }
+        } catch (e) {
+          if (e.name !== 'AbortError') alert('लिंक शेयर नहीं हो सका।');
         }
-        window.addEventListener('resize', resetAppHeight);
-        resetAppHeight();
+      };
+      rail.append(share);
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+      slide.append(video, gradient, meta, rail);
+      return slide;
+    }
 
-            // Auto-play active short & track 90-day BPP views
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target.querySelector('video');
-                    if (video) {
-                        if (entry.isIntersecting) {
-                            currentShortId = entry.target.id;
-                            video.play().catch(() => {});
-
-                            // If user stays 3+ seconds, report view to BPP backend
-                            clearTimeout(shortViewTimer);
-                            shortViewTimer = setTimeout(() => {
-                                if (window.BTubeAPI && typeof window.BTubeAPI.recordView === 'function') {
-                                    window.BTubeAPI.recordView(currentShortId, 15);
-                                }
-                            }, 3000);
-
-                        } else {
-                            video.pause();
-                        }
-                    }
-                });
-            }, { threshold: 0.65 });
-
-            document.querySelectorAll('.short-slide').forEach(slide => observer.observe(slide));
-        });
-
-        function showToast(msg) {
-            const toast = document.getElementById('shortsToastBubble');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    async function loadShorts() {
+      try {
+        if (!window.BTubeAPI ||
+            typeof window.BTubeAPI.getFeed !== 'function') {
+          throw new Error('BTube API लोड नहीं हुई।');
         }
 
-        function togglePlayPause(video) {
-            const slide = video.closest('.short-slide');
-            const overlay = slide.querySelector('.play-indicator-overlay');
+        const results = await window.BTubeAPI.getFeed('short');
+        const shorts = Array.isArray(results)
+          ? results.filter(v =>
+              v && typeof v.videoUrl === 'string' &&
+              /^https?:\/\//i.test(v.videoUrl) &&
+              String(v.type || '').toLowerCase() === 'short')
+          : [];
 
-            if (video.paused) {
-                video.play();
-                overlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-                showOverlay(overlay);
+        if (!shorts.length) {
+          showEmpty('जब कोई असली Short अपलोड होगा, वह यहाँ दिखाई देगा।', true);
+          return;
+        }
+
+        viewport.replaceChildren();
+        shorts.forEach(item => viewport.append(createShort(item)));
+
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+            if (entry.isIntersecting) {
+              video.play().catch(() => {});
             } else {
-                video.pause();
-                overlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-                showOverlay(overlay);
+              video.pause();
             }
-        }
+          });
+        }, { root: viewport, threshold: 0.7 });
 
-        function showOverlay(overlay) {
-            overlay.classList.add('show');
-            setTimeout(() => { overlay.classList.remove('show'); }, 600);
-        }
+        viewport.querySelectorAll('.short-slide').forEach(slide =>
+          observer.observe(slide));
+      } catch (error) {
+        console.error('BTube Shorts load error:', error);
+        showEmpty(
+          'Shorts लोड नहीं हो पाए। इंटरनेट, Firebase सेटिंग और Firestore Rules जाँचें।',
+          false
+        );
+      }
+    }
 
-        // Like button with backend hit
-        function handleLike(btn, shortId, baseCount) {
-            const isLiked = btn.classList.toggle('liked');
-            const counter = btn.querySelector('.rail-counter-txt');
-            
-            const dislikeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(2)');
-            if (dislikeBtn) dislikeBtn.classList.remove('disliked');
-
-            if (isLiked) {
-                counter.innerText = (baseCount + 1).toLocaleString();
-                showToast('Added to Liked videos ❤️');
-
-                // Hit backend like route
-                fetch(`${window.location.origin}/api/videos/${shortId}/like`, { method: 'POST' }).catch(() => {});
-            } else {
-                counter.innerText = (baseCount).toLocaleString();
-                showToast('Removed from Liked videos');
-            }
-        }
-
-        function handleDislike(btn) {
-            const isDisliked = btn.classList.toggle('disliked');
-            const likeBtn = btn.parentElement.querySelector('.rail-btn-unit:nth-child(1)');
-            if (isDisliked && likeBtn && likeBtn.classList.contains('liked')) {
-                likeBtn.classList.remove('liked');
-            }
-            showToast(isDisliked ? 'Disliked' : 'Dislike removed');
-        }
-
-        function handleSubscribe(btn) {
-            const isSub = btn.classList.toggle('subscribed');
-            if (isSub) {
-                btn.innerText = 'Subscribed ✓';
-                showToast('Subscribed to channel');
-            } else {
-                btn.innerText = 'Subscribe';
-                showToast('Subscription removed');
-            }
-        }
-
-        function handleShare() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'BTube Shorts',
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                showToast('Shorts link copied to clipboard ✓');
-            }
-        }
-
-        function openCommentsSheet(shortId, count) {
-            currentShortId = shortId;
-            currentShortCommentsCount = count;
-            document.getElementById('commentsDrawerHeaderTitle').innerText = `Comments • ${count}`;
-            document.getElementById('commentsDrawerScrim').classList.add('open');
-            document.getElementById('liveCommentField').focus();
-        }
-
-        function closeCommentsSheet() {
-            document.getElementById('commentsDrawerScrim').classList.remove('open');
-        }
-
-        function closeCommentsOnBackdrop(e) {
-            if (e.target.id === 'commentsDrawerScrim') closeCommentsSheet();
-        }
-
-        // Submit comment with SafeShield Scan
-        function submitLiveComment() {
-            const input = document.getElementById('liveCommentField');
-            const txt = input.value.trim();
-            if (!txt) return;
-
-            // SafeShield Profanity Filter
-            const VULGAR_TEST = ["porn", "xxx", "sex", "gandi", "harami", "ashleel"];
-            if (VULGAR_TEST.some(w => txt.toLowerCase().includes(w))) {
-                showToast('Comment blocked by SafeShield 🛑');
-                return;
-            }
-
-            // Sync with backend comments API
-            fetch(`${window.location.origin}/api/videos/${currentShortId}/comment`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ comment_text: txt })
-            }).catch(() => {});
-
-            const feed = document.getElementById('liveCommentsList');
-            const newComment = document.createElement('div');
-            newComment.className = 'single-comment-item';
-
-            const userInits = document.getElementById('bottomNavInits').innerText || 'CB';
-            const userName = localStorage.getItem('btube_channel_name') || 'You';
-
-            newComment.innerHTML = `
-                <div class="comment-user-dp" style="background:#e50914;">${userInits}</div>
-                <div class="comment-body-col">
-                    <span class="comment-meta-user">@${userName.toLowerCase().replace(/\s+/g,'')} • Just now</span>
-                    <span class="comment-text-content">${txt}</span>
-                </div>
-            `;
-            feed.prepend(newComment);
-            input.value = '';
-
-            currentShortCommentsCount++;
-            document.getElementById('commentsDrawerHeaderTitle').innerText = `Comments • ${currentShortCommentsCount}`;
-            const targetCounter = document.getElementById(`comment-count-${currentShortId}`);
-            if (targetCounter) targetCounter.innerText = currentShortCommentsCount;
-
-            showToast('Comment posted ✓');
-        }
-    </script>
+    document.addEventListener('DOMContentLoaded', loadShorts);
+  </script>
 </body>
 </html>
