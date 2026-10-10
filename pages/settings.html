@@ -246,7 +246,7 @@
             transform: translateX(20px);
         }
 
-        /* 5. POPUP DRAWERS (QUALITY & GENERAL) */
+        /* 5. POPUP DRAWERS */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -337,12 +337,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -353,7 +353,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -363,44 +363,46 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="settings-header">
-        <a href="profile.html" class="btn-back">
+        <button class="btn-back" onclick="window.history.back()">
             <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </a>
+        </button>
         <span class="header-title">Settings</span>
     </header>
 
     <!-- 2. ACCOUNT HERO MINI BAR -->
-    <a href="edit-channel.html" class="account-preview-box">
+    <a href="channel-settings.html" class="account-preview-box">
         <div class="acc-left-cluster">
             <div class="acc-avatar-circle">
-                <span id="settingsInits">CB</span>
+                <span id="settingsInits">BT</span>
                 <img id="settingsDpImg" class="acc-avatar-img" alt="DP">
             </div>
             <div class="acc-name-block">
-                <span class="acc-display-name" id="settingsName">Charandas Bhaskar</span>
-                <span class="acc-handle-name" id="settingsHandle">@charandasbhaskar</span>
+                <span class="acc-display-name" id="settingsName">Loading...</span>
+                <span class="acc-handle-name" id="settingsHandle">@loading</span>
             </div>
         </div>
         <div class="acc-edit-badge">
@@ -441,7 +443,7 @@
                 <span class="row-sub-desc">Continuous playback on finish</span>
             </div>
             <label class="switch">
-                <input type="checkbox" checked onchange="handleToggle(this, 'Autoplay')">
+                <input type="checkbox" id="toggleAutoplay" checked onchange="handleSettingToggle('autoplay', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -452,7 +454,7 @@
                 <span class="row-sub-desc">Reduces download & video bitrates automatically</span>
             </div>
             <label class="switch">
-                <input type="checkbox" onchange="handleToggle(this, 'Data saving')">
+                <input type="checkbox" id="toggleDataSaver" onchange="handleSettingToggle('data_saver', this.checked)">
                 <span class="slider"></span>
             </label>
         </div>
@@ -490,7 +492,7 @@
             </div>
         </a>
 
-        <a href="cast.html" class="settings-row-item">
+        <a href="connect-device.html" class="settings-row-item">
             <div class="row-left-content">
                 <span class="row-main-title">Watch on TV</span>
                 <span class="row-sub-desc">Link with TV code & screen cast</span>
@@ -523,6 +525,16 @@
             </div>
         </a>
 
+        <a href="privacy.html" class="settings-row-item">
+            <div class="row-left-content">
+                <span class="row-main-title">Privacy Policy</span>
+                <span class="row-sub-desc">Terms, local storage architecture & safety</span>
+            </div>
+            <div class="row-right-badge">
+                <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </div>
+        </a>
+
     </main>
 
     <!-- 4. QUALITY PREFERENCES DRAWER -->
@@ -532,15 +544,15 @@
                 <span class="drawer-title-txt">Video quality on mobile</span>
                 <button class="drawer-close-btn" onclick="closeDrawer('qualityDrawer')">✕</button>
             </div>
-            <div class="radio-selection-row selected" onclick="selectQuality('Auto (recommended: adapts to speed)', this)">
+            <div class="radio-selection-row" data-q="auto" onclick="selectQuality('Auto (recommended: adapts to speed)', 'auto', this)">
                 <span>Auto (recommended)</span>
-                <span>✓</span>
+                <span></span>
             </div>
-            <div class="radio-selection-row" onclick="selectQuality('Higher picture quality (1080p FHD)', this)">
+            <div class="radio-selection-row" data-q="high" onclick="selectQuality('Higher picture quality (1080p FHD)', 'high', this)">
                 <span>Higher picture quality (1080p FHD)</span>
                 <span></span>
             </div>
-            <div class="radio-selection-row" onclick="selectQuality('Data saver (480p SD)', this)">
+            <div class="radio-selection-row" data-q="saver" onclick="selectQuality('Data saver (480p SD)', 'saver', this)">
                 <span>Data saver (480p SD)</span>
                 <span></span>
             </div>
@@ -554,16 +566,16 @@
                 <span class="drawer-title-txt">General settings</span>
                 <button class="drawer-close-btn" onclick="closeDrawer('generalDrawer')">✕</button>
             </div>
-            <div class="radio-selection-row selected" onclick="selectLang('Hindi (हिंदी)', this)">
+            <div class="radio-selection-row" data-lang="hi" onclick="selectLang('Hindi (हिंदी)', 'hi', this)">
                 <span>Language: Hindi (हिंदी)</span>
-                <span>✓</span>
+                <span></span>
             </div>
-            <div class="radio-selection-row" onclick="selectLang('English (India)', this)">
+            <div class="radio-selection-row" data-lang="en" onclick="selectLang('English (India)', 'en', this)">
                 <span>Language: English (India)</span>
                 <span></span>
             </div>
-            <div class="radio-selection-row" onclick="showToast('Double-tap seek set to 10 seconds')">
-                <span>Double-tap seek: 10 seconds</span>
+            <div class="radio-selection-row" onclick="cycleSeekStep()">
+                <span id="seekDurationLabel">Double-tap seek: 10 seconds</span>
                 <span>›</span>
             </div>
         </div>
@@ -589,39 +601,85 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- LIVE DATA LOAD & SCRIPT -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
-            const savedDp = localStorage.getItem('btube_channel_dp');
+        let currentSeekSeconds = 10;
 
-            if (savedName) {
-                document.getElementById('settingsName').innerText = savedName;
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('settingsInits').innerText = inits.toUpperCase();
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
-
-            if (savedHandle) {
-                document.getElementById('settingsHandle').innerText = savedHandle;
-            }
-
-            if (savedDp) {
-                const dp = document.getElementById('settingsDpImg');
-                dp.src = savedDp;
-                dp.style.display = 'block';
-                document.getElementById('settingsInits').style.display = 'none';
-            }
+        window.addEventListener('DOMContentLoaded', async () => {
+            await syncUserProfile();
+            loadStoredPreferences();
         });
+
+        async function syncUserProfile() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const activeCh = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
+
+            const name = activeCh?.name || authUser?.name || 'BTube Creator';
+            const handle = activeCh?.handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const avatar = activeCh?.avatar || authUser?.photo;
+
+            document.getElementById('settingsName').innerText = name;
+            document.getElementById('settingsHandle').innerText = handle;
+
+            const inits = name.substring(0, 2).toUpperCase();
+            document.getElementById('settingsInits').innerText = inits;
+
+            const botAv = document.getElementById('bottomNavInits');
+            const dpImg = document.getElementById('settingsDpImg');
+
+            if (avatar) {
+                dpImg.src = avatar;
+                dpImg.style.display = 'block';
+                document.getElementById('settingsInits').style.display = 'none';
+
+                if (botAv) {
+                    botAv.innerHTML = `<img src="${avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                }
+            } else if (botAv) {
+                botAv.innerText = inits;
+            }
+        }
+
+        function loadStoredPreferences() {
+            // Autoplay
+            const autoplay = localStorage.getItem('btube_pref_autoplay') !== 'false';
+            document.getElementById('toggleAutoplay').checked = autoplay;
+
+            // Data Saver
+            const dataSaver = localStorage.getItem('btube_pref_data_saver') === 'true';
+            document.getElementById('toggleDataSaver').checked = dataSaver;
+
+            // Video Quality
+            const savedQualityKey = localStorage.getItem('btube_pref_quality_key') || 'auto';
+            const savedQualityDesc = localStorage.getItem('btube_pref_quality_desc') || 'Auto (recommended: adapts to speed)';
+            document.getElementById('currentQualityDesc').innerText = savedQualityDesc;
+            
+            document.querySelectorAll('#qualityDrawer .radio-selection-row').forEach(row => {
+                const isMatch = row.getAttribute('data-q') === savedQualityKey;
+                row.classList.toggle('selected', isMatch);
+                row.querySelector('span:last-child').innerText = isMatch ? '✓' : '';
+            });
+
+            // Language & Seek
+            const savedLangKey = localStorage.getItem('btube_pref_lang_key') || 'hi';
+            const savedLangName = localStorage.getItem('btube_pref_lang_name') || 'Hindi (हिंदी)';
+            currentSeekSeconds = parseInt(localStorage.getItem('btube_pref_seek_step') || '10');
+
+            document.getElementById('generalSubDesc').innerText = `Language: ${savedLangName} • Double-tap seek: ${currentSeekSeconds}s`;
+            document.getElementById('seekDurationLabel').innerText = `Double-tap seek: ${currentSeekSeconds} seconds`;
+
+            document.querySelectorAll('#generalDrawer .radio-selection-row[data-lang]').forEach(row => {
+                const isMatch = row.getAttribute('data-lang') === savedLangKey;
+                row.classList.toggle('selected', isMatch);
+                row.querySelector('span:last-child').innerText = isMatch ? '✓' : '';
+            });
+        }
 
         function showToast(msg) {
             const t = document.getElementById('settingsToast');
@@ -630,8 +688,10 @@
             setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
 
-        function handleToggle(checkbox, name) {
-            showToast(`${name} is now ${checkbox.checked ? 'ON' : 'OFF'}`);
+        function handleSettingToggle(key, state) {
+            localStorage.setItem(`btube_pref_${key}`, state);
+            const label = key === 'autoplay' ? 'Autoplay' : 'Data saving mode';
+            showToast(`${label} is now ${state ? 'ON' : 'OFF'}`);
         }
 
         function openQualityDrawer() {
@@ -650,28 +710,49 @@
             if (e.target.id === id) closeDrawer(id);
         }
 
-        function selectQuality(val, row) {
+        function selectQuality(desc, key, row) {
             document.querySelectorAll('#qualityDrawer .radio-selection-row').forEach(r => {
                 r.classList.remove('selected');
                 r.querySelector('span:last-child').innerText = '';
             });
             row.classList.add('selected');
             row.querySelector('span:last-child').innerText = '✓';
-            document.getElementById('currentQualityDesc').innerText = val;
+
+            document.getElementById('currentQualityDesc').innerText = desc;
+            localStorage.setItem('btube_pref_quality_key', key);
+            localStorage.setItem('btube_pref_quality_desc', desc);
+
             closeDrawer('qualityDrawer');
-            showToast(`Quality updated`);
+            showToast(`Quality preference updated`);
         }
 
-        function selectLang(lang, row) {
-            document.querySelectorAll('#generalDrawer .radio-selection-row').forEach(r => {
+        function selectLang(langName, key, row) {
+            document.querySelectorAll('#generalDrawer .radio-selection-row[data-lang]').forEach(r => {
                 r.classList.remove('selected');
                 r.querySelector('span:last-child').innerText = '';
             });
             row.classList.add('selected');
             row.querySelector('span:last-child').innerText = '✓';
-            document.getElementById('generalSubDesc').innerText = `Language: ${lang} • Seek: 10s`;
+
+            localStorage.setItem('btube_pref_lang_key', key);
+            localStorage.setItem('btube_pref_lang_name', langName);
+            document.getElementById('generalSubDesc').innerText = `Language: ${langName} • Double-tap seek: ${currentSeekSeconds}s`;
+
             closeDrawer('generalDrawer');
-            showToast(`Language set to ${lang}`);
+            showToast(`Language set to ${langName}`);
+        }
+
+        function cycleSeekStep() {
+            const steps = [5, 10, 15, 30];
+            const currentIdx = steps.indexOf(currentSeekSeconds);
+            currentSeekSeconds = steps[(currentIdx + 1) % steps.length];
+
+            localStorage.setItem('btube_pref_seek_step', currentSeekSeconds);
+            const langName = localStorage.getItem('btube_pref_lang_name') || 'Hindi (हिंदी)';
+
+            document.getElementById('seekDurationLabel').innerText = `Double-tap seek: ${currentSeekSeconds} seconds`;
+            document.getElementById('generalSubDesc').innerText = `Language: ${langName} • Double-tap seek: ${currentSeekSeconds}s`;
+            showToast(`Double-tap seek set to ${currentSeekSeconds}s`);
         }
     </script>
 </body>
