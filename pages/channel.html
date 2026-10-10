@@ -18,7 +18,7 @@
 
         .channel-banner { width:100%; aspect-ratio:16/5; background:#1c1c1c; overflow:hidden; position:relative; }
         .channel-banner img { width:100%; height:100%; object-fit:cover; }
-        .btn-edit-banner { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.7); border:none; border-radius:50%; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+        .btn-edit-banner { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.7); border:none; border-radius:50%; width:34px; height:34px; display:none; align-items:center; justify-content:center; cursor:pointer; }
         .btn-edit-banner svg { width:17px; height:17px; fill:#fff; }
 
         .channel-hero { padding:14px 16px 8px; display:flex; flex-direction:column; gap:10px; }
@@ -27,7 +27,9 @@
         .ch-avatar-lg img { width:100%; height:100%; object-fit:cover; }
         
         .ch-names { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+        .ch-title-wrap { display:flex; align-items:center; gap:6px; }
         .ch-title { font-size:22px; font-weight:800; }
+        .badge-verified { width:16px; height:16px; fill:#aaa; display:none; }
         .ch-handle { font-size:13px; color:#aaa; font-weight:500; }
         .ch-sub-meta { font-size:12px; color:#aaa; margin-top:2px; }
 
@@ -40,6 +42,9 @@
         .btn-yt { flex:1; background:#222; color:#fff; border:none; padding:9px 12px; border-radius:20px; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; }
         .btn-yt:active { background:#333; }
         .btn-yt svg { width:18px; height:18px; fill:#fff; }
+
+        .btn-subscribe-cta { width:100%; background:#fff; color:#0f0f0f; border:none; padding:10px 18px; border-radius:22px; font-size:14px; font-weight:700; cursor:pointer; display:none; }
+        .btn-subscribe-cta.subscribed { background:#222; color:#aaa; }
 
         .tabs-bar { display:flex; border-bottom:1px solid #222; padding:0 8px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; margin-top:6px; }
         .tabs-bar::-webkit-scrollbar { display:none; }
@@ -75,6 +80,12 @@
         .s-title { font-size:11px; font-weight:700; line-height:1.2; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
         .s-views { font-size:10px; color:#aaa; }
 
+        .community-feed { display:flex; flex-direction:column; gap:12px; padding:0 16px; }
+        .comm-post-card { background:#181818; border:1px solid #282828; border-radius:12px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+        .comm-author-row { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; }
+        .comm-author-img { width:32px; height:32px; border-radius:50%; object-fit:cover; }
+        .comm-text { font-size:14px; line-height:1.4; color:#eee; }
+
         .empty-channel { text-align:center; padding:40px 20px; color:#777; font-size:13px; }
         .empty-channel a { display:inline-block; margin-top:12px; background:#e50914; color:#fff; padding:9px 20px; border-radius:20px; text-decoration:none; font-weight:700; font-size:13px; }
 
@@ -107,7 +118,7 @@
 
     <div class="channel-banner">
         <img id="chBannerImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200" alt="Banner">
-        <button class="btn-edit-banner" onclick="editBannerPrompt()">
+        <button class="btn-edit-banner" id="bannerEditBtn" onclick="editBannerPrompt()">
             <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
         </button>
     </div>
@@ -116,7 +127,10 @@
         <div class="hero-top-row">
             <div class="ch-avatar-lg" id="chAvatar">BT</div>
             <div class="ch-names">
-                <div class="ch-title" id="chMainTitle">Channel Name</div>
+                <div class="ch-title-wrap">
+                    <div class="ch-title" id="chMainTitle">Channel Name</div>
+                    <svg class="badge-verified" id="badgeVerified" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
                 <div class="ch-handle" id="chHandle">@handle</div>
                 <div class="ch-sub-meta" id="chSubCount">0 subscribers • 0 videos</div>
             </div>
@@ -127,9 +141,10 @@
             <span class="bio-more">...more</span>
         </div>
 
-        <div class="btn-actions-grid">
+        <!-- Mode 1: Channel Owner View (Analytics + Edit) -->
+        <div class="btn-actions-grid" id="ownerActions">
             <div class="btn-row-2">
-                <button class="btn-yt" onclick="window.location.href='your-videos.html'">
+                <button class="btn-yt" onclick="window.location.href='analytics.html'">
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     <span>Analytics</span>
                 </button>
@@ -143,6 +158,9 @@
                 <span>Community</span>
             </button>
         </div>
+
+        <!-- Mode 2: Other Viewers View (Subscribe Button) -->
+        <button class="btn-subscribe-cta" id="btnSubscribe" onclick="toggleSubscribe()">Subscribe</button>
     </div>
 
     <div class="tabs-bar">
@@ -180,9 +198,11 @@
 
     <!-- 5. COMMUNITY -->
     <div class="tab-pane" id="pane-community">
-        <div class="empty-channel">
-            <p>Post updates and interact with your subscribers.</p>
-            <a href="javascript:void(0)" onclick="promptPost()">+ Create post</a>
+        <div style="padding: 0 16px 12px; display:flex; justify-content:flex-end;">
+            <button class="btn-yt" style="max-width:140px;" onclick="promptPost()">+ Create post</button>
+        </div>
+        <div class="community-feed" id="communityFeedList">
+            <div class="empty-channel"><p>No community posts yet.</p></div>
         </div>
     </div>
 
@@ -196,24 +216,56 @@
 
     <script>
         let currentChannel = null;
+        let isOwner = false;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
             const activeCh = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
 
-            const chName = activeCh ? activeCh.name : (authUser ? authUser.name : 'My Channel');
-            const chHandle = activeCh ? activeCh.handle : '@' + chName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            const chAvatar = activeCh ? activeCh.avatar : (authUser ? authUser.photo : '');
-            const chBanner = activeCh?.banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200';
-            const chBio = activeCh?.bio || 'Welcome to my channel!';
+            // Check URL Params (Official channel or ID routing)
+            const urlParams = new URLSearchParams(window.location.search);
+            const isOfficialParam = urlParams.get('official') === 'true';
 
-            currentChannel = { id: activeCh?.id, name: chName, handle: chHandle, avatar: chAvatar, banner: chBanner, bio: chBio };
+            let chName, chHandle, chAvatar, chBanner, chBio, chId;
 
+            if (isOfficialParam) {
+                chName = 'BTube Official';
+                chHandle = '@btube';
+                chAvatar = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200';
+                chBanner = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200';
+                chBio = 'Welcome to the official BTube platform channel. Discover product updates, creator guidelines, and featured content.';
+                chId = 'btube_official_channel';
+                document.getElementById('badgeVerified').style.display = 'block';
+                isOwner = false;
+            } else {
+                chName = activeCh ? activeCh.name : (authUser ? authUser.name : 'My Channel');
+                chHandle = activeCh ? activeCh.handle : '@' + chName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                chAvatar = activeCh ? activeCh.avatar : (authUser ? authUser.photo : '');
+                chBanner = activeCh?.banner || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200';
+                chBio = activeCh?.bio || 'Welcome to my channel!';
+                chId = activeCh?.id;
+                isOwner = true;
+            }
+
+            currentChannel = { id: chId, name: chName, handle: chHandle, avatar: chAvatar, banner: chBanner, bio: chBio };
+
+            // Apply Details
             document.getElementById('chMainTitle').innerText = chName;
             document.getElementById('hdrChannelName').innerText = chName;
             document.getElementById('chHandle').innerText = chHandle;
             document.getElementById('chBannerImg').src = chBanner;
             document.getElementById('chBio').innerText = chBio;
+
+            // Owner UI toggles
+            if (isOwner) {
+                document.getElementById('bannerEditBtn').style.display = 'flex';
+                document.getElementById('ownerActions').style.display = 'flex';
+                document.getElementById('btnSubscribe').style.display = 'none';
+            } else {
+                document.getElementById('bannerEditBtn').style.display = 'none';
+                document.getElementById('ownerActions').style.display = 'none';
+                document.getElementById('btnSubscribe').style.display = 'block';
+            }
 
             const avEl = document.getElementById('chAvatar');
             const navAv = document.getElementById('navAvatar');
@@ -226,11 +278,11 @@
                 navAv.innerText = init;
             }
 
-            // Real Firestore upload count
+            // Real Firestore Videos for this channel
             let myItems = [];
             if (window.BTubeAPI) {
                 const allItems = await window.BTubeAPI.getFeed('all');
-                myItems = allItems.filter(v => v.channelId === activeCh?.id || v.channel === chName || v.userId === authUser?.uid);
+                myItems = allItems.filter(v => v.channelId === chId || v.channel === chName);
             }
 
             document.getElementById('chSubCount').innerText = `${activeCh?.subscribers || 0} subscribers • ${myItems.length} videos`;
@@ -247,6 +299,7 @@
             renderVideosFeed('videosOnlyList', videosOnly);
             renderShortsGrid(shortsOnly);
             renderPlaylists();
+            renderCommunityPosts();
         });
 
         function switchTab(name) {
@@ -288,7 +341,7 @@
                 box.innerHTML = `
                     <div class="empty-channel">
                         <p>No videos uploaded yet.</p>
-                        <a href="upload.html">+ Upload a video</a>
+                        ${isOwner ? '<a href="upload.html">+ Upload a video</a>' : ''}
                     </div>
                 `;
                 return;
@@ -316,7 +369,7 @@
             const grid = document.getElementById('shortsGridList');
             grid.innerHTML = '';
             if (shorts.length === 0) {
-                grid.innerHTML = `<div class="empty-channel" style="grid-column:1/-1;"><p>No shorts uploaded yet.</p><a href="upload.html?type=short">+ Create Short</a></div>`;
+                grid.innerHTML = `<div class="empty-channel" style="grid-column:1/-1;"><p>No shorts uploaded yet.</p>${isOwner ? '<a href="upload.html?type=short">+ Create Short</a>' : ''}</div>`;
                 return;
             }
 
@@ -361,6 +414,49 @@
             });
         }
 
+        function renderCommunityPosts() {
+            const container = document.getElementById('communityFeedList');
+            const posts = JSON.parse(localStorage.getItem(`btube_comm_${currentChannel.id}`) || '[]');
+            if (posts.length === 0) {
+                container.innerHTML = `<div class="empty-channel"><p>No community posts yet.</p></div>`;
+                return;
+            }
+            container.innerHTML = '';
+            posts.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'comm-post-card';
+                card.innerHTML = `
+                    <div class="comm-author-row">
+                        <img class="comm-author-img" src="${currentChannel.avatar || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}">
+                        <span>${currentChannel.name} • ${p.time || 'Recently'}</span>
+                    </div>
+                    <div class="comm-text">${p.text}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function promptPost() {
+            const text = prompt("Write your post for the community:");
+            if (text && text.trim()) {
+                const posts = JSON.parse(localStorage.getItem(`btube_comm_${currentChannel.id}`) || '[]');
+                posts.unshift({ text: text.trim(), time: 'Just now' });
+                localStorage.setItem(`btube_comm_${currentChannel.id}`, JSON.stringify(posts));
+                renderCommunityPosts();
+            }
+        }
+
+        function toggleSubscribe() {
+            const btn = document.getElementById('btnSubscribe');
+            if (btn.classList.contains('subscribed')) {
+                btn.classList.remove('subscribed');
+                btn.innerText = 'Subscribe';
+            } else {
+                btn.classList.add('subscribed');
+                btn.innerText = 'Subscribed ✓';
+            }
+        }
+
         function editBannerPrompt() {
             const newBanner = prompt("Enter banner image URL:", document.getElementById('chBannerImg').src);
             if (newBanner && newBanner.trim()) {
@@ -380,6 +476,7 @@
         }
 
         function openBioPrompt() {
+            if (!isOwner) return;
             const currentBio = document.getElementById('chBio').innerText;
             const newBio = prompt("Channel Description (About):", currentBio.startsWith('Add a') ? '' : currentBio);
             if (newBio !== null && newBio.trim()) {
@@ -398,11 +495,6 @@
                 ch[field] = value;
                 localStorage.setItem('btube_channels_' + u.uid, JSON.stringify(list));
             }
-        }
-
-        function promptPost() {
-            const post = prompt("Write something for your community:");
-            if (post) alert("Post published!");
         }
 
         function shareChannel() {
