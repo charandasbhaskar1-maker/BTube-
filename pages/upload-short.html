@@ -2,31 +2,71 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Create Short - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:50px; overflow-x:hidden; }
+
         .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
         .hdr-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
+        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; transition:opacity 0.2s; }
+        .btn-pub:disabled { opacity:0.6; cursor:not-allowed; }
 
-        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
-        .dropzone { border:2px dashed #e50914; border-radius:12px; padding:30px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+        
+        /* Creator Profile Preview Bar */
+        .creator-bar { display:flex; align-items:center; gap:12px; padding:10px 14px; background:#171717; border-radius:10px; border:1px solid #252525; }
+        .c-av { width:34px; height:34px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; overflow:hidden; }
+        .c-av img { width:100%; height:100%; object-fit:cover; }
+        .c-meta { display:flex; flex-direction:column; gap:2px; }
+        .c-name { font-size:13px; font-weight:700; }
+        .c-handle { font-size:11px; color:#888; }
+
+        /* YouTube Style Add Sound Bar */
+        .sound-trigger-box { background:#1f1f1f; border:1px solid #333; border-radius:24px; padding:8px 16px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; transition:background 0.2s; }
+        .sound-trigger-box:active { background:#282828; }
+        .sound-left { display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; }
+        .sound-left svg { width:18px; height:18px; fill:#3ea6ff; }
+        .btn-remove-sound { background:none; border:none; color:#aaa; font-size:16px; cursor:pointer; display:none; padding:2px 6px; }
+
+        /* Dropzone / Preview Area */
+        .dropzone { border:2px dashed #e50914; border-radius:14px; padding:24px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; overflow:hidden; }
         .dropzone svg { width:42px; height:42px; fill:#e50914; }
+        .preview-video { width:100%; max-height:300px; border-radius:10px; object-fit:cover; display:none; aspect-ratio:9/16; background:#000; }
 
         .inp-grp { display:flex; flex-direction:column; gap:6px; }
         .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
-        .inp-grp input { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
-        .inp-grp input:focus { border-color:#e50914; }
+        .inp-grp input, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
+        .inp-grp input:focus, .inp-grp select:focus { border-color:#e50914; }
+
+        /* Sound Picker Bottom Sheet */
+        .sheet-scrim { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:2000; display:none; align-items:flex-end; }
+        .sheet-scrim.open { display:flex; }
+        .music-sheet { width:100%; max-height:75vh; background:#1e1e1e; border-top-left-radius:18px; border-top-right-radius:18px; padding:16px; display:flex; flex-direction:column; gap:12px; animation:slideUp 0.2s ease-out; }
+        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+
+        .sheet-head { display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #2e2e2e; padding-bottom:8px; }
+        .music-list { overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding-right:4px; max-height:55vh; }
+        .music-row { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; background:#151515; border-radius:10px; border:1px solid #282828; cursor:pointer; }
+        .music-row:active { background:#242424; }
+        .m-left { display:flex; align-items:center; gap:12px; min-width:0; }
+        .m-icon { width:38px; height:38px; border-radius:8px; background:#2a2a2a; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .m-icon svg { width:20px; height:20px; fill:#3ea6ff; }
+        .m-info { display:flex; flex-direction:column; gap:2px; min-width:0; }
+        .m-title { font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .m-artist { font-size:11px; color:#888; }
+        .btn-use-sound { background:#3ea6ff; border:none; color:#000; font-size:11px; font-weight:800; padding:6px 12px; border-radius:14px; cursor:pointer; flex-shrink:0; }
     </style>
 
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
@@ -41,30 +81,204 @@
     </header>
 
     <div class="container">
-        <div class="dropzone" onclick="document.getElementById('fileInp').click()">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span style="font-weight:700;" id="fileLabel">Select 9:16 Short Video</span>
-            <span style="font-size:11px; color:#777;">Under 60 seconds</span>
+        <!-- Channel Identity -->
+        <div class="creator-bar">
+            <div class="c-av" id="creatorAvatar">BT</div>
+            <div class="c-meta">
+                <span class="c-name" id="creatorName">Channel</span>
+                <span class="c-handle" id="creatorHandle">@channel</span>
+            </div>
+        </div>
+
+        <!-- Add Sound Bar -->
+        <div class="sound-trigger-box" onclick="openMusicSheet()">
+            <div class="sound-left">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                <span id="selectedSoundLabel">Add sound</span>
+            </div>
+            <button class="btn-remove-sound" id="btnRemoveSound" onclick="event.stopPropagation(); removeSelectedSound();">✕</button>
+        </div>
+
+        <!-- Video Selection & 9:16 Preview -->
+        <div class="dropzone" id="dropArea" onclick="document.getElementById('fileInp').click()">
+            <video id="previewPlayer" class="preview-video" playsinline controls></video>
+            <div id="dropPlaceholder" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+                <span style="font-weight:700;" id="fileLabel">Select 9:16 Short Video</span>
+                <span style="font-size:11px; color:#777;">Under 60 seconds (MP4, WebM)</span>
+            </div>
             <input type="file" id="fileInp" accept="video/*" style="display:none;" onchange="onShortPicked(event)">
         </div>
 
         <div class="inp-grp">
             <label>Caption / Title</label>
-            <input type="text" id="sTitle" placeholder="e.g. BTube Short Updates #shorts">
+            <input type="text" id="sTitle" placeholder="e.g. My Village Vlog Moments #shorts">
+        </div>
+
+        <div class="inp-grp">
+            <label>Visibility</label>
+            <select id="sVisibility">
+                <option value="Public" selected>Public</option>
+                <option value="Unlisted">Unlisted</option>
+                <option value="Private">Private</option>
+            </select>
         </div>
     </div>
 
+    <!-- Music Sheet Modal -->
+    <div class="sheet-scrim" id="musicModal" onclick="if(event.target===this) closeMusicSheet()">
+        <div class="music-sheet">
+            <div class="sheet-head">
+                <span style="font-size:15px; font-weight:700;">🎵 Sounds Library</span>
+                <button style="background:none; border:none; color:#aaa; font-size:18px; cursor:pointer;" onclick="closeMusicSheet()">✕</button>
+            </div>
+            <div class="music-list" id="musicListContainer"></div>
+        </div>
+    </div>
+
+    <audio id="audioPreviewPlayer" style="display:none;"></audio>
+    <canvas id="thumbCanvas" style="display:none;"></canvas>
+
     <script>
-        function onShortPicked(e) {
-            const f = e.target.files[0];
-            if (f) {
-                document.getElementById('fileLabel').innerText = f.name;
-                const t = document.getElementById('sTitle');
-                if (!t.value) {
-                    const clean = f.name.replace(/\.[^/.]+$/, "");
-                    t.value = `${clean} #shorts`;
-                }
+        let currentActiveChannel = null;
+        let selectedVideoFile = null;
+        let videoDurationSeconds = 30;
+        let generatedThumbUrl = '';
+        let attachedMusic = null;
+
+        // Trending & Regional Sounds Library
+        const BTubeMusicTracks = [
+            { id: 'm1', title: 'Panthi Geet Dhol Beat (Cultural)', artist: 'Folk Chhattisgarh', duration: '0:15', audioUrl: 'https://actions.google.com/sounds/v1/foley/beating_metal.ogg' },
+            { id: 'm2', title: 'Typewriter Banjo Melody', artist: 'Dhun AI Originals', duration: '0:15', audioUrl: 'https://actions.google.com/sounds/v1/foley/typewriter_keys.ogg' },
+            { id: 'm3', title: 'Village Morning Birds & Flute', artist: 'The Bhaskar Vlog Vibes', duration: '0:15', audioUrl: 'https://actions.google.com/sounds/v1/animals/rooster_crowing.ogg' },
+            { id: 'm4', title: 'Modern Upbeat Reels Beat', artist: 'BTube Creator Sounds', duration: '0:15', audioUrl: 'https://actions.google.com/sounds/v1/human_voices/applause_moderate.ogg' }
+        ];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            if (window.BTubeAPI && typeof window.BTubeAPI.getActiveChannel === 'function') {
+                currentActiveChannel = await window.BTubeAPI.getActiveChannel();
             }
+
+            const chName = currentActiveChannel?.name || authUser?.name || 'BTube Creator';
+            const chHandle = currentActiveChannel?.handle || ('@' + chName.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const chAvatar = currentActiveChannel?.avatar || authUser?.photo;
+
+            document.getElementById('creatorName').innerText = chName;
+            document.getElementById('creatorHandle').innerText = chHandle;
+
+            const av = document.getElementById('creatorAvatar');
+            if (chAvatar) {
+                av.innerHTML = `<img src="${chAvatar}">`;
+            } else {
+                av.innerText = chName.substring(0, 2).toUpperCase();
+            }
+
+            renderMusicLibrary();
+        });
+
+        function renderMusicLibrary() {
+            const list = document.getElementById('musicListContainer');
+            list.innerHTML = '';
+
+            BTubeMusicTracks.forEach(t => {
+                const row = document.createElement('div');
+                row.className = 'music-row';
+                row.innerHTML = `
+                    <div class="m-left" onclick="playAudioPreview('${t.audioUrl}')">
+                        <div class="m-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        </div>
+                        <div class="m-info">
+                            <span class="m-title">${t.title}</span>
+                            <span class="m-artist">${t.artist} • ${t.duration}</span>
+                        </div>
+                    </div>
+                    <button class="btn-use-sound" onclick="selectSound('${t.id}')">Use Sound</button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function playAudioPreview(url) {
+            const p = document.getElementById('audioPreviewPlayer');
+            p.src = url;
+            p.play().catch(() => {});
+        }
+
+        function openMusicSheet() {
+            document.getElementById('musicModal').classList.add('open');
+        }
+
+        function closeMusicSheet() {
+            const p = document.getElementById('audioPreviewPlayer');
+            p.pause();
+            document.getElementById('musicModal').classList.remove('open');
+        }
+
+        function selectSound(trackId) {
+            const track = BTubeMusicTracks.find(t => t.id === trackId);
+            if (!track) return;
+
+            attachedMusic = track;
+            document.getElementById('selectedSoundLabel').innerText = `🎵 ${track.title}`;
+            document.getElementById('btnRemoveSound').style.display = 'block';
+
+            // Mute video so sound takes priority
+            const video = document.getElementById('previewPlayer');
+            if (video) video.muted = true;
+
+            closeMusicSheet();
+        }
+
+        function removeSelectedSound() {
+            attachedMusic = null;
+            document.getElementById('selectedSoundLabel').innerText = 'Add sound';
+            document.getElementById('btnRemoveSound').style.display = 'none';
+
+            const video = document.getElementById('previewPlayer');
+            if (video) video.muted = false;
+        }
+
+        function onShortPicked(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            selectedVideoFile = file;
+            document.getElementById('fileLabel').innerText = file.name;
+
+            const titleInput = document.getElementById('sTitle');
+            if (!titleInput.value) {
+                const clean = file.name.replace(/\.[^/.]+$/, "");
+                titleInput.value = `${clean} #shorts`;
+            }
+
+            const preview = document.getElementById('previewPlayer');
+            const placeholder = document.getElementById('dropPlaceholder');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            preview.onloadedmetadata = () => {
+                videoDurationSeconds = Math.round(preview.duration);
+                extractThumbnailFromVideo(preview);
+            };
+        }
+
+        function extractThumbnailFromVideo(video) {
+            video.currentTime = Math.min(1, video.duration / 2);
+            video.onseeked = () => {
+                try {
+                    const canvas = document.getElementById('thumbCanvas');
+                    canvas.width = 480;
+                    canvas.height = 854;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    generatedThumbUrl = canvas.toDataURL('image/jpeg', 0.8);
+                } catch(err) {
+                    generatedThumbUrl = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800';
+                }
+            };
         }
 
         async function publishShort() {
@@ -75,22 +289,49 @@
             btn.disabled = true;
             btn.innerText = 'Publishing...';
 
-            try {
-                await window.BTubeAPI.saveVideo({
-                    title: title,
-                    name: title,
-                    type: 'short',
-                    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-                    thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600',
-                    channel: 'BTube',
-                    visibility: 'Public',
-                    duration: '0:30'
-                });
+            const chName = document.getElementById('creatorName').innerText;
+            const visibility = document.getElementById('sVisibility').value;
+            const streamUrl = selectedVideoFile 
+                ? URL.createObjectURL(selectedVideoFile) 
+                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
 
-                alert('Short uploaded successfully!');
+            const soundCredit = attachedMusic 
+                ? `${attachedMusic.title} • ${attachedMusic.artist}` 
+                : `Original sound • ${chName}`;
+
+            const payload = {
+                id: 'short_' + Date.now(),
+                title: title,
+                name: title,
+                type: 'short',
+                videoUrl: streamUrl,
+                sound: soundCredit,
+                soundUrl: attachedMusic?.audioUrl || '',
+                thumb: generatedThumbUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800',
+                channel: chName,
+                channelId: currentActiveChannel?.id || '',
+                channelAvatar: currentActiveChannel?.avatar || '',
+                visibility: visibility,
+                views: 0,
+                likes: 0,
+                duration: `0:${videoDurationSeconds < 10 ? '0' : ''}${videoDurationSeconds}`,
+                monetized: true,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                if (window.BTubeAPI && typeof window.BTubeAPI.saveVideo === 'function') {
+                    await window.BTubeAPI.saveVideo(payload);
+                } else {
+                    let localFeed = JSON.parse(localStorage.getItem('btube_feed_videos') || '[]');
+                    localFeed.unshift(payload);
+                    localStorage.setItem('btube_feed_videos', JSON.stringify(localFeed));
+                }
+
+                alert('Short uploaded with sound: ' + soundCredit);
                 window.location.href = 'your-videos.html?tab=shorts';
             } catch(e) {
-                alert('Upload fail: ' + e.message);
+                alert('Upload failed: ' + e.message);
                 btn.disabled = false;
                 btn.innerText = 'Upload Short';
             }
