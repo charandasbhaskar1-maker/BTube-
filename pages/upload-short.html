@@ -1,277 +1,100 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0f0f0f">
-  <title>Upload Short - BTube</title>
-  <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; background: #0f0f0f; color: #fff; }
-    header {
-      height: 58px; display: flex; align-items: center;
-      justify-content: space-between; padding: 0 16px;
-      border-bottom: 1px solid #292929; position: sticky;
-      top: 0; background: #0f0f0f; z-index: 2;
-    }
-    button, .pick {
-      border: 0; border-radius: 22px; padding: 11px 17px;
-      font-weight: bold; cursor: pointer;
-    }
-    .red { background: #e50914; color: white; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    main { max-width: 520px; margin: auto; padding: 20px 16px 40px; }
-    .pick {
-      display: block; text-align: center; border: 1px dashed #e50914;
-      background: #1a1a1a; padding: 28px 12px; margin-bottom: 18px;
-    }
-    .preview {
-      width: 190px; aspect-ratio: 9/16; margin: 0 auto 22px;
-      background: #050505; border-radius: 14px; overflow: hidden;
-    }
-    video { width: 100%; height: 100%; object-fit: contain; }
-    label.field-label { display:block; margin: 18px 0 8px; color:#ddd; }
-    input, textarea, select {
-      width: 100%; padding: 13px; border-radius: 9px;
-      border: 1px solid #363636; background: #191919;
-      color: white; font-size: 15px;
-    }
-    textarea { min-height: 90px; resize: vertical; }
-    .hint { color: #999; font-size: 13px; line-height: 1.5; }
-    .status {
-      margin-top: 18px; padding: 14px; background: #1c1c1c;
-      border-radius: 10px; white-space: pre-wrap; overflow-wrap: anywhere;
-      display: none;
-    }
-    .upload-btn { width: 100%; margin-top: 22px; font-size: 15px; }
-    .bar { height: 5px; background: #333; margin-top: 14px; overflow: hidden; display:none; }
-    .bar span {
-      display:block; width:35%; height:100%; background:#e50914;
-      animation: move 1.2s ease-in-out infinite alternate;
-    }
-    @keyframes move { from { transform:translateX(-20%); } to { transform:translateX(190%); } }
-    a { color: #ff6068; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Create Short - BTube</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
+        .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
+        .hdr-left { display:flex; align-items:center; gap:16px; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back svg { width:22px; height:22px; fill:#fff; }
+        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
+
+        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+        .dropzone { border:2px dashed #e50914; border-radius:12px; padding:30px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; }
+        .dropzone svg { width:42px; height:42px; fill:#e50914; }
+
+        .inp-grp { display:flex; flex-direction:column; gap:6px; }
+        .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
+        .inp-grp input { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
+        .inp-grp input:focus { border-color:#e50914; }
+    </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
-  <header>
-    <button onclick="history.length > 1 ? history.back() : location.href='../frontend/index.html'"
-      style="background:#242424;color:white">← वापस</button>
-    <strong>Create Short</strong>
-    <span style="color:#aaa;font-size:12px">BTube</span>
-  </header>
+    <header class="hdr">
+        <div class="hdr-left">
+            <button class="btn-back" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span style="font-size:17px; font-weight:700;">Create a Short</span>
+        </div>
+        <button class="btn-pub" id="btnPublish" onclick="publishShort()">Upload Short</button>
+    </header>
 
-  <main>
-    <h2>अपना Short अपलोड करें</h2>
-    <p class="hint">वीडियो Firebase Cloud में अपलोड होगा। Short अधिकतम 60 सेकंड का होना चाहिए।</p>
+    <div class="container">
+        <div class="dropzone" onclick="document.getElementById('fileInp').click()">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span style="font-weight:700;" id="fileLabel">Select 9:16 Short Video</span>
+            <span style="font-size:11px; color:#777;">Under 60 seconds</span>
+            <input type="file" id="fileInp" accept="video/*" style="display:none;" onchange="onShortPicked(event)">
+        </div>
 
-    <label class="pick" for="videoFile">
-      <strong>＋ वीडियो चुनें</strong><br>
-      <span class="hint">अपने फोन से वीडियो चुनने के लिए टैप करें</span>
-    </label>
-    <input id="videoFile" type="file" accept="video/*" hidden>
-
-    <div class="preview">
-      <video id="preview" controls playsinline style="display:none"></video>
+        <div class="inp-grp">
+            <label>Caption / Title</label>
+            <input type="text" id="sTitle" placeholder="e.g. BTube Short Updates #shorts">
+        </div>
     </div>
-    <div id="videoInfo" class="hint"></div>
 
-    <label class="field-label" for="title">Short का टाइटल *</label>
-    <input id="title" maxlength="100" placeholder="अपने Short का टाइटल लिखें">
+    <script>
+        function onShortPicked(e) {
+            const f = e.target.files[0];
+            if (f) {
+                document.getElementById('fileLabel').innerText = f.name;
+                const t = document.getElementById('sTitle');
+                if (!t.value) {
+                    const clean = f.name.replace(/\.[^/.]+$/, "");
+                    t.value = `${clean} #shorts`;
+                }
+            }
+        }
 
-    <label class="field-label" for="description">विवरण</label>
-    <textarea id="description" maxlength="3000" placeholder="वीडियो के बारे में लिखें"></textarea>
+        async function publishShort() {
+            let title = document.getElementById('sTitle').value.trim() || 'BTube Short';
+            if (!title.toLowerCase().includes('#short')) title += ' #shorts';
 
-    <label class="field-label" for="visibility">Visibility</label>
-    <select id="visibility">
-      <option value="Public">Public — सभी देख सकते हैं</option>
-      <option value="Unlisted">Unlisted — लिंक से देख सकते हैं</option>
-      <option value="Private">Private — निजी</option>
-    </select>
+            const btn = document.getElementById('btnPublish');
+            btn.disabled = true;
+            btn.innerText = 'Publishing...';
 
-    <p class="hint">अपलोड करने के लिए अपने BTube खाते में लॉगिन होना आवश्यक है। फिलहाल यह पेज वीडियो और उसकी बुनियादी जानकारी सेव करता है। कवर इमेज, टैग और शेड्यूल अपलोड इस संस्करण में शामिल नहीं हैं।</p>
+            try {
+                await window.BTubeAPI.saveVideo({
+                    title: title,
+                    name: title,
+                    type: 'short',
+                    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+                    thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600',
+                    channel: 'BTube',
+                    visibility: 'Public',
+                    duration: '0:30'
+                });
 
-    <button id="uploadBtn" class="red upload-btn" disabled>Upload Short</button>
-    <div class="bar" id="progress"><span></span></div>
-    <div class="status" id="status"></div>
-    <p><a href="shorts.html">Shorts देखें</a> · <a href="your-videos.html">मेरे वीडियो</a></p>
-  </main>
-
-  <!-- Firebase SDK: api-client.js से पहले लोड करना जरूरी है -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-  <script src="../assets/js/api-client.js"></script>
-
-  <script>
-  'use strict';
-
-  const fileInput = document.getElementById('videoFile');
-  const preview = document.getElementById('preview');
-  const titleInput = document.getElementById('title');
-  const descriptionInput = document.getElementById('description');
-  const uploadBtn = document.getElementById('uploadBtn');
-  const statusBox = document.getElementById('status');
-  const progress = document.getElementById('progress');
-  const videoInfo = document.getElementById('videoInfo');
-
-  let selectedFile = null;
-  let previewUrl = null;
-  let videoDuration = 0;
-  let loggedInUser = null;
-  let metadataReady = false;
-  let busy = false;
-
-  function showStatus(message, isError = false) {
-    statusBox.style.display = 'block';
-    statusBox.style.color = isError ? '#ff7777' : '#eeeeee';
-    statusBox.textContent = message;
-  }
-
-  function updateButton() {
-    uploadBtn.disabled = busy || !loggedInUser || !selectedFile ||
-      !metadataReady || !titleInput.value.trim();
-  }
-
-  if (!window.firebase || !firebase.auth || !firebase.storage) {
-    showStatus('Firebase SDK लोड नहीं हुआ। इंटरनेट कनेक्शन और SDK scripts जाँचें।', true);
-  } else {
-    firebase.auth().onAuthStateChanged(user => {
-      loggedInUser = user || null;
-      if (!user) {
-        showStatus('अपलोड करने से पहले लॉगिन करें।');
-      } else {
-        showStatus('लॉगिन सफल। वीडियो चुनकर अपलोड कर सकते हैं।');
-      }
-      updateButton();
-    });
-  }
-
-  fileInput.addEventListener('change', () => {
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('video/')) {
-      showStatus('कृपया सही वीडियो फ़ाइल चुनें।', true);
-      fileInput.value = '';
-      return;
-    }
-
-    // पुराने वीडियो का preview URL रिलीज करें।
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    previewUrl = URL.createObjectURL(file);
-
-    selectedFile = file;
-    metadataReady = false;
-    videoDuration = 0;
-
-    preview.src = previewUrl;
-    preview.style.display = 'block';
-    preview.load();
-
-    titleInput.value = file.name.replace(/\.[^.]+$/, '')
-      .replace(/[-_]/g, ' ').slice(0, 100);
-
-    videoInfo.textContent = 'वीडियो की अवधि जाँची जा रही है…';
-    showStatus('वीडियो चुना गया। अवधि की जाँच जारी है।');
-    updateButton();
-
-    preview.onloadedmetadata = () => {
-      videoDuration = preview.duration;
-      const isPortrait = preview.videoHeight >= preview.videoWidth;
-      const durationOK = Number.isFinite(videoDuration) && videoDuration > 0 &&
-        videoDuration <= 60;
-
-      videoInfo.textContent =
-        `अवधि: ${Math.round(videoDuration)} सेकंड · ` +
-        `आकार: ${preview.videoWidth} × ${preview.videoHeight}` +
-        (isPortrait ? ' · Portrait' : ' · Landscape');
-
-      if (!durationOK) {
-        metadataReady = false;
-        showStatus('यह वीडियो 60 सेकंड से अधिक है या इसकी अवधि पढ़ी नहीं जा सकी। छोटा वीडियो चुनें।', true);
-      } else if (!isPortrait) {
-        metadataReady = false;
-        showStatus('कृपया Portrait/Vertical वीडियो चुनें।', true);
-      } else {
-        metadataReady = true;
-        showStatus('वीडियो तैयार है। अब Upload Short दबाएँ।');
-      }
-      updateButton();
-    };
-
-    preview.onerror = () => {
-      metadataReady = false;
-      showStatus('इस वीडियो की जानकारी नहीं पढ़ी जा सकी। दूसरी वीडियो फ़ाइल आज़माएँ।', true);
-      updateButton();
-    };
-  });
-
-  titleInput.addEventListener('input', updateButton);
-
-  uploadBtn.addEventListener('click', async () => {
-    if (busy || !loggedInUser || !selectedFile || !metadataReady) return;
-
-    const title = titleInput.value.trim();
-    if (!title) {
-      showStatus('कृपया Short का टाइटल लिखें।', true);
-      return;
-    }
-
-    if (!window.BTubeAPI || typeof BTubeAPI.uploadVideo !== 'function') {
-      showStatus('BTube API उपलब्ध नहीं है। assets/js/api-client.js की जाँच करें।', true);
-      return;
-    }
-
-    busy = true;
-    updateButton();
-    progress.style.display = 'block';
-    showStatus('Firebase Storage पर वीडियो अपलोड हो रहा है। फ़ाइल के आकार और इंटरनेट की गति के अनुसार समय लग सकता है।');
-
-    try {
-      const result = await BTubeAPI.uploadVideo({
-        file: selectedFile,
-        title,
-        description: descriptionInput.value.trim(),
-        type: 'short',
-        thumb: '',
-        channel: loggedInUser.displayName || loggedInUser.email || 'BTube Creator',
-        visibility: document.getElementById('visibility').value
-      });
-
-      if (!result || !result.id) {
-        throw new Error('वीडियो अपलोड की पुष्टि नहीं मिली।');
-      }
-
-      showStatus('Short अपलोड हो गया! अब आपके वीडियो पेज पर भेज रहे हैं।');
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      previewUrl = null;
-
-      setTimeout(() => {
-        location.href = 'your-videos.html';
-      }, 1000);
-    } catch (error) {
-      console.error('Short upload error:', error);
-      let message = error && error.message ? error.message : 'अज्ञात त्रुटि';
-
-      if (/permission|unauthorized|unauthenticated/i.test(message)) {
-        message += '\nFirebase Authentication और Storage/Firestore Security Rules जाँचें।';
-      } else if (/billing|quota|storage bucket|bucket/i.test(message)) {
-        message += '\nFirebase Storage bucket और प्रोजेक्ट की Storage स्थिति जाँचें।';
-      }
-
-      showStatus('Short अपलोड नहीं हुआ:\n' + message, true);
-    } finally {
-      busy = false;
-      progress.style.display = 'none';
-      updateButton();
-    }
-  });
-
-  window.addEventListener('beforeunload', () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-  });
-  </script>
+                alert('Short uploaded successfully!');
+                window.location.href = 'your-videos.html?tab=shorts';
+            } catch(e) {
+                alert('Upload fail: ' + e.message);
+                btn.disabled = false;
+                btn.innerText = 'Upload Short';
+            }
+        }
+    </script>
 </body>
 </html>
