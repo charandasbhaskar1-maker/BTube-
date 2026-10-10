@@ -4,34 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Edit video - BTube</title>
+    <title>Edit video - BTube Studio</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:40px; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background:#0f0f0f; color:#fff; padding-bottom:50px; overflow-x:hidden; }
+
         .edit-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:100; }
         .header-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; }
+        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; }
         .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .btn-save { background:#e50914; color:#fff; border:none; padding:7px 18px; border-radius:18px; font-weight:700; cursor:pointer; }
-        .form-wrap { padding:16px; display:flex; flex-direction:column; gap:20px; }
-        .thumb-preview-box { width:100%; height:190px; border-radius:12px; overflow:hidden; background:#1c1c1c; }
+        .btn-save { background:#3ea6ff; color:#0f0f0f; border:none; padding:7px 18px; border-radius:18px; font-weight:800; font-size:13px; cursor:pointer; }
+        .btn-save:disabled { opacity:0.5; cursor:not-allowed; }
+
+        .form-wrap { padding:16px; display:flex; flex-direction:column; gap:18px; max-width:600px; margin:0 auto; }
+
+        .thumb-preview-box { width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#1c1c1c; position:relative; border:1px solid #282828; }
         .thumb-preview-box img { width:100%; height:100%; object-fit:cover; }
+        .btn-change-thumb { position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.8); border:1px solid #444; color:#fff; border-radius:18px; padding:6px 14px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; }
+
         .input-group { display:flex; flex-direction:column; gap:6px; }
-        .input-group label { font-size:12px; color:#aaa; font-weight:600; }
-        .input-group input, .input-group textarea, .input-group select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:14px; outline:none; }
+        .input-group label { font-size:12px; color:#aaa; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
+        .input-group input, .input-group textarea, .input-group select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:14px; outline:none; font-family:inherit; }
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { border-color:#3ea6ff; }
+
+        .danger-zone { margin-top:16px; padding-top:20px; border-top:1px solid #222; display:flex; flex-direction:column; gap:10px; }
+        .btn-delete-vid { background:rgba(255, 78, 78, 0.1); border:1px solid rgba(255, 78, 78, 0.4); color:#ff4e4e; padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
     </style>
+
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
+
     <header class="edit-header">
         <div class="header-left">
             <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             </button>
-            <span style="font-size:17px; font-weight:700;">Edit Cloud Video</span>
+            <span style="font-size:17px; font-weight:700;">Edit video</span>
         </div>
         <button class="btn-save" id="saveBtn" onclick="saveToCloud()">Save</button>
     </header>
@@ -39,25 +52,44 @@
     <div class="form-wrap">
         <div class="thumb-preview-box">
             <img id="editThumbImg" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800">
+            <button class="btn-change-thumb" onclick="promptThumbnailUrl()">Change thumbnail</button>
         </div>
 
         <div class="input-group">
-            <label>Title</label>
-            <input type="text" id="inputTitle" placeholder="Loading...">
+            <label>Title (required)</label>
+            <input type="text" id="inputTitle" placeholder="Video title...">
         </div>
 
         <div class="input-group">
             <label>Description</label>
-            <textarea id="inputDesc" rows="4" placeholder="Add description..."></textarea>
+            <textarea id="inputDesc" rows="4" placeholder="Tell viewers about your video..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Category</label>
+            <select id="selectCategory">
+                <option value="General">General</option>
+                <option value="Music">Music</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Vlog">Vlog</option>
+                <option value="Education">Education</option>
+            </select>
         </div>
 
         <div class="input-group">
             <label>Visibility</label>
             <select id="selectVis">
-                <option value="Public">Public (Anyone can view)</option>
-                <option value="Unlisted">Unlisted (Anyone with link)</option>
-                <option value="Private">Private (Only you)</option>
+                <option value="Public">Public (Anyone can search and view)</option>
+                <option value="Unlisted">Unlisted (Anyone with link can view)</option>
+                <option value="Private">Private (Only you can view)</option>
             </select>
+        </div>
+
+        <div class="danger-zone">
+            <button class="btn-delete-vid" onclick="deleteVideoPrompt()">
+                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Delete video from BTube</span>
+            </button>
         </div>
     </div>
 
@@ -65,21 +97,39 @@
         const docId = new URLSearchParams(window.location.search).get('id');
 
         window.addEventListener('DOMContentLoaded', async () => {
-            if (!docId) return;
-            const data = await window.BTubeAPI.getVideoById(docId);
-            if (data) {
-                document.getElementById('inputTitle').value = data.title || '';
-                document.getElementById('inputDesc').value = data.description || '';
-                document.getElementById('selectVis').value = data.visibility || 'Public';
-                if (data.thumb) document.getElementById('editThumbImg').src = data.thumb;
+            if (!docId) {
+                alert("No video selected for editing.");
+                window.history.back();
+                return;
+            }
+
+            if (window.BTubeAPI && typeof window.BTubeAPI.getVideoById === 'function') {
+                const data = await window.BTubeAPI.getVideoById(docId);
+                if (data) {
+                    document.getElementById('inputTitle').value = data.title || '';
+                    document.getElementById('inputDesc').value = data.description || '';
+                    document.getElementById('selectVis').value = data.visibility || 'Public';
+                    document.getElementById('selectCategory').value = data.category || 'General';
+                    if (data.thumb) document.getElementById('editThumbImg').src = data.thumb;
+                }
             }
         });
+
+        function promptThumbnailUrl() {
+            const current = document.getElementById('editThumbImg').src;
+            const newUrl = prompt("Enter new thumbnail image URL:", current);
+            if (newUrl && newUrl.trim()) {
+                document.getElementById('editThumbImg').src = newUrl.trim();
+            }
+        }
 
         async function saveToCloud() {
             const btn = document.getElementById('saveBtn');
             const title = document.getElementById('inputTitle').value.trim();
             const desc = document.getElementById('inputDesc').value.trim();
             const vis = document.getElementById('selectVis').value;
+            const category = document.getElementById('selectCategory').value;
+            const thumb = document.getElementById('editThumbImg').src;
 
             if (!title) {
                 alert('Title cannot be empty');
@@ -89,14 +139,36 @@
             btn.innerText = 'Saving...';
             btn.disabled = true;
 
-            await window.BTubeAPI.updateVideo(docId, {
-                title: title,
-                description: desc,
-                visibility: vis
-            });
+            try {
+                await window.BTubeAPI.updateVideo(docId, {
+                    title: title,
+                    description: desc,
+                    visibility: vis,
+                    category: category,
+                    thumb: thumb
+                });
 
-            alert('Updated successfully in Firebase Cloud! ✓');
-            window.location.href = 'your-videos.html';
+                alert('Video details updated successfully! ✓');
+                window.location.href = 'your-videos.html';
+            } catch (err) {
+                alert("Update failed: " + err.message);
+                btn.innerText = 'Save';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteVideoPrompt() {
+            if (confirm("Are you sure you want to permanently delete this video? This action cannot be undone.")) {
+                try {
+                    if (window.BTubeAPI && typeof window.BTubeAPI.deleteVideo === 'function') {
+                        await window.BTubeAPI.deleteVideo(docId);
+                    }
+                    alert("Video deleted successfully.");
+                    window.location.href = 'your-videos.html';
+                } catch(e) {
+                    alert("Delete failed: " + e.message);
+                }
+            }
         }
     </script>
 </body>
