@@ -6,166 +6,228 @@
     <meta name="theme-color" content="#0f0f0f">
     <title>Watch - BTube</title>
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; }
         
-        .video-box { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:100; }
-        video { width:100%; height:100%; object-fit:contain; }
+        /* Video Container */
+        .player-wrapper { width:100%; aspect-ratio:16/9; background:#000; position:sticky; top:0; z-index:500; }
+        video { width:100%; height:100%; object-fit:contain; background:#000; }
 
-        .details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
-        .title { font-size:16px; font-weight:700; line-height:1.35; }
-        .meta { font-size:12px; color:#aaa; display:flex; gap:8px; }
+        /* Tap to Play Overlay for Mobile */
+        .play-trigger-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:10; cursor:pointer; }
+        .play-circle-btn { width:60px; height:60px; border-radius:50%; background:rgba(229,9,20,0.95); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 15px rgba(0,0,0,0.6); }
+        .play-circle-btn svg { width:28px; height:28px; fill:#fff; margin-left:3px; }
 
-        .ch-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; }
-        .ch-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
-        .avatar { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
-        .sub-btn { background:#fff; color:#000; border:none; padding:8px 16px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
+        .watch-details { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+        .video-headline { font-size:16px; font-weight:700; line-height:1.35; }
+        .video-meta-row { display:flex; align-items:center; gap:8px; font-size:12px; color:#aaa; }
 
-        .actions { display:flex; gap:10px; overflow-x:auto; padding:4px 0; }
-        .pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
-        .pill svg { width:16px; height:16px; fill:#fff; }
+        .channel-strip { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-top:1px solid #222; border-bottom:1px solid #222; margin-top:4px; }
+        .channel-info { display:flex; align-items:center; gap:12px; text-decoration:none; color:#fff; }
+        .avatar-c { width:38px; height:38px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
+        .btn-sub { background:#fff; color:#000; border:none; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:800; cursor:pointer; }
 
-        /* Comments Section */
-        .comments-box { margin-top:10px; background:#181818; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
-        .comment-inp-row { display:flex; gap:8px; }
-        .comment-inp-row input { flex:1; background:#0f0f0f; border:1px solid #333; border-radius:18px; padding:8px 14px; color:#fff; font-size:13px; outline:none; }
-        .comment-inp-row button { background:#e50914; color:#fff; border:none; padding:8px 14px; border-radius:18px; font-weight:700; font-size:12px; cursor:pointer; }
-        .comment-item { display:flex; gap:10px; font-size:12px; padding:6px 0; border-bottom:1px solid #222; }
+        .action-tray { display:flex; gap:10px; overflow-x:auto; padding:6px 0; scrollbar-width:none; }
+        .action-tray::-webkit-scrollbar { display:none; }
+        .act-pill { background:#222; border:none; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:6px; cursor:pointer; flex-shrink:0; }
+        .act-pill svg { width:16px; height:16px; fill:#fff; }
+
+        /* Comment Section */
+        .comments-section { margin-top:10px; background:#181818; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:10px; }
+        .comment-input-row { display:flex; gap:8px; }
+        .comment-input-row input { flex:1; background:#0f0f0f; border:1px solid #333; border-radius:18px; padding:8px 14px; color:#fff; font-size:13px; outline:none; }
+        .comment-input-row button { background:#e50914; color:#fff; border:none; padding:8px 14px; border-radius:18px; font-weight:700; font-size:12px; cursor:pointer; }
+        .comment-entry { display:flex; gap:8px; font-size:12px; padding:6px 0; border-bottom:1px solid #222; }
     </style>
 
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
-    <div class="video-box">
-        <video id="player" controls playsinline autoplay preload="auto">
-            Your browser does not support video.
+    <!-- 1. Video Player Area -->
+    <div class="player-wrapper">
+        <video id="mainVideoPlayer" controls playsinline preload="auto">
+            Your browser does not support HTML5 video.
         </video>
+        <!-- Overlay Button for Guaranteed One-Tap Playback on Mobile -->
+        <div class="play-trigger-overlay" id="playOverlay" onclick="forcePlayStream()">
+            <div class="play-circle-btn">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+        </div>
     </div>
 
-    <div class="details">
-        <h1 class="title" id="vTitle">Loading Real Video...</h1>
-        <div class="meta">
-            <span id="vViews">0 views</span> • <span id="vAge">Cloud Realtime</span>
+    <!-- 2. Video Info & Actions -->
+    <div class="watch-details">
+        <h1 class="video-headline" id="watchTitle">Loading Video...</h1>
+        <div class="video-meta-row">
+            <span id="watchViews">0 views</span> • <span>Cloud Stream</span>
         </div>
 
-        <div class="ch-row">
-            <a href="channel.html" class="ch-info">
-                <div class="avatar" id="chAvatar">CB</div>
+        <div class="channel-strip">
+            <a href="channel.html" class="channel-info">
+                <div class="avatar-c" id="chAvatar">CB</div>
                 <div>
-                    <div style="font-weight:700; font-size:14px;" id="chName">Charandas Bhaskar</div>
-                    <div style="font-size:11px; color:#aaa;">Official Creator</div>
+                    <div style="font-size:14px; font-weight:700;" id="channelName">Charandas Bhaskar</div>
+                    <div style="font-size:11px; color:#aaa;">Creator</div>
                 </div>
             </a>
-            <button class="sub-btn" id="subBtn" onclick="toggleSub()">Subscribe</button>
+            <button class="btn-sub" id="btnSubscribe" onclick="toggleSub()">Subscribe</button>
         </div>
 
-        <div class="actions">
-            <button class="pill" id="likeBtn" onclick="toggleLike()">
+        <div class="action-tray">
+            <button class="act-pill" id="likeBtn" onclick="toggleLike()">
                 <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
                 <span id="likeCount">Like</span>
             </button>
-            <button class="pill">
+            <button class="act-pill" onclick="shareVideo()">
                 <svg viewBox="0 0 24 24"><path d="M15 4v7H5.17l-.59.59-.58.58V4h11m1-2H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z"/></svg>
                 <span>Share</span>
             </button>
         </div>
 
-        <!-- Real Comments -->
-        <div class="comments-box">
+        <!-- 3. Realtime Cloud Comments -->
+        <div class="comments-section">
             <div style="font-weight:700; font-size:13px;">Comments</div>
-            <div class="comment-inp-row">
-                <input type="text" id="commentText" placeholder="Add a public comment...">
-                <button onclick="postComment()">Post</button>
+            <div class="comment-input-row">
+                <input type="text" id="commentInput" placeholder="Add a comment...">
+                <button onclick="submitComment()">Post</button>
             </div>
             <div id="commentsList">
-                <div style="font-size:12px; color:#777;">Be the first to comment!</div>
+                <div style="font-size:12px; color:#666;">Koi comment nahi hai. Pehla comment karein!</div>
             </div>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBj406IRJ1VtK84rT2HTkxQWAbQO7bYD2s",
-            authDomain: "btube-5fae0.firebaseapp.com",
-            projectId: "btube-5fae0",
-            storageBucket: "btube-5fae0.firebasestorage.app",
-            messagingSenderId: "1009386330534",
-            appId: "1:1009386330534:web:357a0ad258678a54185767"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const FALLBACK_STREAM = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+        const player = document.getElementById('mainVideoPlayer');
+        const overlay = document.getElementById('playOverlay');
 
-        const params = new URLSearchParams(window.location.search);
-        const docId = params.get('id');
+        let currentDocId = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
-            if (!docId) return;
+            const params = new URLSearchParams(window.location.search);
+            currentDocId = params.get('id');
+            const paramUrl = params.get('videoUrl');
+            const paramTitle = params.get('title');
 
-            const doc = await db.collection('videos').doc(docId).get();
-            if (doc.exists) {
-                const data = doc.data();
-                document.getElementById('vTitle').innerText = data.title;
-                document.getElementById('chName').innerText = data.channel || 'Charandas Bhaskar';
-                document.getElementById('vViews').innerText = `${data.views || 0} views`;
+            let finalStreamUrl = null;
 
-                const player = document.getElementById('player');
-                player.src = data.videoUrl;
-                player.load();
-                player.play().catch(() => {
-                    player.muted = true;
-                    player.play();
-                });
+            // 1. Agar docId hai toh Firestore se asli details load karein
+            if (currentDocId && window.BTubeAPI) {
+                try {
+                    const videoDoc = await window.BTubeAPI.getVideoById(currentDocId);
+                    if (videoDoc) {
+                        document.getElementById('watchTitle').innerText = videoDoc.title || 'Untitled Video';
+                        document.getElementById('channelName').innerText = videoDoc.channel || 'Charandas Bhaskar';
+                        document.getElementById('chAvatar').innerText = (videoDoc.channel || 'CB').substring(0,2).toUpperCase();
+                        document.getElementById('watchViews').innerText = `${videoDoc.views || 0} views`;
+                        if (videoDoc.videoUrl) finalStreamUrl = videoDoc.videoUrl;
 
-                // Increment real views on cloud
-                db.collection('videos').doc(docId).update({
-                    views: firebase.firestore.FieldValue.increment(1)
-                });
-
-                loadComments();
+                        // Increment view on Firestore
+                        window.BTubeAPI.recordView(currentDocId);
+                        loadComments();
+                    }
+                } catch(e) {
+                    console.error('Firestore doc load error:', e);
+                }
             }
+
+            // 2. Fallbacks
+            if (!finalStreamUrl && paramUrl) {
+                finalStreamUrl = decodeURIComponent(paramUrl);
+            }
+            if (paramTitle && document.getElementById('watchTitle').innerText === 'Loading Video...') {
+                document.getElementById('watchTitle').innerText = decodeURIComponent(paramTitle);
+            }
+            if (!finalStreamUrl) {
+                finalStreamUrl = FALLBACK_STREAM;
+            }
+
+            // 3. Assign Video Source
+            player.src = finalStreamUrl;
+            player.load();
+
+            // Mobile Autoplay Attempt (Muted allow karta hai bina freeze ke)
+            player.play().then(() => {
+                overlay.style.display = 'none';
+            }).catch(() => {
+                // Autoplay block hone par user tap ke liye overlay button dikhayega
+                overlay.style.display = 'flex';
+            });
         });
 
+        // 1-Tap Force Play
+        function forcePlayStream() {
+            overlay.style.display = 'none';
+            player.muted = false;
+            player.play().catch(e => {
+                console.log('Play retry:', e);
+                player.play();
+            });
+        }
+
+        player.onplay = () => { overlay.style.display = 'none'; };
+        player.onpause = () => { overlay.style.display = 'flex'; };
+
+        // Comments Handling
         async function loadComments() {
-            const snap = await db.collection('videos').doc(docId).collection('comments').orderBy('createdAt', 'desc').get();
+            if (!currentDocId || !db) return;
+            const snap = await db.collection('videos').doc(currentDocId).collection('comments').orderBy('createdAt', 'desc').get();
             const list = document.getElementById('commentsList');
             if (snap.empty) return;
             list.innerHTML = '';
-            snap.forEach(c => {
-                const item = c.data();
+            snap.forEach(doc => {
+                const c = doc.data();
                 const div = document.createElement('div');
-                div.className = 'comment-item';
-                div.innerHTML = `<strong>${item.user || 'User'}:</strong> <span>${item.text}</span>`;
+                div.className = 'comment-entry';
+                div.innerHTML = `<strong>${c.user || 'User'}:</strong> <span>${c.text}</span>`;
                 list.appendChild(div);
             });
         }
 
-        async function postComment() {
-            const input = document.getElementById('commentText');
+        async function submitComment() {
+            const input = document.getElementById('commentInput');
             const txt = input.value.trim();
-            if (!txt) return;
-            await db.collection('videos').doc(docId).collection('comments').add({
-                user: 'Charandas Bhaskar',
+            if (!txt || !currentDocId || !db) return;
+
+            await db.collection('videos').doc(currentDocId).collection('comments').add({
+                user: localStorage.getItem('btube_channel_name') || 'Charandas Bhaskar',
                 text: txt,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
+
             input.value = '';
             loadComments();
         }
 
         function toggleSub() {
-            const b = document.getElementById('subBtn');
-            b.innerText = b.innerText === 'Subscribe' ? 'Subscribed' : 'Subscribe';
-            b.style.background = b.innerText === 'Subscribed' ? '#333' : '#fff';
-            b.style.color = b.innerText === 'Subscribed' ? '#fff' : '#000';
+            const btn = document.getElementById('btnSubscribe');
+            btn.innerText = (btn.innerText === 'Subscribe') ? 'Subscribed' : 'Subscribe';
+            btn.style.background = (btn.innerText === 'Subscribed') ? '#333' : '#fff';
+            btn.style.color = (btn.innerText === 'Subscribed') ? '#fff' : '#000';
         }
 
         function toggleLike() {
             const btn = document.getElementById('likeBtn');
             const svg = btn.querySelector('svg');
-            svg.style.fill = svg.style.fill === 'rgb(229, 9, 20)' ? '#fff' : '#e50914';
+            svg.style.fill = (svg.style.fill === 'rgb(229, 9, 20)') ? '#fff' : '#e50914';
+        }
+
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: document.getElementById('watchTitle').innerText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
         }
     </script>
 </body>
