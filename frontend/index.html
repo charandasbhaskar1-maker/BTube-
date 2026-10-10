@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>BTube</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>BTube - Bharat Tube</title>
+
+    <link rel="manifest" href="/manifest.json">
+
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
         body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
@@ -14,11 +19,18 @@
         .logo-box { display:flex; align-items:center; gap:6px; text-decoration:none; color:#fff; font-size:19px; font-weight:800; letter-spacing:-0.5px; }
         .logo-icon { width:28px; height:20px; background:#e50914; border-radius:6px; display:flex; align-items:center; justify-content:center; }
         .logo-icon svg { width:14px; height:14px; fill:#fff; }
+        
         .hdr-actions { display:flex; align-items:center; gap:16px; }
         .btn-hdr { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
         .btn-hdr svg { width:22px; height:22px; fill:#fff; }
         .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
         .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
+
+        /* Inline Search Bar Drawer */
+        .search-drawer { display:none; padding:8px 16px; background:#181818; border-bottom:1px solid #282828; }
+        .search-drawer.active { display:flex; gap:8px; }
+        .search-input { flex:1; background:#0f0f0f; border:1px solid #333; color:#fff; padding:8px 14px; border-radius:20px; font-size:14px; outline:none; }
+        .btn-search-close { background:none; border:none; color:#aaa; font-size:14px; cursor:pointer; }
 
         /* Refresh Indicator */
         .refresh-spinner-bar { display:none; justify-content:center; align-items:center; padding:10px 0; background:#0f0f0f; }
@@ -66,7 +78,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="../assets/js/api-client.js"></script>
+    <script src="/assets/js/api-client.js"></script>
 </head>
 <body>
 
@@ -79,20 +91,26 @@
             <span>BTube</span>
         </a>
         <div class="hdr-actions">
-            <button class="btn-hdr" onclick="alert('Searching screen...')">
-                <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+            <button class="btn-hdr" onclick="toggleSearch()">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
-            <a href="../pages/notifications.html" class="btn-hdr">
+            <a href="pages/notifications.html" class="btn-hdr">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
             </a>
             <button class="btn-hdr" onclick="refreshFeed(true)">
                 <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
             </button>
-            <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='../pages/profile.html'">
+            <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='pages/profile.html'">
                 BT
             </div>
         </div>
     </header>
+
+    <!-- Search Bar Drawer -->
+    <div class="search-drawer" id="searchDrawer">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search BTube videos & channels..." oninput="handleSearch(this.value)">
+        <button class="btn-search-close" onclick="toggleSearch()">Cancel</button>
+    </div>
 
     <!-- Refresh Spinner -->
     <div class="refresh-spinner-bar" id="refreshSpinner">
@@ -112,21 +130,47 @@
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-btn active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
-        <a href="../pages/shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
-        <a href="../pages/upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
-        <a href="../pages/subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="../pages/profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;" id="bottomNavAvatar">BT</div><span>You</span></a>
+        <a href="pages/shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
+        <a href="pages/upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
+        <a href="pages/subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
+        <a href="pages/profile.html" class="nav-btn"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;" id="bottomNavAvatar">BT</div><span>You</span></a>
     </nav>
 
     <script>
         let currentFilter = 'all';
         let allCloudVideos = [];
+        let searchQuery = '';
 
         window.addEventListener('DOMContentLoaded', async () => {
             syncHeaderAvatar();
             await refreshFeed(false);
             setupPullToRefresh();
         });
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(()=>{});
+            });
+        }
+
+        function toggleSearch() {
+            const drawer = document.getElementById('searchDrawer');
+            const input = document.getElementById('searchInput');
+            drawer.classList.toggle('active');
+            if (drawer.classList.contains('active')) {
+                input.focus();
+            } else {
+                input.value = '';
+                searchQuery = '';
+                renderFeedList();
+            }
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.toLowerCase().trim();
+            renderFeedList();
+        }
 
         function syncHeaderAvatar() {
             const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
@@ -150,7 +194,7 @@
             const spinner = document.getElementById('refreshSpinner');
             if (showSpinner) {
                 spinner.style.display = 'flex';
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 300));
             }
 
             allCloudVideos = [];
@@ -158,7 +202,7 @@
                 try {
                     allCloudVideos = await window.BTubeAPI.getFeed('all');
                 } catch(e) {
-                    console.error("Firestore feed load error:", e);
+                    console.error("Feed error:", e);
                 }
             }
 
@@ -178,36 +222,62 @@
             feedContainer.innerHTML = '';
 
             let filtered = allCloudVideos;
+
+            // 1. Filter by Chip
             if (currentFilter !== 'all') {
-                filtered = allCloudVideos.filter(v => (v.type || 'video').toLowerCase() === currentFilter);
+                filtered = filtered.filter(v => {
+                    const isShort = (v.type === 'short' || v.is_shorts === true);
+                    return currentFilter === 'short' ? isShort : !isShort;
+                });
+            }
+
+            // 2. Filter by Search Query
+            if (searchQuery) {
+                filtered = filtered.filter(v => {
+                    const title = (v.title || '').toLowerCase();
+                    const channel = (v.channel || v.channel_name || '').toLowerCase();
+                    return title.includes(searchQuery) || channel.includes(searchQuery);
+                });
             }
 
             if (!filtered || filtered.length === 0) {
                 feedContainer.innerHTML = `
                     <div class="empty-feed">
                         <svg viewBox="0 0 24 24"><path d="M10 18v-6l5 3-5 3zm7-15H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7V5h10v14z"/></svg>
-                        <h3>No videos uploaded yet</h3>
-                        <p>Be the first creator to upload a video or Short to BTube.</p>
-                        <a href="../pages/upload.html" class="btn-feed-upload">+ Upload first video</a>
+                        <h3>No videos found</h3>
+                        <p>${searchQuery ? 'No results matched your search.' : 'Be the first creator to upload a video or Short.'}</p>
+                        <a href="pages/upload.html" class="btn-feed-upload">+ Upload first video</a>
                     </div>
                 `;
                 return;
             }
 
             filtered.forEach(v => {
+                const isShort = (v.type === 'short' || v.is_shorts === true);
                 const card = document.createElement('article');
                 card.className = 'video-card';
+                
+                const vidId = v.id || v.video_id;
+                const videoStreamUrl = v.videoUrl || v.video_url || '';
+                
                 card.onclick = () => {
-                    window.location.href = `../pages/watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                    if (isShort) {
+                        window.location.href = `pages/shorts.html?id=${vidId}`;
+                    } else {
+                        window.location.href = `pages/watch.html?id=${vidId}&videoUrl=${encodeURIComponent(videoStreamUrl)}`;
+                    }
                 };
 
                 const avatarSrc = v.channelAvatar || v.avatar || '';
-                const initial = (v.channel || 'BT').substring(0, 2).toUpperCase();
+                const channelName = v.channel || v.channel_name || 'BTube Creator';
+                const initial = channelName.substring(0, 2).toUpperCase();
+                const thumbSrc = v.thumb || v.thumbnail_url || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800';
+                const viewsCount = v.views || v.views_count || 0;
 
                 card.innerHTML = `
                     <div class="thumb-wrapper">
-                        <img src="${v.thumb}">
-                        <span class="badge-time">${v.duration || '03:45'}</span>
+                        <img src="${thumbSrc}" loading="lazy">
+                        <span class="badge-time">${isShort ? 'SHORT' : (v.duration || '03:45')}</span>
                     </div>
                     <div class="details-wrapper">
                         <div class="card-main-info">
@@ -216,10 +286,10 @@
                             </div>
                             <div class="meta-col">
                                 <h3 class="video-title">${v.title}</h3>
-                                <div class="video-sub-meta">${v.channel} • ${v.views || 0} views</div>
+                                <div class="video-sub-meta">${channelName} • ${viewsCount} views</div>
                             </div>
                         </div>
-                        <button class="btn-card-dots" onclick="event.stopPropagation(); alert('Options for: ${v.title}')">
+                        <button class="btn-card-dots" onclick="event.stopPropagation(); alert('Options: Share, Save, Not interested')">
                             <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                         </button>
                     </div>
