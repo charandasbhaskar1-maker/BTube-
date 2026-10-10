@@ -4,154 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>Upload - BTube</title>
+    <title>Create - BTube</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:50px; }
-        .hdr { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #222; position:sticky; top:0; background:#0f0f0f; z-index:10; }
-        .hdr-left { display:flex; align-items:center; gap:16px; }
-        .btn-back { background:none; border:none; color:#fff; cursor:pointer; display:flex; }
-        .btn-back svg { width:22px; height:22px; fill:#fff; }
-        .btn-pub { background:#e50914; color:#fff; border:none; padding:8px 22px; border-radius:20px; font-weight:700; cursor:pointer; font-size:13px; }
-        .btn-pub:disabled { opacity:0.4; }
+        body { background:rgba(0,0,0,0.7); color:#fff; height:100vh; display:flex; flex-direction:column; justify-content:flex-end; }
 
-        .container { padding:16px; max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+        .sheet-container { background:#1e1e1e; border-top-left-radius:18px; border-top-right-radius:18px; padding:16px 20px 30px; display:flex; flex-direction:column; gap:8px; animation:slideUp 0.25s ease-out; }
+        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
 
-        .type-selector { display:flex; background:#1c1c1c; border-radius:10px; padding:4px; gap:6px; }
-        .type-btn { flex:1; background:none; border:none; color:#888; padding:10px; font-weight:700; font-size:13px; border-radius:8px; cursor:pointer; }
-        .type-btn.active { background:#e50914; color:#fff; }
+        .sheet-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:12px; border-bottom:1px solid #2e2e2e; margin-bottom:6px; }
+        .sheet-title { font-size:17px; font-weight:800; }
+        .close-btn { background:none; border:none; color:#aaa; cursor:pointer; }
+        .close-btn svg { width:22px; height:22px; fill:#aaa; }
 
-        .dropzone { border:2px dashed #333; border-radius:12px; padding:26px 16px; text-align:center; background:#141414; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:8px; }
-        .dropzone svg { width:40px; height:40px; fill:#e50914; }
+        .menu-action-item { display:flex; align-items:center; gap:16px; padding:14px 8px; text-decoration:none; color:#fff; border-radius:10px; transition:background 0.2s; }
+        .menu-action-item:active { background:#2a2a2a; }
 
-        .inp-grp { display:flex; flex-direction:column; gap:6px; }
-        .inp-grp label { font-size:12px; color:#aaa; font-weight:600; }
-        .inp-grp input, .inp-grp textarea, .inp-grp select { background:#181818; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; }
-        .inp-grp input:focus, .inp-grp textarea:focus { border-color:#e50914; }
+        .icon-circle { width:44px; height:44px; border-radius:50%; background:#2a2a2a; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .icon-circle svg { width:22px; height:22px; fill:#fff; }
+
+        .action-details { display:flex; flex-direction:column; gap:2px; }
+        .action-name { font-size:15px; font-weight:700; }
+        .action-sub { font-size:11px; color:#888; }
     </style>
-
-    <!-- Firebase SDK Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
-    <header class="hdr">
-        <div class="hdr-left">
-            <button class="btn-back" onclick="window.history.back()">
-                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+
+    <div class="sheet-container">
+        <div class="sheet-header">
+            <span class="sheet-title">Create</span>
+            <button class="close-btn" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
-            <span style="font-size:17px; font-weight:700;">Upload Content</span>
-        </div>
-        <button class="btn-pub" id="btnPublish" onclick="startUpload()">Upload</button>
-    </header>
-
-    <div class="container">
-        <div class="type-selector">
-            <button class="type-btn active" id="btnVideo" onclick="setType('video')">Long Video</button>
-            <button class="type-btn" id="btnShort" onclick="setType('short')">Short (9:16)</button>
         </div>
 
-        <div class="dropzone" onclick="document.getElementById('videoFile').click()">
-            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-            <span style="font-weight:700;" id="fileLabel">Select Video from Phone</span>
-            <span style="font-size:11px; color:#777;">Supports MP4 / WebM</span>
-            <input type="file" id="videoFile" accept="video/*" style="display:none;" onchange="onFileChosen(event)">
-        </div>
+        <!-- 1. Create a Short -->
+        <a href="upload-short.html" class="menu-action-item">
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            </div>
+            <div class="action-details">
+                <span class="action-name">Create a Short</span>
+                <span class="action-sub">Upload 9:16 vertical short video</span>
+            </div>
+        </a>
 
-        <div class="inp-grp">
-            <label>Title</label>
-            <input type="text" id="titleInput" placeholder="e.g. BTube Platform Features & Policy Guide">
-        </div>
+        <!-- 2. Upload a Video -->
+        <a href="upload-video.html" class="menu-action-item">
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+            </div>
+            <div class="action-details">
+                <span class="action-name">Upload a video</span>
+                <span class="action-sub">Upload regular long video (16:9)</span>
+            </div>
+        </a>
 
-        <div class="inp-grp">
-            <label>Description</label>
-            <textarea id="descInput" rows="3" placeholder="Tell viewers about this video..."></textarea>
-        </div>
+        <!-- 3. Go Live -->
+        <a href="go-live.html" class="menu-action-item">
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            </div>
+            <div class="action-details">
+                <span class="action-name">Go live</span>
+                <span class="action-sub">Broadcast live to your viewers</span>
+            </div>
+        </a>
 
-        <div class="inp-grp">
-            <label>Category</label>
-            <select id="catInput">
-                <option value="Features">BTube Features</option>
-                <option value="Policy">Policy & Guidelines</option>
-                <option value="Chhattisgarhi">Chhattisgarhi</option>
-                <option value="Music">Music</option>
-                <option value="Vlogs">Vlogs</option>
-            </select>
-        </div>
-
-        <div class="inp-grp">
-            <label>Visibility</label>
-            <select id="visInput">
-                <option value="Public">Public</option>
-                <option value="Unlisted">Unlisted</option>
-                <option value="Private">Private</option>
-            </select>
-        </div>
+        <!-- 4. Create a Post -->
+        <a href="create-post.html" class="menu-action-item">
+            <div class="icon-circle">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            </div>
+            <div class="action-details">
+                <span class="action-name">Create a post</span>
+                <span class="action-sub">Share text, image or polls</span>
+            </div>
+        </a>
     </div>
 
-    <script>
-        let selectedType = 'video';
-
-        function setType(t) {
-            selectedType = t;
-            document.getElementById('btnVideo').classList.toggle('active', t === 'video');
-            document.getElementById('btnShort').classList.toggle('active', t === 'short');
-            const tf = document.getElementById('titleInput');
-            if (t === 'short' && !tf.value.toLowerCase().includes('#shorts')) {
-                tf.value = (tf.value.trim() + ' #shorts').trim();
-            }
-        }
-
-        function onFileChosen(e) {
-            const f = e.target.files[0];
-            if (f) {
-                document.getElementById('fileLabel').innerText = f.name;
-                const tf = document.getElementById('titleInput');
-                if (!tf.value) {
-                    const clean = f.name.replace(/\.[^/.]+$/, "");
-                    tf.value = (selectedType === 'short') ? `${clean} #shorts` : clean;
-                }
-            }
-        }
-
-        async function startUpload() {
-            const titleField = document.getElementById('titleInput').value.trim();
-            const finalTitle = titleField || 'BTube Official Video';
-
-            const btn = document.getElementById('btnPublish');
-            btn.disabled = true;
-            btn.innerText = 'Publishing...';
-
-            const isShort = (selectedType === 'short') || finalTitle.toLowerCase().includes('#short');
-
-            const streamUrl = isShort 
-                ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-                : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-
-            try {
-                await window.BTubeAPI.saveVideo({
-                    title: finalTitle,
-                    name: finalTitle,
-                    description: document.getElementById('descInput').value.trim(),
-                    category: document.getElementById('catInput').value,
-                    visibility: document.getElementById('visInput').value,
-                    type: isShort ? 'short' : 'video',
-                    videoUrl: streamUrl,
-                    channel: 'BTube',
-                    thumb: isShort 
-                        ? 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600'
-                        : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
-                });
-
-                alert('Video uploaded successfully!');
-                window.location.href = isShort ? 'your-videos.html?tab=shorts' : 'your-videos.html';
-            } catch(e) {
-                alert('Upload failed: ' + e.message);
-                btn.disabled = false;
-                btn.innerText = 'Upload';
-            }
-        }
-    </script>
 </body>
 </html>
