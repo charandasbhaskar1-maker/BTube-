@@ -17,7 +17,7 @@
         .close-btn { background:none; border:none; color:#aaa; cursor:pointer; }
         .close-btn svg { width:22px; height:22px; fill:#aaa; }
 
-        .menu-action-item { display:flex; align-items:center; gap:16px; padding:14px 8px; text-decoration:none; color:#fff; border-radius:10px; transition:background 0.2s; }
+        .menu-action-item { display:flex; align-items:center; gap:16px; padding:14px 8px; text-decoration:none; color:#fff; border-radius:10px; cursor:pointer; transition:background 0.2s; }
         .menu-action-item:active { background:#2a2a2a; }
 
         .icon-circle { width:44px; height:44px; border-radius:50%; background:#2a2a2a; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -27,6 +27,12 @@
         .action-name { font-size:15px; font-weight:700; }
         .action-sub { font-size:11px; color:#888; }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
@@ -39,7 +45,7 @@
         </div>
 
         <!-- 1. Create a Short -->
-        <a href="upload-short.html" class="menu-action-item">
+        <div class="menu-action-item" onclick="openProtected('upload-short.html')">
             <div class="icon-circle">
                 <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
             </div>
@@ -47,10 +53,10 @@
                 <span class="action-name">Create a Short</span>
                 <span class="action-sub">Upload 9:16 vertical short video</span>
             </div>
-        </a>
+        </div>
 
         <!-- 2. Upload a Video -->
-        <a href="upload-video.html" class="menu-action-item">
+        <div class="menu-action-item" onclick="openProtected('upload-video.html')">
             <div class="icon-circle">
                 <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
             </div>
@@ -58,10 +64,10 @@
                 <span class="action-name">Upload a video</span>
                 <span class="action-sub">Upload regular long video (16:9)</span>
             </div>
-        </a>
+        </div>
 
         <!-- 3. Go Live -->
-        <a href="go-live.html" class="menu-action-item">
+        <div class="menu-action-item" onclick="openProtected('go-live.html')">
             <div class="icon-circle">
                 <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
             </div>
@@ -69,10 +75,10 @@
                 <span class="action-name">Go live</span>
                 <span class="action-sub">Broadcast live to your viewers</span>
             </div>
-        </a>
+        </div>
 
         <!-- 4. Create a Post -->
-        <a href="create-post.html" class="menu-action-item">
+        <div class="menu-action-item" onclick="openProtected('create-post.html')">
             <div class="icon-circle">
                 <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
             </div>
@@ -80,8 +86,25 @@
                 <span class="action-name">Create a post</span>
                 <span class="action-sub">Share text, image or polls</span>
             </div>
-        </a>
+        </div>
     </div>
 
+    <script>
+        function openProtected(destinationUrl) {
+            const user = window.BTubeAPI.getUser();
+            if (!user) {
+                const shouldLogin = confirm("Upload karne ke liye BTube account se sign in zaroori hai.\n\nKya aap abhi sign in karna chahte hain?");
+                if (shouldLogin) {
+                    window.BTubeAPI.signInWithGoogle().then(u => {
+                        if (u) {
+                            window.location.href = destinationUrl;
+                        }
+                    });
+                }
+                return;
+            }
+            window.location.href = destinationUrl;
+        }
+    </script>
 </body>
 </html>
