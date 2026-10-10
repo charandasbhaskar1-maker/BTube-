@@ -118,15 +118,10 @@
         }
 
         .storage-fill-used {
-            width: 12%;
+            width: 2%;
             background: #3ea6ff;
             height: 100%;
-        }
-
-        .storage-fill-other {
-            width: 48%;
-            background: #555555;
-            height: 100%;
+            transition: width 0.3s;
         }
 
         /* 3. DOWNLOADS FEED */
@@ -151,7 +146,7 @@
             gap: 12px;
             text-decoration: none;
             color: #ffffff;
-            transition: background 0.15s;
+            cursor: pointer;
             position: relative;
         }
 
@@ -242,42 +237,13 @@
             fill: currentColor;
         }
 
-        /* 4. RECOMMENDATIONS SECTION */
-        .recom-container {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #1f1f1f;
-        }
-
-        .btn-download-action {
-            background: #272727;
-            border: 1px solid #383838;
-            color: #ffffff;
-            border-radius: 16px;
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            margin-top: 4px;
-            align-self: flex-start;
-        }
-
-        .btn-download-action svg {
-            width: 13px;
-            height: 13px;
-            fill: #ffffff;
-        }
-
-        /* 5. EMPTY STATE */
+        /* 4. EMPTY STATE */
         .empty-downloads-box {
             display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 70px 20px;
+            padding: 80px 20px;
             text-align: center;
             gap: 12px;
         }
@@ -300,7 +266,18 @@
             line-height: 1.4;
         }
 
-        /* 6. BOTTOM DRAWERS */
+        .btn-find-videos {
+            margin-top: 6px;
+            background: #e50914;
+            color: #fff;
+            padding: 9px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* 5. BOTTOM DRAWERS */
         .drawer-overlay {
             position: fixed;
             inset: 0;
@@ -394,18 +371,18 @@
             display: none;
         }
 
-        /* 7. BOTTOM NAVIGATION */
+        /* 6. BOTTOM NAVIGATION */
         .bottom-nav-fixed {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -416,7 +393,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -426,42 +403,37 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="down-header">
         <div class="header-left">
-            <a href="profile.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">Downloads</span>
         </div>
 
         <div class="header-right-tools">
-            <a href="cast.html" class="tool-btn">
-                <svg viewBox="0 0 24 24"><path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11zm20-7H3c-1.1 0-2 .9-2 2v3h2V5h18v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-            </a>
-            <a href="search.html" class="tool-btn">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </a>
             <button class="tool-btn" onclick="openGlobalOptionsDrawer()">
                 <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
             </button>
@@ -471,114 +443,31 @@
     <!-- 2. DEVICE STORAGE BAR -->
     <section class="storage-status-card">
         <div class="storage-meta-row">
-            <span>BTube used: <strong id="usedStorageTxt">148 MB</strong></span>
-            <span>Free: <strong id="freeStorageTxt">58.4 GB</strong></span>
+            <span>BTube Offline Storage: <strong id="usedStorageTxt">0 MB</strong></span>
+            <span>Status: <strong style="color:#2ecc71;">Available Offline</strong></span>
         </div>
         <div class="storage-track-bar">
             <div class="storage-fill-used" id="usedBar"></div>
-            <div class="storage-fill-other"></div>
         </div>
     </section>
 
     <!-- 3. DOWNLOADED ITEMS LIST -->
     <main class="downloads-feed-list" id="downloadsFeed">
-
         <div class="section-label-bar">
-            <span>Downloaded videos (<span id="downloadCount">3</span>)</span>
+            <span>Downloaded videos (<span id="downloadCount">0</span>)</span>
         </div>
-
-        <!-- Download 1 -->
-        <div class="down-item-card" id="down-item-1" data-size="42">
-            <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="down-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Video 1">
-                <span class="duration-pill">05:42</span>
-            </a>
-            <div class="down-details-col">
-                <a href="watch.html?title=Chhattisgarhi+Panthi+Song+Special&channel=Charandas+Bhaskar" class="down-video-title" style="text-decoration:none; color:#fff;">
-                    Chhattisgarhi Panthi Song • Special Cultural Video 2026
-                </a>
-                <div class="down-sub-meta">
-                    <span class="blue-check-badge">✓</span>
-                    <span>Charandas Bhaskar • 42 MB • 1080p</span>
-                </div>
-            </div>
-            <button class="btn-more-card" onclick="openItemDrawer('down-item-1', 'Chhattisgarhi Panthi Song')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <!-- Download 2 -->
-        <div class="down-item-card" id="down-item-2" data-size="78">
-            <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="down-thumb-box">
-                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" alt="Video 2">
-                <span class="duration-pill">14:10</span>
-            </a>
-            <div class="down-details-col">
-                <a href="watch.html?title=Typewriter+Banjo+Pickup+Guide&channel=Dhun+AI" class="down-video-title" style="text-decoration:none; color:#fff;">
-                    Typewriter Banjo with Magnetic Pickups Full Making Guide
-                </a>
-                <div class="down-sub-meta">
-                    <span class="blue-check-badge">✓</span>
-                    <span>Dhun AI • 78 MB • 720p</span>
-                </div>
-            </div>
-            <button class="btn-more-card" onclick="openItemDrawer('down-item-2', 'Typewriter Banjo Guide')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
-        <!-- Download 3 -->
-        <div class="down-item-card" id="down-item-3" data-size="28">
-            <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="down-thumb-box">
-                <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400" alt="Video 3">
-                <span class="duration-pill">06:25</span>
-            </a>
-            <div class="down-details-col">
-                <a href="watch.html?title=Morning+Commute+Village+Vlog&channel=The+Bhaskar+Vlog" class="down-video-title" style="text-decoration:none; color:#fff;">
-                    Morning Commute & Village Lifestyle Daily Vlog #42
-                </a>
-                <div class="down-sub-meta">
-                    <span class="blue-check-badge">✓</span>
-                    <span>The Bhaskar Vlog • 28 MB • 720p</span>
-                </div>
-            </div>
-            <button class="btn-more-card" onclick="openItemDrawer('down-item-3', 'Morning Commute Vlog')">
-                <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
-        </div>
-
+        <div id="downloadCardsContainer"></div>
     </main>
 
-    <!-- 4. EMPTY STATE (Hidden by default) -->
+    <!-- 4. EMPTY STATE -->
     <div class="empty-downloads-box" id="emptyState">
         <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
         <span class="empty-title">No downloaded videos</span>
-        <span class="empty-sub">Videos you download will be available offline here anytime.</span>
+        <span class="empty-sub">Videos you download while watching will appear here so you can play them offline.</span>
+        <a href="../frontend/index.html" class="btn-find-videos">Find videos to watch</a>
     </div>
 
-    <!-- 5. RECOMMENDED OFFLINE SHELF -->
-    <section class="recom-container">
-        <div class="section-label-bar">
-            <span>Recommended for download</span>
-        </div>
-
-        <div class="down-item-card" id="recom-card">
-            <a href="watch.html" class="down-thumb-box">
-                <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400" alt="Recom">
-                <span class="duration-pill">08:15</span>
-            </a>
-            <div class="down-details-col">
-                <span class="down-video-title">Traditional Chhattisgarhi Suwa Geet & Dholak Beats</span>
-                <span class="down-sub-meta">BTube Folk • 48 MB</span>
-                <button class="btn-download-action" onclick="downloadRecommendedVideo()">
-                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                    <span>Download</span>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- 6. DRAWER: SINGLE ITEM OPTIONS -->
+    <!-- 5. DRAWER: SINGLE ITEM OPTIONS -->
     <div class="drawer-overlay" id="itemDrawer" onclick="closeDrawerOnBackdrop(event, 'itemDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
@@ -589,18 +478,14 @@
                 <svg viewBox="0 0 24 24" style="fill:#ff4e4e;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                 <span>Delete from downloads</span>
             </button>
-            <button class="drawer-row-btn" onclick="pauseOrResumeDownload()">
-                <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                <span>Pause download</span>
-            </button>
             <button class="drawer-row-btn" onclick="shareDownload()">
                 <svg viewBox="0 0 24 24"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
-                <span>Share offline video</span>
+                <span>Share video</span>
             </button>
         </div>
     </div>
 
-    <!-- 7. DRAWER: GLOBAL SETTINGS & CLEAR -->
+    <!-- 6. DRAWER: GLOBAL SETTINGS & CLEAR -->
     <div class="drawer-overlay" id="globalDrawer" onclick="closeDrawerOnBackdrop(event, 'globalDrawer')">
         <div class="drawer-sheet-card">
             <div class="drawer-header-row">
@@ -613,7 +498,7 @@
             </button>
             <a href="settings.html" class="drawer-row-btn">
                 <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                <span>Download quality settings</span>
+                <span>Download settings</span>
             </a>
         </div>
     </div>
@@ -621,7 +506,7 @@
     <!-- Toast Bubble -->
     <div class="toast-pop" id="downToast"></div>
 
-    <!-- 8. BOTTOM NAVIGATION -->
+    <!-- 7. BOTTOM NAVIGATION -->
     <nav class="bottom-nav-fixed">
         <a href="../frontend/index.html" class="nav-tab-item">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -638,37 +523,98 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
-    <!-- INTERACTION LOGIC -->
     <script>
-        let currentTargetItemId = null;
-        let totalUsedMb = 148;
+        let selectedVideoId = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+        window.addEventListener('DOMContentLoaded', async () => {
+            syncAvatar();
+            renderDownloads();
         });
 
-        function showToast(msg) {
-            const t = document.getElementById('downToast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        function syncAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function getStoredDownloads() {
+            return JSON.parse(localStorage.getItem('btube_downloaded_videos') || '[]');
+        }
+
+        function renderDownloads() {
+            const downloads = getStoredDownloads();
+            const container = document.getElementById('downloadCardsContainer');
+            const empty = document.getElementById('emptyState');
+            const feed = document.getElementById('downloadsFeed');
+
+            container.innerHTML = '';
+
+            if (downloads.length === 0) {
+                feed.style.display = 'none';
+                empty.style.display = 'flex';
+                updateStorageDisplay(0, 0);
+                return;
+            }
+
+            feed.style.display = 'flex';
+            empty.style.display = 'none';
+
+            let totalMb = 0;
+
+            downloads.forEach(v => {
+                const sizeMb = v.sizeMb || 35;
+                totalMb += sizeMb;
+
+                const card = document.createElement('div');
+                card.className = 'down-item-card';
+                card.onclick = () => {
+                    window.location.href = `watch.html?id=${v.id}&videoUrl=${encodeURIComponent(v.videoUrl || '')}`;
+                };
+
+                card.innerHTML = `
+                    <div class="down-thumb-box">
+                        <img src="${v.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400'}">
+                        <span class="duration-pill">${v.duration || '03:45'}</span>
+                    </div>
+                    <div class="down-details-col">
+                        <div class="down-video-title">${v.title || 'Offline Video'}</div>
+                        <div class="down-sub-meta">
+                            <span class="blue-check-badge">✓</span>
+                            <span>${v.channel || 'BTube Creator'} • ${sizeMb} MB</span>
+                        </div>
+                    </div>
+                    <button class="btn-more-card" onclick="event.stopPropagation(); openItemDrawer('${v.id}', '${encodeURIComponent(v.title || '')}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+
+            updateStorageDisplay(downloads.length, totalMb);
+        }
+
+        function updateStorageDisplay(count, mb) {
+            document.getElementById('downloadCount').innerText = count;
+            document.getElementById('usedStorageTxt').innerText = `${mb} MB`;
+            const fillPct = Math.min(100, Math.max(2, (mb / 500) * 100));
+            document.getElementById('usedBar').style.width = `${fillPct}%`;
         }
 
         function openItemDrawer(id, title) {
-            currentTargetItemId = id;
-            document.getElementById('itemDrawerTitle').innerText = title;
+            selectedVideoId = id;
+            document.getElementById('itemDrawerTitle').innerText = decodeURIComponent(title);
             document.getElementById('itemDrawer').classList.add('open');
         }
 
@@ -685,71 +631,37 @@
         }
 
         function deleteSingleDownload() {
-            if (currentTargetItemId) {
-                const target = document.getElementById(currentTargetItemId);
-                if (target) {
-                    const size = parseInt(target.getAttribute('data-size')) || 0;
-                    totalUsedMb = Math.max(0, totalUsedMb - size);
-                    target.remove();
-                    updateStorageDisplay();
-                    showToast('Download deleted');
-                    checkIfFeedEmpty();
-                }
-            }
+            if (!selectedVideoId) return;
+            let downloads = getStoredDownloads();
+            downloads = downloads.filter(v => v.id !== selectedVideoId);
+            localStorage.setItem('btube_downloaded_videos', JSON.stringify(downloads));
             closeDrawer('itemDrawer');
+            renderDownloads();
+            showToast("Video deleted from offline storage");
         }
 
-        function pauseOrResumeDownload() {
-            closeDrawer('itemDrawer');
-            showToast('Download paused');
+        function deleteAllDownloads() {
+            localStorage.removeItem('btube_downloaded_videos');
+            closeDrawer('globalDrawer');
+            renderDownloads();
+            showToast("All offline videos cleared");
         }
 
         function shareDownload() {
             closeDrawer('itemDrawer');
             if (navigator.share) {
-                navigator.share({ title: 'Offline Video', url: window.location.href }).catch(() => {});
+                navigator.share({ title: 'Offline Video', url: window.location.href }).catch(()=>{});
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                showToast('Video link copied');
+                showToast("Video link copied");
             }
         }
 
-        function deleteAllDownloads() {
-            const cards = document.querySelectorAll('.down-item-card:not(#recom-card)');
-            cards.forEach(c => c.remove());
-            totalUsedMb = 0;
-            updateStorageDisplay();
-            checkIfFeedEmpty();
-            closeDrawer('globalDrawer');
-            showToast('All downloads cleared');
-        }
-
-        function downloadRecommendedVideo() {
-            const recom = document.getElementById('recom-card');
-            if (recom) {
-                showToast('Downloading to offline storage (48 MB)...');
-                setTimeout(() => {
-                    showToast('Download complete ✓');
-                    totalUsedMb += 48;
-                    updateStorageDisplay();
-                }, 1500);
-            }
-        }
-
-        function updateStorageDisplay() {
-            document.getElementById('usedStorageTxt').innerText = totalUsedMb + ' MB';
-            const count = document.querySelectorAll('.down-item-card:not(#recom-card)').length;
-            document.getElementById('downloadCount').innerText = count;
-            const barFill = document.getElementById('usedBar');
-            barFill.style.width = Math.max(2, (totalUsedMb / 1000) * 100) + '%';
-        }
-
-        function checkIfFeedEmpty() {
-            const remaining = document.querySelectorAll('.down-item-card:not(#recom-card)');
-            if (remaining.length === 0) {
-                document.getElementById('downloadsFeed').style.display = 'none';
-                document.getElementById('emptyState').style.display = 'flex';
-            }
+        function showToast(msg) {
+            const t = document.getElementById('downToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
         }
     </script>
 </body>
