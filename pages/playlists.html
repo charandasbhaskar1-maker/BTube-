@@ -2,7 +2,8 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f0f0f">
     <title>Playlists - BTube</title>
     <style>
@@ -29,7 +30,7 @@
         
         .pl-thumb-box { width:120px; height:68px; border-radius:8px; overflow:hidden; background:#222; position:relative; flex-shrink:0; }
         .pl-thumb-box img { width:100%; height:100%; object-fit:cover; }
-        .pl-badge-count { position:absolute; bottom:0; right:0; top:0; width:40%; background:rgba(0,0,0,0.78); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:11px; font-weight:800; backdrop-filter:blur(2px); }
+        .pl-badge-count { position:absolute; bottom:0; right:0; top:0; width:42%; background:rgba(0,0,0,0.8); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:11px; font-weight:800; backdrop-filter:blur(2px); }
         .pl-badge-count svg { width:14px; height:14px; fill:#fff; }
 
         .pl-info { flex:1; display:flex; flex-direction:column; gap:4px; min-width:0; }
@@ -56,6 +57,8 @@
         .sheet-action.danger { color:#ff4e45; }
         .sheet-action.danger svg { fill:#ff4e45; }
 
+        .empty-user-pl { padding:30px 16px; text-align:center; color:#666; font-size:13px; }
+
         /* Bottom Nav */
         .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
         .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; }
@@ -66,6 +69,7 @@
     <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
@@ -96,15 +100,15 @@
         <div class="pl-item-row">
             <div class="pl-click-area" onclick="window.location.href='liked-videos.html'">
                 <div class="pl-thumb-box">
-                    <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600" alt="Liked Videos">
+                    <img id="likedThumbImg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600" alt="Liked Videos">
                     <div class="pl-badge-count">
                         <svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg>
-                        <span>Auto</span>
+                        <span id="likedCountTxt">0</span>
                     </div>
                 </div>
                 <div class="pl-info">
                     <div class="pl-name">Liked videos</div>
-                    <div class="pl-sub">Private • Auto Playlist</div>
+                    <div class="pl-sub" id="likedMetaSub">Private • 0 videos</div>
                 </div>
             </div>
             <button class="btn-dots" onclick="openSystemMenu('Liked videos', 'liked-videos.html')">
@@ -116,15 +120,15 @@
         <div class="pl-item-row">
             <div class="pl-click-area" onclick="window.location.href='watch-later.html'">
                 <div class="pl-thumb-box">
-                    <img src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Watch Later">
+                    <img id="watchLaterThumbImg" src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800" alt="Watch Later">
                     <div class="pl-badge-count">
                         <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.2 3.15.8-1.23-4.5-2.67z"/></svg>
-                        <span>Auto</span>
+                        <span id="watchLaterCountTxt">0</span>
                     </div>
                 </div>
                 <div class="pl-info">
                     <div class="pl-name">Watch later</div>
-                    <div class="pl-sub">Private • Save for later</div>
+                    <div class="pl-sub" id="watchLaterMetaSub">Private • 0 videos</div>
                 </div>
             </div>
             <button class="btn-dots" onclick="openSystemMenu('Watch later', 'watch-later.html')">
@@ -165,7 +169,7 @@
         <a href="shorts.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg><span>Shorts</span></a>
         <a href="upload.html" class="nav-btn" style="color:#e50914;"><svg viewBox="0 0 24 24" style="fill:#e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg><span>Create</span></a>
         <a href="subscriptions.html" class="nav-btn"><svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg><span>Subscriptions</span></a>
-        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff;">BT</div><span>You</span></a>
+        <a href="profile.html" class="nav-btn active"><div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div><span>You</span></a>
     </nav>
 
     <script>
@@ -174,8 +178,40 @@
         let selectedTitle = '';
 
         window.addEventListener('DOMContentLoaded', () => {
+            syncNavAvatar();
+            syncSystemPlaylists();
             loadUserPlaylists();
         });
+
+        function syncNavAvatar() {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        function syncSystemPlaylists() {
+            // Liked videos
+            const likedList = JSON.parse(localStorage.getItem('btube_liked_ids') || '[]');
+            document.getElementById('likedCountTxt').innerText = likedList.length;
+            document.getElementById('likedMetaSub').innerText = `Private • ${likedList.length} videos`;
+            if (likedList.length > 0 && likedList[0].thumb) {
+                document.getElementById('likedThumbImg').src = likedList[0].thumb;
+            }
+
+            // Watch later
+            const wlList = JSON.parse(localStorage.getItem('btube_watch_later') || '[]');
+            document.getElementById('watchLaterCountTxt').innerText = wlList.length;
+            document.getElementById('watchLaterMetaSub').innerText = `Private • ${wlList.length} videos`;
+            if (wlList.length > 0 && wlList[0].thumb) {
+                document.getElementById('watchLaterThumbImg').src = wlList[0].thumb;
+            }
+        }
 
         function getStoredPlaylists() {
             return JSON.parse(localStorage.getItem('btube_custom_playlists') || '[]');
@@ -190,21 +226,28 @@
             const container = document.getElementById('userPlaylistsList');
             container.innerHTML = '';
 
+            if (list.length === 0) {
+                container.innerHTML = `<div class="empty-user-pl">No custom playlists yet. Tap "+ New playlist" above to organize your favorites.</div>`;
+                return;
+            }
+
             list.forEach((p, idx) => {
+                const count = (p.videos && Array.isArray(p.videos)) ? p.videos.length : (p.count || 0);
+                const thumb = p.thumb || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800';
                 const row = document.createElement('div');
                 row.className = 'pl-item-row';
                 row.innerHTML = `
-                    <div class="pl-click-area" onclick="alert('Opening playlist: ${p.title}')">
+                    <div class="pl-click-area" onclick="openPlaylistView('${p.id || idx}')">
                         <div class="pl-thumb-box">
-                            <img src="${p.thumb || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'}">
+                            <img src="${thumb}">
                             <div class="pl-badge-count">
                                 <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
-                                <span>${p.count || 0}</span>
+                                <span>${count}</span>
                             </div>
                         </div>
                         <div class="pl-info">
                             <div class="pl-name">${p.title}</div>
-                            <div class="pl-sub">${p.visibility || 'Public'} • Custom</div>
+                            <div class="pl-sub">${p.visibility || 'Public'} • ${count} videos</div>
                         </div>
                     </div>
                     <button class="btn-dots" onclick="openUserMenu(${idx})">
@@ -215,22 +258,27 @@
             });
         }
 
+        function openPlaylistView(plId) {
+            window.location.href = `playlist-view.html?id=${encodeURIComponent(plId)}`;
+        }
+
         function createNewPlaylist() {
-            const name = prompt("Nayi Playlist ka naam likhein:");
+            const name = prompt("Enter playlist title:");
             if (!name || !name.trim()) return;
 
             const list = getStoredPlaylists();
             list.push({
+                id: 'pl_' + Date.now(),
                 title: name.trim(),
                 count: 0,
+                videos: [],
                 visibility: 'Public',
-                thumb: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800'
+                thumb: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'
             });
             saveStoredPlaylists(list);
             loadUserPlaylists();
         }
 
-        // Open Bottom Sheet for User Playlist
         function openUserMenu(index) {
             currentTargetIndex = index;
             isSystemPlaylist = false;
@@ -243,7 +291,6 @@
             document.getElementById('actionSheetBackdrop').classList.add('active');
         }
 
-        // Open Bottom Sheet for System Playlist (Liked / Watch Later)
         function openSystemMenu(title, targetUrl) {
             currentTargetIndex = null;
             isSystemPlaylist = true;
@@ -261,17 +308,16 @@
             }
         }
 
-        // Action: Edit
         function actionEditPlaylist() {
             if (isSystemPlaylist || currentTargetIndex === null) return;
             const list = getStoredPlaylists();
             const currentItem = list[currentTargetIndex];
 
-            const newTitle = prompt("Playlist ka naya naam:", currentItem.title);
+            const newTitle = prompt("Update playlist name:", currentItem.title);
             if (newTitle && newTitle.trim()) {
                 currentItem.title = newTitle.trim();
-                const newVis = confirm("Kya ise Private rakhna chahte hain? (Cancel for Public)") ? 'Private' : 'Public';
-                currentItem.visibility = newVis;
+                const isPrivate = confirm("Make this playlist Private? (Cancel for Public)");
+                currentItem.visibility = isPrivate ? 'Private' : 'Public';
                 
                 list[currentTargetIndex] = currentItem;
                 saveStoredPlaylists(list);
@@ -280,14 +326,12 @@
             document.getElementById('actionSheetBackdrop').classList.remove('active');
         }
 
-        // Action: Delete
         function actionDeletePlaylist() {
             if (isSystemPlaylist || currentTargetIndex === null) return;
             const list = getStoredPlaylists();
             const currentItem = list[currentTargetIndex];
 
-            const confirmDel = confirm(`Kya aap sach me "${currentItem.title}" playlist ko delete karna chahte hain?`);
-            if (confirmDel) {
+            if (confirm(`Delete "${currentItem.title}" playlist? This cannot be undone.`)) {
                 list.splice(currentTargetIndex, 1);
                 saveStoredPlaylists(list);
                 loadUserPlaylists();
@@ -295,7 +339,6 @@
             document.getElementById('actionSheetBackdrop').classList.remove('active');
         }
 
-        // Action: Share
         function actionSharePlaylist() {
             const shareUrl = window.location.href;
             if (navigator.share) {
@@ -303,10 +346,10 @@
                     title: selectedTitle,
                     text: `Check out ${selectedTitle} on BTube!`,
                     url: shareUrl
-                });
+                }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(shareUrl);
-                alert(`${selectedTitle} link copied to clipboard!`);
+                alert(`${selectedTitle} link copied!`);
             }
             document.getElementById('actionSheetBackdrop').classList.remove('active');
         }
