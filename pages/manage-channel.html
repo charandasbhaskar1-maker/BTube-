@@ -85,7 +85,7 @@
         .preview-banner-box {
             width: 100%;
             height: 85px;
-            background: linear-gradient(135deg, #1f1f1f 0%, #3a0007 60%, #151515 100%);
+            background: #1c1c1c;
             position: relative;
             overflow: hidden;
         }
@@ -311,12 +311,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -327,7 +327,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -337,35 +337,36 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
     <!-- 1. TOP HEADER -->
     <header class="manage-header">
         <div class="header-left">
-            <a href="profile.html" class="btn-back">
+            <button class="btn-back" onclick="window.history.back()">
                 <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-            </a>
+            </button>
             <span class="header-title">Manage Channel</span>
         </div>
-        <a href="edit-channel.html" class="btn-header-action">Edit</a>
+        <a href="channel-settings.html" class="btn-header-action">Edit</a>
     </header>
 
     <!-- 2. MINI CHANNEL PREVIEW CARD -->
@@ -375,13 +376,13 @@
         </div>
         <div class="preview-body-row">
             <div class="preview-dp-box">
-                <span id="cardInits">CB</span>
+                <span id="cardInits">BT</span>
                 <img id="cardDpImg" class="preview-dp-img" alt="DP">
             </div>
             <div class="preview-texts">
-                <span class="preview-name" id="cardName">Charandas Bhaskar</span>
-                <span class="preview-handle" id="cardHandle">@charandasbhaskar</span>
-                <span class="preview-stats">Active • 245 subscribers</span>
+                <span class="preview-name" id="cardName">Loading...</span>
+                <span class="preview-handle" id="cardHandle">@loading</span>
+                <span class="preview-stats" id="cardStats">Active channel</span>
             </div>
             <a href="channel.html" class="btn-view-channel">
                 <span>View</span>
@@ -392,7 +393,7 @@
 
     <!-- 3. QUICK HUBS GRID -->
     <main class="hubs-grid">
-        <a href="edit-channel.html" class="hub-action-box">
+        <a href="channel-settings.html" class="hub-action-box">
             <div class="hub-icon-circle" style="background: rgba(62, 166, 255, 0.15);">
                 <svg viewBox="0 0 24 24" style="fill: #3ea6ff;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             </div>
@@ -404,8 +405,8 @@
             <div class="hub-icon-circle" style="background: rgba(46, 204, 113, 0.15);">
                 <svg viewBox="0 0 24 24" style="fill: #2ecc71;"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
             </div>
-            <span class="hub-title">Content & Studio</span>
-            <span class="hub-sub">8 videos & shorts</span>
+            <span class="hub-title">Content & Videos</span>
+            <span class="hub-sub" id="hubVideoCount">0 videos</span>
         </a>
 
         <a href="analytics.html" class="hub-action-box">
@@ -413,7 +414,7 @@
                 <svg viewBox="0 0 24 24" style="fill: #f39c12;"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
             </div>
             <span class="hub-title">Analytics</span>
-            <span class="hub-sub">42.5K views this month</span>
+            <span class="hub-sub" id="hubViewsCount">0 views</span>
         </a>
 
         <a href="upload.html" class="hub-action-box">
@@ -421,7 +422,7 @@
                 <svg viewBox="0 0 24 24" style="fill: #e50914;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             </div>
             <span class="hub-title">Create / Upload</span>
-            <span class="hub-sub">Add new video or short</span>
+            <span class="hub-sub">Upload Video or Short</span>
         </a>
     </main>
 
@@ -434,7 +435,7 @@
                 <svg viewBox="0 0 24 24"><path d="M19 9H2v2h17V9zm0-4H2v2h17V5zM2 15h11v-2H2v2zm13-2v6l5-3-5-3z"/></svg>
                 <span class="row-title">Playlists management</span>
             </div>
-            <span class="row-badge">3 lists ›</span>
+            <span class="row-badge" id="playlistBadge">0 playlists ›</span>
         </a>
 
         <a href="history.html" class="manage-row-link">
@@ -482,45 +483,67 @@
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subs</span>
         </a>
-        <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- LIVE DATA LOAD SCRIPT -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            const savedHandle = localStorage.getItem('btube_channel_handle');
-            const savedDp = localStorage.getItem('btube_channel_dp');
-            const savedBanner = localStorage.getItem('btube_channel_banner');
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const activeCh = window.BTubeAPI ? await window.BTubeAPI.getActiveChannel() : null;
 
-            if (savedName) {
-                document.getElementById('cardName').innerText = savedName;
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('cardInits').innerText = inits.toUpperCase();
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
-            }
+            const name = activeCh?.name || authUser?.name || 'My Channel';
+            const handle = activeCh?.handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            const avatar = activeCh?.avatar || authUser?.photo;
+            const banner = activeCh?.banner;
+            const subs = activeCh?.subscribers || 0;
 
-            if (savedHandle) {
-                document.getElementById('cardHandle').innerText = savedHandle;
-            }
+            document.getElementById('cardName').innerText = name;
+            document.getElementById('cardHandle').innerText = handle;
+            document.getElementById('cardStats').innerText = `Active • ${subs} subscribers`;
 
-            if (savedDp) {
+            const inits = name.substring(0, 2).toUpperCase();
+            document.getElementById('cardInits').innerText = inits;
+
+            const botAv = document.getElementById('bottomNavInits');
+            if (avatar) {
                 const dp = document.getElementById('cardDpImg');
-                dp.src = savedDp;
+                dp.src = avatar;
                 dp.style.display = 'block';
                 document.getElementById('cardInits').style.display = 'none';
+
+                if (botAv) {
+                    botAv.innerHTML = `<img src="${avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                }
+            } else if (botAv) {
+                botAv.innerText = inits;
             }
 
-            if (savedBanner) {
+            if (banner) {
                 const b = document.getElementById('cardBannerImg');
-                b.src = savedBanner;
+                b.src = banner;
                 b.style.display = 'block';
             }
+
+            // Real Video & View Counts
+            let myVideos = [];
+            if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
+                try {
+                    const allFeed = await window.BTubeAPI.getFeed('all');
+                    myVideos = allFeed.filter(v => v.channelId === activeCh?.id || v.channel === name || v.userId === authUser?.uid);
+                } catch(e) {}
+            }
+
+            const totalViews = myVideos.reduce((acc, v) => acc + (parseInt(v.views) || 0), 0);
+            document.getElementById('hubVideoCount').innerText = `${myVideos.length} videos`;
+            document.getElementById('hubViewsCount').innerText = `${totalViews.toLocaleString()} views`;
+
+            // Real Playlists Count
+            const customPlaylists = JSON.parse(localStorage.getItem('btube_custom_playlists') || '[]');
+            document.getElementById('playlistBadge').innerText = `${customPlaylists.length} lists ›`;
         });
 
         function showToast(msg) {
