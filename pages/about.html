@@ -70,7 +70,6 @@
             border-bottom: 1px solid #1c1c1c;
         }
 
-        /* Red curved box with white bold 'B' - Exact like top-left logo */
         .btube-official-icon-box {
             width: 72px;
             height: 50px;
@@ -124,6 +123,21 @@
             max-width: 290px;
             line-height: 1.4;
             margin-top: 2px;
+        }
+
+        .btn-visit-official {
+            margin-top: 6px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* 3. INFO SECTIONS */
@@ -202,12 +216,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 56px;
+            height: 52px;
             background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            border-top: 1px solid #272727;
+            border-top: 1px solid #222;
             z-index: 1000;
         }
 
@@ -218,7 +232,7 @@
             font-size: 10px;
             color: #aaaaaa;
             text-decoration: none;
-            gap: 3px;
+            gap: 2px;
         }
 
         .nav-tab-item svg {
@@ -228,23 +242,25 @@
         }
 
         .nav-plus-circle {
-            background: #272727;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            color: #e50914;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
             text-decoration: none;
         }
 
         .nav-plus-circle svg {
-            width: 22px;
-            height: 22px;
-            fill: #ffffff;
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
         }
     </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
 </head>
 <body>
 
@@ -258,18 +274,21 @@
 
     <!-- 2. EXACT BTUBE APP BRAND HERO -->
     <section class="app-hero-brand">
-        <!-- Red rounded box with white B logo -->
         <div class="btube-official-icon-box">
             <span>B</span>
         </div>
 
-        <!-- BTube Title with Red 'B' and White 'Tube' -->
         <div class="app-brand-title-row">
             <span class="brand-red-b">B</span><span class="brand-white-tube">Tube</span>
         </div>
 
         <span class="app-version-tag">Version 2.4.0 (Build 2026.10)</span>
-        <p class="app-tagline">Desi video platform designed for regional music, culture, and high-quality creator streaming.</p>
+        <p class="app-tagline">Indian PWA video streaming platform built for seamless creator uploads and regional cultural media.</p>
+
+        <a href="channel.html?official=true" class="btn-visit-official">
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#e50914;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+            <span>Visit BTube Official Channel</span>
+        </a>
     </section>
 
     <!-- 3. PLATFORM SPECIFICATIONS -->
@@ -288,22 +307,21 @@
             </div>
 
             <div class="info-row-item">
-                <span class="row-text-label">Local Data Storage</span>
-                <span class="row-text-val">HTML5 LocalStorage</span>
+                <span class="row-text-label">Cloud Backend</span>
+                <span class="row-text-val">Firebase Firestore & Cloud Storage</span>
             </div>
         </div>
 
         <div class="info-group-box">
             <span class="info-group-title">Developer & Creator</span>
 
-            <!-- Non-clickable plain developer row -->
             <div class="info-row-item">
                 <span class="row-text-label">Developer</span>
                 <span class="row-text-val" style="color:#ffffff; font-weight:600;">Charandas Bhaskar</span>
             </div>
 
             <div class="info-row-item">
-                <span class="row-text-label">Primary Region</span>
+                <span class="row-text-label">Origin</span>
                 <span class="row-text-val">Chhattisgarh, India</span>
             </div>
         </div>
@@ -336,7 +354,7 @@
 
     <!-- 4. FOOTER -->
     <footer class="about-footer">
-        <span class="footer-copy">© 2026 BTube Inc. All rights reserved.</span>
+        <span class="footer-copy">© 2026 BTube. All rights reserved.</span>
         <span class="footer-sub">Made with pride in India 🇮🇳</span>
     </footer>
 
@@ -358,20 +376,24 @@
             <span>Subs</span>
         </a>
         <a href="profile.html" class="nav-tab-item">
-            <div style="width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff;" id="bottomNavInits">CB</div>
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="bottomNavInits">BT</div>
             <span>You</span>
         </a>
     </nav>
 
     <!-- SCRIPT -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedName = localStorage.getItem('btube_channel_name');
-            if (savedName) {
-                const parts = savedName.trim().split(' ');
-                let inits = parts[0][0];
-                if (parts.length > 1) inits += parts[1][0];
-                document.getElementById('bottomNavInits').innerText = inits.toUpperCase();
+        window.addEventListener('DOMContentLoaded', async () => {
+            const authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            const botAv = document.getElementById('bottomNavInits');
+            
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    const name = authUser.name || 'BT';
+                    botAv.innerText = name.substring(0, 2).toUpperCase();
+                }
             }
         });
     </script>
