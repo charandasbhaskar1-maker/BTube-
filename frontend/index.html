@@ -2,771 +2,579 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0B1020">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="description" content="BTube par videos aur Shorts dekhein, upload karein aur apne creators ko follow karein.">
 
-    <title>BTube - Bharat Tube</title>
-    <meta name="description" content="BTube - Watch, discover and share videos.">
+  <title>BTube</title>
 
-    <!-- BTube app icon: ensure this file exists in assets -->
-    <link rel="icon" type="image/png" href="assets/icon.png">
-    <link rel="apple-touch-icon" href="assets/icon.png">
+  <link rel="icon" type="image/png" href="./assets/Icon _ 192.png">
+  <link rel="apple-touch-icon" href="./assets/Icon _ 192.png">
+  <link rel="manifest" href="./manifest.json">
 
-    <!-- GitHub Pages project paths -->
-    <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f0f0f;
+      --panel: #181818;
+      --line: #303030;
+      --text: #f5f5f5;
+      --muted: #aaa;
+      --accent: #ff0033;
+    }
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        body {
-            background: #0f0f0f;
-            color: #fff;
-            padding-bottom: 76px;
-            overflow-x: hidden;
-        }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      padding-bottom: 76px;
+    }
 
-        a { color: inherit; }
+    button, a {
+      font: inherit;
+    }
 
-        button { font: inherit; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        .app-header {
-            min-height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 0 14px;
-            position: sticky;
-            top: 0;
-            background: #0f0f0f;
-            z-index: 1000;
-            border-bottom: 1px solid #252525;
-        }
+    button {
+      color: inherit;
+      cursor: pointer;
+    }
 
-        .logo-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            flex-shrink: 0;
-        }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 58px;
+      padding: 0 14px;
+      background: var(--bg);
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
 
-        .logo-image {
-            width: 32px;
-            height: 32px;
-            border-radius: 9px;
-            object-fit: cover;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
 
-        .logo-fallback {
-            width: 32px;
-            height: 32px;
-            border-radius: 9px;
-            background: linear-gradient(135deg, #7657ff, #28d7ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 17px;
-            font-weight: 900;
-        }
+    .brand-mark {
+      width: 31px;
+      height: 23px;
+      background: var(--accent);
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+    }
 
-        .hdr-actions {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+    .brand-mark svg {
+      width: 15px;
+      height: 15px;
+      fill: white;
+    }
 
-        .btn-hdr {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            min-width: 30px;
-            min-height: 36px;
-        }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
 
-        .btn-hdr svg {
-            width: 23px;
-            height: 23px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+    .icon-link {
+      display: grid;
+      place-items: center;
+      min-width: 28px;
+      min-height: 36px;
+      font-size: 22px;
+    }
 
-        .search-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            border: 1px solid #343746;
-            background: #1b1b1b;
-            color: #fff;
-            padding: 8px 11px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+    .avatar {
+      width: 31px;
+      height: 31px;
+      border-radius: 50%;
+      background: #5e35b1;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+    }
 
-        .search-button svg {
-            width: 19px;
-            height: 19px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-        }
+    .search-row {
+      padding: 10px 14px;
+    }
 
-        .user-chip-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #7657ff, #28d7ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 800;
-            color: #fff;
-            overflow: hidden;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+    .search-button {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #333;
+      background: #202020;
+      border-radius: 24px;
+      text-align: left;
+      color: #bbb;
+    }
 
-        .user-chip-avatar img,
-        .nav-avatar-circle img,
-        .channel-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 14px 14px;
+      scrollbar-width: none;
+    }
 
-        .category-bar {
-            display: flex;
-            gap: 8px;
-            padding: 11px 14px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            position: sticky;
-            top: 56px;
-            background: #0f0f0f;
-            z-index: 900;
-        }
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
 
-        .category-bar::-webkit-scrollbar { display: none; }
+    .category {
+      flex: 0 0 auto;
+      border: 0;
+      background: #272727;
+      color: #eee;
+      border-radius: 8px;
+      padding: 9px 15px;
+    }
 
-        .chip {
-            background: #252525;
-            color: #fff;
-            border: 1px solid transparent;
-            padding: 8px 15px;
-            border-radius: 18px;
-            font-size: 13px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-        }
+    .category.active {
+      background: #f1f1f1;
+      color: #111;
+      font-weight: 700;
+    }
 
-        .chip.active {
-            background: #fff;
-            color: #111;
-        }
+    .feed {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
 
-        .video-feed {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .video-card {
+      min-width: 0;
+    }
 
-        .video-card {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
+    .thumbnail-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #222;
+      overflow: hidden;
+    }
 
-        .thumb-wrapper {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #1d1d1d;
-            position: relative;
-            overflow: hidden;
-        }
+    .thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-        .thumb-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+    .video-info {
+      display: flex;
+      gap: 11px;
+      padding: 11px 13px 0;
+    }
 
-        .badge-time {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.85);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 6px;
-            border-radius: 4px;
-        }
+    .channel-avatar {
+      flex: 0 0 39px;
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      background: #333;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+    }
 
-        .details-wrapper {
-            display: flex;
-            gap: 12px;
-            padding: 12px 14px 0;
-            align-items: flex-start;
-        }
+    .video-details {
+      min-width: 0;
+      flex: 1;
+    }
 
-        .card-main-info {
-            display: flex;
-            gap: 11px;
-            flex: 1;
-            min-width: 0;
-        }
+    .video-title {
+      margin: 0 0 7px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
 
-        .channel-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #303030;
-            overflow: hidden;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 13px;
-        }
+    .video-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
 
-        .meta-col {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 0;
-        }
+    .empty-state {
+      padding: 45px 22px;
+      text-align: center;
+      color: var(--muted);
+    }
 
-        .video-title {
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.4;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
+    .empty-state h2 {
+      color: var(--text);
+      font-size: 19px;
+    }
 
-        .video-sub-meta {
-            font-size: 12px;
-            color: #aaa;
-            line-height: 1.4;
-        }
+    .primary-button {
+      display: inline-block;
+      border: 0;
+      border-radius: 22px;
+      padding: 11px 19px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      margin-top: 12px;
+    }
 
-        .empty-state {
-            text-align: center;
-            padding: 55px 22px;
-            color: #aaa;
-        }
+    .status {
+      padding: 10px 15px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
-        .empty-state .empty-icon {
-            width: 58px;
-            height: 58px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
-            background: #202020;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .bottom-nav {
+      position: fixed;
+      z-index: 20;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 66px;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: #101010;
+      border-top: 1px solid #303030;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
 
-        .empty-icon svg {
-            width: 27px;
-            height: 27px;
-            fill: none;
-            stroke: #bbb;
-            stroke-width: 1.7;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+    .nav-item {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      color: #ddd;
+      font-size: 10px;
+    }
 
-        .empty-state h3 {
-            color: #fff;
-            font-size: 17px;
-            margin-bottom: 8px;
-        }
+    .nav-icon {
+      font-size: 21px;
+      line-height: 1;
+    }
 
-        .empty-state p {
-            font-size: 13px;
-            line-height: 1.6;
-        }
+    .create-button {
+      width: 43px;
+      height: 34px;
+      border: 1px solid #777;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
 
-        .upload-empty-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 17px;
-            padding: 10px 17px;
-            background: #fff;
-            color: #111;
-            border-radius: 22px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
-        }
+    .error-message {
+      color: #ff8a8a;
+      font-size: 13px;
+      padding: 12px;
+      text-align: center;
+    }
 
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            min-height: 60px;
-            padding-bottom: env(safe-area-inset-bottom, 0);
-            background: #0f0f0f;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid #292929;
-            z-index: 1000;
-        }
+    @media (min-width: 700px) {
+      .feed {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 26px 18px;
+        padding: 0 18px;
+      }
 
-        .nav-btn {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #aaa;
-            text-decoration: none;
-            gap: 4px;
-            cursor: pointer;
-            min-height: 56px;
-        }
+      .thumbnail-wrap {
+        border-radius: 12px;
+      }
+    }
 
-        .nav-btn.active {
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .nav-btn svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-        }
-
-        .nav-avatar-circle {
-            width: 23px;
-            height: 23px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #7657ff, #28d7ff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            font-weight: 800;
-            color: #fff;
-            overflow: hidden;
-        }
-
-        @media (min-width: 700px) {
-            .video-feed {
-                max-width: 900px;
-                margin: 0 auto;
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 24px 16px;
-                padding: 12px;
-            }
-
-            .thumb-wrapper { border-radius: 10px; }
-
-            .details-wrapper { padding: 10px 2px 0; }
-        }
-    </style>
-
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="assets/js/api-client.js"></script>
+    @media (min-width: 1050px) {
+      .feed {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
+
 <body>
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="BTube Home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 5v14l11-7z"></path>
+        </svg>
+      </span>
+      <span>BTube</span>
+    </a>
 
-    <!-- Header -->
-    <header class="app-header">
-        <a href="index.html" class="logo-box" aria-label="BTube Home">
-            <img
-                class="logo-image"
-                src="assets/icon.png"
-                alt="BTube"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-            >
-            <span class="logo-fallback" style="display:none;">B</span>
-            <span>BTube</span>
-        </a>
-
-        <div class="hdr-actions">
-            <!-- Search page -->
-            <a href="pages/search.html" class="search-button" aria-label="Search videos">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="11" cy="11" r="7"></circle>
-                    <path d="m20 20-4-4"></path>
-                </svg>
-                <span>Search</span>
-            </a>
-
-            <!-- Notifications -->
-            <a href="pages/notifications.html" class="btn-hdr" aria-label="Notifications">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-                    <path d="M10 21h4"></path>
-                </svg>
-            </a>
-
-            <!-- Profile -->
-            <a class="user-chip-avatar"
-               id="topNavAvatar"
-               href="pages/profile.html"
-               aria-label="Your profile">BT</a>
-        </div>
-    </header>
-
-    <!-- Categories -->
-    <div class="category-bar" aria-label="Video categories">
-        <button class="chip active" onclick="setCategoryFilter('all', this)">All</button>
-        <button class="chip" onclick="setCategoryFilter('video', this)">Videos</button>
-        <button class="chip" onclick="setCategoryFilter('short', this)">Shorts</button>
+    <div class="top-actions">
+      <a class="icon-link" href="./pages/search.html" aria-label="Search">⌕</a>
+      <a class="icon-link" href="./pages/notifications.html" aria-label="Notifications">♧</a>
+      <a href="./pages/profile.html" aria-label="Profile">
+        <span class="avatar">B</span>
+      </a>
     </div>
+  </header>
 
-    <!-- Video feed -->
-    <main class="video-feed" id="mainVideoFeed" aria-live="polite">
-        <div class="empty-state">
-            <h3>Loading videos…</h3>
-            <p>Please wait while BTube loads the feed.</p>
-        </div>
-    </main>
+  <div class="search-row">
+    <a class="search-button" href="./pages/search.html">⌕ &nbsp; Search videos and Shorts</a>
+  </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav" aria-label="Main navigation">
-        <a href="index.html" class="nav-btn active" aria-current="page">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
+  <nav class="categories" aria-label="Video categories">
+    <button class="category active" data-filter="all">All</button>
+    <button class="category" data-filter="videos">Videos</button>
+    <button class="category" data-filter="shorts">Shorts</button>
+  </nav>
 
-        <a href="pages/shorts.html" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
-            <span>Shorts</span>
-        </a>
+  <main>
+    <div id="status" class="status">BTube feed load ho raha hai...</div>
+    <section id="mainVideoFeed" class="feed" aria-label="Videos"></section>
 
-        <a href="pages/upload.html" class="nav-btn" style="color:#ff4545;">
-            <svg viewBox="0 0 24 24" style="fill:#ff4545;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <span>Create</span>
-        </a>
+    <section id="emptyState" class="empty-state" hidden>
+      <div style="font-size:42px">▶</div>
+      <h2>Abhi koi video nahi hai</h2>
+      <p>Videos aur Shorts upload hone ke baad yahan dikhai denge.</p>
+      <a class="primary-button" href="./pages/upload.html">Upload Video</a>
+    </section>
 
-        <a href="pages/subscriptions.html" class="nav-btn">
-            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 0.9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
-            <span>Subscriptions</span>
-        </a>
+    <div id="errorMessage" class="error-message" hidden></div>
+  </main>
 
-        <a href="pages/profile.html" class="nav-btn">
-            <div class="nav-avatar-circle" id="bottomNavAvatar">BT</div>
-            <span>You</span>
-        </a>
-    </nav>
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <a class="nav-item" href="./index.html">
+      <span class="nav-icon">⌂</span>
+      <span>Home</span>
+    </a>
+    <a class="nav-item" href="./pages/shorts.html">
+      <span class="nav-icon">▣</span>
+      <span>Shorts</span>
+    </a>
+    <a class="nav-item" href="./pages/upload.html">
+      <span class="create-button">+</span>
+      <span>Create</span>
+    </a>
+    <a class="nav-item" href="./pages/subscriptions.html">
+      <span class="nav-icon">▤</span>
+      <span>Subscriptions</span>
+    </a>
+    <a class="nav-item" href="./pages/profile.html">
+      <span class="nav-icon">●</span>
+      <span>You</span>
+    </a>
+  </nav>
 
-    <script>
-        let currentFilter = 'all';
-        let allCloudVideos = [];
-        let feedLoadFailed = false;
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="./assets/js/api-client.js"></script>
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                if (window.BTubeState &&
-                    typeof window.BTubeState.syncUI === 'function') {
-                    window.BTubeState.syncUI();
-                }
-            } catch (error) {
-                console.warn('BTube identity sync unavailable:', error);
-            }
+  <script>
+    (() => {
+      const feed = document.getElementById("mainVideoFeed");
+      const status = document.getElementById("status");
+      const emptyState = document.getElementById("emptyState");
+      const errorMessage = document.getElementById("errorMessage");
+      const categoryButtons = document.querySelectorAll("[data-filter]");
 
-            await refreshFeed();
+      let allVideos = [];
+      let currentFilter = "all";
+
+      function firstValue(item, keys, fallback = "") {
+        for (const key of keys) {
+          if (item && item[key] !== undefined && item[key] !== null && item[key] !== "") {
+            return item[key];
+          }
+        }
+        return fallback;
+      }
+
+      function isShort(item) {
+        const type = String(firstValue(item, ["type", "contentType", "category"], "")).toLowerCase();
+        return type === "short" || type === "shorts" || item.isShort === true;
+      }
+
+      function videoUrl(item) {
+        return firstValue(item, ["videoUrl", "videoURL", "video_url", "url", "playbackUrl"], "");
+      }
+
+      function thumbnailUrl(item) {
+        return firstValue(item, ["thumbnailUrl", "thumbnail", "thumbnailURL", "thumbnail_url", "coverUrl"], "");
+      }
+
+      function safeText(value) {
+        return String(value == null ? "" : value);
+      }
+
+      function makeCard(item) {
+        const id = firstValue(item, ["id", "videoId", "videoID"], "");
+        const title = safeText(firstValue(item, ["title", "name"], "Untitled video"));
+        const channel = safeText(firstValue(item, ["channelName", "creatorName", "username", "channel", "author"], "BTube Creator"));
+        const views = firstValue(item, ["views", "viewCount"], 0);
+        const thumb = thumbnailUrl(item);
+        const url = videoUrl(item);
+        const short = isShort(item);
+
+        const card = document.createElement("article");
+        card.className = "video-card";
+
+        const link = document.createElement("a");
+        const destination = short ? "./pages/shorts.html" : "./pages/watch.html";
+        const params = new URLSearchParams();
+        if (id) params.set("id", id);
+        if (url) params.set("videoUrl", url);
+        link.href = destination + (params.toString() ? "?" + params.toString() : "");
+
+        const thumbWrap = document.createElement("div");
+        thumbWrap.className = "thumbnail-wrap";
+
+        if (thumb) {
+          const image = document.createElement("img");
+          image.className = "thumbnail";
+          image.src = thumb;
+          image.alt = title;
+          image.loading = "lazy";
+          image.onerror = () => {
+            image.remove();
+            thumbWrap.textContent = "▶";
+            thumbWrap.style.display = "grid";
+            thumbWrap.style.placeItems = "center";
+            thumbWrap.style.fontSize = "42px";
+          };
+          thumbWrap.appendChild(image);
+        } else {
+          thumbWrap.textContent = short ? "▶ Shorts" : "▶";
+          thumbWrap.style.display = "grid";
+          thumbWrap.style.placeItems = "center";
+          thumbWrap.style.fontSize = "24px";
+        }
+
+        link.appendChild(thumbWrap);
+
+        const info = document.createElement("div");
+        info.className = "video-info";
+
+        const avatar = document.createElement("div");
+        avatar.className = "channel-avatar";
+        avatar.textContent = channel.trim().charAt(0).toUpperCase() || "B";
+
+        const details = document.createElement("div");
+        details.className = "video-details";
+
+        const titleEl = document.createElement("h3");
+        titleEl.className = "video-title";
+        titleEl.textContent = title;
+
+        const meta = document.createElement("div");
+        meta.className = "video-meta";
+        meta.textContent = channel + " · " + views + " views";
+
+        details.appendChild(titleEl);
+        details.appendChild(meta);
+        info.appendChild(avatar);
+        info.appendChild(details);
+
+        card.appendChild(link);
+        card.appendChild(info);
+        return card;
+      }
+
+      function renderFeed() {
+        feed.replaceChildren();
+
+        const filtered = allVideos.filter(item => {
+          if (currentFilter === "shorts") return isShort(item);
+          if (currentFilter === "videos") return !isShort(item);
+          return true;
         });
 
-        window.addEventListener('storage', () => {
-            try {
-                if (window.BTubeState &&
-                    typeof window.BTubeState.syncUI === 'function') {
-                    window.BTubeState.syncUI();
-                }
-            } catch (error) {
-                console.warn('BTube identity sync unavailable:', error);
-            }
+        filtered.forEach(item => feed.appendChild(makeCard(item)));
+
+        emptyState.hidden = filtered.length > 0;
+        feed.hidden = filtered.length === 0;
+        status.textContent = filtered.length
+          ? filtered.length + " item(s)"
+          : "";
+
+        if (allVideos.length === 0) {
+          emptyState.querySelector("h2").textContent = "Abhi koi video nahi hai";
+          emptyState.querySelector("p").textContent =
+            "Videos aur Shorts upload hone ke baad yahan dikhai denge.";
+        } else if (filtered.length === 0) {
+          emptyState.querySelector("h2").textContent = "Is category mein abhi kuch nahi hai";
+          emptyState.querySelector("p").textContent = "Doosri category select karein.";
+        }
+      }
+
+      categoryButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          currentFilter = button.dataset.filter;
+          categoryButtons.forEach(btn => btn.classList.toggle("active", btn === button));
+          renderFeed();
         });
+      });
 
-        async function refreshFeed() {
-            const feedContainer = document.getElementById('mainVideoFeed');
+      async function refreshFeed() {
+        status.textContent = "BTube feed load ho raha hai...";
+        errorMessage.hidden = true;
+        emptyState.hidden = true;
+        feed.hidden = false;
 
-            feedContainer.innerHTML = `
-                <div class="empty-state">
-                    <h3>Loading videos…</h3>
-                    <p>Please wait while BTube loads the feed.</p>
-                </div>
-            `;
+        try {
+          if (!window.BTubeAPI || typeof window.BTubeAPI.getFeed !== "function") {
+            throw new Error("BTube API client load nahi hua. assets/js/api-client.js check karein.");
+          }
 
-            feedLoadFailed = false;
+          const response = await window.BTubeAPI.getFeed("all");
+          const items = Array.isArray(response)
+            ? response
+            : (response && Array.isArray(response.videos) ? response.videos
+            : (response && Array.isArray(response.items) ? response.items : []));
 
-            if (!window.BTubeAPI ||
-                typeof window.BTubeAPI.getFeed !== 'function') {
-                feedLoadFailed = true;
-                renderFeedList();
-                return;
-            }
-
-            try {
-                const result = await window.BTubeAPI.getFeed('all');
-                allCloudVideos = Array.isArray(result) ? result : [];
-            } catch (error) {
-                console.error('BTube feed error:', error);
-                allCloudVideos = [];
-                feedLoadFailed = true;
-            }
-
-            renderFeedList();
+          allVideos = items;
+          renderFeed();
+        } catch (error) {
+          console.error("BTube feed error:", error);
+          allVideos = [];
+          feed.replaceChildren();
+          feed.hidden = true;
+          emptyState.hidden = false;
+          emptyState.querySelector("h2").textContent = "Feed load nahi ho saka";
+          emptyState.querySelector("p").textContent =
+            "Internet connection aur Firebase/API configuration check karein.";
+          status.textContent = "";
+          errorMessage.textContent = error && error.message
+            ? error.message
+            : "Feed load karte samay error aaya.";
+          errorMessage.hidden = false;
         }
+      }
 
-        function setCategoryFilter(type, element) {
-            currentFilter = type;
+      refreshFeed();
 
-            document.querySelectorAll('.chip').forEach(chip => {
-                chip.classList.remove('active');
-            });
-
-            element.classList.add('active');
-            renderFeedList();
-        }
-
-        function openVideo(vidId, videoUrl, isShort) {
-            if (isShort) {
-                window.location.href =
-                    `pages/shorts.html?id=${encodeURIComponent(vidId)}`;
-            } else {
-                window.location.href =
-                    `pages/watch.html?id=${encodeURIComponent(vidId)}&videoUrl=${encodeURIComponent(videoUrl || '')}`;
-            }
-        }
-
-        function escapeHTML(value) {
-            return String(value ?? '').replace(/[&<>"']/g, character => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[character]));
-        }
-
-        function renderFeedList() {
-            const feedContainer = document.getElementById('mainVideoFeed');
-            feedContainer.innerHTML = '';
-
-            let filtered = Array.isArray(allCloudVideos)
-                ? allCloudVideos
-                : [];
-
-            if (currentFilter !== 'all') {
-                filtered = filtered.filter(video => {
-                    const isShort =
-                        video.type === 'short' || video.is_shorts === true;
-
-                    return currentFilter === 'short' ? isShort : !isShort;
-                });
-            }
-
-            if (filtered.length === 0) {
-                const heading = feedLoadFailed
-                    ? 'Videos load nahi ho paaye'
-                    : 'Abhi koi video nahi hai';
-
-                const message = feedLoadFailed
-                    ? 'Feed ya Firebase configuration check karein. Upload karne ke baad bhi ye message aaye to api-client.js ki jaanch karein.'
-                    : 'BTube par pehla video upload karein. Upload hone ke baad video yahan dikhna chahiye.';
-
-                feedContainer.innerHTML = `
-                    <section class="empty-state">
-                        <div class="empty-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24">
-                                <rect x="3" y="5" width="18" height="14" rx="3"></rect>
-                                <path d="m10 9 5 3-5 3z"></path>
-                            </svg>
-                        </div>
-                        <h3>${heading}</h3>
-                        <p>${message}</p>
-                        <a class="upload-empty-link" href="pages/upload.html">
-                            + Upload Video
-                        </a>
-                        <p style="margin-top:14px;">
-                            Ya <a href="pages/search.html" style="color:#fff;">Search page</a> kholen.
-                        </p>
-                    </section>
-                `;
-                return;
-            }
-
-            filtered.forEach(video => {
-                const isShort =
-                    video.type === 'short' || video.is_shorts === true;
-
-                const videoId = video.id || video.video_id || '';
-                const videoUrl = video.videoUrl || video.video_url || '';
-
-                const thumbnail =
-                    video.thumb ||
-                    video.thumbnail_url ||
-                    'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800';
-
-                const channelName =
-                    video.channel || video.channel_name || 'BTube Creator';
-
-                const channelAvatar =
-                    video.channelAvatar || video.avatar || '';
-
-                const initial = escapeHTML(
-                    channelName.substring(0, 2).toUpperCase()
-                );
-
-                const views = video.views || video.views_count || 0;
-                const title = video.title || 'Untitled';
-
-                const card = document.createElement('article');
-                card.className = 'video-card';
-                card.tabIndex = 0;
-                card.setAttribute('role', 'link');
-                card.setAttribute(
-                    'aria-label',
-                    'Watch ' + String(title)
-                );
-
-                card.onclick = () => openVideo(videoId, videoUrl, isShort);
-
-                card.onkeydown = event => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        openVideo(videoId, videoUrl, isShort);
-                    }
-                };
-
-                const thumbWrapper = document.createElement('div');
-                thumbWrapper.className = 'thumb-wrapper';
-
-                const image = document.createElement('img');
-                image.src = thumbnail;
-                image.alt = String(title);
-                image.loading = 'lazy';
-                image.onerror = () => {
-                    image.onerror = null;
-                    image.src =
-                        'https://placehold.co/800x450/202020/FFFFFF?text=BTube';
-                };
-
-                const duration = document.createElement('span');
-                duration.className = 'badge-time';
-                duration.textContent = isShort
-                    ? 'SHORT'
-                    : (video.duration || 'VIDEO');
-
-                thumbWrapper.appendChild(image);
-                thumbWrapper.appendChild(duration);
-
-                const details = document.createElement('div');
-                details.className = 'details-wrapper';
-
-                const mainInfo = document.createElement('div');
-                mainInfo.className = 'card-main-info';
-
-                const avatar = document.createElement('div');
-                avatar.className = 'channel-avatar';
-
-                if (channelAvatar) {
-                    const avatarImage = document.createElement('img');
-                    avatarImage.src = channelAvatar;
-                    avatarImage.alt = '';
-                    avatarImage.onerror = () => {
-                        avatarImage.remove();
-                        avatar.textContent = initial;
-                    };
-                    avatar.appendChild(avatarImage);
-                } else {
-                    avatar.textContent = initial;
-                }
-
-                const meta = document.createElement('div');
-                meta.className = 'meta-col';
-
-                const heading = document.createElement('h3');
-                heading.className = 'video-title';
-                heading.textContent = title;
-
-                const subMeta = document.createElement('div');
-                subMeta.className = 'video-sub-meta';
-                subMeta.textContent =
-                    `${channelName} • ${views} views`;
-
-                meta.appendChild(heading);
-                meta.appendChild(subMeta);
-
-                mainInfo.appendChild(avatar);
-                mainInfo.appendChild(meta);
-                details.appendChild(mainInfo);
-
-                card.appendChild(thumbWrapper);
-                card.appendChild(details);
-
-                feedContainer.appendChild(card);
-            });
-        }
-    </script>
-
-    <script>
-        if (
-            'serviceWorker' in navigator &&
-            (location.protocol === 'https:' ||
-             location.hostname === 'localhost')
-        ) {
-            window.addEventListener('load', () => {
-                // Keep the worker scoped to this GitHub Pages project.
-                const workerPath = location.pathname.includes('/BTube-/')
-                    ? '/BTube-/sw.js'
-                    : '/sw.js';
-
-                navigator.serviceWorker.register(workerPath)
-                    .catch(error => {
-                        console.warn(
-                            'BTube offline shell unavailable:',
-                            error
-                        );
-                    });
-            });
-        }
-    </script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(error => {
+            console.warn("Service worker register nahi hua:", error);
+          });
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
