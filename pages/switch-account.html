@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f0f">
+    <title>Accounts - BTube</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 75px;
+            overflow-x: hidden;
+        }
+
+        /* 1. TOP HEADER */
+        .acc-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-back svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .header-title {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .btn-add-acc {
+            background: none;
+            border: none;
+            color: #3ea6ff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 4px;
+        }
+
+        .btn-add-acc svg {
+            width: 18px;
+            height: 18px;
+            fill: #3ea6ff;
+        }
+
+        /* 2. GOOGLE ACCOUNT IDENTITY BAR */
+        .google-account-banner {
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #151515;
+            border-bottom: 1px solid #202020;
+        }
+
+        .ga-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .ga-email-txt {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ga-manage-sub {
+            font-size: 12px;
+            color: #3ea6ff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 3. SECTION LABELS */
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 18px 16px 8px;
+        }
+
+        /* 4. CHANNELS LIST */
+        .channels-list-feed {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .channel-card-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #141414;
+            transition: background 0.15s;
+        }
+
+        .channel-card-item:active {
+            background: #1c1c1c;
+        }
+
+        .ch-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .ch-avatar-frame {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            flex-shrink: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ch-avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        .ch-text-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .ch-title-txt {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #ffffff;
+        }
+
+        .ch-meta-sub {
+            font-size: 12px;
+            color: #888888;
+        }
+
+        .active-check-icon {
+            width: 22px;
+            height: 22px;
+            fill: #3ea6ff;
+            flex-shrink: 0;
+            display: none;
+        }
+
+        .channel-card-item.active .active-check-icon {
+            display: block;
+        }
+
+        /* 5. UTILITY & MORE OPTIONS */
+        .util-action-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            color: #ffffff;
+            cursor: pointer;
+            border-bottom: 1px solid #141414;
+        }
+
+        .util-action-row:active {
+            background: #1c1c1c;
+        }
+
+        .util-action-row svg {
+            width: 22px;
+            height: 22px;
+            fill: #aaaaaa;
+        }
+
+        .util-text-txt {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 6. MODAL DRAWERS */
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2500;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .drawer-overlay.open {
+            display: flex;
+        }
+
+        .drawer-sheet-card {
+            width: 100%;
+            background: #212121;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            padding: 18px 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.9);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .sheet-head-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d2d2d;
+        }
+
+        .sheet-title-txt {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sheet-close-btn {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .input-group-label {
+            font-size: 12px;
+            color: #aaaaaa;
+            margin-bottom: -6px;
+        }
+
+        .sign-in-field {
+            width: 100%;
+            background: #141414;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .sign-in-field:focus {
+            border-color: #3ea6ff;
+        }
+
+        .sheet-btn-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            align-items: center;
+            padding-top: 6px;
+        }
+
+        .btn-sheet-text {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .btn-sheet-primary {
+            background: #3ea6ff;
+            color: #0f0f0f;
+            border: none;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 9px 20px;
+            border-radius: 18px;
+            cursor: pointer;
+        }
+
+        /* Device Card Rows */
+        .device-acc-card {
+            background: #171717;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .device-acc-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .device-acc-email {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .device-acc-sync {
+            font-size: 11px;
+            color: #2ecc71;
+        }
+
+        .btn-remove-acc {
+            background: none;
+            border: 1px solid #3d3d3d;
+            color: #ff4e4e;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Toast */
+        .toast-pop {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(33, 33, 33, 0.95);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 3000;
+            display: none;
+        }
+
+        /* 7. BOTTOM NAVIGATION */
+        .bottom-nav-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 52px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #222;
+            z-index: 1000;
+        }
+
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 2px;
+        }
+
+        .nav-tab-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-plus-circle {
+            color: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .nav-plus-circle svg {
+            width: 24px;
+            height: 24px;
+            fill: #e50914;
+        }
+    </style>
+
+    <!-- Firebase SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="../assets/js/api-client.js"></script>
+</head>
+<body>
+
+    <!-- 1. TOP HEADER -->
+    <header class="acc-header">
+        <div class="header-left">
+            <button class="btn-back" onclick="window.history.back()">
+                <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            </button>
+            <span class="header-title">Accounts</span>
+        </div>
+
+        <button class="btn-add-acc" onclick="openAddChannelModal()">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>Add</span>
+        </button>
+    </header>
+
+    <!-- 2. GOOGLE ACCOUNT HEADER -->
+    <section class="google-account-banner">
+        <div class="ga-left">
+            <span class="ga-email-txt" id="displayGoogleEmail">Sign in to manage accounts</span>
+            <span class="ga-manage-sub" onclick="openManageAccountsModal()">Manage your Google Account</span>
+        </div>
+    </section>
+
+    <!-- 3. CHANNELS LIST -->
+    <span class="section-label">Channels on this account</span>
+
+    <main class="channels-list-feed" id="channelsFeedContainer">
+        <div style="padding: 20px 16px; color: #777; font-size: 13px;">Loading channels...</div>
+    </main>
+
+    <!-- 4. MORE OPTIONS -->
+    <span class="section-label" style="margin-top:8px;">More Options</span>
+
+    <div class="util-action-row" onclick="toggleIncognito()">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-10 10 9.94 9.94 0 0 0 2.22 6.26l.48.58A9.97 9.97 0 0 0 12 22a9.97 9.97 0 0 0 7.3-3.16l.48-.58A9.94 9.94 0 0 0 22 12A10 10 0 0 0 12 2zm0 18a7.95 7.95 0 0 1-5.66-2.34l-.4-.46A7.95 7.95 0 0 1 4 12a8 8 0 1 1 16 0 7.95 7.95 0 0 1-1.94 5.2l-.4.46A7.95 7.95 0 0 1 12 20zm-4-8a2 2 0 1 0 2-2 2 2 0 0 0-2 2zm8 0a2 2 0 1 0 2-2 2 2 0 0 0-2 2z"/></svg>
+        <span class="util-text-txt" id="incognitoTxt">Turn on Incognito</span>
+    </div>
+
+    <div class="util-action-row" onclick="openManageAccountsModal()">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        <span class="util-text-txt">Manage accounts on this device</span>
+    </div>
+
+    <!-- 5. WORKING SHEET: ADD NEW CHANNEL -->
+    <div class="drawer-overlay" id="addChannelDrawer" onclick="closeDrawerOnBackdrop(event, 'addChannelDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="sheet-head-bar">
+                <span class="sheet-title-txt">Create a new channel</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('addChannelDrawer')">✕</button>
+            </div>
+            <p style="font-size:12px; color:#aaa; line-height:1.4;">Create an additional channel under your current account on BTube.</p>
+            
+            <span class="input-group-label">Channel Name</span>
+            <input type="text" id="newChannelNameInput" class="sign-in-field" placeholder="e.g. My Vlog Studio">
+
+            <span class="input-group-label">Handle (Optional)</span>
+            <input type="text" id="newChannelHandleInput" class="sign-in-field" placeholder="@myvlogstudio">
+
+            <div class="sheet-btn-row">
+                <button class="btn-sheet-text" onclick="closeDrawer('addChannelDrawer')">Cancel</button>
+                <button class="btn-sheet-primary" onclick="submitCreateChannel()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. WORKING SHEET: MANAGE DEVICE ACCOUNTS -->
+    <div class="drawer-overlay" id="manageAccountsDrawer" onclick="closeDrawerOnBackdrop(event, 'manageAccountsDrawer')">
+        <div class="drawer-sheet-card">
+            <div class="sheet-head-bar">
+                <span class="sheet-title-txt">Manage accounts on device</span>
+                <button class="sheet-close-btn" onclick="closeDrawer('manageAccountsDrawer')">✕</button>
+            </div>
+            
+            <p style="font-size:12px; color:#888;">Account currently signed in on this phone:</p>
+
+            <div class="device-acc-card" id="deviceAccCard">
+                <div class="device-acc-left">
+                    <span class="device-acc-email" id="deviceUserEmail">Not signed in</span>
+                    <span class="device-acc-sync">● Synced with BTube Cloud</span>
+                </div>
+                <button class="btn-remove-acc" onclick="handleSignOutAction()">Sign out</button>
+            </div>
+
+            <button class="btn-sheet-primary" style="margin-top:6px; width:100%;" onclick="handleGoogleSignInAction()">+ Sign in with Google</button>
+        </div>
+    </div>
+
+    <!-- Toast Bubble -->
+    <div class="toast-pop" id="accToast"></div>
+
+    <!-- 7. BOTTOM NAVIGATION -->
+    <nav class="bottom-nav-fixed">
+        <a href="../frontend/index.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        <a href="shorts.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M17.77 10.32l-1.2-.5-1.1-.46 1.05-.53c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>
+            <span>Shorts</span>
+        </a>
+        <a href="upload.html" class="nav-plus-circle">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </a>
+        <a href="subscriptions.html" class="nav-tab-item">
+            <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
+            <span>Subs</span>
+        </a>
+        <a href="profile.html" class="nav-tab-item active">
+            <div style="width:20px; height:20px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden;" id="navAvatar">BT</div>
+            <span>You</span>
+        </a>
+    </nav>
+
+    <!-- INTERACTION LOGIC -->
+    <script>
+        let authUser = null;
+        let activeChannel = null;
+        let userChannels = [];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            authUser = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : JSON.parse(localStorage.getItem('btube_user') || 'null');
+            syncNavAvatar();
+            await loadAccountChannels();
+        });
+
+        function syncNavAvatar() {
+            const botAv = document.getElementById('navAvatar');
+            if (authUser && botAv) {
+                if (authUser.photo) {
+                    botAv.innerHTML = `<img src="${authUser.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                } else {
+                    botAv.innerText = (authUser.name || 'BT').substring(0, 2).toUpperCase();
+                }
+            }
+        }
+
+        async function loadAccountChannels() {
+            const emailDisp = document.getElementById('displayGoogleEmail');
+            const devEmail = document.getElementById('deviceUserEmail');
+
+            if (!authUser) {
+                emailDisp.innerText = 'Guest (Not signed in)';
+                devEmail.innerText = 'No account logged in';
+                renderGuestState();
+                return;
+            }
+
+            emailDisp.innerText = authUser.email || (authUser.name + '@gmail.com');
+            devEmail.innerText = authUser.email || (authUser.name + '@gmail.com');
+
+            if (window.BTubeAPI) {
+                userChannels = await window.BTubeAPI.getAllUserChannels();
+                activeChannel = await window.BTubeAPI.getActiveChannel();
+
+                // If user has 0 channels, auto-create their primary channel
+                if (userChannels.length === 0) {
+                    const primary = await window.BTubeAPI.createNewChannel({
+                        name: authUser.name || 'My Channel',
+                        handle: '@' + (authUser.name || 'user').toLowerCase().replace(/[^a-z0-9]/g, ''),
+                        avatar: authUser.photo || ''
+                    });
+                    userChannels = [primary];
+                    activeChannel = primary;
+                }
+            } else {
+                userChannels = JSON.parse(localStorage.getItem('btube_channels') || '[]');
+            }
+
+            renderChannelsFeed();
+        }
+
+        function renderGuestState() {
+            const container = document.getElementById('channelsFeedContainer');
+            container.innerHTML = `
+                <div style="padding: 30px 16px; text-align: center; color: #888;">
+                    <p style="margin-bottom: 12px; font-size: 13px;">Sign in with Google to switch channels or manage account settings.</p>
+                    <button class="btn-sheet-primary" onclick="handleGoogleSignInAction()">Sign in with Google</button>
+                </div>
+            `;
+        }
+
+        function renderChannelsFeed() {
+            const container = document.getElementById('channelsFeedContainer');
+            container.innerHTML = '';
+
+            userChannels.forEach(ch => {
+                const isActive = activeChannel && (activeChannel.id === ch.id);
+                const card = document.createElement('div');
+                card.className = `channel-card-item ${isActive ? 'active' : ''}`;
+                card.onclick = () => selectChannel(ch.id, ch.name);
+
+                const avatarContent = ch.avatar 
+                    ? `<img src="${ch.avatar}">` 
+                    : (ch.name || 'BT').substring(0, 2).toUpperCase();
+
+                card.innerHTML = `
+                    <div class="ch-left-cluster">
+                        <div class="ch-avatar-frame">${avatarContent}</div>
+                        <div class="ch-text-block">
+                            <span class="ch-title-txt">${ch.name}</span>
+                            <span class="ch-meta-sub">${ch.handle} • ${ch.subscribers || 0} subscribers</span>
+                        </div>
+                    </div>
+                    <svg class="active-check-icon" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function selectChannel(chId, name) {
+            if (window.BTubeAPI) {
+                window.BTubeAPI.setActiveChannel(chId);
+            }
+            showToast(`Switched to ${name}`);
+            setTimeout(() => {
+                window.location.href = 'profile.html';
+            }, 600);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('accToast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2000);
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        function closeDrawerOnBackdrop(e, id) {
+            if (e.target.id === id) closeDrawer(id);
+        }
+
+        function openAddChannelModal() {
+            if (!authUser) {
+                handleGoogleSignInAction();
+                return;
+            }
+            document.getElementById('newChannelNameInput').value = '';
+            document.getElementById('newChannelHandleInput').value = '';
+            document.getElementById('addChannelDrawer').classList.add('open');
+            document.getElementById('newChannelNameInput').focus();
+        }
+
+        function openManageAccountsModal() {
+            document.getElementById('manageAccountsDrawer').classList.add('open');
+        }
+
+        async function submitCreateChannel() {
+            const name = document.getElementById('newChannelNameInput').value.trim();
+            const handle = document.getElementById('newChannelHandleInput').value.trim();
+
+            if (!name) {
+                showToast('Please enter a channel name');
+                return;
+            }
+
+            if (window.BTubeAPI) {
+                await window.BTubeAPI.createNewChannel({
+                    name: name,
+                    handle: handle || ('@' + name.toLowerCase().replace(/[^a-z0-9]/g, ''))
+                });
+            }
+
+            closeDrawer('addChannelDrawer');
+            showToast(`Channel "${name}" created ✓`);
+            await loadAccountChannels();
+        }
+
+        function handleGoogleSignInAction() {
+            if (window.BTubeAPI) {
+                window.BTubeAPI.signInWithGoogle().then(u => {
+                    if (u) window.location.reload();
+                });
+            } else {
+                showToast('Google Sign-In ready');
+            }
+        }
+
+        function handleSignOutAction() {
+            if (confirm("Sign out of BTube?")) {
+                if (window.BTubeAPI) window.BTubeAPI.signOut();
+                localStorage.removeItem('btube_user');
+                closeDrawer('manageAccountsDrawer');
+                window.location.reload();
+            }
+        }
+
+        function toggleIncognito() {
+            const txt = document.getElementById('incognitoTxt');
+            const isCurrentlyOn = txt.innerText.includes('Turn off');
+            txt.innerText = isCurrentlyOn ? 'Turn on Incognito' : 'Turn off Incognito';
+            showToast(isCurrentlyOn ? 'Incognito mode OFF' : 'Incognito mode ON');
+        }
+    </script>
+</body>
+</html>
