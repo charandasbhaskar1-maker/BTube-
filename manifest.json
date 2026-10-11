@@ -1,28 +1,47 @@
-{
-"name": "BTube",
-"short_name": "BTube",
-"description": "India ka apna BTube",
-"start_url": "/index.html",
-"scope": "/",
-"display": "standalone",
-"background_color": "#080B14",
-"theme_color": "#080B14",
-"icons": [
-{
-"src": "/assets/icons/icon-192.png",
-"sizes": "192x192",
-"type": "image/png"
-},
-{
-"src": "/assets/icons/icon-maskable-192.png",
-"sizes": "192x192",
-"type": "image/png",
-"purpose": "maskable"
-},
-{
-"src": "/assets/icons/icon-512.png",
-"sizes": "512x512",
-"type": "image/png"
-}
-]
+  "name": "BTube - Bharat Tube",
+  "short_name": "BTube",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
+  "orientation": "portrait-primary",
+  "description": "Watch regional videos, shorts, tutorials and music on BTube.",
+  "categories": ["entertainment", "video", "social"],
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Shorts",
+      "short_name": "Shorts",
+      "description": "Watch trending short videos",
+      "url": "/pages/shorts.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Upload",
+      "short_name": "Upload",
+      "description": "Create a short or upload a video",
+      "url": "/pages/upload.html",
+      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
