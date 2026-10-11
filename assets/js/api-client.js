@@ -338,3 +338,53 @@ window.BTubeAPI = {
         };
     }
 };
+// Global State & Channel Identity Sync
+window.BTubeState = {
+    getActiveChannel() {
+        const saved = localStorage.getItem('btube_active_channel');
+        if (saved) {
+            try { return JSON.parse(saved); } catch (e) {}
+        }
+        const user = window.BTubeAPI ? window.BTubeAPI.getAuthUser() : null;
+        return {
+            id: 'ch_default',
+            name: user ? user.name : 'Karan Bhaskar',
+            handle: user ? ('@' + user.name.toLowerCase().replace(/[^a-z0-9]/g, '')) : '@karanbhaskar',
+            avatar: user ? user.photo : '',
+            subscribers: 0
+        };
+    },
+
+    setActiveChannel(channelObj) {
+        if (channelObj.handle) {
+            channelObj.handle = '@' + channelObj.handle.replace(/[@\s]/g, '').toLowerCase();
+        }
+        localStorage.setItem('btube_active_channel', JSON.stringify(channelObj));
+        this.syncUI();
+    },
+
+    syncUI() {
+        const ch = this.getActiveChannel();
+        const initial = (ch.name || 'U').substring(0, 2).toUpperCase();
+
+        const topAv = document.getElementById('topNavAvatar');
+        if (topAv) {
+            topAv.innerHTML = ch.avatar 
+                ? `<img src="${ch.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+                : initial;
+        }
+
+        const botAv = document.getElementById('bottomNavAvatar');
+        if (botAv) {
+            botAv.innerHTML = ch.avatar 
+                ? `<img src="${ch.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`
+                : initial;
+        }
+    }
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    if (window.BTubeState) {
+        window.BTubeState.syncUI();
+    }
+});
