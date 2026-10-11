@@ -4,51 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f0f">
-    <title>BTube</title>
+    <title>BTube - Bharat Tube</title>
 
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background:#0f0f0f; color:#fff; padding-bottom:70px; overflow-x:hidden; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #ffffff;
+            padding-bottom: 70px;
+            overflow-x: hidden;
+        }
 
         /* Header */
-        .app-header { height:52px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; position:sticky; top:0; background:#0f0f0f; z-index:100; border-bottom:1px solid #1c1c1c; }
-        .logo-box { display:flex; align-items:center; gap:6px; text-decoration:none; color:#fff; font-size:19px; font-weight:800; letter-spacing:-0.5px; }
-        .logo-icon { width:28px; height:20px; background:#e50914; border-radius:6px; display:flex; align-items:center; justify-content:center; }
-        .logo-icon svg { width:14px; height:14px; fill:#fff; }
-        .hdr-actions { display:flex; align-items:center; gap:16px; }
-        .btn-hdr { background:none; border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; text-decoration:none; }
-        .btn-hdr svg { width:22px; height:22px; fill:#fff; }
-        .user-chip-avatar { width:28px; height:28px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; overflow:hidden; cursor:pointer; }
-        .user-chip-avatar img { width:100%; height:100%; object-fit:cover; }
+        .app-header {
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            background: #0f0f0f;
+            z-index: 1000;
+            border-bottom: 1px solid #1c1c1c;
+        }
 
-        /* Categories */
-        .category-bar { display:flex; gap:8px; padding:10px 16px; overflow-x:auto; scrollbar-width:none; position:sticky; top:52px; background:#0f0f0f; z-index:90; }
-        .category-bar::-webkit-scrollbar { display:none; }
-        .chip { background:#222; color:#fff; border:none; padding:7px 14px; border-radius:18px; font-size:13px; font-weight:600; white-space:nowrap; cursor:pointer; }
-        .chip.active { background:#fff; color:#000; }
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 20px;
+            background: #e50914;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: #ffffff;
+        }
+
+        .hdr-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-hdr {
+            background: none;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-hdr svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .user-chip-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #ffffff;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .user-chip-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Filter Chips */
+        .category-bar {
+            display: flex;
+            gap: 8px;
+            padding: 10px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 52px;
+            background: #0f0f0f;
+            z-index: 900;
+        }
+
+        .category-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chip {
+            background: #222222;
+            color: #ffffff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 18px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .chip.active {
+            background: #ffffff;
+            color: #000000;
+        }
 
         /* Video Feed */
-        .video-feed { display:flex; flex-direction:column; gap:18px; }
-        .video-card { display:flex; flex-direction:column; cursor:pointer; text-decoration:none; color:inherit; }
-        .thumb-wrapper { width:100%; aspect-ratio:16/9; background:#1c1c1c; position:relative; overflow:hidden; }
-        .thumb-wrapper img { width:100%; height:100%; object-fit:cover; }
-        .badge-time { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); font-size:11px; font-weight:700; padding:2px 5px; border-radius:4px; }
+        .video-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
 
-        .details-wrapper { display:flex; gap:12px; padding:12px 16px 0; align-items:flex-start; justify-content:space-between; }
-        .card-main-info { display:flex; gap:12px; flex:1; min-width:0; }
-        .channel-avatar { width:38px; height:38px; border-radius:50%; background:#2a2a2a; overflow:hidden; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; }
-        .channel-avatar img { width:100%; height:100%; object-fit:cover; }
-        .meta-col { display:flex; flex-direction:column; gap:4px; flex:1; min-width:0; }
-        .video-title { font-size:14px; font-weight:700; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; }
-        .video-sub-meta { font-size:12px; color:#aaa; }
+        .video-card {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .thumb-wrapper {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1c1c1c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thumb-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-time {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.85);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        .details-wrapper {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px 0;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .card-main-info {
+            display: flex;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .channel-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2a2a2a;
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .channel-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .meta-col {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.35;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .video-sub-meta {
+            font-size: 12px;
+            color: #aaaaaa;
+        }
 
         /* Bottom Nav */
-        .bottom-nav { position:fixed; bottom:0; left:0; width:100%; height:52px; background:#0f0f0f; display:flex; align-items:center; justify-content:space-around; border-top:1px solid #222; z-index:1000; }
-        .nav-btn { display:flex; flex-direction:column; align-items:center; font-size:10px; color:#aaa; text-decoration:none; gap:2px; cursor:pointer; }
-        .nav-btn.active { color:#fff; font-weight:700; }
-        .nav-btn svg { width:22px; height:22px; fill:currentColor; }
-        .nav-avatar-circle { width:22px; height:22px; border-radius:50%; background:#e50914; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#fff; overflow:hidden; }
-        .nav-avatar-circle img { width:100%; height:100%; object-fit:cover; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 52px;
+            background: #0f0f0f;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid #222222;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #aaaaaa;
+            text-decoration: none;
+            gap: 2px;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .nav-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-avatar-circle {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #e50914;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 800;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .nav-avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -86,7 +333,7 @@
     <!-- Feed Container -->
     <main class="video-feed" id="mainVideoFeed"></main>
 
-    <!-- Bottom Navigation (Direct pages/ relative paths) -->
+    <!-- Bottom Navigation (Fixed: Relative Root pages/ Linking) -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-btn active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -115,10 +362,18 @@
         let allCloudVideos = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
+            // Live identity sync
             if (window.BTubeState) {
                 window.BTubeState.syncUI();
             }
             await refreshFeed();
+        });
+
+        // Instant update on switching channel in another tab
+        window.addEventListener('storage', () => {
+            if (window.BTubeState) {
+                window.BTubeState.syncUI();
+            }
         });
 
         async function refreshFeed() {
@@ -126,35 +381,8 @@
                 try {
                     allCloudVideos = await window.BTubeAPI.getFeed('all');
                 } catch(e) {
-                    console.error("Feed load error:", e);
+                    console.error("Feed error:", e);
                 }
-            }
-
-            if (!allCloudVideos || allCloudVideos.length === 0) {
-                allCloudVideos = [
-                    {
-                        id: "vid_welcome_01",
-                        title: "Welcome to BTube - India's PWA Video Platform",
-                        channel: "BTube Official",
-                        avatar: "",
-                        thumb: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800",
-                        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                        duration: "03:45",
-                        views: 1200,
-                        type: "video"
-                    },
-                    {
-                        id: "short_welcome_01",
-                        title: "First Look at BTube Shorts #btube #shorts",
-                        channel: "BTube Official",
-                        avatar: "",
-                        thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600",
-                        videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-                        duration: "00:45",
-                        views: 3500,
-                        type: "short"
-                    }
-                ];
             }
             renderFeedList();
         }
@@ -180,7 +408,10 @@
 
             let filtered = allCloudVideos;
             if (currentFilter !== 'all') {
-                filtered = allCloudVideos.filter(v => (v.type || 'video').toLowerCase() === currentFilter);
+                filtered = allCloudVideos.filter(v => {
+                    const isShort = (v.type === 'short' || v.is_shorts === true);
+                    return currentFilter === 'short' ? isShort : !isShort;
+                });
             }
 
             if (!filtered || filtered.length === 0) {
@@ -209,7 +440,7 @@
 
                 card.innerHTML = `
                     <div class="thumb-wrapper">
-                        <img src="${thumbSrc}">
+                        <img src="${thumbSrc}" loading="lazy">
                         <span class="badge-time">${isShort ? 'SHORT' : (v.duration || '03:45')}</span>
                     </div>
                     <div class="details-wrapper">
