@@ -1,0 +1,567 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --bg-main: #0f0f0f;
+    --bg-card: #181818;
+    --bg-chip: #272727;
+    --bg-chip-hover: #383838;
+    --red: #ff0000;
+    --blue: #3ea6ff;
+    --text: #ffffff;
+    --subtext: #aaaaaa;
+    --border: #222222;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text);
+    padding-bottom: 70px;
+    overflow-x: hidden;
+}
+
+/* Header */
+.bt-header {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-main);
+    z-index: 1000;
+    border-bottom: 1px solid var(--border);
+}
+
+.bt-brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.bt-logo-svg {
+    width: 28px;
+    height: 20px;
+    background: #e50914;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bt-logo-svg svg {
+    width: 14px;
+    height: 14px;
+    fill: #ffffff;
+}
+
+.bt-brand-text {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+.bt-brand-text span {
+    color: #e50914;
+}
+
+.bt-header-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-icon-btn {
+    background: none;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.header-icon-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--text);
+}
+
+.badge-counter {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    background: #e50914;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 10px;
+}
+
+.header-profile-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e50914;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.header-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Category Filter Chips Tray */
+.category-tray {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 52px;
+    background: var(--bg-main);
+    z-index: 900;
+}
+
+.category-tray::-webkit-scrollbar {
+    display: none;
+}
+
+.cat-pill {
+    background: var(--bg-chip);
+    color: var(--text);
+    border: none;
+    padding: 7px 14px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.cat-pill:hover {
+    background: var(--bg-chip-hover);
+}
+
+.cat-pill.active {
+    background: #ffffff;
+    color: #0f0f0f;
+    font-weight: 700;
+}
+
+/* YouTube Top Sponsored / Promoted Ad */
+.ad-sponsored-box {
+    margin: 4px 0 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+}
+
+.ad-thumb-box {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #1c1c1c;
+    position: relative;
+    overflow: hidden;
+}
+
+.ad-thumb-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-gold-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    color: #ffd700;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+.ad-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 0;
+    gap: 12px;
+}
+
+.ad-info-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.ad-icon-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #222;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ad-icon-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-title-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.ad-main-title {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ad-sub-sponsor {
+    font-size: 11px;
+    color: var(--subtext);
+}
+
+.btn-ad-cta {
+    background: var(--blue);
+    color: #0f0f0f;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 18px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* Video Feed */
+.video-stream-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.feed-video-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.video-thumb-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #1c1c1c;
+    position: relative;
+    overflow: hidden;
+}
+
+.video-thumb-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.duration-tag {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.video-details-row {
+    display: flex;
+    padding: 12px 16px 4px;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.creator-circle-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #2a2a2a;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.creator-circle-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.details-column {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.card-title-text {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-meta-text {
+    font-size: 12px;
+    color: var(--subtext);
+}
+
+.btn-card-menu {
+    background: none;
+    border: none;
+    color: var(--subtext);
+    padding: 2px 0 2px 6px;
+    cursor: pointer;
+}
+
+.btn-card-menu svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* Shorts Horizontal Shelf */
+.shorts-shelf {
+    padding: 14px 0 18px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 4px 0;
+}
+
+.shorts-shelf-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.shorts-shelf-title svg {
+    width: 22px;
+    height: 22px;
+    fill: #e50914;
+}
+
+.shorts-slider {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.shorts-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.short-box-card {
+    width: 140px;
+    aspect-ratio: 9 / 16;
+    background: #1c1c1c;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.short-box-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.short-box-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.9) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 10px 8px;
+    gap: 2px;
+}
+
+.short-box-title {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.short-box-views {
+    font-size: 10px;
+    color: var(--subtext);
+    font-weight: 500;
+}
+
+/* Empty Clean State (Zero Demo Data) */
+.empty-channel-box {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--subtext);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.empty-channel-box svg {
+    width: 52px;
+    height: 52px;
+    fill: #444;
+}
+
+.empty-channel-box h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.empty-channel-box p {
+    font-size: 13px;
+    color: #777;
+    max-width: 280px;
+    line-height: 1.4;
+}
+
+.empty-channel-box a {
+    background: #e50914;
+    color: #fff;
+    padding: 9px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 52px;
+    background: var(--bg-main);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+}
+
+.nav-tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+    color: var(--subtext);
+    text-decoration: none;
+    gap: 2px;
+}
+
+.nav-tab-item.active {
+    color: var(--text);
+    font-weight: 700;
+}
+
+.nav-tab-item svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.nav-plus-circle {
+    color: #e50914;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-plus-circle svg {
+    width: 24px;
+    height: 24px;
+    fill: #e50914;
+}
+
+.nav-user-inits {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e50914;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.nav-user-inits img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
