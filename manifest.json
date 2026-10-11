@@ -1,47 +1,32 @@
-  "name": "BTube - Bharat Tube",
+
+{
+  "id": "./",
+  "name": "BTube",
   "short_name": "BTube",
-  "start_url": "/index.html",
-  "scope": "/",
+  "description": "Watch and share videos and Shorts on BTube.",
+  "lang": "hi",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0f0f0f",
   "theme_color": "#0f0f0f",
-  "orientation": "portrait-primary",
-  "description": "Watch regional videos, shorts, tutorials and music on BTube.",
-  "categories": ["entertainment", "video", "social"],
   "icons": [
     {
-      "src": "/assets/icons/icon-192.png",
+      "src": "./assets/Icon _ 192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
-      "src": "/assets/icons/icon-maskable-192.png",
+      "src": "./assets/Icon_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "./assets/Icon_maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
-    },
-    {
-      "src": "/assets/icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Shorts",
-      "short_name": "Shorts",
-      "description": "Watch trending short videos",
-      "url": "/pages/shorts.html",
-      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Upload",
-      "short_name": "Upload",
-      "description": "Create a short or upload a video",
-      "url": "/pages/upload.html",
-      "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
