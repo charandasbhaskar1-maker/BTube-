@@ -86,7 +86,7 @@
     <!-- Feed Container -->
     <main class="video-feed" id="mainVideoFeed"></main>
 
-    <!-- Bottom Navigation (Fixed: Relative Root pages/ Linking) -->
+    <!-- Bottom Navigation (Direct pages/ relative paths) -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-btn active">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -111,39 +111,13 @@
     </nav>
 
     <script>
-        // Identity Synchronization (Reads Active Channel from Storage)
-        function syncActiveChannelIdentity() {
-            let ch = null;
-            try {
-                ch = JSON.parse(localStorage.getItem('btube_current_active_channel') || 'null');
-                if (!ch && window.BTubeAPI && typeof window.BTubeAPI.getAuthUser === 'function') {
-                    const u = window.BTubeAPI.getAuthUser();
-                    if (u) {
-                        ch = { name: u.name, avatar: u.photo };
-                    }
-                }
-            } catch(e) {}
-
-            const topAv = document.getElementById('topNavAvatar');
-            const botAv = document.getElementById('bottomNavAvatar');
-            const name = (ch && ch.name) ? ch.name : 'BT';
-            const initial = name.substring(0, 2).toUpperCase();
-            const avatarImg = (ch && ch.avatar) ? ch.avatar : '';
-
-            if (avatarImg) {
-                if (topAv) topAv.innerHTML = `<img src="${avatarImg}">`;
-                if (botAv) botAv.innerHTML = `<img src="${avatarImg}">`;
-            } else {
-                if (topAv) topAv.innerText = initial;
-                if (botAv) botAv.innerText = initial;
-            }
-        }
-
         let currentFilter = 'all';
         let allCloudVideos = [];
 
         window.addEventListener('DOMContentLoaded', async () => {
-            syncActiveChannelIdentity();
+            if (window.BTubeState) {
+                window.BTubeState.syncUI();
+            }
             await refreshFeed();
         });
 
@@ -156,7 +130,6 @@
                 }
             }
 
-            // Fallback sample items to prevent empty screens
             if (!allCloudVideos || allCloudVideos.length === 0) {
                 allCloudVideos = [
                     {
