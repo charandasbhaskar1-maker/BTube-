@@ -76,7 +76,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            text-decoration: none;
         }
 
         .btn-hdr svg {
@@ -106,7 +105,7 @@
             object-fit: cover;
         }
 
-        /* Search Bar Input */
+        /* Search Input */
         .search-container {
             padding: 0 16px 8px;
         }
@@ -141,7 +140,7 @@
             color: #888888;
         }
 
-        /* Filter Chips */
+        /* Categories */
         .category-bar {
             display: flex;
             gap: 8px;
@@ -171,7 +170,7 @@
             color: #000000;
         }
 
-        /* Video Feed */
+        /* Feed */
         .video-feed {
             display: flex;
             flex-direction: column;
@@ -182,8 +181,6 @@
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            text-decoration: none;
-            color: inherit;
         }
 
         .thumb-wrapper {
@@ -216,7 +213,6 @@
             gap: 12px;
             padding: 12px 16px 0;
             align-items: flex-start;
-            justify-content: space-between;
         }
 
         .card-main-info {
@@ -270,49 +266,7 @@
             color: #aaaaaa;
         }
 
-        /* Empty Feed Box (Screenshot Match) */
-        .empty-feed-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 70px 24px;
-            gap: 16px;
-        }
-
-        .empty-play-icon {
-            width: 44px;
-            height: 44px;
-            fill: #444444;
-        }
-
-        .empty-title {
-            font-size: 17px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .empty-subtitle {
-            font-size: 13px;
-            color: #888888;
-            max-width: 290px;
-            line-height: 1.5;
-        }
-
-        .btn-empty-upload {
-            background: #e50914;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 28px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 6px;
-            display: inline-block;
-        }
-
-        /* Bottom Nav (Screenshot Match) */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -336,6 +290,8 @@
             text-decoration: none;
             gap: 3px;
             cursor: pointer;
+            background: none;
+            border: none;
         }
 
         .nav-btn.active {
@@ -390,26 +346,26 @@
 
     <!-- Header -->
     <header class="app-header">
-        <a href="index.html" class="logo-box">
+        <div class="logo-box" onclick="routeTo('index.html')" style="cursor:pointer;">
             <div class="logo-icon">
                 <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
             <span>BTube</span>
-        </a>
+        </div>
         <div class="hdr-actions">
-            <a href="pages/search.html" class="btn-hdr">
+            <button class="btn-hdr" onclick="routeTo('pages/search.html')">
                 <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </a>
-            <a href="pages/notifications.html" class="btn-hdr">
+            </button>
+            <button class="btn-hdr" onclick="routeTo('pages/notifications.html')">
                 <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
-            </a>
-            <div class="user-chip-avatar" id="topNavAvatar" onclick="window.location.href='pages/profile.html'">
+            </button>
+            <div class="user-chip-avatar" id="topNavAvatar" onclick="routeTo('pages/profile.html')">
                 K
             </div>
         </div>
     </header>
 
-    <!-- Search Input Bar -->
+    <!-- Search Input -->
     <div class="search-container">
         <div class="search-box-pill">
             <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
@@ -417,44 +373,60 @@
         </div>
     </div>
 
-    <!-- Filter Chips -->
+    <!-- Category Chips -->
     <div class="category-bar">
         <button class="chip active" onclick="setCategoryFilter('all', this)">All</button>
         <button class="chip" onclick="setCategoryFilter('video', this)">Videos</button>
         <button class="chip" onclick="setCategoryFilter('short', this)">Shorts</button>
     </div>
 
-    <!-- Feed Container -->
+    <!-- Main Feed -->
     <main class="video-feed" id="mainVideoFeed"></main>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a href="index.html" class="nav-btn active">
+        <button class="nav-btn active" onclick="routeTo('index.html')">
             <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
-        </a>
-        <a href="pages/shorts.html" class="nav-btn">
+        </button>
+        <button class="nav-btn" onclick="routeTo('pages/shorts.html')">
             <svg viewBox="0 0 24 24"><path d="M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.33c-.77-.32-1.2-.5-1.2-.5l1.1-.46c1.78-.9 2.5-3.08 1.6-4.86-.9-1.78-3.08-2.5-4.86-1.6L6.5 5.67c-1.78.9-2.5 3.08-1.6 4.86.32.64.83 1.13 1.44 1.43l1.2.5 1.1.46-1.05.53c-1.78.9-2.5 3.08-1.6 4.86.63 1.25 1.88 1.99 3.23 1.99.55 0 1.11-.13 1.63-.39l6.76-3.3c1.78-.9 2.5-3.08 1.6-4.86-.32-.64-.83-1.13-1.44-1.43z"/></svg>
             <span>Shorts</span>
-        </a>
-        <a href="pages/upload.html" class="nav-btn">
+        </button>
+        <button class="nav-btn" onclick="routeTo('pages/upload.html')">
             <div class="nav-create-btn">
                 <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
             </div>
             <span>Create</span>
-        </a>
-        <a href="pages/subscriptions.html" class="nav-btn">
+        </button>
+        <button class="nav-btn" onclick="routeTo('pages/subscriptions.html')">
             <svg viewBox="0 0 24 24"><path d="M20 8H4V6h16v2zm-2-6H6v2h12V2zm4 10v8c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2v-8c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2zm-6 4l-6-3.27v6.53L16 16z"/></svg>
             <span>Subscriptions</span>
-        </a>
-        <a href="pages/profile.html" class="nav-btn">
+        </button>
+        <button class="nav-btn" onclick="routeTo('pages/profile.html')">
             <div class="nav-avatar-circle" id="bottomNavAvatar">K</div>
             <span>You</span>
-        </a>
+        </button>
     </nav>
 
     <script>
-        // 1. Channel Identity Sync (Profile name & photo)
+        // Exact Path Router (GitHub Pages Safe Navigation)
+        function routeTo(relativePath) {
+            const loc = window.location;
+            let currentPath = loc.pathname;
+            
+            // Agar index.html par hain to directory nikal lein
+            if (currentPath.endsWith('.html')) {
+                currentPath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+            } else if (!currentPath.endsWith('/')) {
+                currentPath += '/';
+            }
+
+            // Target URL create karein
+            window.location.href = loc.origin + currentPath + relativePath;
+        }
+
+        // Live Channel Identity Sync
         function syncChannelIdentity() {
             let ch = null;
             try {
@@ -485,7 +457,7 @@
             }
         }
 
-        // 2. Demo Videos Fallback
+        // Videos List
         const FALLBACK_VIDEOS = [
             {
                 id: "vid_welcome_01",
@@ -515,21 +487,10 @@
         let searchQuery = '';
         let feedVideos = [];
 
-        async function loadFeed() {
-            feedVideos = [];
-
-            // API or LocalStorage Video Check
+        function loadFeed() {
             try {
-                if (window.BTubeAPI && typeof window.BTubeAPI.getFeed === 'function') {
-                    feedVideos = await window.BTubeAPI.getFeed('all');
-                }
+                feedVideos = JSON.parse(localStorage.getItem('btube_uploaded_videos') || '[]');
             } catch(e) {}
-
-            if (!feedVideos || feedVideos.length === 0) {
-                try {
-                    feedVideos = JSON.parse(localStorage.getItem('btube_uploaded_videos') || '[]');
-                } catch(e) {}
-            }
 
             if (!feedVideos || feedVideos.length === 0) {
                 feedVideos = FALLBACK_VIDEOS;
@@ -556,30 +517,14 @@
 
             let list = feedVideos;
 
-            // Filter Category
             if (currentFilter !== 'all') {
                 list = list.filter(v => (v.type || (v.is_shorts ? 'short' : 'video')).toLowerCase() === currentFilter);
             }
 
-            // Filter Search
             if (searchQuery) {
                 list = list.filter(v => (v.title || '').toLowerCase().includes(searchQuery) || (v.channel || '').toLowerCase().includes(searchQuery));
             }
 
-            // Empty State Display
-            if (!list || list.length === 0) {
-                feedContainer.innerHTML = `
-                    <div class="empty-feed-box">
-                        <svg class="empty-play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        <h3 class="empty-title">Abhi koi video nahi hai</h3>
-                        <p class="empty-subtitle">Videos aur Shorts upload hone ke baad yahan dikhai denge.</p>
-                        <a href="pages/upload.html" class="btn-empty-upload">Upload Video</a>
-                    </div>
-                `;
-                return;
-            }
-
-            // Render Video Cards
             list.forEach(v => {
                 const isShort = (v.type === 'short' || v.is_shorts === true);
                 const vidId = v.id || 'vid_sample';
@@ -592,9 +537,9 @@
                 card.className = 'video-card';
                 card.onclick = () => {
                     if (isShort) {
-                        window.location.href = `pages/shorts.html?id=${encodeURIComponent(vidId)}`;
+                        routeTo(`pages/shorts.html?id=${encodeURIComponent(vidId)}`);
                     } else {
-                        window.location.href = `pages/watch.html?id=${encodeURIComponent(vidId)}&videoUrl=${encodeURIComponent(videoStreamUrl)}`;
+                        routeTo(`pages/watch.html?id=${encodeURIComponent(vidId)}&videoUrl=${encodeURIComponent(videoStreamUrl)}`);
                     }
                 };
 
